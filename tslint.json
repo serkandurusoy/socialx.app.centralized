@@ -1,0 +1,32 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-react"
+  ],
+  "rules": {
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "interface-name": false,
+    "object-literal-sort-keys": false,
+    "no-object-literal-type-assertion": false,
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "no-empty-interface": false,
+    "no-submodule-imports": false,
+    "indent": [
+      true,
+      "tabs",
+      2
+    ],
+    "jsx-no-lambda": false,
+    "no-implicit-dependencies": false
+  },
+  "include": [
+    "App/**/*.ts",
+    "App/**/*.tsx",
+    "node_modules/@types"
+  ]
+}
