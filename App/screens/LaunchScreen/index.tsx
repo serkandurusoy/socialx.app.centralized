@@ -1,11 +1,20 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
+import {NavigationScreenProp} from 'react-navigation';
 import {SXButton} from '../../components/Button';
 import {SXGradientButton} from '../../components/GradientButton';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
-export default class LaunchScreen extends Component {
+export interface ILaunchScreenProps {
+	navigation: NavigationScreenProp<any, any>;
+}
+
+export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
+	private static navigationOptions = {
+		header: null,
+	};
+
 	public render() {
 		return (
 			<View style={style.container}>
@@ -21,12 +30,21 @@ export default class LaunchScreen extends Component {
 						colorEnd={Colors.pink}
 						label={'LOGIN'}
 						borderColor={Colors.transparent}
+						onPress={this.navigateToLoginScreen}
 					/>
 					<View style={style.signUpTopPadding}>
-						<SXButton label={'SIGN UP'} />
+						<SXButton label={'SIGN UP'} onPress={this.navigateToSignUpScreen} />
 					</View>
 				</View>
 			</View>
 		);
+	}
+
+	private navigateToLoginScreen = () => {
+		this.props.navigation.navigate('LoginScreen');
+	}
+
+	private navigateToSignUpScreen = () => {
+		this.props.navigation.navigate('SignUpScreen');
 	}
 }
