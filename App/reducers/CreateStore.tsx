@@ -10,7 +10,7 @@ export default (rootReducer: Reducer<any>, rootSaga: () => SagaIterator) => {
 
 	const sagaMiddleware = sagaMiddlewareFactory();
 
-	const axiosClient = axios.create({ responseType: 'json' });
+	const axiosClient = axios.create({responseType: 'json'});
 	const axiosMiddleware = axiosMiddle(axiosClient);
 
 	middleware.push(sagaMiddleware);

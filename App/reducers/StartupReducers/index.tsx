@@ -1,4 +1,4 @@
-import { createAction } from 'typesafe-actions';
+import {createAction} from 'typesafe-actions';
 
 const actions = {
 	startup: createAction('startup'),

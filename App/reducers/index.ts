@@ -1,8 +1,8 @@
 /// <reference types="@types/webpack-env" />
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import root from '../Sagas';
 import configureStore from './CreateStore';
-import { NavigationReducer, NavigationState } from './NavigationReducers';
+import {NavigationReducer, NavigationState} from './NavigationReducers';
 
 /* ------------- Assemble The Reducers ------------- */
 export const reducers = combineReducers({
@@ -15,7 +15,7 @@ export interface State {
 
 export default () => {
 	// tslint:disable-next-line:prefer-const
-	let { store, sagasManager, sagaMiddleware } = configureStore(reducers, root);
+	let {store, sagasManager, sagaMiddleware} = configureStore(reducers, root);
 
 	if (module.hot) {
 		module.hot.accept(() => {

@@ -7,10 +7,7 @@ import AppNavigation from './AppNavigation';
 // for react-navigation 1.0.0-beta.30
 import {createReactNavigationReduxMiddleware, createReduxBoundAddListener} from 'react-navigation-redux-helpers';
 
-const middleware: any = createReactNavigationReduxMiddleware(
-	'root',
-	(state: any) => state.nav,
-);
+const middleware: any = createReactNavigationReduxMiddleware('root', (state: any) => state.nav);
 const addListener: any = createReduxBoundAddListener('root');
 
 // end for react-navigation 1.0.0-beta.30
