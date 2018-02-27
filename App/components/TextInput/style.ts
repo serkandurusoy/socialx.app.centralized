@@ -2,7 +2,7 @@ import {Colors, Fonts, Sizes} from '../../theme/';
 
 import {Platform, StyleSheet} from 'react-native';
 
-export const ICON_HEIGHT = Sizes.smartHorizontalScale(22);
+export const ICON_HEIGHT = Sizes.smartHorizontalScale(22); // customize
 const INPUT_FONT_SIZE = Sizes.smartHorizontalScale(14);
 const PADDING_TEXT_DIFF = (ICON_HEIGHT - INPUT_FONT_SIZE) / 2;
 
@@ -17,7 +17,8 @@ const style: any = {
 		flex: 1,
 		backgroundColor: Colors.white,
 		borderRadius: Sizes.smartHorizontalScale(6),
-		borderColor: Colors.pink,
+		// borderColor: Colors.pink, // customize
+		borderColor: Colors.transparent,
 		borderWidth: Sizes.smartHorizontalScale(2),
 	},
 	textInput: {

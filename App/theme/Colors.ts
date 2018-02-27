@@ -12,6 +12,7 @@ const SocialXColors = {
 	dustWhite: '#EEEEEE',
 	grayText: '#9B9B9B',
 	gradientButtonLeft: '#814FBE',
+	iron: '#D3D6DA',
 };
 
 export default SocialXColors;

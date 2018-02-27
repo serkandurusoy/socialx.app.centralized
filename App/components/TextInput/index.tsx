@@ -101,6 +101,12 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		}
 	}
 
+	public isFocused = () => {
+		if (this.inputComponent) {
+			return this.inputComponent.isFocused();
+		}
+	}
+
 	private getContainerStyles = () => {
 		const ret: any = [style.container];
 		if (this.props.width) {
