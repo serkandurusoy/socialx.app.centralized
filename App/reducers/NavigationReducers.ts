@@ -1,4 +1,4 @@
-import { NavigationAction, NavigationState } from 'react-navigation';
+import {NavigationAction, NavigationState} from 'react-navigation';
 import AppNavigation from '../navigation/AppNavigation';
 
 export type NavigationState = NavigationState;

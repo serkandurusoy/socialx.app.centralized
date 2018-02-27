@@ -1,4 +1,4 @@
-import { TextStyle, ViewStyle } from 'react-native';
+import {TextStyle, ViewStyle} from 'react-native';
 
 import Colors from './Colors';
 import Fonts from './Fonts';
@@ -27,7 +27,7 @@ const ApplicationStyles = {
 			padding: Metrics.baseMargin,
 		} as ViewStyle,
 		sectionText: {
-			...Fonts.style.normal,
+			// ...Fonts.style.normal,
 			paddingVertical: Metrics.doubleBaseMargin,
 			color: Colors.snow,
 			marginVertical: Metrics.smallMargin,
@@ -40,7 +40,7 @@ const ApplicationStyles = {
 			marginHorizontal: Metrics.smallMargin,
 		} as TextStyle,
 		titleText: {
-			...Fonts.style.h2,
+			// ...Fonts.style.h2,
 			fontSize: 14,
 			color: Colors.text,
 		} as TextStyle,
@@ -53,7 +53,7 @@ const ApplicationStyles = {
 		marginBottom: Metrics.baseMargin,
 	} as ViewStyle,
 	darkLabel: {
-		fontFamily: Fonts.type.bold,
+		// fontFamily: Fonts.type.bold,
 		color: Colors.snow,
 	} as TextStyle,
 	groupContainer: {
@@ -63,7 +63,7 @@ const ApplicationStyles = {
 		alignItems: 'center',
 	} as ViewStyle,
 	sectionTitle: {
-		...Fonts.style.h4,
+		// ...Fonts.style.h4,
 		color: Colors.coal,
 		backgroundColor: Colors.ricePaper,
 		padding: Metrics.smallMargin,

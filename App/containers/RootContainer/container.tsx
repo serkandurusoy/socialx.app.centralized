@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatusBar, View } from 'react-native';
+import {StatusBar, View} from 'react-native';
 
 import ReduxNavigation from '../../navigation/ReduxNavigation';
 

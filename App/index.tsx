@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Provider } from 'react-redux';
+import React, {Component} from 'react';
+import {Provider} from 'react-redux';
 
 import RootContainer from './containers/RootContainer';
 import createStore from './reducers';
