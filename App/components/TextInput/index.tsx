@@ -32,7 +32,6 @@ export interface ISXTextInputProps {
 	onSubmitPressed?: () => void;
 	onChangeText?: (value: string) => void;
 	hasFocus?: boolean;
-	value: string;
 	blurOnSubmit?: boolean;
 }
 
@@ -66,48 +65,6 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		};
 	}
 
-	public getContainerStyles = () => {
-		const ret: any = [style.container];
-		if (this.props.width) {
-			ret.push({width: this.props.width});
-		}
-		if (this.props.disabled) {
-			ret.push(style.disabledInput);
-		}
-		return ret;
-	}
-
-	public renderInputIcon = () => {
-		const IconComp = Icon as any;
-		if (this.props.icon) {
-			return <IconComp name={this.props.icon} size={ICON_HEIGHT} color={this.props.iconColor} style={style.icon} />;
-		}
-		return null;
-	}
-
-	public renderCancelButton = () => {
-		if (this.state.hasFocus && this.props.canCancel) {
-			return (
-				<TouchableOpacity style={style.cancelButton} onPress={() => Keyboard.dismiss()}>
-					<Text style={[style.cancelButtonText, {color: this.props.cancelButtonTextColor}]}>Cancel</Text>
-				</TouchableOpacity>
-			);
-		}
-		return null;
-	}
-
-	public updateFocusHandler = (value: boolean) => {
-		this.setState({
-			hasFocus: value,
-		});
-	}
-
-	public focusInput = () => {
-		if (this.inputComponent) {
-			this.inputComponent.focus();
-		}
-	}
-
 	public render() {
 		return (
 			<View style={this.getContainerStyles()}>
@@ -136,5 +93,47 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 				{this.renderCancelButton()}
 			</View>
 		);
+	}
+
+	public focusInput = () => {
+		if (this.inputComponent) {
+			this.inputComponent.focus();
+		}
+	}
+
+	private getContainerStyles = () => {
+		const ret: any = [style.container];
+		if (this.props.width) {
+			ret.push({width: this.props.width});
+		}
+		if (this.props.disabled) {
+			ret.push(style.disabledInput);
+		}
+		return ret;
+	}
+
+	private renderInputIcon = () => {
+		const IconComp = Icon as any;
+		if (this.props.icon) {
+			return <IconComp name={this.props.icon} size={ICON_HEIGHT} color={this.props.iconColor} style={style.icon} />;
+		}
+		return null;
+	}
+
+	private renderCancelButton = () => {
+		if (this.state.hasFocus && this.props.canCancel) {
+			return (
+				<TouchableOpacity style={style.cancelButton} onPress={() => Keyboard.dismiss()}>
+					<Text style={[style.cancelButtonText, {color: this.props.cancelButtonTextColor}]}>Cancel</Text>
+				</TouchableOpacity>
+			);
+		}
+		return null;
+	}
+
+	private updateFocusHandler = (value: boolean) => {
+		this.setState({
+			hasFocus: value,
+		});
 	}
 }

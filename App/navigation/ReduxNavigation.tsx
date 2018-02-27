@@ -13,15 +13,19 @@ const addListener: any = createReduxBoundAddListener('root');
 // end for react-navigation 1.0.0-beta.30
 
 function ReduxNavigation(props: any) {
-	const {dispatch, nav} = props;
+	// const {dispatch, nav} = props;
+	//
+	// const navigation: any = ReactNavigation.addNavigationHelpers({
+	// 	dispatch,
+	// 	state: nav,
+	// 	addListener,
+	// });
+	//
+	// return <AppNavigation navigation={navigation} />;
 
-	const navigation: any = ReactNavigation.addNavigationHelpers({
-		dispatch,
-		state: nav,
-		addListener,
-	});
-
-	return <AppNavigation navigation={navigation} />;
+	// Ionut: disable Redux navigation until this is fixed:
+	// https://github.com/react-navigation/react-navigation-redux-helpers/issues/7
+	return <AppNavigation />;
 }
 
 const mapStateToProps: any = (state: any) => ({nav: state.nav});

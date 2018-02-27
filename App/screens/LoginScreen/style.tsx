@@ -24,6 +24,7 @@ const style: any = {
 	forgotPassword: {
 		marginTop: Sizes.smartVerticalScale(25),
 		padding: Sizes.smartHorizontalScale(4),
+		marginBottom: Sizes.smartVerticalScale(25),
 	},
 	forgotPasswordText: {
 		...Fonts.centuryGothic,

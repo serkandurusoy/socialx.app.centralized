@@ -2,16 +2,17 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {ApplicationStyles, Colors} from '../../theme';
+import style from './style';
 
-export default class SignUpScreen extends Component {
+export default class UserFeedScreen extends Component {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'REGISTER',
+		title: 'FEED ',
 	};
 
 	public render() {
 		return (
 			<View>
-				<Text>SignUp screen</Text>
+				<Text>UserFeed screen</Text>
 			</View>
 		);
 	}

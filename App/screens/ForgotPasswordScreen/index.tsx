@@ -2,16 +2,17 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {ApplicationStyles, Colors} from '../../theme';
+import style from './style';
 
-export default class SignUpScreen extends Component {
+export default class ForgotPasswordScreen extends Component {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'REGISTER',
+		title: 'FORGOT PASSWORD',
 	};
 
 	public render() {
 		return (
 			<View>
-				<Text>SignUp screen</Text>
+				<Text>Forgot password screen</Text>
 			</View>
 		);
 	}

@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {SXButton} from '../../components/Button';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
-import {ApplicationStyles, Colors} from '../../theme/';
+import {Colors} from '../../theme/';
+import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 export interface ILoginScreenState {
@@ -18,9 +19,6 @@ export interface ILoginScreenProps {
 export default class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	private static navigationOptions = {
 		headerTitle: 'LOGIN',
-		headerTintColor: Colors.white, // color for screen title and back button
-		headerTitleStyle: ApplicationStyles.screenHeader,
-		headerBackTitle: null,
 	};
 
 	public state = {
@@ -36,7 +34,6 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				<Text style={style.welcomeText}>{'Welcome Back!'}</Text>
 				<SXTextInput
 					placeholder={'Email'}
-					value={this.state.emailValue}
 					returnKeyType={TRKeyboardKeys.next}
 					canCancel={true}
 					keyboardType={TKeyboardKeys.emailAddress}
@@ -47,7 +44,6 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				<View style={style.passwordContainer}>
 					<SXTextInput
 						placeholder={'Password'}
-						value={this.state.passwordValue}
 						isPassword={true}
 						returnKeyType={TRKeyboardKeys.go}
 						canCancel={true}
@@ -62,10 +58,16 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 					label={'LOGIN'}
 					onPress={this.startLogin}
 					disabled={!this.state.passwordValue || !this.state.emailValue}
+					borderColor={Colors.transparent}
 				/>
 				<TouchableOpacity onPress={this.navigateToPasswordForgotScreen} style={style.forgotPassword}>
 					<Text style={style.forgotPasswordText}>{'Forgot your password'}</Text>
 				</TouchableOpacity>
+				<SXButton
+					label={'Or use unlock file'}
+					onPress={this.selectUnlockFileHandler}
+					borderColor={Colors.transparent}
+				/>
 				<View style={style.noAccountContainer}>
 					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
 					<TouchableOpacity onPress={this.navigateToSignUpScreen}>
@@ -77,10 +79,12 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 	}
 
 	private navigateToPasswordForgotScreen = () => {
-		alert('navigateToPasswordForgotScreen');
+		Keyboard.dismiss();
+		this.props.navigation.navigate('ForgotPasswordScreen');
 	}
 
 	private navigateToSignUpScreen = () => {
+		Keyboard.dismiss();
 		this.props.navigation.navigate('SignUpScreen');
 	}
 
@@ -105,5 +109,12 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 	private startLogin = () => {
 		// TODO: hookup login here
 		// console.log('Start login: ' + this.state.emailValue + ' : ' + this.state.passwordValue);
+		Keyboard.dismiss();
+		this.props.navigation.navigate('MainScreen');
+	}
+
+	private selectUnlockFileHandler = () => {
+		Keyboard.dismiss();
+		this.props.navigation.navigate('UploadKeyScreen');
 	}
 }
