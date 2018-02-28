@@ -3,6 +3,7 @@ import LaunchScreen from '../screens/LaunchScreen';
 
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import LoginScreen from '../screens/LoginScreen';
+import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
@@ -35,6 +36,7 @@ const PrimaryNav = StackNavigator(
 		SignUpScreen: {screen: SignUpScreen},
 		ForgotPasswordScreen: {screen: ForgotPasswordScreen},
 		UploadKeyScreen: {screen: UploadKeyScreen},
+		SaveKeyScreen: {screen: SaveKeyScreen},
 		MainScreen: {screen: MainScreenTabNavigation},
 	},
 	{

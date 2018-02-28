@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Keyboard, KeyboardAvoidingView, ScrollView, Text, View} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
+import {Keyboard, Text, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {SXButton} from '../../components/Button';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
@@ -33,7 +33,6 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 	};
 
 	private inputRefs: any = {};
-	private inputRefsArr: SXTextInput[] = [];
 
 	public render() {
 		return (
@@ -41,22 +40,19 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 				style={style.keyboardView}
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
-				keyboardDismissMode='interactive'
-				keyboardVerticalOffset={20}
-				getTextInputRefs={() => this.inputRefsArr}
 			>
 				<View style={style.buttonContainer}>
-					<SXButton label={'IMPORT FROM DOCK.IO'} />
+					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text>
-				<View style={style.textInputContainer}>
+				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 					<SXTextInput
 						iconColor={Colors.iron}
-						icon={'ios-mail-outline'}
+						icon={'envelope'}
 						placeholder={'Email'}
+						placeholderColor={Colors.postText}
+						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
-						canCancel={true}
-						cancelButtonTextColor={Colors.postFullName}
 						onSubmitPressed={() => this.handleInputSubmitPressed('name')}
 						onChangeText={(value) => this.handleInputChangeText(value, 'email')}
 						keyboardType={TKeyboardKeys.emailAddress}
@@ -66,11 +62,11 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 				<View style={style.textInputContainer}>
 					<SXTextInput
 						iconColor={Colors.iron}
-						icon={'ios-person-outline'}
+						icon={'user'}
 						placeholder={'Name'}
+						placeholderColor={Colors.postText}
+						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
-						canCancel={true}
-						cancelButtonTextColor={Colors.postFullName}
 						onSubmitPressed={() => this.handleInputSubmitPressed('username')}
 						onChangeText={(value) => this.handleInputChangeText(value, 'name')}
 						ref={(ref: any) => this.updateInputRef(ref, 'name')}
@@ -79,11 +75,11 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 				<View style={style.textInputContainer}>
 					<SXTextInput
 						iconColor={Colors.iron}
-						icon={'ios-person-outline'}
+						icon={'user'}
 						placeholder={'Username'}
+						placeholderColor={Colors.postText}
+						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
-						canCancel={true}
-						cancelButtonTextColor={Colors.postFullName}
 						onSubmitPressed={() => this.handleInputSubmitPressed('password')}
 						onChangeText={(value) => this.handleInputChangeText(value, 'username')}
 						ref={(ref: any) => this.updateInputRef(ref, 'username')}
@@ -93,11 +89,11 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 					<SXTextInput
 						isPassword={true}
 						iconColor={Colors.iron}
-						icon={'ios-eye-off-outline'}
+						icon={'lock'}
 						placeholder={'Password'}
+						placeholderColor={Colors.postText}
+						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
-						canCancel={true}
-						cancelButtonTextColor={Colors.postFullName}
 						onSubmitPressed={() => this.handleInputSubmitPressed('confirmPassword')}
 						onChangeText={(value) => this.handleInputChangeText(value, 'password')}
 						ref={(ref: any) => this.updateInputRef(ref, 'password')}
@@ -107,11 +103,11 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 					<SXTextInput
 						isPassword={true}
 						iconColor={Colors.iron}
-						icon={'ios-eye-off-outline'}
+						icon={'lock'}
 						placeholder={'Confirm Password'}
+						placeholderColor={Colors.postText}
+						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.go}
-						canCancel={true}
-						cancelButtonTextColor={Colors.postFullName}
 						onSubmitPressed={this.startRegister}
 						onChangeText={(value) => this.handleInputChangeText(value, 'confirmPassword')}
 						ref={(ref: any) => this.updateInputRef(ref, 'confirmPassword')}
@@ -119,7 +115,7 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 					/>
 				</View>
 				<View style={[style.buttonContainer, style.registerButtonContainer]}>
-					<SXButton label={'REGISTER NOW!'} onPress={this.startRegister} />
+					<SXButton label={'REGISTER NOW!'} borderColor={Colors.transparent} onPress={this.startRegister} />
 				</View>
 			</KeyboardAwareScrollView>
 		);
@@ -127,7 +123,6 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 
 	private updateInputRef = (inputRef: SXTextInput, fieldName: string) => {
 		this.inputRefs[fieldName] = inputRef;
-		this.inputRefsArr.push(inputRef);
 	}
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
@@ -153,6 +148,6 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		// 	this.state.confirmPassword,
 		// );
 		Keyboard.dismiss();
-		// this.props.navigation.navigate('MainScreen');
+		this.props.navigation.navigate('SaveKeyScreen');
 	}
 }

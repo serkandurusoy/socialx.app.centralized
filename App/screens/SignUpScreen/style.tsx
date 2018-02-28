@@ -3,11 +3,10 @@ import {Colors, Fonts, Sizes} from '../../theme/';
 
 const style: any = {
 	container: {
-		// flex: 1,
 		width: '100%',
-		height: '100%',
-		paddingTop: Sizes.smartVerticalScale(24),
+		flex: 1,
 		alignItems: 'center',
+		paddingTop: Sizes.smartVerticalScale(24),
 		backgroundColor: Colors.white,
 	},
 	keyboardView: {
@@ -29,13 +28,12 @@ const style: any = {
 	},
 	textInputContainer: {
 		width: '100%',
-		// height: Sizes.smartVerticalScale(60),
-		// borderTopWidth: 1,
-		// borderTopColor: Colors.dustWhite,
 		borderBottomWidth: 1,
 		borderBottomColor: Colors.dustWhite,
-		// marginBottom: 20,
-		// backgroundColor: 'lime',
+	},
+	textInputContainerFirst: {
+		borderTopWidth: 1,
+		borderTopColor: Colors.dustWhite,
 	},
 };
 

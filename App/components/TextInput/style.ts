@@ -2,9 +2,8 @@ import {Colors, Fonts, Sizes} from '../../theme/';
 
 import {Platform, StyleSheet} from 'react-native';
 
-export const ICON_HEIGHT = Sizes.smartHorizontalScale(22); // customize
+export const ICON_HEIGHT = Sizes.smartHorizontalScale(30);
 const INPUT_FONT_SIZE = Sizes.smartHorizontalScale(14);
-const PADDING_TEXT_DIFF = (ICON_HEIGHT - INPUT_FONT_SIZE) / 2;
 
 const style: any = {
 	container: {
@@ -17,21 +16,21 @@ const style: any = {
 		flex: 1,
 		backgroundColor: Colors.white,
 		borderRadius: Sizes.smartHorizontalScale(6),
-		// borderColor: Colors.pink, // customize
-		borderColor: Colors.transparent,
 		borderWidth: Sizes.smartHorizontalScale(2),
+		height: '100%',
 	},
 	textInput: {
 		...Fonts.centuryGothic,
 		fontSize: INPUT_FONT_SIZE,
-		paddingVertical: Platform.OS === 'android' ? 0 : Sizes.smartHorizontalScale(10) + PADDING_TEXT_DIFF,
-		paddingHorizontal: Sizes.smartHorizontalScale(16),
+		paddingVertical: Platform.OS === 'android' ? 0 : Sizes.smartHorizontalScale(16),
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		color: Colors.darkGray,
 		flex: 1,
 	},
-	icon: {
-		paddingVertical: Sizes.smartHorizontalScale(10),
-		paddingLeft: Sizes.smartHorizontalScale(16),
+	iconContainer: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: Sizes.smartHorizontalScale(40),
 	},
 	disabledInput: {
 		opacity: 0.5,

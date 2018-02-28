@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {SXButton} from '../../components/Button';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
@@ -30,26 +31,29 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 
 	public render() {
 		return (
-			<View style={style.container}>
+			<KeyboardAwareScrollView
+				style={style.keyboardView}
+				contentContainerStyle={style.container}
+				alwaysBounceVertical={false}
+				keyboardDismissMode='interactive'
+			>
 				<Text style={style.welcomeText}>{'Welcome Back!'}</Text>
 				<SXTextInput
 					placeholder={'Email'}
+					placeholderColor={Colors.postText}
 					returnKeyType={TRKeyboardKeys.next}
-					canCancel={true}
-					keyboardType={TKeyboardKeys.emailAddress}
-					cancelButtonTextColor={Colors.postFullName}
 					onSubmitPressed={this.emailSubmitPressedHandler}
 					onChangeText={this.handleEmailInputKeyPressed}
+					keyboardType={TKeyboardKeys.emailAddress}
 				/>
 				<View style={style.passwordContainer}>
 					<SXTextInput
 						placeholder={'Password'}
-						isPassword={true}
+						placeholderColor={Colors.postText}
 						returnKeyType={TRKeyboardKeys.go}
-						canCancel={true}
-						cancelButtonTextColor={Colors.postFullName}
 						onSubmitPressed={this.startLogin}
 						onChangeText={this.handlePasswordInputKeyPressed}
+						isPassword={true}
 						blurOnSubmit={true}
 						ref={(component) => (this.passwordInput = component)}
 					/>
@@ -74,7 +78,7 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 						<Text style={style.signUpText}>{'Sign up'}</Text>
 					</TouchableOpacity>
 				</View>
-			</View>
+			</KeyboardAwareScrollView>
 		);
 	}
 
