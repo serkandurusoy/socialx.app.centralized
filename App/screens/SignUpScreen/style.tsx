@@ -4,27 +4,26 @@ import {Colors, Fonts, Sizes} from '../../theme/';
 const style: any = {
 	container: {
 		width: '100%',
-		flex: 1,
 		alignItems: 'center',
-		paddingTop: Sizes.smartVerticalScale(24),
 		backgroundColor: Colors.white,
+		paddingBottom: Sizes.smartVerticalScale(78),
 	},
 	keyboardView: {
 		backgroundColor: Colors.white,
 	},
 	buttonContainer: {
 		width: '100%',
+		paddingTop: Sizes.smartVerticalScale(24),
+		paddingBottom: Sizes.smartVerticalScale(19),
 		paddingHorizontal: Sizes.smartHorizontalScale(28),
 	},
 	orText: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
 		color: Colors.postText,
-		paddingTop: Sizes.smartVerticalScale(19),
-		paddingBottom: Sizes.smartVerticalScale(27),
 	},
 	registerButtonContainer: {
-		paddingTop: Sizes.smartVerticalScale(69),
+		paddingTop: Sizes.smartVerticalScale(55),
 	},
 	textInputContainer: {
 		width: '100%',

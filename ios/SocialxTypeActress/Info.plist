@@ -54,6 +54,9 @@
 		<string>century_gothic_bold.ttf</string>
 		<string>century_gothic_italic.ttf</string>
 		<string>century_gothic.ttf</string>
+		<string>Roboto_medium.ttf</string>
+		<string>Roboto.ttf</string>
+		<string>rubicon-icon-font.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
