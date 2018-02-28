@@ -1,8 +1,8 @@
-import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {AvatarPicker} from '../../components/AvatarPicker';
 import {SXButton} from '../../components/Button';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
 import {Colors} from '../../theme';
@@ -46,9 +46,7 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text>
-				<View style={style.buttonContainer}>
-					<SXButton label={'Add profile photo'} borderColor={Colors.transparent} onPress={this.showPhotoOptions} />
-				</View>
+				<AvatarPicker />
 				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 					<SXTextInput
 						iconColor={Colors.iron}
@@ -153,19 +151,5 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		// );
 		Keyboard.dismiss();
 		this.props.navigation.navigate('SaveKeyScreen');
-	}
-
-	private showPhotoOptions = () => {
-		ActionSheet.show(
-			{
-				options: ['Pick from gallery', 'Take a photo', 'Cancel'],
-				cancelButtonIndex: 2,
-				// destructiveButtonIndex: DESTRUCTIVE_INDEX,
-				title: 'Add profile photo',
-			},
-			(buttonIndex) => {
-				// console.log('Selected button', buttonIndex);
-			},
-		);
 	}
 }
