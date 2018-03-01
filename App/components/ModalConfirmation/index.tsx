@@ -24,7 +24,7 @@ export class ModalConfirmation extends Component<IModalConfirmationProps, IModal
 	};
 
 	public state = {
-		modalVisible: false,
+		modalVisible: this.props.visible,
 	};
 
 	public componentWillReceiveProps(nextProps: Readonly<IModalConfirmationProps>): void {

@@ -6,3 +6,5 @@ import './stories/UserAvatar.stories';
 import './stories/FriendRequest.stories';
 import './stories/WallPostCard.stories';
 import './stories/GridPhotos.stories';
+import './stories/ModalConfirmation.stories';
+import './stories/AvatarPicker.stories';
