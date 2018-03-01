@@ -42,7 +42,7 @@ const Sizes = {
 		} else {
 			ret = width / 3;
 		}
-		return ret;
+		return Math.floor(ret);
 	},
 };
 
