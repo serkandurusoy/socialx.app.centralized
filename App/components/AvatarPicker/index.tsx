@@ -1,9 +1,9 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {TouchableOpacity, View} from 'react-native';
-import ImagePicker from 'react-native-image-crop-picker';
+import {ImageRequireSource, ImageURISource, TouchableOpacity, View} from 'react-native';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Colors, Images} from '../../theme/';
+import {Colors} from '../../theme/';
 import {AvatarImage} from '../AvatarImage';
 import style from './style';
 
@@ -13,11 +13,16 @@ const CANCEL = 'Cancel';
 const ACTION_SHEET_TITLE = 'Add profile photo';
 const IMAGE_CROP_SIZE = 300;
 
-export class AvatarPicker extends Component {
+export interface IAvatarPickerProps {
+	avatarImage: ImageURISource | ImageRequireSource;
+	afterImagePick: (localURL: string) => void;
+}
+
+export class AvatarPicker extends Component<IAvatarPickerProps, any> {
 	public render() {
 		return (
 			<View style={style.container}>
-				<AvatarImage image={Images.user_avatar_placeholder} style={style.avatarImage} />
+				<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
 				<TouchableOpacity onPress={this.pickUserAvatar} style={style.editIcon}>
 					<Icon name={'camera'} size={20} color={Colors.postFullName} />
 				</TouchableOpacity>
@@ -48,17 +53,20 @@ export class AvatarPicker extends Component {
 			height: IMAGE_CROP_SIZE,
 			cropping: true,
 			mediaType: 'photo',
-		}).then(
-			(image) => {
-				// console.log('Gallery image', image);
-			},
-			(error) => {
-				// console.warn('Gallery pick error', error);
-			},
-		);
+		}).then((image: Image | Image[]) => {
+			this.props.afterImagePick((image as Image).path);
+		});
 	}
 
 	private takeCameraPhoto = () => {
-		alert('takeCameraPhoto');
+		ImagePicker.openCamera({
+			width: IMAGE_CROP_SIZE,
+			height: IMAGE_CROP_SIZE,
+			cropping: true,
+			mediaType: 'photo',
+			useFrontCamera: true,
+		}).then((image: Image | Image[]) => {
+			this.props.afterImagePick((image as Image).path);
+		});
 	}
 }

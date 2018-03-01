@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../theme/';
 
-const AVATAR_SIZE = Sizes.smartHorizontalScale(60);
+const AVATAR_SIZE = Sizes.smartHorizontalScale(80);
 
 const style: any = {
 	container: {
@@ -11,11 +11,14 @@ const style: any = {
 		width: AVATAR_SIZE,
 		height: AVATAR_SIZE,
 		borderRadius: AVATAR_SIZE / 2,
+		borderWidth: 2,
+		borderColor: Colors.pink,
 	},
 	editIcon: {
 		position: 'absolute',
-		bottom: 5,
-		right: 5,
+		padding: Sizes.smartHorizontalScale(5),
+		bottom: Sizes.smartHorizontalScale(7),
+		right: Sizes.smartHorizontalScale(7),
 	},
 };
 

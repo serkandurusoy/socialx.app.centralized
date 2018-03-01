@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {Keyboard, Text, View} from 'react-native';
+import {ImageRequireSource, ImageURISource, Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {AvatarPicker} from '../../components/AvatarPicker';
 import {SXButton} from '../../components/Button';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
-import {Colors} from '../../theme';
+import {Colors, Images} from '../../theme';
 import style from './style';
 
 export interface ISignUpScreenState {
@@ -14,6 +14,8 @@ export interface ISignUpScreenState {
 	username: string;
 	password: string;
 	confirmPassword: string;
+	avatarImage: ImageURISource | ImageRequireSource | null;
+	updatedAvatarLocalURL: string | null;
 }
 
 export interface ISignUpScreenProps {
@@ -31,6 +33,8 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		username: '',
 		password: '',
 		confirmPassword: '',
+		updatedAvatarLocalURL: null,
+		avatarImage: Images.user_avatar_placeholder,
 	};
 
 	private inputRefs: any = {};
@@ -46,7 +50,7 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text>
-				<AvatarPicker />
+				<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
 				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 					<SXTextInput
 						iconColor={Colors.iron}
@@ -148,8 +152,16 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		// 	this.state.username,
 		// 	this.state.password,
 		// 	this.state.confirmPassword,
+		// 	this.state.updatedAvatarLocalURL,
 		// );
 		Keyboard.dismiss();
 		this.props.navigation.navigate('SaveKeyScreen');
+	}
+
+	private updateAvatarImage = (localPath: string) => {
+		this.setState({
+			updatedAvatarLocalURL: localPath,
+			avatarImage: {uri: 'file://' + localPath},
+		});
 	}
 }
