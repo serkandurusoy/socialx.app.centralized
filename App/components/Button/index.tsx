@@ -19,8 +19,6 @@ export interface ISXButtonProps {
 	size?: ButtonSizes;
 	autoWidth?: boolean;
 	borderColor?: string;
-	colorStart?: string;
-	colorEnd?: string;
 }
 
 export class SXButton extends Component<ISXButtonProps, any> {

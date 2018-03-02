@@ -7,6 +7,8 @@ import AppNavigation from './AppNavigation';
 // for react-navigation 1.0.0-beta.30
 import {createReactNavigationReduxMiddleware, createReduxBoundAddListener} from 'react-navigation-redux-helpers';
 
+import {Root} from 'native-base';
+
 const middleware: any = createReactNavigationReduxMiddleware('root', (state: any) => state.nav);
 const addListener: any = createReduxBoundAddListener('root');
 
@@ -25,7 +27,11 @@ function ReduxNavigation(props: any) {
 
 	// Ionut: disable Redux navigation until this is fixed:
 	// https://github.com/react-navigation/react-navigation-redux-helpers/issues/7
-	return <AppNavigation />;
+	return (
+		<Root>
+			<AppNavigation />
+		</Root>
+	);
 }
 
 const mapStateToProps: any = (state: any) => ({nav: state.nav});

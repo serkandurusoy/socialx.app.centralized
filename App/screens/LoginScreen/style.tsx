@@ -9,6 +9,9 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(24),
 		backgroundColor: Colors.white,
 	},
+	keyboardView: {
+		backgroundColor: Colors.white,
+	},
 	welcomeText: {
 		...Fonts.centuryGothic,
 		color: Colors.postFullName,

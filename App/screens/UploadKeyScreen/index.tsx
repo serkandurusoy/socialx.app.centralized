@@ -11,7 +11,6 @@ export interface IUploadKeyScreenProps {
 
 export default class UploadKeyScreen extends Component<IUploadKeyScreenProps, any> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		headerTintColor: Colors.white, // color for screen title and back button
 		headerStyle: {
 			borderBottomWidth: 0,
 			elevation: 0, // remove nav bar bottom shadow for android
