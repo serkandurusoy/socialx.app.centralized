@@ -1,11 +1,25 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {SXButton} from '../Button';
+import {Colors} from '../../theme/';
+import {ButtonSizes, ISXButtonProps, SXButton} from '../Button';
 import style from '../Button/style';
 
-export class SXGradientButton extends SXButton {
+export interface ISXButtonGProps extends ISXButtonProps {
+	colorStart: string;
+	colorEnd: string;
+}
+
+export class SXGradientButton extends Component<ISXButtonGProps> {
+	public static defaultProps: Partial<ISXButtonGProps> = {
+		width: 0,
+		disabled: false,
+		size: ButtonSizes.Normal,
+		autoWidth: false,
+		borderColor: Colors.white,
+	};
+
 	public render() {
 		return (
 			<TouchableOpacity disabled={this.props.disabled} onPress={this.props.onPress} style={this.getContainerWidth()}>
@@ -19,5 +33,24 @@ export class SXGradientButton extends SXButton {
 				</LinearGradient>
 			</TouchableOpacity>
 		);
+	}
+
+	protected getContainerWidth = () => {
+		let ret: any = {width: '100%'};
+		if (this.props.width) {
+			ret = {width: this.props.width};
+		} else if (this.props.autoWidth) {
+			ret = {};
+		}
+		return ret;
+	}
+
+	protected getContainerStyles = () => {
+		const ret: any[] = [style.container, {borderColor: this.props.borderColor}, style['container' + this.props.size]];
+
+		if (this.props.disabled) {
+			ret.push(style.disabledButton);
+		}
+		return ret;
 	}
 }
