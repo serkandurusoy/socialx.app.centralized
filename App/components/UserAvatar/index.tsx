@@ -14,7 +14,7 @@ export interface IUserAvatarProps {
 export const UserAvatar: React.SFC<IUserAvatarProps> = (props) => {
 	return (
 		<View style={style.container}>
-			<AvatarImage image={{uri: props.avatarURL}} />
+			<AvatarImage image={props.avatarURL} />
 			<AvatarName fullName={props.fullName} username={props.username} />
 		</View>
 	);

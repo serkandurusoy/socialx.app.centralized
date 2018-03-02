@@ -22,7 +22,7 @@ const style: any = {
 	textInput: {
 		...Fonts.centuryGothic,
 		fontSize: INPUT_FONT_SIZE,
-		paddingVertical: Platform.OS === 'android' ? 0 : Sizes.smartHorizontalScale(16),
+		paddingVertical: Platform.OS === 'android' ? Sizes.smartHorizontalScale(10) : Sizes.smartHorizontalScale(16),
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		color: Colors.darkGray,
 		flex: 1,

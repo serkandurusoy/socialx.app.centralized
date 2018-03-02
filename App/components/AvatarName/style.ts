@@ -9,12 +9,14 @@ const style: any = {
 		lineHeight: Sizes.smartHorizontalScale(20),
 		paddingTop: Sizes.smartVerticalScale(10),
 		paddingBottom: Sizes.smartVerticalScale(4),
+		textAlign: 'center',
 	},
 	username: {
 		...Fonts.centuryGothic,
 		color: Colors.postText,
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(17),
+		textAlign: 'center',
 	},
 };
 
