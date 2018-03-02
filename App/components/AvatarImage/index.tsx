@@ -4,7 +4,7 @@ import {Image, ImageRequireSource, ImageURISource} from 'react-native';
 import style from './style';
 
 export interface IAvatarImageProps {
-	image: ImageURISource | ImageRequireSource;
+	image: string;
 	style?: typeof style.avatarImage;
 }
 

@@ -78,7 +78,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 					<TextInput
 						onChangeText={this.props.onChangeText}
 						onSubmitEditing={this.props.onSubmitPressed}
-						ref={(component) => (this.inputComponent = component)}
+						ref={(component: any) => (this.inputComponent = component)}
 						onFocus={() => this.updateFocusHandler(true)}
 						onBlur={() => this.updateFocusHandler(false)}
 						returnKeyType={this.props.returnKeyType}

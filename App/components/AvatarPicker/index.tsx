@@ -15,7 +15,7 @@ const ACTION_SHEET_TITLE = 'Add profile photo';
 const IMAGE_CROP_SIZE = 300;
 
 export interface IAvatarPickerProps {
-	avatarImage: ImageURISource | ImageRequireSource;
+	avatarImage: string;
 	afterImagePick: (localURL: string) => void;
 }
 
