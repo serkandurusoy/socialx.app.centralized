@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
 import style from './style';
@@ -8,15 +8,13 @@ export interface IAvatarNameProps {
 	username?: string;
 }
 
-export class AvatarName extends Component<IAvatarNameProps> {
-	public static defaultProps: Partial<IAvatarNameProps> = {};
+export const AvatarName: React.SFC<IAvatarNameProps> = (props) => {
+	return (
+		<View>
+			<Text style={style.fullName}>{props.fullName}</Text>
+			{props.username !== '' && <Text style={style.username}>{'@' + props.username}</Text>}
+		</View>
+	);
+};
 
-	public render() {
-		return (
-			<View>
-				<Text style={style.fullName}>{this.props.fullName}</Text>
-				{this.props.username !== '' && <Text style={style.username}>{'@' + this.props.username}</Text>}
-			</View>
-		);
-	}
-}
+AvatarName.defaultProps = {};
