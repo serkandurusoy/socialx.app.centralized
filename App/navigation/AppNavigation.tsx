@@ -26,14 +26,14 @@ const MainScreenTabNavigation = TabNavigator(
 	},
 	{
 		tabBarPosition: 'bottom',
-		animationEnabled: false,
+		animationEnabled: true,
 		navigationOptions: {
 			headerTitleStyle: ApplicationStyles.screenHeader,
 			headerLeft: null,
 		},
 		lazy: true,
 		swipeEnabled: false,
-		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
+		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation}/>,
 	},
 );
 
