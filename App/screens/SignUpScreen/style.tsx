@@ -34,6 +34,9 @@ const style: any = {
 		borderTopWidth: 1,
 		borderTopColor: Colors.dustWhite,
 	},
+	avatarPickerContainer: {
+		padding: Sizes.smartHorizontalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);

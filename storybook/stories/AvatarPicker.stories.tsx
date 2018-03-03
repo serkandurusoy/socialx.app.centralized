@@ -15,5 +15,11 @@ function afterImagePickHandler(path: string) {
 storiesOf('AvatarPicker', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.add('no update possible', () => {
-		return <AvatarPicker avatarImage={Images.user_avatar_placeholder} afterImagePick={afterImagePickHandler} />;
+		return (
+			<AvatarPicker
+				avatarImage={Images.user_avatar_placeholder}
+				afterImagePick={afterImagePickHandler}
+				avatarSize={103}
+			/>
+		);
 	});

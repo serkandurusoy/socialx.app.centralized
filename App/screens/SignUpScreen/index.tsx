@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ImageRequireSource, ImageURISource, Keyboard, Text, View} from 'react-native';
+import {Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {AvatarPicker} from '../../components/AvatarPicker';
@@ -14,12 +14,12 @@ export interface ISignUpScreenState {
 	username: string;
 	password: string;
 	confirmPassword: string;
-	avatarImage: ImageURISource | ImageRequireSource | null;
+	avatarImage: string;
 	updatedAvatarLocalURL: string | null;
 }
 
 export interface ISignUpScreenProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
@@ -50,7 +50,9 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text>
-				<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
+				<View style={style.avatarPickerContainer}>
+					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
+				</View>
 				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 					<SXTextInput
 						iconColor={Colors.iron}
