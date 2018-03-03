@@ -10,7 +10,7 @@ export interface Props {
 	startup: () => void;
 }
 
-export class RootContainer extends React.Component<Props, {}> {
+export class RootContainer extends React.Component<Props> {
 	public componentDidMount() {
 		this.props.startup();
 	}

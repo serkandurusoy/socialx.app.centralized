@@ -11,13 +11,11 @@ export interface IUserAvatarProps {
 	username?: string;
 }
 
-export class UserAvatar extends Component<IUserAvatarProps> {
-	public render() {
-		return (
-			<View style={style.container}>
-				<AvatarImage image={{uri: this.props.avatarURL}} />
-				<AvatarName fullName={this.props.fullName} username={this.props.username} />
-			</View>
-		);
-	}
-}
+export const UserAvatar: React.SFC<IUserAvatarProps> = (props) => {
+	return (
+		<View style={style.container}>
+			<AvatarImage image={props.avatarURL} />
+			<AvatarName fullName={props.fullName} username={props.username} />
+		</View>
+	);
+};

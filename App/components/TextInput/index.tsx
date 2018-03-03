@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Keyboard, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Keyboard, Text, TextInput, TextInputStatic, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../../theme/';
 import style, {ICON_HEIGHT} from './style';
@@ -59,7 +59,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		borderColor: Colors.pink,
 	};
 
-	private inputComponent?: TextInput;
+	private inputComponent: any;
 
 	constructor(props: ISXTextInputProps) {
 		super(props);
@@ -74,10 +74,11 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			<View style={this.getContainerStyles()}>
 				<View style={[style.inputContainer, {borderColor: this.props.borderColor}]}>
 					{this.renderInputIcon()}
+					{/* allowFontScaling={false} => does not exist */}
 					<TextInput
 						onChangeText={this.props.onChangeText}
 						onSubmitEditing={this.props.onSubmitPressed}
-						ref={(component) => (this.inputComponent = component)}
+						ref={(component: any) => (this.inputComponent = component)}
 						onFocus={() => this.updateFocusHandler(true)}
 						onBlur={() => this.updateFocusHandler(false)}
 						returnKeyType={this.props.returnKeyType}
@@ -88,7 +89,6 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 						placeholder={this.props.placeholder}
 						placeholderTextColor={this.props.placeholderColor}
 						autoCorrect={false}
-						allowFontScaling={false}
 						underlineColorAndroid={Colors.transparent}
 						autoCapitalize='none'
 						clearButtonMode='while-editing' // only works on iOS
