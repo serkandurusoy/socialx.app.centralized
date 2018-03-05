@@ -1,7 +1,36 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import style from './style';
+import {Images} from '../../theme';
+import UserFeedScreenComponent from './UserFeed.screen';
+
+const INITIAL_USER_POSTS = [
+	{
+		text:
+			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
+			'Then ellipsis will show to indicate that more text is hidden. ' +
+			'To a general advertiser outdoor advertising is worthy of consideration',
+		imageSource: 'https://c1.staticflickr.com/8/7378/13997705508_a218e00c81_b.jpg',
+		smallAvatar: 'https://s.yimg.com/pw/images/buddyicon00.png',
+		fullName: 'Tom Thompson',
+		timestamp: new Date('Jan 20 2018'),
+		numberOfLikes: 20,
+		numberOfSuperLikes: 4,
+		numberOfComments: 3,
+		numberOfWalletCoins: 5,
+	},
+	{
+		text: 'Hey, my first post to SocialX network!',
+		imageSource: 'https://placeimg.com/640/550/any',
+		smallAvatar: 'https://placeimg.com/120/120/people',
+		fullName: 'Ionut Movila',
+		timestamp: new Date('Jun 17 2017'),
+		numberOfLikes: 11,
+		numberOfSuperLikes: 6,
+		numberOfComments: 4,
+		numberOfWalletCoins: 2,
+	},
+];
 
 export default class UserFeedScreen extends Component {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
@@ -10,9 +39,21 @@ export default class UserFeedScreen extends Component {
 
 	public render() {
 		return (
-			<View>
-				<Text>UserFeed screen</Text>
-			</View>
+			<UserFeedScreenComponent
+				avatarImage={Images.user_avatar_placeholder}
+				initialPosts={INITIAL_USER_POSTS}
+				loadMorePosts={this.loadMorePostsHandler}
+				addWallPost={this.addWallPostHandler}
+			/>
 		);
+	}
+
+	private loadMorePostsHandler = () => {
+		alert('loadMorePostsHandler');
+		return [];
+	}
+
+	private addWallPostHandler = (data: any) => {
+		return;
 	}
 }

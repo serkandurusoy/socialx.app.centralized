@@ -38,6 +38,7 @@ export interface ISXTextInputProps {
 	borderColor?: string;
 	numberOfLines?: number;
 	value?: string;
+	autoFocus?: boolean;
 }
 
 export interface ISXTextInputState {
@@ -63,6 +64,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		borderColor: Colors.pink,
 		numberOfLines: 1,
 		value: '',
+		autoFocus: false,
 	};
 
 	public state = {
@@ -79,6 +81,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 					{this.renderInputIcon()}
 					{/* allowFontScaling={false} => does not exist */}
 					<TextInput
+						autoFocus={this.props.autoFocus}
 						value={this.state.textValue}
 						onChangeText={this.textChangedHandler}
 						onSubmitEditing={this.props.onSubmitPressed}
