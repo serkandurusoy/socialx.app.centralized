@@ -3,15 +3,15 @@ import {Text, View} from 'react-native';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import style from './style';
 
-export default class UserFeedScreen extends Component {
+export default class PhotoScreen extends Component {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'FEED',
+		title: 'PHOTO',
 	};
 
 	public render() {
 		return (
 			<View>
-				<Text>UserFeed screen</Text>
+				<Text>Photo screen</Text>
 			</View>
 		);
 	}

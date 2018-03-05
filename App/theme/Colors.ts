@@ -16,6 +16,7 @@ const SocialXColors = {
 	iron: '#D3D6DA',
 	rhino: '#273851',
 	mercury: '#E5E5E5',
+	tabBarBottomBg: 'rgba(255,255,255,0.8)',
 };
 
 export default SocialXColors;
