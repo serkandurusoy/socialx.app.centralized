@@ -48,7 +48,20 @@ const style: any = {
 		bottom: 0,
 		width: '100%',
 		height: Sizes.smartVerticalScale(50),
-		backgroundColor: 'yellow',
+		backgroundColor: Colors.tabBarBottomBg,
+		alignItems: 'center',
+	},
+	saveButton: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		height: '100%',
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+	},
+	saveButtonText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postFullName,
+		marginRight: Sizes.smartHorizontalScale(10),
 	},
 };
 

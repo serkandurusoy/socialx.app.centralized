@@ -8,7 +8,7 @@ export interface ISettingCheckboxProps {
 	title: string;
 	description?: string;
 	initialValue?: boolean;
-	valueUpdated?: Func;
+	valueUpdated?: (value: boolean) => void;
 }
 
 export interface ISettingCheckboxState {
@@ -50,7 +50,7 @@ export class SettingCheckbox extends Component<ISettingCheckboxProps, ISettingCh
 			value: newValue,
 		});
 		if (this.props.valueUpdated) {
-			this.props.valueUpdated();
+			this.props.valueUpdated(newValue);
 		}
 	}
 }

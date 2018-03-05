@@ -48,7 +48,7 @@ const PrimaryNav = StackNavigator(
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
 		MainScreen: {screen: MainScreenTabNavigation},
-		SettingsScreen: {screen: SettingsScreen},
+		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',

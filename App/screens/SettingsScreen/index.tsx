@@ -1,40 +1,71 @@
 import React, {Component} from 'react';
-import {ImageRequireSource, ImageURISource, Text, View} from 'react-native';
+import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {AvatarName} from '../../components/AvatarName';
 import {AvatarPicker} from '../../components/AvatarPicker';
 import {SettingCheckbox} from '../../components/SettingCheckbox';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
-import {Images} from '../../theme';
-import {Colors, Sizes} from '../../theme/';
+import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
-export interface ISignUpScreenState {
-	avatarImage: string;
+export interface SettingsData {
 	updatedAvatarLocalURL: string | null;
 	aboutText: string;
 	firstName: string;
 	lastName: string;
 	email: string;
-	hasChanges: boolean;
+	miningEnabled: boolean;
 }
 
-const INITIAL_STATE: Partial<ISignUpScreenState> = {
-	avatarImage: Images.user_avatar_placeholder,
-	updatedAvatarLocalURL: null,
-	aboutText: 'This is my very start on the SocialX network',
-	firstName: 'Marcel',
-	lastName: 'Fussinger',
-	email: 'marcel@socialx.network',
-};
+interface ISettingsScreenProps {
+	avatarImage: any;
+	aboutText: string;
+	firstName: string;
+	lastName: string;
+	username: string;
+	email: string;
+	miningEnabled: boolean;
+	saveChanges: (data: SettingsData) => void;
+}
 
-export default class SettingsScreen extends Component {
+interface IISettingsScreenState {
+	hasChanges: boolean;
+	avatarImage: any;
+	aboutText: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+}
+
+export default class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenState> {
+	public static defaultProps: Partial<ISettingsScreenProps> = {
+		avatarImage: Images.user_avatar_placeholder,
+		aboutText: '',
+		firstName: '',
+		lastName: '',
+		username: '',
+		email: '',
+		miningEnabled: false,
+		saveChanges: () => alert('saveChanges prop missing!'),
+	};
+
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'SETTINGS',
 	};
 
-	public state = {hasChanges: false, ...INITIAL_STATE};
+	public state = {
+		hasChanges: false,
+		avatarImage: this.props.avatarImage,
+		aboutText: this.props.aboutText,
+		firstName: this.props.firstName,
+		lastName: this.props.lastName,
+		email: this.props.email,
+	};
+
+	private updatedAvatarLocalURL: string | null = null;
+	private miningEnabled: boolean = this.props.miningEnabled;
 
 	public render() {
 		return (
@@ -51,14 +82,19 @@ export default class SettingsScreen extends Component {
 							avatarSize={Sizes.smartHorizontalScale(103)}
 						/>
 					</View>
-					<AvatarName fullName={'Marcel Fussinger'} username={'marcelfussinger'} />
+					<AvatarName
+						fullName={this.getFullName()}
+						username={this.props.username}
+						fullNameColor={Colors.postFullName}
+						userNameColor={Colors.postHour}
+					/>
 					<View style={style.aboutContainer}>
 						<SXTextInput
 							value={this.state.aboutText}
 							placeholder={'About you text'}
 							borderColor={Colors.dustWhite}
 							numberOfLines={3}
-							onChangeText={(value) => this.handleInputChangeText(value, 'firstName')}
+							onChangeText={(value) => this.handleInputChangeText(value, 'aboutText')}
 						/>
 					</View>
 					<Text style={style.personalDetails}>{'PERSONAL DETAILS'}</Text>
@@ -103,6 +139,8 @@ export default class SettingsScreen extends Component {
 						<SettingCheckbox
 							title={'Mining (Beta)'}
 							description={'Get rewarded for validating transactions within SocialX network'}
+							initialValue={this.props.miningEnabled}
+							valueUpdated={this.toggleMiningSetting}
 						/>
 					</View>
 				</KeyboardAwareScrollView>
@@ -111,19 +149,30 @@ export default class SettingsScreen extends Component {
 		);
 	}
 
+	private getFullName = () => {
+		return this.state.firstName + ' ' + this.state.lastName;
+	}
+
 	private renderSaveButton = () => {
 		if (this.state.hasChanges) {
-			return <View style={style.bottomContainer} />;
+			return (
+				<View style={style.bottomContainer}>
+					<TouchableOpacity style={style.saveButton} onPress={this.saveChanges}>
+						<Text style={style.saveButtonText}>{'Save'}</Text>
+						<Icon name={'check'} size={Sizes.smartHorizontalScale(30)} color={Colors.green} />
+					</TouchableOpacity>
+				</View>
+			);
 		}
 		return null;
 	}
 
 	private updateAvatarImage = (localPath: string) => {
 		this.setState({
-			updatedAvatarLocalURL: localPath,
 			avatarImage: {uri: 'file://' + localPath},
 			hasChanges: true,
 		});
+		this.updatedAvatarLocalURL = localPath;
 	}
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
@@ -133,7 +182,24 @@ export default class SettingsScreen extends Component {
 		this.setState(newState);
 	}
 
-	// private saveChanges = () => {
-	//
-	// }
+	private toggleMiningSetting = (value: boolean) => {
+		this.miningEnabled = value;
+		if (value !== this.props.miningEnabled) {
+			this.setState({
+				hasChanges: true,
+			});
+		}
+	}
+
+	private saveChanges = () => {
+		const saveData: SettingsData = {
+			updatedAvatarLocalURL: this.updatedAvatarLocalURL,
+			aboutText: this.state.aboutText,
+			firstName: this.state.firstName,
+			lastName: this.state.lastName,
+			email: this.state.email,
+			miningEnabled: this.miningEnabled,
+		};
+		this.props.saveChanges(saveData);
+	}
 }

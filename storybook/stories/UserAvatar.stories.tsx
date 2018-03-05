@@ -1,4 +1,4 @@
-import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
+import {boolean, color, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
 import {UserAvatar} from '../../App/components/UserAvatar';
@@ -18,6 +18,16 @@ storiesOf('UserAvatar')
 			'https://www.exclutips.com/wp-content/uploads/2015/08/wordpress-custom-user-avatar.png',
 		);
 		const fullName = text('User full name', 'Lester Wheeler');
+		const fullNameColor = color('Full name color', Colors.userAvatarFullName);
 		const username = text('Username', 'LesterWheeler');
-		return <UserAvatar avatarURL={avatarURL} fullName={fullName} username={username} />;
+		const usernameColor = color('Username color', Colors.postText);
+		return (
+			<UserAvatar
+				avatarURL={{uri: avatarURL}}
+				fullName={fullName}
+				username={username}
+				fullNameColor={fullNameColor}
+				usernameColor={usernameColor}
+			/>
+		);
 	});
