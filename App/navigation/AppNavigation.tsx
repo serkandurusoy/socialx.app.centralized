@@ -9,6 +9,7 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
@@ -33,7 +34,7 @@ const MainScreenTabNavigation = TabNavigator(
 		},
 		lazy: true,
 		swipeEnabled: false,
-		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation}/>,
+		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
 	},
 );
 
@@ -47,6 +48,7 @@ const PrimaryNav = StackNavigator(
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
 		MainScreen: {screen: MainScreenTabNavigation},
+		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',

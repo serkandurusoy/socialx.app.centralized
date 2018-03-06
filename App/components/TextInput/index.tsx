@@ -16,6 +16,7 @@ export enum TRKeyboardKeys {
 	search = 'search',
 	send = 'send',
 	go = 'go',
+	default = 'default',
 }
 
 export interface ISXTextInputProps {
@@ -35,10 +36,13 @@ export interface ISXTextInputProps {
 	hasFocus?: boolean;
 	blurOnSubmit?: boolean;
 	borderColor?: string;
+	numberOfLines?: number;
+	value?: string;
 }
 
 export interface ISXTextInputState {
 	hasFocus: boolean;
+	textValue: string;
 }
 
 export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState> {
@@ -51,23 +55,22 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		disabled: false,
 		isPassword: false,
 		keyboardType: TKeyboardKeys.default,
-		returnKeyType: TRKeyboardKeys.done,
+		returnKeyType: TRKeyboardKeys.default,
 		cancelButtonTextColor: Colors.white,
 		canCancel: false,
 		hasFocus: false,
 		blurOnSubmit: false,
 		borderColor: Colors.pink,
+		numberOfLines: 1,
+		value: '',
+	};
+
+	public state = {
+		hasFocus: false,
+		textValue: 'value' in this.props ? this.props.value : '',
 	};
 
 	private inputComponent: any;
-
-	constructor(props: ISXTextInputProps) {
-		super(props);
-
-		this.state = {
-			hasFocus: false,
-		};
-	}
 
 	public render() {
 		return (
@@ -76,7 +79,8 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 					{this.renderInputIcon()}
 					{/* allowFontScaling={false} => does not exist */}
 					<TextInput
-						onChangeText={this.props.onChangeText}
+						value={this.state.textValue}
+						onChangeText={this.textChangedHandler}
 						onSubmitEditing={this.props.onSubmitPressed}
 						ref={(component: any) => (this.inputComponent = component)}
 						onFocus={() => this.updateFocusHandler(true)}
@@ -93,6 +97,8 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 						autoCapitalize='none'
 						clearButtonMode='while-editing' // only works on iOS
 						blurOnSubmit={this.props.blurOnSubmit}
+						numberOfLines={this.props.numberOfLines}
+						multiline={this.props.numberOfLines > 1}
 					/>
 				</View>
 				{this.renderCancelButton()}
@@ -143,5 +149,12 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		this.setState({
 			hasFocus: value,
 		});
+	}
+
+	private textChangedHandler = (value: string) => {
+		this.setState({textValue: value});
+		if (this.props.onChangeText) {
+			this.props.onChangeText(value);
+		}
 	}
 }

@@ -4,7 +4,6 @@ import {Colors, Fonts, Sizes} from '../../theme';
 const style: any = {
 	fullName: {
 		...Fonts.centuryGothic,
-		color: Colors.userAvatarFullName,
 		fontSize: Sizes.smartHorizontalScale(16),
 		lineHeight: Sizes.smartHorizontalScale(20),
 		paddingTop: Sizes.smartVerticalScale(10),
@@ -13,7 +12,6 @@ const style: any = {
 	},
 	username: {
 		...Fonts.centuryGothic,
-		color: Colors.postText,
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(17),
 		textAlign: 'center',

@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { ActionSheet } from 'native-base';
-import { ImageRequireSource, ImageURISource, TouchableOpacity, View } from 'react-native';
-import ImagePicker, { Image } from 'react-native-image-crop-picker';
+import {ActionSheet} from 'native-base';
+import {TouchableOpacity, View} from 'react-native';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Colors } from '../../theme/';
-import { AvatarImage } from '../AvatarImage';
+import {Sizes} from '../../theme';
+import {Colors} from '../../theme/';
+import {AvatarImage} from '../AvatarImage';
 import style from './style';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
@@ -17,6 +18,7 @@ const IMAGE_CROP_SIZE = 300;
 export interface IAvatarPickerProps {
 	avatarImage: string;
 	afterImagePick: (localURL: string) => void;
+	avatarSize?: number;
 }
 
 export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
@@ -52,20 +54,33 @@ export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
 				switch (buttonIndex) {
 					case 0:
 						showGalleryPhotoPicker();
-
+						break;
 					case 1:
 						takeCameraPhoto();
+						break;
 				}
 			},
 		);
 	};
 
+	const avatarSizeStyle = {
+		width: props.avatarSize,
+		height: props.avatarSize,
+		borderRadius: props.avatarSize / 2,
+	};
+
+	const iconSize = Math.max(20, Math.round(props.avatarSize / 5));
+
 	return (
-		<View style={style.container}>
-			<AvatarImage image={props.avatarImage} style={style.avatarImage} />
+		<View>
+			<AvatarImage image={props.avatarImage} style={[style.avatarImage, avatarSizeStyle]} />
 			<TouchableOpacity onPress={pickUserAvatar} style={style.editIcon}>
-				<Icon name={'camera'} size={20} color={Colors.postFullName} />
+				<Icon name={'camera'} size={iconSize} color={Colors.postFullName} />
 			</TouchableOpacity>
 		</View>
 	);
+};
+
+AvatarPicker.defaultProps = {
+	avatarSize: Sizes.smartHorizontalScale(80),
 };

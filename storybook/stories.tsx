@@ -8,3 +8,4 @@ import './stories/WallPostCard.stories';
 import './stories/GridPhotos.stories';
 import './stories/ModalConfirmation.stories';
 import './stories/AvatarPicker.stories';
+import './stories/SettingsScreen.stories';
