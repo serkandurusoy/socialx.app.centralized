@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {Images} from '../../theme';
+import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './UserFeed.screen';
 
 const INITIAL_USER_POSTS = [
@@ -31,9 +32,13 @@ const INITIAL_USER_POSTS = [
 	},
 ];
 
+interface IUserFeedScreenProps {
+	navigation: NavigationScreenProp<any>;
+}
+
 const USER_FULL_NAME = 'Marcel Füssinger';
 
-export default class UserFeedScreen extends Component {
+export default class UserFeedScreen extends Component<IUserFeedScreenProps, any> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'FEED',
 	};
@@ -46,6 +51,7 @@ export default class UserFeedScreen extends Component {
 				initialPosts={INITIAL_USER_POSTS}
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
+				showNewWallPostPage={this.showNewWallPostPage}
 			/>
 		);
 	}
@@ -55,7 +61,16 @@ export default class UserFeedScreen extends Component {
 		return [];
 	}
 
-	private addWallPostHandler = (data: any) => {
+	private addWallPostHandler = (data: NewWallPostData) => {
 		alert('TODO: addWallPostHandler');
+		// console.log('addWallPostHandler', data);
+	}
+
+	private showNewWallPostPage = () => {
+		this.props.navigation.navigate('NewWallPostScreen', {
+			fullName: USER_FULL_NAME,
+			avatarImage: Images.user_avatar_placeholder,
+			postCreate: this.addWallPostHandler,
+		});
 	}
 }
