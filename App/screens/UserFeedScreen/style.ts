@@ -5,6 +5,8 @@ const USER_AVATAR_SIZE = Sizes.smartHorizontalScale(40);
 
 const style: any = {
 	container: {
+		flex: 1,
+		width: '100%',
 		backgroundColor: Colors.white,
 	},
 	contentContainer: {

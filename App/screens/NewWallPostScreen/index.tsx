@@ -47,7 +47,7 @@ interface INewWallPostScreenState {
 export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWallPostScreenState> {
 	private static navigationOptions = (props: INewWallPostScreenProps) => ({
 		title: 'MESSAGE',
-		headerRight: <ModalCloseButton navigation={props.navigation}/>,
+		headerRight: <ModalCloseButton navigation={props.navigation} />,
 	})
 
 	public state = {
@@ -71,7 +71,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		return (
 			<View style={[style.container, {paddingBottom: this.state.marginBottom}]}>
 				<View style={style.topContainer}>
-					<AvatarImage image={avatarImage} style={style.avatarImage}/>
+					<AvatarImage image={avatarImage} style={style.avatarImage} />
 					<Text style={style.fullName}>{fullName}</Text>
 				</View>
 				<View style={style.inputContainer}>
@@ -85,7 +85,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					/>
 				</View>
 				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler}>
-					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'}/>
+					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
 					<Text style={style.addMediaText}>{'Attach Photo/Video'}</Text>
 				</TouchableOpacity>
 				<ScrollView style={style.photosContainer} horizontal={true}>
