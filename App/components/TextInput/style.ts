@@ -26,6 +26,7 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		color: Colors.darkGray,
 		flex: 1,
+		maxHeight: '100%',
 	},
 	iconContainer: {
 		justifyContent: 'center',

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {Images} from '../../theme';
 import UserFeedScreenComponent from './UserFeed.screen';
@@ -32,6 +31,8 @@ const INITIAL_USER_POSTS = [
 	},
 ];
 
+const USER_FULL_NAME = 'Marcel Füssinger';
+
 export default class UserFeedScreen extends Component {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'FEED',
@@ -40,6 +41,7 @@ export default class UserFeedScreen extends Component {
 	public render() {
 		return (
 			<UserFeedScreenComponent
+				fullName={USER_FULL_NAME}
 				avatarImage={Images.user_avatar_placeholder}
 				initialPosts={INITIAL_USER_POSTS}
 				loadMorePosts={this.loadMorePostsHandler}
@@ -54,6 +56,6 @@ export default class UserFeedScreen extends Component {
 	}
 
 	private addWallPostHandler = (data: any) => {
-		return;
+		alert('TODO: addWallPostHandler');
 	}
 }

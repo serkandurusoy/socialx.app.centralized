@@ -1,14 +1,18 @@
 import React from 'react';
-import {Keyboard, Text, View} from 'react-native';
+import {Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
 
 import {Colors} from '../../theme';
+import {AvatarImage} from '../AvatarImage';
 import {SXButton} from '../Button';
 import {SXTextInput} from '../TextInput';
 import style from './style';
 
 export interface IAddWallPostModalProps {
 	visible: boolean;
+	fullName: string;
+	avatarImage: any;
+	postCreate: (data: any) => void;
 }
 
 export class AddWallPostModal extends React.Component<IAddWallPostModalProps, any> {
@@ -34,13 +38,23 @@ export class AddWallPostModal extends React.Component<IAddWallPostModalProps, an
 				style={style.container}
 			>
 				<View style={style.boxContainer}>
-					<SXTextInput
-						numberOfLines={3}
-						borderColor={Colors.dustWhite}
-						placeholder={'Type a message'}
-						autoFocus={true}
-					/>
-					<SXButton label={'SEND'} />
+					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
+					<View style={style.whiteBox}>
+						<Text style={style.fullName}>{this.props.fullName}</Text>
+						<View style={{maxHeight: 80}}>
+							<SXTextInput
+								numberOfLines={3}
+								borderColor={Colors.dustWhite}
+								placeholder={'Type a message'}
+								autoFocus={true}
+							/>
+						</View>
+						<TouchableOpacity>
+							<Text>{'Attach Photo/Video'}</Text>
+						</TouchableOpacity>
+						<View style={style.photosContainer} />
+						<SXButton label={'SEND'} />
+					</View>
 				</View>
 			</Modal>
 		);

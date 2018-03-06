@@ -8,6 +8,7 @@ import style from './style';
 interface IUserFeedScreenProps {
 	avatarImage: any;
 	initialPosts: any[];
+	fullName: string;
 	loadMorePosts: () => any[];
 	addWallPost: (data: any) => void;
 }
@@ -20,14 +21,19 @@ export default class UserFeedScreenComponent extends Component<IUserFeedScreenPr
 	public static defaultProps: Partial<IUserFeedScreenProps> = {};
 
 	public state = {
-		modalVisible: false,
+		modalVisible: true,
 	};
 
 	public render() {
 		// TODO: switch to FlatList
 		return (
 			<ScrollView style={style.container} contentContainerStyle={style.contentContainer} alwaysBounceVertical={false}>
-				<AddWallPostModal visible={this.state.modalVisible} />
+				<AddWallPostModal
+					visible={this.state.modalVisible}
+					fullName={this.props.fullName}
+					avatarImage={this.props.avatarImage}
+					postCreate={this.props.addWallPost}
+				/>
 				<View style={style.shareMessageContainer}>
 					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
 					<TouchableWithoutFeedback onPress={this.showModalCreatePost}>
