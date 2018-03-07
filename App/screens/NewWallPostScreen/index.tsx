@@ -48,6 +48,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	private static navigationOptions = (props: INewWallPostScreenProps) => ({
 		title: 'MESSAGE',
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
+		headerLeft: null,
 	})
 
 	public state = {

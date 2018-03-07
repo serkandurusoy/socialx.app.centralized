@@ -9,3 +9,4 @@ import './stories/GridPhotos.stories';
 import './stories/ModalConfirmation.stories';
 import './stories/AvatarPicker.stories';
 import './stories/SettingsScreen.stories';
+import './stories/SearchResultEntry.stories';
