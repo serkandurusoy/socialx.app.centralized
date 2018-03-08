@@ -43,7 +43,7 @@ const MENU_ITEMS = [
 		},
 	},
 	{
-		screenName: 'UserProfileTab',
+		screenName: 'MyProfileTab',
 		image: Icons.iconTabBarProfile,
 		imageSelected: Icons.iconTabBarProfileSelected,
 		style: {

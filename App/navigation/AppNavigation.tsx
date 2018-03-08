@@ -5,6 +5,7 @@ import LaunchScreen from '../screens/LaunchScreen';
 import {TabBarBottom} from '../components/TabBarBottom';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import LoginScreen from '../screens/LoginScreen';
+import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
@@ -24,7 +25,7 @@ const MainScreenTabNavigation = TabNavigator(
 		SearchTab: {screen: SearchScreen},
 		PhotoTab: {screen: PhotoScreen},
 		NotificationsTab: {screen: NotificationsScreen},
-		UserProfileTab: {screen: UserProfileScreen},
+		MyProfileTab: {screen: MyProfileScreen},
 	},
 	{
 		tabBarPosition: 'bottom',
@@ -63,10 +64,12 @@ const PrimaryNav = StackNavigator(
 		SaveKeyScreen: {screen: SaveKeyScreen},
 		MainScreen: {screen: MainScreenWithModal},
 		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
+		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
+		// initialRouteName: 'LaunchScreen',
+		initialRouteName: 'UserProfileScreen',
 		navigationOptions: {
 			headerStyle: styles.header,
 			headerTintColor: Colors.white, // color for screen title and back button

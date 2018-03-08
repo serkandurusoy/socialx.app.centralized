@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import {Dimensions, Image, TouchableOpacity, View} from 'react-native';
 import {DataProvider, LayoutProvider, RecyclerListView} from 'recyclerlistview';
+import {Sizes} from '../../theme/';
 import style from './style';
 
 export interface IGridPhotosProps {
 	loadMorePhotos: any;
-	itemPressed: (i: number) => void;
-	pageSize: number;
-	thumbSize: number;
+	itemPressed?: (i: number) => void;
+	pageSize?: number;
+	thumbSize?: number;
+	onScroll?: (rawEvent: any, offsetX: number, offsetY: number) => void;
 }
 
 export interface IGridPhotosState {
@@ -15,6 +17,11 @@ export interface IGridPhotosState {
 }
 
 export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
+	public static defaultProps: Partial<IGridPhotosProps> = {
+		thumbSize: Sizes.getThumbSize(),
+		pageSize: 20,
+	};
+
 	private girdProvider = new LayoutProvider(
 		(index: any) => {
 			return 0; // use different values if we need to render object with different types
@@ -48,6 +55,7 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 				dataProvider={this.state.dataProvider}
 				rowRenderer={this.renderGridRow}
 				onEndReached={this.loadMorePhotos}
+				onScroll={this.props.onScroll}
 			/>
 		);
 	}

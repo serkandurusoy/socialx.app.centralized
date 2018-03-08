@@ -13,7 +13,7 @@ export interface IWallPostCardProp {
 	imageSource?: string;
 	smallAvatar: string;
 	fullName: string;
-	timestamp: number;
+	timestamp: Date;
 	numberOfLikes: number;
 	numberOfSuperLikes: number;
 	numberOfComments: number;
