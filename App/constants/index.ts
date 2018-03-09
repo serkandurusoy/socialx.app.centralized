@@ -1,1 +1,5 @@
-export enum FormTypes { Input, AvatarPicker, Checkbox }
+export enum FormTypes {
+	Input,
+	AvatarPicker,
+	Checkbox,
+}

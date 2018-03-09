@@ -1,11 +1,11 @@
 import React from 'react';
-import { Platform, Switch, Text, View } from 'react-native';
+import {Platform, Switch, Text, View} from 'react-native';
 
-import { IAvatarPickerProps } from '../AvatarPicker';
-import { ISettingCheckboxProps, SettingCheckbox } from '../SettingCheckbox';
-import { ISXTextInputProps, SXTextInput, TRKeyboardKeys } from '../TextInput';
+import {IAvatarPickerProps} from '../AvatarPicker';
+import {ISettingCheckboxProps, SettingCheckbox} from '../SettingCheckbox';
+import {ISXTextInputProps, SXTextInput, TRKeyboardKeys} from '../TextInput';
 
-import { FormTypes } from '../../constants';
+import {FormTypes} from '../../constants';
 
 export interface IFormSx {
 	type: FormTypes;
@@ -34,7 +34,7 @@ export const InputGroup: React.SFC<ISXGroupProps> = (props) => {
 			default:
 				return <div />;
 		}
-	}
+	};
 
 	props.Comps.map((Input) => {
 		Components.push(

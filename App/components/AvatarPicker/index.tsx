@@ -17,7 +17,7 @@ const IMAGE_CROP_SIZE = 300;
 
 export interface IAvatarPickerProps {
 	avatarImage: string;
-	afterImagePick: (localURL: string) => void;
+	afterImagePick: (image: string) => void;
 	avatarSize?: number;
 }
 
@@ -28,8 +28,11 @@ export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
 			height: IMAGE_CROP_SIZE,
 			cropping: true,
 			mediaType: 'photo',
+			includeBase64: true,
 		});
-		props.afterImagePick((image as Image).path);
+		const retImage = image as Image;
+		const base64Image = `data:${retImage.mime};base64,${retImage.data}`;
+		props.afterImagePick(base64Image);
 	};
 
 	const takeCameraPhoto = async () => {
@@ -39,8 +42,11 @@ export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
 			cropping: true,
 			mediaType: 'photo',
 			useFrontCamera: true,
+			includeBase64: true,
 		});
-		props.afterImagePick((image as Image).path);
+		const retImage = image as Image;
+		const base64Image = `data:${retImage.mime};base64,${retImage.data}`;
+		props.afterImagePick(base64Image);
 	};
 
 	const pickUserAvatar = () => {

@@ -14,8 +14,8 @@ export interface ISignUpScreenState {
 	username: string;
 	password: string;
 	confirmPassword: string;
-	avatarImage: string;
-	updatedAvatarLocalURL: string | null;
+	avatarImage: any;
+	updatedAvatarImageBase64: string | null;
 }
 
 export interface ISignUpScreenProps {
@@ -33,8 +33,8 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		username: '',
 		password: '',
 		confirmPassword: '',
-		updatedAvatarLocalURL: null,
 		avatarImage: Images.user_avatar_placeholder,
+		updatedAvatarImageBase64: null,
 	};
 
 	private inputRefs: any = {};
@@ -154,16 +154,16 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		// 	this.state.username,
 		// 	this.state.password,
 		// 	this.state.confirmPassword,
-		// 	this.state.updatedAvatarLocalURL,
+		// 	this.state.updatedAvatarImageBase64,
 		// );
 		Keyboard.dismiss();
 		this.props.navigation.navigate('SaveKeyScreen');
 	}
 
-	private updateAvatarImage = (localPath: string) => {
+	private updateAvatarImage = (base64Photo: string) => {
 		this.setState({
-			updatedAvatarLocalURL: localPath,
-			avatarImage: 'file://' + localPath,
+			updatedAvatarImageBase64: base64Photo,
+			avatarImage: {uri: base64Photo},
 		});
 	}
 }
