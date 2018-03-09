@@ -163,7 +163,7 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 	private updateAvatarImage = (localPath: string) => {
 		this.setState({
 			updatedAvatarLocalURL: localPath,
-			avatarImage: {uri: 'file://' + localPath},
+			avatarImage: 'file://' + localPath,
 		});
 	}
 }

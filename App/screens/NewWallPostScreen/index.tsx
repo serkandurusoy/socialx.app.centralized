@@ -53,7 +53,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 
 	public state = {
 		marginBottom: DEFAULT_MARGIN_BOTTOM,
-		mediaObjects: [],
+		mediaObjects: [] as MediaObject[],
 		postText: '',
 	};
 
@@ -146,13 +146,14 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	}
 
 	private addNewMediaObject = (image: PickerImage) => {
+		const { mediaObjects } = this.state;
 		const mediaMimeType = image.mime;
 		const localImagePath: MediaObject = {
 			path: (image as PickerImage).path,
 			type: mediaMimeType.startsWith(MediaTypes.Video) ? MediaTypes.Video : MediaTypes.Image,
 		};
 		this.setState({
-			mediaObjects: this.state.mediaObjects.concat([localImagePath]),
+			mediaObjects: mediaObjects.concat([ localImagePath ]),
 		});
 	}
 

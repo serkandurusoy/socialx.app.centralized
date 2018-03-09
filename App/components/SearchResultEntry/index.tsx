@@ -7,7 +7,7 @@ import {ButtonSizes, SXButton} from '../Button';
 import style from './style';
 
 export interface IFriendRequestProps {
-	avatarURL: string;
+	avatarURL?: string;
 	fullName: string;
 	username: string;
 	kind: SearchResultKind;

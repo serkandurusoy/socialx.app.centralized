@@ -14,7 +14,7 @@ export interface ILoginScreenState {
 }
 
 export interface ILoginScreenProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export default class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
@@ -27,7 +27,7 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 		passwordValue: '',
 	};
 
-	private passwordInput?: SXTextInput;
+	private passwordInput: SXTextInput | null = null;
 
 	public render() {
 		return (

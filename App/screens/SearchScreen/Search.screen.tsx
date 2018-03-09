@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
-import {SearchFilterButton} from '../../components/SearchFilterButton';
-import {SearchResultEntry} from '../../components/SearchResultEntry';
-import {Icons, Metrics} from '../../theme/';
-import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
+import React, { Component } from 'react';
+import { Image, Keyboard, Text, TouchableOpacity, View } from 'react-native';
+import { SearchFilterButton } from '../../components/SearchFilterButton';
+import { SearchResultEntry } from '../../components/SearchResultEntry';
+import { Icons, Metrics } from '../../theme/';
+import { SearchFilterValues, SearchResultGroups, SearchResultPeople } from './index';
 import style from './style';
 
 interface ISearchScreenComponentProps {
@@ -38,7 +38,7 @@ export default class SearchScreenComponent extends Component<ISearchScreenCompon
 	}
 
 	public render() {
-		return <View style={[style.container, {paddingBottom: this.state.paddingBottom}]}>{this.conditionalRender()}</View>;
+		return <View style={[style.container, { paddingBottom: this.state.paddingBottom }]}>{this.conditionalRender()}</View>;
 	}
 
 	private keyboardDidShow = (event: any) => {

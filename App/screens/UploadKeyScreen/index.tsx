@@ -6,7 +6,7 @@ import {Colors, Images} from '../../theme';
 import style from './style';
 
 export interface IUploadKeyScreenProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export default class UploadKeyScreen extends Component<IUploadKeyScreenProps, any> {
