@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Sizes} from '../../theme/';
+import {Colors, Metrics, Sizes} from '../../theme/';
 
 const ICON_PADDING = Sizes.smartVerticalScale(7);
 
@@ -7,7 +7,7 @@ const style: any = {
 	container: {
 		flexDirection: 'row',
 		width: '100%',
-		height: Sizes.smartVerticalScale(49),
+		height: Metrics.tabBarBottomHeight,
 		backgroundColor: Colors.tabBarBottomBg,
 	},
 	menuItemContainer: {

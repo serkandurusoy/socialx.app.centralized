@@ -4,7 +4,7 @@ import {Image} from 'react-native';
 import style from './style';
 
 export interface IAvatarImageProps {
-	image: string;
+	image: any;
 	style?: typeof style.avatarImage;
 }
 

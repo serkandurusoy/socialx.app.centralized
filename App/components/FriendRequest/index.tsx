@@ -27,7 +27,7 @@ export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<AvatarImage image={props.avatarURL} style={style.avatarImage} />
+				<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
 				<View style={style.avatarNameContainer}>
 					<Text style={style.fullName}>{props.fullName}</Text>
 					{renderUsername()}

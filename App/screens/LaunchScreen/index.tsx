@@ -7,7 +7,7 @@ import {Colors, Images} from '../../theme';
 import style from './style';
 
 export interface ILaunchScreenProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export default class LaunchScreen extends Component<ILaunchScreenProps, any> {

@@ -7,7 +7,7 @@ import {Colors, Images} from '../../theme';
 import style from './style';
 
 export interface ISaveKeyScreenProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export interface ISaveKeyScreenState {

@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Keyboard, Text, TextInput, TextInputStatic, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {Sizes} from '../../theme';
 import {Colors} from '../../theme/';
-import style, {ICON_HEIGHT} from './style';
+import style from './style';
 
 export enum TKeyboardKeys {
 	default = 'default',
@@ -17,6 +18,13 @@ export enum TRKeyboardKeys {
 	send = 'send',
 	go = 'go',
 	default = 'default',
+}
+
+export enum InputSizes {
+	// here the values and keys should be the same!
+	Normal = 'Normal',
+	Small = 'Small',
+	Large = 'Large',
 }
 
 export interface ISXTextInputProps {
@@ -38,11 +46,13 @@ export interface ISXTextInputProps {
 	borderColor?: string;
 	numberOfLines?: number;
 	value?: string;
+	autoFocus?: boolean;
+	size?: InputSizes;
 }
 
 export interface ISXTextInputState {
 	hasFocus: boolean;
-	textValue: string;
+	textValue?: string;
 }
 
 export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState> {
@@ -63,6 +73,8 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		borderColor: Colors.pink,
 		numberOfLines: 1,
 		value: '',
+		autoFocus: false,
+		size: InputSizes.Normal,
 	};
 
 	public state = {
@@ -79,6 +91,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 					{this.renderInputIcon()}
 					{/* allowFontScaling={false} => does not exist */}
 					<TextInput
+						autoFocus={this.props.autoFocus}
 						value={this.state.textValue}
 						onChangeText={this.textChangedHandler}
 						onSubmitEditing={this.props.onSubmitPressed}
@@ -89,7 +102,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 						editable={!this.props.disabled}
 						secureTextEntry={this.props.isPassword}
 						keyboardType={this.props.keyboardType}
-						style={style.textInput}
+						style={[style.textInput, style['textInput' + this.props.size]]}
 						placeholder={this.props.placeholder}
 						placeholderTextColor={this.props.placeholderColor}
 						autoCorrect={false}
@@ -126,8 +139,8 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	private renderInputIcon = () => {
 		if (this.props.icon) {
 			return (
-				<View style={style.iconContainer}>
-					<Icon name={this.props.icon} size={ICON_HEIGHT} color={this.props.iconColor} />
+				<View style={[style.iconContainer, style['iconContainer' + this.props.size]]}>
+					<Icon name={this.props.icon} size={this.getIconHeight()} color={this.props.iconColor} />
 				</View>
 			);
 		}
@@ -156,5 +169,15 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		if (this.props.onChangeText) {
 			this.props.onChangeText(value);
 		}
+	}
+
+	private getIconHeight = () => {
+		let ret = Sizes.smartHorizontalScale(30);
+		if (this.props.size === InputSizes.Small) {
+			ret = Sizes.smartHorizontalScale(15);
+		} else if (this.props.size === InputSizes.Large) {
+			ret = Sizes.smartHorizontalScale(40);
+		}
+		return ret;
 	}
 }

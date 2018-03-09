@@ -14,7 +14,7 @@ export interface ILoginScreenState {
 }
 
 export interface ILoginScreenProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export default class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {

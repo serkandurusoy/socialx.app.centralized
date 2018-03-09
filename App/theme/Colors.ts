@@ -14,10 +14,16 @@ const SocialXColors = {
 	grayText: '#9B9B9B',
 	gradientButtonLeft: '#814FBE',
 	iron: '#D3D6DA',
+	iron2: '#D6D9DE',
 	rhino: '#273851',
 	mercury: '#E5E5E5',
 	tabBarBottomBg: 'rgba(255,255,255,0.8)',
 	green: '#43a324',
+	geyser: '#D2DAE1',
+	cadetBlue: '#A1B5C2',
+	silverSand: '#BFC3C8',
+	searchFilterButtonSelectedBg: 'rgba(3,157,226,0.06)',
+	searchFilterButtonUnselectedText: 'rgba(109,120,134,0.7)',
 };
 
 export default SocialXColors;

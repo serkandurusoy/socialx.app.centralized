@@ -5,6 +5,7 @@ import LaunchScreen from '../screens/LaunchScreen';
 import {TabBarBottom} from '../components/TabBarBottom';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import LoginScreen from '../screens/LoginScreen';
+import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
@@ -38,6 +39,19 @@ const MainScreenTabNavigation = TabNavigator(
 	},
 );
 
+const MainScreenWithModal = StackNavigator(
+	{
+		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
+		NewWallPostScreen: {
+			screen: NewWallPostScreen,
+		},
+	},
+	{
+		mode: 'modal',
+		headerMode: 'none',
+	},
+);
+
 // Manifest of possible screens
 const PrimaryNav = StackNavigator(
 	{
@@ -47,7 +61,7 @@ const PrimaryNav = StackNavigator(
 		ForgotPasswordScreen: {screen: ForgotPasswordScreen},
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
-		MainScreen: {screen: MainScreenTabNavigation},
+		MainScreen: {screen: MainScreenWithModal},
 		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 	},
 	{

@@ -58,7 +58,7 @@ interface ITabBarBottomState {
 }
 
 interface ITabBarBottomProps {
-	navigation: NavigationScreenProp<any, any>;
+	navigation: NavigationScreenProp<any>;
 }
 
 export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomState> {

@@ -15,4 +15,8 @@ export default {
 	iconTabBarNotificationsSelected: require('../../assets/icons/tab_bar_notifications_selected.png'),
 	iconTabBarProfile: require('../../assets/icons/tab_bar_profile.png'),
 	iconTabBarProfileSelected: require('../../assets/icons/tab_bar_profile_selected.png'),
+	iconNewPostAddMedia: require('../../assets/icons/post_add_photo.png'),
+	searchTabStartSearch: require('../../assets/icons/search_tab_start_search.png'),
+	searchTabCreateGroup: require('../../assets/icons/search_tab_create_group.png'),
+	peopleSearchResultIsFriend: require('../../assets/icons/people_search_result_is_friend.png'),
 };
