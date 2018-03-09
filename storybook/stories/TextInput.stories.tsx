@@ -1,7 +1,7 @@
 import {boolean, color, number, select, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {SXTextInput} from '../../App/components/TextInput';
+import {InputSizes, SXTextInput} from '../../App/components/TextInput';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 
@@ -43,6 +43,8 @@ storiesOf('SXTextInput')
 		const returnKeyType = select('Return key', returnKeyOptions, 'done');
 		const cancelButtonTextColor = color('Cancel button color', Colors.white);
 		const canCancel = boolean('Show cancel button', false);
+		const inputSizeOptions = JSON.parse(JSON.stringify(InputSizes));
+		const inputSize = select('Input size', inputSizeOptions, InputSizes.Normal);
 		return (
 			<SXTextInput
 				keyboardType={keyboardType}
@@ -55,6 +57,7 @@ storiesOf('SXTextInput')
 				width={width}
 				cancelButtonTextColor={cancelButtonTextColor}
 				canCancel={canCancel}
+				size={inputSize}
 			/>
 		);
 	});

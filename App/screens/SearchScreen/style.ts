@@ -4,14 +4,6 @@ import {Colors, Fonts, Metrics, Sizes} from '../../theme/';
 const START_SEARCH_ICON_SIZE = Sizes.smartHorizontalScale(33);
 
 const style: any = {
-	headerContainer: {
-		paddingTop: 27,
-		paddingBottom: 7,
-		height: Metrics.navBarHeight,
-		width: '100%',
-		backgroundColor: Colors.pink,
-		paddingHorizontal: 8,
-	},
 	container: {
 		flex: 1,
 		width: '100%',
