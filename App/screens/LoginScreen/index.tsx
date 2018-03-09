@@ -3,14 +3,18 @@ import {Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {SXButton} from '../../components/Button';
+import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
 import {Colors} from '../../theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
+const PHONE_NUMBER = '+40721205279';
+
 export interface ILoginScreenState {
 	emailValue: string;
 	passwordValue: string;
+	showModalForSMSCode: boolean;
 }
 
 export interface ILoginScreenProps {
@@ -25,6 +29,7 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 	public state = {
 		emailValue: '',
 		passwordValue: '',
+		showModalForSMSCode: false,
 	};
 
 	private passwordInput: SXTextInput | null = null;
@@ -36,7 +41,15 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
 				keyboardDismissMode='interactive'
+				keyboardShouldPersistTaps={'handled'}
 			>
+				<ModalInputSMSCode
+					visible={this.state.showModalForSMSCode}
+					confirmHandler={this.smsCodeConfirmedHandler}
+					declineHandler={this.smsCodeDeclinedHandler}
+					resendHandler={this.smsCodeResendHandler}
+					phoneNumber={PHONE_NUMBER}
+				/>
 				<Text style={style.welcomeText}>{'Welcome Back!'}</Text>
 				<SXTextInput
 					placeholder={'Email'}
@@ -51,16 +64,15 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 						placeholder={'Password'}
 						placeholderColor={Colors.postText}
 						returnKeyType={TRKeyboardKeys.go}
-						onSubmitPressed={this.startLogin}
+						onSubmitPressed={() => this.toggleVisibleModalSMS()}
 						onChangeText={this.handlePasswordInputKeyPressed}
 						isPassword={true}
-						blurOnSubmit={true}
 						ref={(component) => (this.passwordInput = component)}
 					/>
 				</View>
 				<SXButton
 					label={'LOGIN'}
-					onPress={this.startLogin}
+					onPress={() => this.toggleVisibleModalSMS()}
 					disabled={!this.state.passwordValue || !this.state.emailValue}
 					borderColor={Colors.transparent}
 				/>
@@ -110,15 +122,31 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 		});
 	}
 
-	private startLogin = () => {
-		// TODO: hookup login here
-		// console.log('Start login: ' + this.state.emailValue + ' : ' + this.state.passwordValue);
+	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
-		this.props.navigation.navigate('SettingsScreen');
+		this.setState({
+			showModalForSMSCode: visible,
+		});
 	}
 
 	private selectUnlockFileHandler = () => {
 		Keyboard.dismiss();
 		this.props.navigation.navigate('UploadKeyScreen');
+	}
+
+	private smsCodeConfirmedHandler = () => {
+		// console.log('TODO: Start login', this.state.emailValue, this.state.passwordValue);
+		this.toggleVisibleModalSMS(false);
+		this.props.navigation.navigate('MainScreen');
+	}
+
+	private smsCodeDeclinedHandler = () => {
+		this.toggleVisibleModalSMS(false);
+		// console.log('TODO: smsCodeDeclinedHandler');
+	}
+
+	private smsCodeResendHandler = () => {
+		this.toggleVisibleModalSMS(false);
+		// console.log('TODO: smsCodeResendHandler');
 	}
 }

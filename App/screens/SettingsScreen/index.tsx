@@ -11,7 +11,7 @@ import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
 export interface SettingsData {
-	updatedAvatarLocalURL: string | null;
+	updatedAvatarImageBase64: string | null;
 	aboutText: string;
 	firstName: string;
 	lastName: string;
@@ -64,7 +64,7 @@ export default class SettingsScreen extends Component<ISettingsScreenProps, IISe
 		email: this.props.email,
 	};
 
-	private updatedAvatarLocalURL: string | null = null;
+	private updatedAvatarImageBase64: string | null = null;
 	private miningEnabled: boolean = this.props.miningEnabled;
 
 	public render() {
@@ -167,12 +167,12 @@ export default class SettingsScreen extends Component<ISettingsScreenProps, IISe
 		return null;
 	}
 
-	private updateAvatarImage = (localPath: string) => {
+	private updateAvatarImage = (base64Photo: string) => {
 		this.setState({
-			avatarImage: {uri: 'file://' + localPath},
+			avatarImage: {uri: base64Photo},
 			hasChanges: true,
 		});
-		this.updatedAvatarLocalURL = localPath;
+		this.updatedAvatarImageBase64 = base64Photo;
 	}
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
@@ -193,7 +193,7 @@ export default class SettingsScreen extends Component<ISettingsScreenProps, IISe
 
 	private saveChanges = () => {
 		const saveData: SettingsData = {
-			updatedAvatarLocalURL: this.updatedAvatarLocalURL,
+			updatedAvatarImageBase64: this.updatedAvatarImageBase64,
 			aboutText: this.state.aboutText,
 			firstName: this.state.firstName,
 			lastName: this.state.lastName,
