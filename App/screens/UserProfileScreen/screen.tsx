@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
-import {LayoutEvent} from 'react-navigation';
 import {GridPhotos} from '../../components/GridPhotos';
 import {ProfileStatistics} from '../../components/ProfileStatistics';
 import {UserAvatar} from '../../components/UserAvatar';
@@ -9,6 +8,7 @@ import {Metrics} from '../../theme';
 import style from './style';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const GRID_PHOTOS_SCROLL_THRESHOLD = 150;
 
 interface IUserProfileScreenProps {
 	numberOfPhotos: number;
@@ -28,18 +28,27 @@ interface IUserProfileScreenProps {
 
 export default class UserProfileScreenComponent extends Component<IUserProfileScreenProps, any> {
 	private scrollView: any;
+	private isScrolled = false;
 
-	private topContainerHeight = 0;
+	public componentWillReceiveProps(nextProps: Readonly<IUserProfileScreenProps>, nextContext: any) {
+		if (this.props.isFollowed !== nextProps.isFollowed) {
+			setTimeout(() => {
+				this.scrollView.scrollTo({x: 0, y: 0, animated: true});
+				this.isScrolled = false;
+			}, 500);
+		}
+	}
 
 	public render() {
 		return (
 			<ScrollView
+				scrollEnabled={!this.props.isFollowed}
 				style={style.container}
 				contentContainerStyle={style.scrollContainer}
 				showsVerticalScrollIndicator={false}
 				ref={(ref: any) => (this.scrollView = ref)}
 			>
-				<View style={style.topContainer} onLayout={this.topContainerLayoutHandler}>
+				<View style={style.topContainer}>
 					<UserAvatar
 						avatarURL={{uri: this.props.avatarURL}}
 						fullName={this.props.fullName}
@@ -55,10 +64,6 @@ export default class UserProfileScreenComponent extends Component<IUserProfileSc
 				{this.conditionalRendering()}
 			</ScrollView>
 		);
-	}
-
-	private topContainerLayoutHandler = (event: LayoutEvent) => {
-		this.topContainerHeight = event.nativeEvent.layout.height + 10;
 	}
 
 	private conditionalRendering = () => {
@@ -114,9 +119,13 @@ export default class UserProfileScreenComponent extends Component<IUserProfileSc
 	}
 
 	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
-		if (offsetY < this.topContainerHeight) {
-			// this.scrollView.scrollTo({x: 0, y: offsetY, animated: false});
+		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.isScrolled) {
 			this.scrollView.scrollToEnd({animated: true});
+			this.isScrolled = true;
+		}
+		if (offsetY <= 0 && this.isScrolled) {
+			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
+			this.isScrolled = false;
 		}
 	}
 

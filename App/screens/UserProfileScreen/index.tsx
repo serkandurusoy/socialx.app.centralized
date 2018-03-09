@@ -48,7 +48,7 @@ const INITIAL_STATE = {
 	numberOfLikes: 24,
 	numberOfFollowers: 13401,
 	numberOfFollowing: 876324,
-	isFollowed: true,
+	isFollowed: false,
 	avatarURL: USER_BIG_AVATAR_URL,
 	fullName: FULL_NAME,
 	username: USER_NAME,
