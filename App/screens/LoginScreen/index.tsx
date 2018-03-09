@@ -114,7 +114,7 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 		// TODO: hookup login here
 		// console.log('Start login: ' + this.state.emailValue + ' : ' + this.state.passwordValue);
 		Keyboard.dismiss();
-		this.props.navigation.navigate('MainScreen');
+		this.props.navigation.navigate('SettingsScreen');
 	}
 
 	private selectUnlockFileHandler = () => {
