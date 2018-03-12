@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
 import {SearchHeader} from '../../components/SearchHeader';
-import SearchScreenComponent from './Search.screen';
+import SearchScreenComponent from './screen';
 
 export enum SearchFilterValues {
 	People = 'people',
