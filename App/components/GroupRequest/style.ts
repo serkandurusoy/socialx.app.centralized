@@ -32,12 +32,12 @@ const style: any = {
 		color: Colors.postFullName,
 		fontSize: Sizes.smartHorizontalScale(14),
 	},
-	username: {
+	groupName: {
 		...Fonts.centuryGothic,
 		color: Colors.postHour,
 		fontSize: Sizes.smartHorizontalScale(11),
 	},
-	friendRequest: {
+	inviteText: {
 		...Fonts.centuryGothic,
 		color: Colors.postText,
 		fontSize: Sizes.smartHorizontalScale(14),

@@ -11,3 +11,6 @@ import './stories/AvatarPicker.stories';
 import './stories/SettingsScreen.stories';
 import './stories/SearchResultEntry.stories';
 import './stories/ProfileStatistics.stories';
+import './stories/GroupRequest.stories';
+import './stories/ActivityRecentCommentCard.stories';
+import './stories/ActivitySuperLikedCard.stories';
