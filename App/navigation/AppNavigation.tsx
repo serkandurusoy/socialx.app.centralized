@@ -5,6 +5,7 @@ import LaunchScreen from '../screens/LaunchScreen';
 import {TabBarBottom} from '../components/TabBarBottom';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import LoginScreen from '../screens/LoginScreen';
+import MediaViewerScreen from '../screens/MediaViewerScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
@@ -65,6 +66,7 @@ const PrimaryNav = StackNavigator(
 		MainScreen: {screen: MainScreenWithModal},
 		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
+		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',

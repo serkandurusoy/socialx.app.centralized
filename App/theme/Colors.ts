@@ -26,6 +26,7 @@ const SocialXColors = {
 	searchFilterButtonUnselectedText: 'rgba(109,120,134,0.7)',
 	pigeonPost: '#A7BAD4',
 	activityCardBottomBorder: 'rgba(168,182,200,0.3)',
+	midnight: '#000F2B',
 };
 
 export default SocialXColors;
