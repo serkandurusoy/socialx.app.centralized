@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {AvatarImage} from '../../components/AvatarImage';
 import {WallPostCard} from '../../components/WallPostCard';
 import style from './style';
 
-interface IUserFeedScreenProps {
+interface IGroupFeedScreenProps {
 	avatarImage: any;
 	wallPosts: any[];
 	fullName: string;
@@ -15,10 +15,10 @@ interface IUserFeedScreenProps {
 	showNewWallPostPage: () => void;
 }
 
-export interface IUserFeedScreenComponentState {}
+export interface IGroupFeedScreenComponentState {}
 
-export default class UserFeedScreenComponent extends Component<IUserFeedScreenProps, IUserFeedScreenComponentState> {
-	public static defaultProps: Partial<IUserFeedScreenProps> = {};
+export default class GroupFeedScreenComponent extends Component<IGroupFeedScreenProps, IGroupFeedScreenComponentState> {
+	public static defaultProps: Partial<IGroupFeedScreenProps> = {};
 
 	public render() {
 		return (
@@ -27,7 +27,7 @@ export default class UserFeedScreenComponent extends Component<IUserFeedScreenPr
 					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
 					<TouchableWithoutFeedback onPress={this.props.showNewWallPostPage}>
 						<View style={style.shareTextContainer}>
-							<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
+							<Text style={style.shareTextPlaceholder}>{'Share with your group what you think'}</Text>
 						</View>
 					</TouchableWithoutFeedback>
 				</View>
@@ -41,6 +41,7 @@ export default class UserFeedScreenComponent extends Component<IUserFeedScreenPr
 					onEndReachedThreshold={0.2}
 					alwaysBounceVertical={false}
 					keyboardShouldPersistTaps={'handled'}
+					ListFooterComponent={this.renderFooterWhenLoading}
 				/>
 			</View>
 		);
@@ -52,6 +53,14 @@ export default class UserFeedScreenComponent extends Component<IUserFeedScreenPr
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard {...data.item} />
+			</View>
+		);
+	}
+
+	private renderFooterWhenLoading = () => {
+		return (
+			<View style={style.bottomLoadingContainer}>
+				<ActivityIndicator size={'small'} />
 			</View>
 		);
 	}
