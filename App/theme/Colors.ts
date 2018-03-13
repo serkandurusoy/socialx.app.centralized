@@ -24,6 +24,8 @@ const SocialXColors = {
 	silverSand: '#BFC3C8',
 	searchFilterButtonSelectedBg: 'rgba(3,157,226,0.06)',
 	searchFilterButtonUnselectedText: 'rgba(109,120,134,0.7)',
+	pigeonPost: '#A7BAD4',
+	activityCardBottomBorder: 'rgba(168,182,200,0.3)',
 };
 
 export default SocialXColors;
