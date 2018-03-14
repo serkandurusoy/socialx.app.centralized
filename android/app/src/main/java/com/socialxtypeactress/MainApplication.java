@@ -3,6 +3,7 @@ package com.socialxtypeactress;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import iyegoroff.RNTextGradient.RNTextGradientPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new RNTextGradientPackage(),
                     new ReactVideoPackage(),
                     new PickerPackage(),
                     new VectorIconsPackage(),
