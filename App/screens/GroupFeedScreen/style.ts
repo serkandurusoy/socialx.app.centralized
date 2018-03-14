@@ -35,7 +35,7 @@ const style: any = {
 		color: Colors.cadetBlue,
 		paddingHorizontal: Sizes.smartHorizontalScale(13),
 	},
-	wallPostContainer: {
+	groupPostContainer: {
 		paddingTop: Sizes.smartVerticalScale(25),
 	},
 };

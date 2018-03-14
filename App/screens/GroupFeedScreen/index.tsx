@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {TitleWithSubtitle} from '../../components/TitleWithSubtitle';
 import {Colors, Images} from '../../theme';
-import {NewWallPostData} from '../NewWallPostScreen';
+import {NewGroupPostData} from '../NewWallPostScreen';
 import GroupFeedScreenComponent from './screen';
 
 const USER_FULL_NAME = 'Marcel Füssinger';
@@ -36,7 +36,7 @@ const INITIAL_USER_POSTS = [
 	},
 ];
 
-export interface IWallPostData {
+export interface IGroupPostData {
 	text: string;
 	imageSource?: string;
 	smallAvatar: string;
@@ -53,7 +53,7 @@ interface IGroupFeedScreenProps {
 }
 
 interface IGroupFeedScreenState {
-	wallPosts: IWallPostData[];
+	groupPosts: IGroupPostData[];
 	refreshing: boolean;
 }
 
@@ -67,7 +67,7 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 	};
 
 	public state = {
-		wallPosts: INITIAL_USER_POSTS,
+		groupPosts: INITIAL_USER_POSTS,
 		refreshing: false,
 	};
 
@@ -75,33 +75,33 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 		return (
 			<GroupFeedScreenComponent
 				refreshing={this.state.refreshing}
-				refreshData={this.refreshWallPosts}
+				refreshData={this.refreshGroupPosts}
 				fullName={USER_FULL_NAME}
 				avatarImage={Images.user_avatar_placeholder}
-				wallPosts={this.state.wallPosts}
+				groupPosts={this.state.groupPosts}
 				loadMorePosts={this.loadMorePostsHandler}
-				addWallPost={this.addWallPostHandler}
-				showNewWallPostPage={this.showNewWallPostPage}
+				addGroupPost={this.addGroupPostHandler}
+				showNewGroupPostPage={this.showNewGroupPostPage}
 			/>
 		);
 	}
 
-	private showNewWallPostPage = () => {
+	private showNewGroupPostPage = () => {
 		this.props.navigation.navigate('NewWallPostScreen', {
 			fullName: USER_FULL_NAME,
 			avatarImage: Images.user_avatar_placeholder,
-			postCreate: this.addWallPostHandler,
+			postCreate: this.addGroupPostHandler,
 		});
 	}
 
 	private loadMorePostsHandler = () => {
 		this.setState({
-			wallPosts: this.state.wallPosts.concat(INITIAL_USER_POSTS),
+			groupPosts: this.state.groupPosts.concat(INITIAL_USER_POSTS),
 		});
 	}
 
-	private addWallPostHandler = (data: NewWallPostData) => {
-		const newPost: IWallPostData = {
+	private addGroupPostHandler = (data: NewGroupPostData) => {
+		const newPost: IGroupPostData = {
 			text: data.text,
 			imageSource: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
 			smallAvatar: 'https://placeimg.com/110/110/people',
@@ -113,18 +113,18 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 			numberOfWalletCoins: 0,
 		};
 		this.setState({
-			wallPosts: [newPost].concat(this.state.wallPosts),
+			groupPosts: [newPost].concat(this.state.groupPosts),
 		});
 	}
 
-	private refreshWallPosts = () => {
+	private refreshGroupPosts = () => {
 		this.setState({
 			refreshing: true,
 		});
 		setTimeout(() => {
 			this.setState({
 				refreshing: false,
-				wallPosts: INITIAL_USER_POSTS,
+				groupPosts: INITIAL_USER_POSTS,
 			});
 		}, 1500);
 	}
