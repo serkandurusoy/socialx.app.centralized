@@ -7,6 +7,7 @@ import './stories/FriendRequest.stories';
 import './stories/WallPostCard.stories';
 import './stories/GridPhotos.stories';
 import './stories/ModalConfirmation.stories';
+import './stories/ModalCreateGroup.stories';
 import './stories/AvatarPicker.stories';
 import './stories/SettingsScreen.stories';
 import './stories/SearchResultEntry.stories';
