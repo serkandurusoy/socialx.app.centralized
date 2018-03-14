@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {DeviceOrientations} from '../../constants';
 import MediaViewerScreenComponent from './screen';
 
 const START_INDEX = 562;
@@ -37,7 +38,7 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 		this.state = {
 			photos: this.getPhotos(),
 			startIndex: START_INDEX,
-			orientation: 'PORTRAIT',
+			orientation: DeviceOrientations.Portrait,
 		};
 	}
 
@@ -62,7 +63,7 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 	}
 
 	private orientationDidChange = (orient: orientation) => {
-		this.props.navigation.setParams({hideHeader: orient === 'LANDSCAPE'});
+		this.props.navigation.setParams({hideHeader: orient === DeviceOrientations.Landscape});
 		this.setState({orientation: orient});
 	}
 
