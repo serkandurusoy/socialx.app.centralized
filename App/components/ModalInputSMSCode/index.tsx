@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
+import {OS_TYPES} from '../../constants';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
 import {TKeyboardKeys} from '../TextInput';
@@ -71,7 +72,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 
 	private getModalStyles = () => {
 		const ret = [style.container];
-		if (Platform.OS === 'ios') {
+		if (Platform.OS === OS_TYPES.iOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;
