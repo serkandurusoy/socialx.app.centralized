@@ -1,4 +1,5 @@
 import {Dimensions, Platform} from 'react-native';
+import {OS_TYPES} from '../constants';
 import Sizes from './Sizes';
 
 const {width, height} = Dimensions.get('window');
@@ -15,7 +16,7 @@ const metrics = {
 	// horizontalLineHeight: 1,
 	// screenWidth: width < height ? width : height,
 	// screenHeight: width < height ? height : width,
-	navBarHeight: Platform.OS === 'ios' ? 54 : 47,
+	navBarHeight: Platform.OS === OS_TYPES.iOS ? 54 : 47,
 	tabBarBottomHeight: Sizes.smartVerticalScale(49),
 	// buttonRadius: 4,
 	// icons: {
