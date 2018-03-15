@@ -12,7 +12,7 @@ interface ISearchScreenComponentProps {
 	selectedFilter: SearchFilterValues;
 	setNewFilter: (value: SearchFilterValues) => void;
 	addFriendHandler: (value: string) => void;
-	createGroupHandler: (value: string) => void;
+	createGroupHandler: () => void;
 }
 
 interface ISearchScreenComponentState {

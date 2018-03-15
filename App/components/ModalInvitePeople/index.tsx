@@ -27,7 +27,7 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 			<Modal
 				isVisible={this.props.visible}
 				backdropOpacity={0}
-				animationIn={'slideInDown'}
+				animationIn={'slideInRight'}
 				animationOut={'slideOutUp'}
 				style={style.container}
 			>
@@ -59,7 +59,7 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 							{this.renderSearchResults()}
 						</ScrollView>
 						<View style={style.buttonsContainer}>
-							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.cancelGroupCreation}>
+							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.props.cancelHandler}>
 								<Text style={[style.buttonText, style.buttonTextCancel]}>{'Back'}</Text>
 							</TouchableOpacity>
 							<TouchableOpacity style={style.button} onPress={this.props.createHandler}>
@@ -94,10 +94,6 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 			);
 		});
 		return ret;
-	}
-
-	private cancelGroupCreation = () => {
-		this.props.cancelHandler();
 	}
 }
 
