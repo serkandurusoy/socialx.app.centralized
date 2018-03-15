@@ -14,7 +14,7 @@ export default StyleSheet.create({
 		fontSize: 20,
 		textAlign: 'center',
 		// fontFamily: Fonts.type.base,
-		margin: Metrics.baseMargin,
+		// margin: Metrics.baseMargin,
 	},
 	myImage: {
 		width: 200,

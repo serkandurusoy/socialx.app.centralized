@@ -1,6 +1,9 @@
-import * as React from 'react';
+import React, {Component} from 'react';
 import {StatusBar, View} from 'react-native';
 
+import Amplify from 'aws-amplify';
+
+import {awsconfig} from '../../config';
 import ReduxNavigation from '../../navigation/ReduxNavigation';
 
 // Styles
@@ -10,7 +13,9 @@ export interface Props {
 	startup: () => void;
 }
 
-export class RootContainer extends React.Component<Props> {
+Amplify.configure(awsconfig);
+
+export class RootContainer extends Component<Props> {
 	public componentDidMount() {
 		this.props.startup();
 	}
