@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {Images} from '../../theme';
 import {NewWallPostData} from '../NewWallPostScreen';
-import UserFeedScreenComponent from './UserFeed.screen';
+import UserFeedScreenComponent from './screen';
 
 const USER_FULL_NAME = 'Marcel Füssinger';
 

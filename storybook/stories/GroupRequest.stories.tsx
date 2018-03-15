@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {FriendRequest} from '../../App/components/FriendRequest';
+import {GroupRequest} from '../../App/components/GroupRequest';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 
@@ -10,26 +10,23 @@ const containerStyle = {
 	paddingHorizontal: 0,
 };
 
-const friendRequestConfirmedHandler = () => {
-	alert('friendRequestConfirmedHandler');
+const groupConfirmedHandler = () => {
+	alert('groupConfirmedHandler');
 };
 
-storiesOf('FriendRequest')
+storiesOf('GroupRequest')
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {
-		const avatarURL = text(
-			'User avatar URL',
-			'https://www.exclutips.com/wp-content/uploads/2015/08/wordpress-custom-user-avatar.png',
-		);
-		const fullName = text('User full name', 'Teresa Lamb');
-		const username = text('Username', 'terlamb');
+		const avatarURL = text('User avatar URL', 'https://placeimg.com/150/150/tech');
+		const fullName = text('User full name', 'Claudia Kulmitzer');
+		const groupName = text('Group name', 'MfMJAkkAs2jLISYyv');
 		return (
-			<FriendRequest
+			<GroupRequest
 				avatarURL={avatarURL}
 				fullName={fullName}
-				username={username}
-				onRequestConfirmed={friendRequestConfirmedHandler}
+				groupName={groupName}
+				onGroupConfirmed={groupConfirmedHandler}
 			/>
 		);
 	});
