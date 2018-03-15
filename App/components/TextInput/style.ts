@@ -1,6 +1,7 @@
 import {Colors, Fonts, Sizes} from '../../theme/';
 
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, PlatformOSType, StyleSheet} from 'react-native';
+import {OS_TYPES} from '../../constants';
 
 const INPUT_FONT_SIZE = Sizes.smartHorizontalScale(14);
 
@@ -27,7 +28,7 @@ const style: any = {
 		maxHeight: '100%',
 	},
 	textInputNormal: {
-		paddingVertical: Platform.OS === 'android' ? Sizes.smartHorizontalScale(10) : Sizes.smartHorizontalScale(16),
+		paddingVertical: Platform.OS === OS_TYPES.Android ? Sizes.smartHorizontalScale(10) : Sizes.smartHorizontalScale(16),
 	},
 	textInputSmall: {
 		paddingVertical: 0,
