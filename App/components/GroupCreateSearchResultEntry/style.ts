@@ -15,6 +15,9 @@ const style: any = {
 		borderBottomColor: Colors.geyser,
 		borderBottomWidth: Sizes.smartHorizontalScale(0.5),
 	},
+	containerSelected: {
+		backgroundColor: Colors.catskillWhite,
+	},
 	leftContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
