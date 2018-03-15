@@ -1,18 +1,20 @@
-import React, {Component} from 'react';
-import {Keyboard, Text, TouchableOpacity, View} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {NavigationScreenProp} from 'react-navigation';
-import {SXButton} from '../../components/Button';
-import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
-import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
-import {Colors} from '../../theme/';
+import React, { Component } from 'react';
+import { Alert, Keyboard, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { NavigationScreenProp } from 'react-navigation';
+import { SXButton } from '../../components/Button';
+import { ModalInputSMSCode } from '../../components/ModalInputSMSCode';
+import { SXTextInput, TKeyboardKeys, TRKeyboardKeys } from '../../components/TextInput';
+import { Colors } from '../../theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
+
+import { ConfirmSignin, Signin } from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
 
 export interface ILoginScreenState {
-	emailValue: string;
+	usernameValue: string;
 	passwordValue: string;
 	showModalForSMSCode: boolean;
 }
@@ -27,12 +29,13 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 	};
 
 	public state = {
-		emailValue: '',
+		usernameValue: '',
 		passwordValue: '',
 		showModalForSMSCode: false,
 	};
 
 	private passwordInput: SXTextInput | null = null;
+	private usernameInput: SXTextInput | null = null;
 
 	public render() {
 		return (
@@ -52,19 +55,20 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				/>
 				<Text style={style.welcomeText}>{'Welcome Back!'}</Text>
 				<SXTextInput
-					placeholder={'Email'}
+					placeholder={'Username'}
 					placeholderColor={Colors.postText}
 					returnKeyType={TRKeyboardKeys.next}
-					onSubmitPressed={this.emailSubmitPressedHandler}
-					onChangeText={this.handleEmailInputKeyPressed}
+					onSubmitPressed={this.usernameSubmitPressedHandler}
+					onChangeText={this.handleUsernameInputKeyPressed}
 					keyboardType={TKeyboardKeys.emailAddress}
+					ref={(component) => (this.usernameInput = component)}
 				/>
 				<View style={style.passwordContainer}>
 					<SXTextInput
 						placeholder={'Password'}
 						placeholderColor={Colors.postText}
 						returnKeyType={TRKeyboardKeys.go}
-						onSubmitPressed={() => this.toggleVisibleModalSMS()}
+						onSubmitPressed={() => this.fireSignin()}
 						onChangeText={this.handlePasswordInputKeyPressed}
 						isPassword={true}
 						ref={(component) => (this.passwordInput = component)}
@@ -72,8 +76,8 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				</View>
 				<SXButton
 					label={'LOGIN'}
-					onPress={() => this.toggleVisibleModalSMS()}
-					disabled={!this.state.passwordValue || !this.state.emailValue}
+					onPress={() => this.fireSignin()}
+					disabled={!this.state.passwordValue || !this.state.usernameValue}
 					borderColor={Colors.transparent}
 				/>
 				<TouchableOpacity onPress={this.navigateToPasswordForgotScreen} style={style.forgotPassword}>
@@ -83,6 +87,7 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 					label={'Or use unlock file'}
 					onPress={this.selectUnlockFileHandler}
 					borderColor={Colors.transparent}
+					disabled={true}
 				/>
 				<View style={style.noAccountContainer}>
 					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
@@ -104,23 +109,15 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 		this.props.navigation.navigate('SignUpScreen');
 	}
 
-	private emailSubmitPressedHandler = () => {
-		if (this.passwordInput) {
+	private usernameSubmitPressedHandler = () => {
+		if (this.passwordInput && this.state.usernameValue) {
 			this.passwordInput.focusInput();
 		}
 	}
 
-	private handleEmailInputKeyPressed = (value: string) => {
-		this.setState({
-			emailValue: value,
-		});
-	}
+	private handleUsernameInputKeyPressed = (value: string) => this.setState({ usernameValue: value });
 
-	private handlePasswordInputKeyPressed = (value: string) => {
-		this.setState({
-			passwordValue: value,
-		});
-	}
+	private handlePasswordInputKeyPressed = (value: string) => this.setState({ passwordValue: value });
 
 	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
@@ -134,10 +131,34 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 		this.props.navigation.navigate('UploadKeyScreen');
 	}
 
-	private smsCodeConfirmedHandler = () => {
-		// console.log('TODO: Start login', this.state.emailValue, this.state.passwordValue);
-		this.toggleVisibleModalSMS(false);
-		this.props.navigation.navigate('MainScreen');
+	private fireSignin = async () => {
+		const { usernameValue, passwordValue } = this.state;
+		try {
+			// toggle loader here..
+			const res = await Signin(usernameValue, passwordValue);
+			this.toggleVisibleModalSMS();
+			// toggle sms
+		} catch (ex) {
+			// better alert here
+			Alert.alert('Wrong username/password');
+			if (this.usernameInput) {
+				this.usernameInput.focusInput();
+			}
+		}
+	}
+
+	private smsCodeConfirmedHandler = async (code: string) => {
+		const { usernameValue } = this.state;
+		try {
+			// toggle loader here
+			const res = await ConfirmSignin(usernameValue, code);
+			// show a welcome message here maybe?
+			this.toggleVisibleModalSMS(false);
+			this.props.navigation.navigate('MainScreen');
+		} catch (ex) {
+			// better alert here
+			Alert.alert('Wrong confirmation code');
+		}
 	}
 
 	private smsCodeDeclinedHandler = () => {
