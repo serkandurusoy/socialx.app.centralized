@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {findNodeHandle, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
+import {ModalInvitePeople} from '../../components/ModalInvitePeople';
 import {SearchHeader} from '../../components/SearchHeader';
 import SearchScreenComponent from './screen';
 
@@ -13,6 +15,45 @@ export enum SearchResultKind {
 	NotFriend = 'notFriend',
 	Group = 'group',
 }
+
+const SEARCH_RESULTS_CREATE_GROUP: SearchResultCreateGroup[] = [
+	{
+		id: '0',
+		fullName: 'Ionut Movila',
+		location: 'Belgium',
+		avatarURL: 'https://placeimg.com/100/100/people',
+	},
+	{
+		id: '1',
+		fullName: 'Teresa Lamb',
+		location: 'Poland',
+		avatarURL: 'https://placeimg.com/101/101/people',
+	},
+	{
+		id: '2',
+		fullName: 'Terosa McCarthy',
+		location: 'Vietnam',
+		avatarURL: 'https://placeimg.com/102/102/people',
+	},
+	{
+		id: '3',
+		fullName: 'Terosa McCarthy',
+		location: 'Romania',
+		avatarURL: 'https://placeimg.com/103/103/people',
+	},
+	{
+		id: '4',
+		fullName: 'Gregory Bates',
+		location: 'Latvia',
+		avatarURL: 'https://placeimg.com/104/104/people',
+	},
+	{
+		id: '5',
+		fullName: 'Patrick Mullins',
+		location: 'Singapore',
+		avatarURL: 'https://placeimg.com/105/105/people',
+	},
+];
 
 const SEARCH_RESULTS_PEOPLE: SearchResultPeople[] = [
 	{
@@ -78,6 +119,13 @@ export interface SearchResultGroups {
 	avatarURL?: string;
 }
 
+export interface SearchResultCreateGroup {
+	id: string;
+	fullName: string;
+	location: string;
+	avatarURL?: string;
+}
+
 interface ISearchScreenProps {
 	navigation: NavigationScreenProp<any>;
 }
@@ -86,6 +134,10 @@ interface ISearchScreenState {
 	searchTerm: string;
 	searchResults: SearchResultPeople[] | SearchResultGroups[];
 	selectedFilter: SearchFilterValues;
+	modalVisible: boolean;
+	blurViewRef: any;
+	createGroupSearchResults: SearchResultCreateGroup[];
+	selectedUsers: string[];
 }
 
 export default class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
@@ -97,10 +149,16 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 	})
 
 	public state = {
+		modalVisible: false,
 		searchTerm: '',
 		searchResults: [],
 		selectedFilter: SearchFilterValues.People,
+		blurViewRef: null,
+		createGroupSearchResults: [],
+		selectedUsers: [],
 	};
+
+	private blurView = null;
 
 	public componentWillMount() {
 		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
@@ -108,14 +166,27 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 
 	public render() {
 		return (
-			<SearchScreenComponent
-				addFriendHandler={this.addFriendHandler}
-				searchTerm={this.state.searchTerm}
-				searchResults={this.state.searchResults}
-				selectedFilter={this.state.selectedFilter}
-				setNewFilter={this.updateSelectedFilter}
-				createGroupHandler={this.handleCreateNewGroup}
-			/>
+			<View style={{flex: 1}}>
+				<ModalInvitePeople
+					visible={this.state.modalVisible}
+					createHandler={this.handleCreateNewGroup}
+					cancelHandler={this.toggleCreateGroupModal}
+					blurViewRef={this.state.blurViewRef}
+					onSearchUpdated={this.createGroupSearchUpdated}
+					searchResults={this.state.createGroupSearchResults}
+					selectNewUserForGroup={this.selectNewUserForGroupHandler}
+					selectedUsers={this.state.selectedUsers}
+				/>
+				<SearchScreenComponent
+					ref={(view: any) => (this.blurView = view)}
+					addFriendHandler={this.addFriendHandler}
+					searchTerm={this.state.searchTerm}
+					searchResults={this.state.searchResults}
+					selectedFilter={this.state.selectedFilter}
+					setNewFilter={this.updateSelectedFilter}
+					createGroupHandler={this.prepareCreateGroupHandler}
+				/>
+			</View>
 		);
 	}
 
@@ -133,6 +204,28 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 		});
 	}
 
+	private prepareCreateGroupHandler = () => {
+		if (Platform.OS === 'ios') {
+			this.toggleCreateGroupModal();
+		} else {
+			const blurViewHandle = findNodeHandle(this.blurView);
+			this.setState({blurViewRef: blurViewHandle});
+			this.toggleCreateGroupModal();
+		}
+	}
+
+	private toggleCreateGroupModal = () => {
+		this.setState({
+			modalVisible: !this.state.modalVisible,
+			createGroupSearchResults: [],
+			selectedUsers: [],
+		});
+	}
+
+	private selectNewUserForGroupHandler = (userId: string) => {
+		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
+	}
+
 	private getSearchResults = (term: string, filterValue: SearchFilterValues = this.state.selectedFilter) => {
 		let ret: SearchResultPeople[] | SearchResultGroups[] = [];
 		if (term.length > 3 && term.length < 8) {
@@ -146,6 +239,15 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 	}
 
 	private handleCreateNewGroup = () => {
-		alert('handleCreateNewGroup');
+		this.toggleCreateGroupModal();
+		// console.log('handleCreateNewGroup: ' + this.state.selectedUsers);
+	}
+
+	private createGroupSearchUpdated = (term: string) => {
+		let createGroupSearchResults: SearchResultCreateGroup[] = [];
+		if (term.length > 3 && term.length < 8) {
+			createGroupSearchResults = SEARCH_RESULTS_CREATE_GROUP;
+		}
+		this.setState({createGroupSearchResults});
 	}
 }
