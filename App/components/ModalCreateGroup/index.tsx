@@ -1,114 +1,109 @@
 import React, {Component} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
+import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
-import {SXTextInput} from '../TextInput';
+import {InputSizes, SXTextInput, TRKeyboardKeys} from '../TextInput';
 import style from './style';
 
 export interface IModalCreateGroupProps {
-	groupMessage: string;
-	descriptionMessage: string;
 	visible: boolean;
-	confirmHandler?: () => void;
-	declineHandler?: () => void;
+	blurViewRef: any;
+	confirmHandler: () => void;
+	declineHandler: () => void;
+	updateGroupName: (text: string) => void;
+	updateGroupDescription: (text: string) => void;
 	marginBottom: number;
+	onModalHide: () => void;
 }
 
-export interface IModalCreateGroupState {
-	modalVisible: boolean;
-}
-
-class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, IModalCreateGroupState> {
+class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 	public state = {
-		modalVisible: this.props.visible,
-		groupMessage: '',
-		descriptionMessage: '',
+		outAnimation: 'slideOutLeft',
 	};
-
-	public componentWillReceiveProps(nextProps: Readonly<IModalCreateGroupProps>): void {
-		this.setState({modalVisible: nextProps.visible});
-	}
 
 	public render() {
 		return (
 			<Modal
-				isVisible={this.state.modalVisible}
-				backdropOpacity={0.45}
-				animationIn={'zoomIn'}
-				animationOut={'zoomOut'}
-				onBackdropPress={() => this.setState({modalVisible: false})}
-				style={this.getModalStyles()}
+				isVisible={this.props.visible}
+				backdropOpacity={0}
+				animationIn={'slideInDown'}
+				animationOut={this.state.outAnimation}
+				style={style.container}
+				onModalHide={this.props.onModalHide}
 			>
-				<View style={style.boxContainer}>
-					<View style={style.titleContainer}>
-						<Text style={style.title}>{'Create group'}</Text>
-					</View>
-
-					<View style={style.inputContainer}>
-						<SXTextInput
-							value={this.state.groupMessage}
-							numberOfLines={1}
-							borderColor={Colors.dustWhite}
-							placeholder={'Group name'}
-							onChangeText={this.updateGroupMessage}
-						/>
-						<View style={style.descriptionContainer}>
-							<SXTextInput
-								value={this.state.descriptionMessage}
-								numberOfLines={3}
-								borderColor={Colors.dustWhite}
-								placeholder={'Description'}
-								onChangeText={this.updateDescriptionMessage}
-							/>
+				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
+				<View style={this.getResizableStyles()}>
+					<View style={style.boxContainer}>
+						<View style={style.titleContainer}>
+							<Text style={style.title}>{'Create group'}</Text>
 						</View>
-					</View>
 
-					<View style={style.buttonsContainer}>
-						<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.actionCanceled}>
-							<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={style.button} onPress={this.actionConfirmed}>
-							<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Next'}</Text>
-						</TouchableOpacity>
+						<View style={style.inputContainer}>
+							<SXTextInput
+								autoFocus={true}
+								numberOfLines={1}
+								borderColor={Colors.dustWhite}
+								placeholder={'Group name'}
+								onChangeText={this.props.updateGroupName}
+								returnKeyType={TRKeyboardKeys.done}
+								blurOnSubmit={true}
+								size={InputSizes.Small}
+							/>
+							<View style={style.descriptionContainer}>
+								<SXTextInput
+									numberOfLines={3}
+									borderColor={Colors.dustWhite}
+									placeholder={'Description'}
+									onChangeText={this.props.updateGroupDescription}
+									blurOnSubmit={false}
+								/>
+							</View>
+						</View>
+
+						<View style={style.buttonsContainer}>
+							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.declineHandler}>
+								<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
+							</TouchableOpacity>
+							<TouchableOpacity style={style.button} onPress={this.confirmHandler}>
+								<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Next'}</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
 				</View>
 			</Modal>
 		);
 	}
 
-	private getModalStyles = () => {
-		const ret = [style.container];
+	private declineHandler = () => {
+		this.setState(
+			{
+				outAnimation: 'slideOutUp',
+			},
+			() => {
+				this.props.declineHandler();
+			},
+		);
+	}
+
+	private confirmHandler = () => {
+		this.setState(
+			{
+				outAnimation: 'slideOutLeft',
+			},
+			() => {
+				this.props.confirmHandler();
+			},
+		);
+	}
+
+	private getResizableStyles = () => {
+		const ret = [style.keyboardView];
 		if (Platform.OS === 'ios') {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;
-	}
-
-	private actionConfirmed = () => {
-		this.setState({
-			modalVisible: false,
-		});
-		if (this.props.confirmHandler) {
-			this.props.confirmHandler();
-		}
-	}
-
-	private actionCanceled = () => {
-		this.setState({
-			modalVisible: false,
-		});
-		if (this.props.declineHandler) {
-			this.props.declineHandler();
-		}
-	}
-
-	private updateGroupMessage = (text: string) => {
-		this.setState({groupMessage: text});
-	}
-
-	private updateDescriptionMessage = (text: string) => {
-		this.setState({descriptionMessage: text});
 	}
 }
 
