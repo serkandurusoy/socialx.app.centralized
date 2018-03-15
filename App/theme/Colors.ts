@@ -12,7 +12,7 @@ const SocialXColors = {
 	userAvatarFullName: '#006BFF',
 	dustWhite: '#EEEEEE',
 	grayText: '#9B9B9B',
-	gradientButtonLeft: '#814FBE',
+	fuchsiaBlue: '#814FBE',
 	iron: '#D3D6DA',
 	iron2: '#D6D9DE',
 	rhino: '#273851',
