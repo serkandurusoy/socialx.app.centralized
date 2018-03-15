@@ -12,7 +12,7 @@ const SocialXColors = {
 	userAvatarFullName: '#006BFF',
 	dustWhite: '#EEEEEE',
 	grayText: '#9B9B9B',
-	gradientButtonLeft: '#814FBE',
+	fuchsiaBlue: '#814FBE',
 	iron: '#D3D6DA',
 	iron2: '#D6D9DE',
 	rhino: '#273851',
@@ -26,6 +26,7 @@ const SocialXColors = {
 	searchFilterButtonUnselectedText: 'rgba(109,120,134,0.7)',
 	pigeonPost: '#A7BAD4',
 	activityCardBottomBorder: 'rgba(168,182,200,0.3)',
+	midnight: '#000F2B',
 	catskillWhite: '#F0F3F8',
 };
 
