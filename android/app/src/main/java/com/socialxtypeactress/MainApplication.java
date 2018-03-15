@@ -3,6 +3,11 @@ package com.socialxtypeactress;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+<<<<<<< HEAD
+import com.github.yamill.orientation.OrientationPackage;
+=======
+import com.cmcewen.blurview.BlurViewPackage;
+>>>>>>> 45a4ba553dd4f0d23d371043074c5f60c5207911
 import com.brentvatne.react.ReactVideoPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -28,6 +33,11 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+<<<<<<< HEAD
+                    new OrientationPackage(),
+=======
+                    new BlurViewPackage(),
+>>>>>>> 45a4ba553dd4f0d23d371043074c5f60c5207911
                     new ReactVideoPackage(),
                     new PickerPackage(),
                     new VectorIconsPackage(),
