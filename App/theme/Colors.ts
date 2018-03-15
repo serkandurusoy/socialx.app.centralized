@@ -27,6 +27,7 @@ const SocialXColors = {
 	pigeonPost: '#A7BAD4',
 	activityCardBottomBorder: 'rgba(168,182,200,0.3)',
 	midnight: '#000F2B',
+	catskillWhite: '#F0F3F8',
 };
 
 export default SocialXColors;
