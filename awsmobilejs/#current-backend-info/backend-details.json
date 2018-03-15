@@ -1,0 +1,106 @@
+{
+	"name": "SocialxBeta",
+	"projectId": "47bc67d8-2834-11e8-a001-2b6eb07055e5",
+	"region": "eu-west-1",
+	"state": "NORMAL",
+	"createdDate": "2018-03-15T09:36:04.255Z",
+	"lastUpdatedDate": "2018-03-15T09:36:04.255Z",
+	"consoleUrl": "https://console.aws.amazon.com/mobilehub/home#/47bc67d8-2834-11e8-a001-2b6eb07055e5/build",
+	"resources": [
+		{
+			"type": "AWS::Pinpoint::AnalyticsApplication",
+			"name": "socialxbeta_MobileHub",
+			"arn": "26bdccc32b23472996eaed86fec64591",
+			"feature": "analytics",
+			"attributes": {
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177"
+			}
+		},
+		{
+			"type": "AWS::IAM::Policy",
+			"name": "socialxbeta_mobileanalytics_MOBILEHUB_1418679691",
+			"arn": null,
+			"feature": "analytics",
+			"attributes": {
+				"authType": "unauthenticated",
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
+				"role": "socialxbeta_unauth_MOBILEHUB_1418679691"
+			}
+		},
+		{
+			"type": "AWS::Cognito::IdentityPool",
+			"name": "socialxbeta_MOBILEHUB_1418679691",
+			"arn": "eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b",
+			"feature": "user-signin",
+			"attributes": {
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
+				"poolid": "eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b",
+				"roleARNs": "arn:aws:iam::412074505518:role/socialxbeta_unauth_MOBILEHUB_1418679691"
+			}
+		},
+		{
+			"type": "AWS::IAM::Role",
+			"name": "socialxbeta_unauth_MOBILEHUB_1418679691",
+			"arn": "arn:aws:iam::412074505518:role/socialxbeta_unauth_MOBILEHUB_1418679691",
+			"feature": "user-signin",
+			"attributes": {
+				"authType": "unauthenticated",
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177"
+			}
+		},
+		{
+			"type": "AWS::S3::Bucket",
+			"name": "socialxbeta-hosting-mobilehub-1418679691",
+			"arn": null,
+			"feature": "hosting",
+			"attributes": {
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
+				"region": "eu-west-1",
+				"s3-bucket-console-url": "https://s3.console.aws.amazon.com/s3/buckets/socialxbeta-hosting-mobilehub-1418679691",
+				"s3-bucket-website-url": "https://s3.amazonaws.com/socialxbeta-hosting-mobilehub-1418679691"
+			}
+		},
+		{
+			"type": "AWS::CloudFront::Distribution",
+			"name": "d8zwx06hd9bob.cloudfront.net",
+			"arn": null,
+			"feature": "hosting",
+			"attributes": {
+				"id": "EASA5JWNE2KNS",
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177"
+			}
+		},
+		{
+			"type": "AWS::IAM::Policy",
+			"name": "socialxbeta_hosting_MOBILEHUB_1418679691",
+			"arn": null,
+			"feature": "hosting",
+			"attributes": {
+				"authType": "unauthenticated",
+				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
+				"role": "socialxbeta_unauth_MOBILEHUB_1418679691"
+			}
+		},
+		{
+			"type": "AWS::S3::Bucket",
+			"name": "socialxbeta-deployments-mobilehub-1418679691",
+			"arn": null,
+			"feature": "common",
+			"attributes": {
+				"region": "eu-west-1",
+				"s3-bucket-console-url": "https://s3.console.aws.amazon.com/s3/buckets/socialxbeta-deployments-mobilehub-1418679691"
+			}
+		},
+		{
+			"type": "AWS::CloudFormation::Stack",
+			"name": "Development",
+			"arn": null,
+			"feature": "cloud-api",
+			"attributes": {
+				"primary": "true",
+				"region": "eu-west-1",
+				"stateSummary": "NOT_YET_DEPLOYED"
+			}
+		}
+	]
+}

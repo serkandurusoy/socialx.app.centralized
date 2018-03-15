@@ -1,0 +1,19 @@
+{
+	"ProjectName": "SocialxTypeActress",
+	"ProjectPath": "E:\\Work\\SocialxTypeActress",
+	"InitializationTime": "",
+	"LastConfigurationTime": "2018-03-15-11-35-55",
+	"LastNPMInstallTime": "",
+	"FrontendLastBuildTime": "",
+	"LastPublishTime": "",
+	"BackendLastSyncTime": "2018-03-15-11-36-21",
+	"BackendLastBuildTime": "",
+	"BackendLastPushTime": "",
+	"BackendLastPushSuccessful": false,
+	"BackendProjectID": "47bc67d8-2834-11e8-a001-2b6eb07055e5",
+	"BackendProjectName": "SocialxBeta",
+	"BackendProjectConsoleUrl": "https://console.aws.amazon.com/mobilehub/home#/47bc67d8-2834-11e8-a001-2b6eb07055e5/build",
+	"BackendProjectCreationTime": "2018-03-15T09:36:04.255Z",
+	"BackendProjectLastUpdatedTime": "2018-03-15T09:36:04.255Z",
+	"Framework": "react-native"
+}
