@@ -8,6 +8,7 @@ import AppNavigation from './AppNavigation';
 import {createReactNavigationReduxMiddleware, createReduxBoundAddListener} from 'react-navigation-redux-helpers';
 
 import {Root} from 'native-base';
+import {ModalActivityIndicator} from '../components/ModalActivityIndicator';
 
 const middleware: any = createReactNavigationReduxMiddleware('root', (state: any) => state.nav);
 const addListener: any = createReduxBoundAddListener('root');
@@ -30,9 +31,17 @@ function ReduxNavigation(props: any) {
 	return (
 		<Root>
 			<AppNavigation />
+			<ModalActivityIndicator
+				visible={props.showActivityIndicator}
+				title={props.activityIndicatorTitle}
+				message={props.activityIndicatorMessage}
+			/>
 		</Root>
 	);
 }
 
-const mapStateToProps: any = (state: any) => ({nav: state.nav});
+const mapStateToProps: any = (state: any) => ({
+	nav: state.nav,
+	...state.popups,
+});
 export default connect(mapStateToProps)(ReduxNavigation);
