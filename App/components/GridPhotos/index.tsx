@@ -72,7 +72,7 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 				/>
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	private loadMorePhotos = () => {
 		const {dataProvider} = this.state;
@@ -84,5 +84,5 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 				dataProvider: dataProvider.cloneWithRows(allPhotos),
 			});
 		}
-	}
+	};
 }
