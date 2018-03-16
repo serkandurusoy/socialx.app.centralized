@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import {Image, Text, View} from 'react-native';
 import {Icons} from '../../theme/';
@@ -34,19 +35,19 @@ export const TransactionItem: React.SFC<TransactionData> = (props) => {
 			<View style={style.leftContainer}>
 				<Image source={CoinIcons[props.firstCoin]} style={style.coinIcon} resizeMode={'contain'} />
 				<View>
-					<View style={style.horizontalContainer}>
-						<Text>{props.type}</Text>
-						<Text>{props.firstAmount}</Text>
-						<Text>{props.firstCoin}</Text>
-					</View>
-					<View style={style.horizontalContainer}>
-						<Text>{'for'}</Text>
-						<Text>{props.secondAmount}</Text>
-						<Text>{props.secondCoin}</Text>
-					</View>
+					<Text style={style.lineText}>
+						{props.type} {props.firstAmount} {props.firstCoin}
+					</Text>
+					<Text style={style.lineText}>
+						<Text style={style.grayText}>{'for '}</Text>
+						{props.secondAmount} {props.secondCoin}
+					</Text>
 				</View>
 			</View>
-			<View style={style.rightContainer}>{/*<Text>{props.date}</Text>*/}</View>
+			<View style={style.rightContainer}>
+				<Text style={style.dateText}>{moment(props.date).format('MMM')}</Text>
+				<Text style={style.dateText}>{moment(props.date).format('DD')}</Text>
+			</View>
 		</View>
 	);
 };

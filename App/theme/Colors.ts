@@ -33,6 +33,7 @@ const SocialXColors = {
 	catskillWhite: '#F0F3F8',
 	sushi: '#79B933',
 	grayNurse05: 'rgba(230,231,230,0.5)',
+	shuttleGray: '#54646E',
 };
 
 export default SocialXColors;

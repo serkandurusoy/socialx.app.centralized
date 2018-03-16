@@ -47,12 +47,15 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 	},
 ];
 
+const TOTAL_NUMBER_OF_TRANSACTIONS = 40;
+
 export interface IWalletActivityScreenState {
 	myCoins: string;
 	trendPercentage: string;
 	trendArrow: TrendOptions;
 	transactions: TransactionData[];
 	refreshing: boolean;
+	hasMore: boolean;
 }
 
 export default class WalletActivityScreen extends Component<any, IWalletActivityScreenState> {
@@ -66,7 +69,10 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 		trendArrow: TrendOptions.UP,
 		transactions: SAMPLE_TRANSACTIONS,
 		refreshing: false,
+		hasMore: true,
 	};
+
+	private isLoading = false;
 
 	public render() {
 		return (
@@ -79,6 +85,7 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshDataHandler}
 				loadMoreTransactions={this.loadMoreTransactionsHandler}
+				hasMore={this.state.hasMore}
 			/>
 		);
 	}
@@ -88,8 +95,30 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 	}
 
 	private refreshDataHandler = () => {
-		this.setState({transactions: SAMPLE_TRANSACTIONS});
+		this.setState({
+			refreshing: true,
+		});
+		setTimeout(() => {
+			this.setState({
+				refreshing: false,
+				transactions: SAMPLE_TRANSACTIONS,
+			});
+		}, 1500);
 	}
 
-	// private loadMoreTransactionsHandler = () => {};
+	private loadMoreTransactionsHandler = () => {
+		if (this.state.transactions.length < TOTAL_NUMBER_OF_TRANSACTIONS) {
+			if (!this.isLoading) {
+				this.isLoading = true;
+				setTimeout(() => {
+					this.isLoading = false;
+					this.setState({
+						transactions: this.state.transactions.concat(SAMPLE_TRANSACTIONS),
+					});
+				}, 1000); // just simulate network calls delay
+			}
+		} else {
+			this.setState({hasMore: false});
+		}
+	}
 }

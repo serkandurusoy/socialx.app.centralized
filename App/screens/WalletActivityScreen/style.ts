@@ -15,6 +15,9 @@ const style: any = {
 		color: Colors.postFullName,
 		paddingTop: Sizes.smartVerticalScale(17),
 	},
+	bottomLoadingContainer: {
+		paddingVertical: Sizes.smartVerticalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);

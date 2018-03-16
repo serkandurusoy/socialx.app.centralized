@@ -6,7 +6,7 @@ const style: any = {
 		backgroundColor: Colors.white,
 		shadowColor: Colors.blackWithAlpha(0.17),
 		shadowOffset: {width: 1, height: 26},
-		shadowOpacity: 0.5,
+		shadowOpacity: 1,
 		shadowRadius: 22,
 		paddingHorizontal: Sizes.smartHorizontalScale(21),
 		paddingVertical: Sizes.smartVerticalScale(12),

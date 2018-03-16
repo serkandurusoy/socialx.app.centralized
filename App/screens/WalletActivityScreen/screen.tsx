@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import {MyWalletInfo, TrendOptions} from '../../components/MyWalletInfo';
 import {TransactionData, TransactionItem} from '../../components/TransactionItem';
 import style from './style';
@@ -13,6 +13,7 @@ export interface IWalletActivityScreenComponentProps {
 	refreshing: boolean;
 	refreshData: () => void;
 	loadMoreTransactions: () => void;
+	hasMore: boolean;
 }
 
 export default class WalletActivityScreenComponent extends Component<IWalletActivityScreenComponentProps, any> {
@@ -33,8 +34,9 @@ export default class WalletActivityScreenComponent extends Component<IWalletActi
 					renderItem={this.renderTransaction}
 					onEndReached={this.props.loadMoreTransactions}
 					onEndReachedThreshold={0.2}
-					alwaysBounceVertical={false}
 					keyExtractor={(item: TransactionData, index: number) => index.toString()}
+					ListFooterComponent={this.renderFooterWhenLoading}
+					extraData={this.props.hasMore}
 				/>
 			</View>
 		);
@@ -42,5 +44,16 @@ export default class WalletActivityScreenComponent extends Component<IWalletActi
 
 	private renderTransaction = (data: {item: TransactionData; index: number}) => {
 		return <TransactionItem {...data.item} />;
+	}
+
+	private renderFooterWhenLoading = () => {
+		if (this.props.hasMore) {
+			return (
+				<View style={style.bottomLoadingContainer}>
+					<ActivityIndicator size={'small'} />
+				</View>
+			);
+		}
+		return null;
 	}
 }
