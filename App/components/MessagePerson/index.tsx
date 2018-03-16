@@ -1,6 +1,6 @@
-import moment from 'moment';
 import React from 'react';
 import {Text, View} from 'react-native';
+import moment from 'moment';
 
 import {AvatarImage} from '../AvatarImage';
 import style from './style';
@@ -17,14 +17,10 @@ export const MessagePerson: React.SFC<IFriendRequestProps> = (props) => {
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
+				<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage}/>
 				<View style={style.avatarNameContainer}>
-					<Text numberOfLines={1} style={style.username}>
-						{props.userName}
-					</Text>
-					<Text numberOfLines={1} style={style.message}>
-						{props.message}
-					</Text>
+					<Text numberOfLines={1} style={style.username}>{props.userName}</Text>
+					<Text numberOfLines={1} style={style.message}>{props.message}</Text>
 				</View>
 			</View>
 			<Text style={style.time}>{formattedTime}</Text>

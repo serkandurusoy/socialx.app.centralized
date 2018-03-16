@@ -23,16 +23,20 @@ const style: any = {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 	},
-	inputSearch: {
-		flex: 8,
+	inputSearch:{
+
 	},
-	friendsText: {
-		flex: 4,
-		color: Colors.postFullName,
-		...Fonts.centuryGothic,
+	friendsText:{
 		fontSize: Sizes.smartHorizontalScale(24),
 		lineHeight: Sizes.smartHorizontalScale(29),
 	},
+	/*startSearchText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(16),
+		lineHeight: Sizes.smartHorizontalScale(24),
+		color: Colors.silverSand,
+		paddingTop: Sizes.smartVerticalScale(15),
+	},*/
 	noResultsContainer: {
 		flex: 1,
 		width: '100%',
