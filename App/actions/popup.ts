@@ -1,12 +1,4 @@
-import {HIDE_ACTIVITY_INDICATOR, SHOW_ACTIVITY_INDICATOR} from '../constants';
-
-export interface IPopupAction {
-	type: string;
-	payload?: {
-		activityIndicatorTitle?: string;
-		activityIndicatorMessage?: string;
-	};
-}
+import { HIDE_ACTIVITY_INDICATOR, IPopupAction, SHOW_ACTIVITY_INDICATOR } from '../types';
 
 export const showActivityIndicator = (
 	activityIndicatorTitle?: string,

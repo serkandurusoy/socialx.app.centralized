@@ -1,13 +1,6 @@
-import { IPopupAction } from '../../actions';
-import { HIDE_ACTIVITY_INDICATOR, SHOW_ACTIVITY_INDICATOR } from '../../constants';
+import { HIDE_ACTIVITY_INDICATOR, IPopupAction, IPopupStateProps, SHOW_ACTIVITY_INDICATOR } from '../../types';
 
-export interface IStateProps {
-	showActivityIndicator: boolean;
-	activityIndicatorTitle?: string;
-	activityIndicatorMessage?: string;
-}
-
-const initialState: IStateProps = {
+const initialState: IPopupStateProps = {
 	showActivityIndicator: false,
 };
 
