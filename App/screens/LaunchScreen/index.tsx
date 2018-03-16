@@ -1,13 +1,14 @@
-import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
-import {connect} from 'react-redux';
-import {SXButton} from '../../components/Button';
-import {SXGradientButton} from '../../components/GradientButton';
-import {TextGradient} from '../../components/TextGradient';
-import {actions} from '../../reducers/PopupsReducers';
-import {Colors, Images} from '../../theme';
+import React, { Component } from 'react';
+import { Image, Text, View } from 'react-native';
+import { NavigationScreenProp } from 'react-navigation';
+import { connect } from 'react-redux';
+import { SXButton } from '../../components/Button';
+import { SXGradientButton } from '../../components/GradientButton';
+import { TextGradient } from '../../components/TextGradient';
+import { Colors, Images } from '../../theme';
 import style from './style';
+
+import { hideActivityIndicator, showActivityIndicator } from '../../actions';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -63,14 +64,8 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 }
 
 const mapDispatchToProps = (dispatch: any): Partial<ILaunchScreenProps> => ({
-	showActivityIndicator: () =>
-		dispatch(
-			actions.showActivityIndicator({
-				activityIndicatorTitle: 'Sample title',
-				activityIndicatorMessage: null,
-			}),
-		),
-	hideActivityIndicator: () => dispatch(actions.hideActivityIndicator()),
+	showActivityIndicator: () => dispatch(showActivityIndicator('Simple')),
+	hideActivityIndicator: () => dispatch(hideActivityIndicator()),
 });
 
 export default connect(null, mapDispatchToProps)(LaunchScreen);

@@ -21,7 +21,7 @@
     "lintdiff": "git diff --name-only --cached --relative | grep '\\.tsx?$' | xargs tslint | snazzy",
     "fixcode": "tslint --project . -e '**/*.js' --fix",
     "pretty": "find ./App ./storybook -name '*.ts' -o -name '*.tsx' | xargs node_modules/.bin/prettier --write --config .prettierrc",
-    "prettyWin": "where /r .\\App\\utils *.ts *.tsx | xargswin -I{} \"npm run prettier {}\"",
+    "prettyWin": "where /r .\\App *.ts *.tsx | xargswin -I{} \"npm run prettier {}\"",
     "prettier": "node_modules/.bin/prettier --write --config .prettierrc",
     "git-hook": "npm run lint -s && npm run test -s",
     "precommit": "npm run pretty && npm run fixcode",

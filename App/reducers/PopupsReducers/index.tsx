@@ -1,41 +1,29 @@
-import {createAction, getType} from 'typesafe-actions';
-import {$call} from 'utility-types';
-import {HIDE_ACTIVITY_INDICATOR, SHOW_ACTIVITY_INDICATOR} from '../../constants';
+import { IPopupAction } from '../../actions';
+import { HIDE_ACTIVITY_INDICATOR, SHOW_ACTIVITY_INDICATOR } from '../../constants';
 
-export const actions = {
-	showActivityIndicator: createAction(
-		SHOW_ACTIVITY_INDICATOR,
-		(payload: {activityIndicatorTitle: string | null; activityIndicatorMessage: string | null}) => ({
-			type: SHOW_ACTIVITY_INDICATOR,
-			payload,
-		}),
-	),
-	hideActivityIndicator: createAction(HIDE_ACTIVITY_INDICATOR),
-};
+export interface IStateProps {
+	showActivityIndicator: boolean;
+	activityIndicatorTitle?: string;
+	activityIndicatorMessage?: string;
+}
 
-const returnsOfActions = Object.values(actions).map($call);
-type PopupActions = typeof returnsOfActions[number];
-
-const initialState = {
+const initialState: IStateProps = {
 	showActivityIndicator: false,
-	activityIndicatorTitle: null,
-	activityIndicatorMessage: null,
 };
 
-export const PopupsReducers = (state = initialState, action: PopupActions) => {
+export const PopupsReducers = (state = initialState, action: IPopupAction) => {
 	switch (action.type) {
-		case getType(actions.showActivityIndicator):
+		case SHOW_ACTIVITY_INDICATOR:
 			return {
 				...state,
 				showActivityIndicator: true,
 				...action.payload,
 			};
-		case getType(actions.hideActivityIndicator):
+		case HIDE_ACTIVITY_INDICATOR:
 			return {
 				...state,
 				showActivityIndicator: false,
 			};
-		default:
-			return state;
 	}
+	return state;
 };
