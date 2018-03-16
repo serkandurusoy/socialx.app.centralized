@@ -15,6 +15,7 @@ import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import SocialXAccountScreen from '../screens/SocialXAccountScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
@@ -71,10 +72,12 @@ const PrimaryNav = StackNavigator(
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 		WalletActivityScreen: {screen: WalletActivityScreen}, // TODO: later to be moved!
 		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
+		SocialXAccountScreen: {screen: SocialXAccountScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
+		// initialRouteName: 'LaunchScreen',
+		initialRouteName: 'SocialXAccountScreen',
 		navigationOptions: {
 			headerStyle: styles.header,
 			headerTintColor: Colors.white, // color for screen title and back button
