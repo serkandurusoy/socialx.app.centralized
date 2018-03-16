@@ -5,7 +5,7 @@ import {HIDE_ACTIVITY_INDICATOR, SHOW_ACTIVITY_INDICATOR} from '../../constants'
 export const actions = {
 	showActivityIndicator: createAction(
 		SHOW_ACTIVITY_INDICATOR,
-		(payload: {title: string | null; message: string | null}) => ({
+		(payload: {activityIndicatorTitle: string | null; activityIndicatorMessage: string | null}) => ({
 			type: SHOW_ACTIVITY_INDICATOR,
 			payload,
 		}),
@@ -28,8 +28,7 @@ export const PopupsReducers = (state = initialState, action: PopupActions) => {
 			return {
 				...state,
 				showActivityIndicator: true,
-				activityIndicatorTitle: action.payload.title,
-				activityIndicatorMessage: action.payload.message,
+				...action.payload,
 			};
 		case getType(actions.hideActivityIndicator):
 			return {

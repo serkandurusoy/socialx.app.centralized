@@ -31,17 +31,10 @@ function ReduxNavigation(props: any) {
 	return (
 		<Root>
 			<AppNavigation />
-			<ModalActivityIndicator
-				visible={props.showActivityIndicator}
-				title={props.activityIndicatorTitle}
-				message={props.activityIndicatorMessage}
-			/>
+			<ModalActivityIndicator />
 		</Root>
 	);
 }
 
-const mapStateToProps: any = (state: any) => ({
-	nav: state.nav,
-	...state.popups,
-});
+const mapStateToProps: any = (state: any) => ({nav: state.nav});
 export default connect(mapStateToProps)(ReduxNavigation);

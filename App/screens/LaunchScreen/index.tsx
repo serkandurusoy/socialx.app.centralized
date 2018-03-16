@@ -63,7 +63,13 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 }
 
 const mapDispatchToProps = (dispatch: any): Partial<ILaunchScreenProps> => ({
-	showActivityIndicator: () => dispatch(actions.showActivityIndicator({title: 'Sample title', message: null})),
+	showActivityIndicator: () =>
+		dispatch(
+			actions.showActivityIndicator({
+				activityIndicatorTitle: 'Sample title',
+				activityIndicatorMessage: null,
+			}),
+		),
 	hideActivityIndicator: () => dispatch(actions.hideActivityIndicator()),
 });
 
