@@ -152,7 +152,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			return (
 				<TouchableOpacity style={style.cancelButton} onPress={() => Keyboard.dismiss()}>
 					<Text style={[style.cancelButtonText, {color: this.props.cancelButtonTextColor}]}>Cancel</Text>
-				</<Text style={[st>
+				</TouchableOpacity>
 			);
 		}
 		return null;
