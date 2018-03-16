@@ -23,6 +23,7 @@ import UserProfileScreen from '../screens/UserProfileScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
 import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
+import MessagingScreen from '../screens/MessagingScreen';
 
 const MainScreenTabNavigation = TabNavigator(
 	{
@@ -68,6 +69,7 @@ const PrimaryNav = StackNavigator(
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
 		MainScreen: {screen: MainScreenWithModal},
+		MessagingScreen: {screen: MessagingScreen},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
@@ -78,7 +80,8 @@ const PrimaryNav = StackNavigator(
 	},
 	{
 		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
+		// initialRouteName: 'LaunchScreen',
+		initialRouteName: 'MessagingScreen',
 		navigationOptions: {
 			headerStyle: styles.header,
 			headerTintColor: Colors.white, // color for screen title and back button
