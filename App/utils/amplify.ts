@@ -22,7 +22,9 @@ export const CurrentUserInfo = (): Promise<any> => Auth.currentUserInfo();
 export const CurrentUserPool = (): Promise<any> => Auth.currentUserPoolUser();
 
 export const ForgotPassword = (username: string): Promise<any> => Auth.forgotPassword(username);
-export const ForgotPasswordConfirm = (username: string, code: string, password: string): Promise<any> => Auth.forgotPasswordSubmit(username, code, password); /* tslint:disable-line */
-export const ChangePassword = (user: any, oldPass: string, newPass: string): Promise<any> => Auth.changePassword(user, oldPass, newPass); /* tslint:disable-line */
+export const ForgotPasswordConfirm = (username: string, code: string, password: string): Promise<any> =>
+	Auth.forgotPasswordSubmit(username, code, password); /* tslint:disable-line */
+export const ChangePassword = (user: any, oldPass: string, newPass: string): Promise<any> =>
+	Auth.changePassword(user, oldPass, newPass); /* tslint:disable-line */
 
 export const Signout = (): Promise<any> => Auth.signOut();

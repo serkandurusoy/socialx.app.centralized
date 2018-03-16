@@ -1,17 +1,21 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
+import {connect} from 'react-redux';
 import {SXButton} from '../../components/Button';
 import {SXGradientButton} from '../../components/GradientButton';
 import {TextGradient} from '../../components/TextGradient';
+import {actions} from '../../reducers/PopupsReducers';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
+	showActivityIndicator: () => void;
+	hideActivityIndicator: () => void;
 }
 
-export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
+class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	private static navigationOptions = {
 		header: null,
 	};
@@ -46,10 +50,27 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
-		this.props.navigation.navigate('LoginScreen');
+		this.props.showActivityIndicator();
+		setTimeout(() => {
+			this.props.navigation.navigate('LoginScreen');
+			this.props.hideActivityIndicator();
+		}, 2000);
 	}
 
 	private navigateToSignUpScreen = () => {
 		this.props.navigation.navigate('SignUpScreen');
 	}
 }
+
+const mapDispatchToProps = (dispatch: any): Partial<ILaunchScreenProps> => ({
+	showActivityIndicator: () =>
+		dispatch(
+			actions.showActivityIndicator({
+				activityIndicatorTitle: 'Sample title',
+				activityIndicatorMessage: null,
+			}),
+		),
+	hideActivityIndicator: () => dispatch(actions.hideActivityIndicator()),
+});
+
+export default connect(null, mapDispatchToProps)(LaunchScreen);
