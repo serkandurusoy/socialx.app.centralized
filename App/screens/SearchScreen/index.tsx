@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {findNodeHandle, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
+import {ModalCreateGroup} from '../../components/ModalCreateGroup';
 import {ModalInvitePeople} from '../../components/ModalInvitePeople';
 import {SearchHeader} from '../../components/SearchHeader';
 import SearchScreenComponent from './screen';
@@ -134,10 +135,14 @@ interface ISearchScreenState {
 	searchTerm: string;
 	searchResults: SearchResultPeople[] | SearchResultGroups[];
 	selectedFilter: SearchFilterValues;
-	modalVisible: boolean;
+	invitePeopleModalVisible: boolean;
 	blurViewRef: any;
 	createGroupSearchResults: SearchResultCreateGroup[];
 	selectedUsers: string[];
+	groupInfoModalVisible: boolean;
+	groupName: string;
+	groupDescription: string;
+	nextShowInvitePeople: boolean;
 }
 
 export default class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
@@ -149,13 +154,17 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 	})
 
 	public state = {
-		modalVisible: false,
+		invitePeopleModalVisible: false,
 		searchTerm: '',
 		searchResults: [],
 		selectedFilter: SearchFilterValues.People,
 		blurViewRef: null,
 		createGroupSearchResults: [],
 		selectedUsers: [],
+		groupInfoModalVisible: false,
+		groupName: '',
+		groupDescription: '',
+		nextShowInvitePeople: false,
 	};
 
 	private blurView = null;
@@ -164,13 +173,27 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
 	}
 
+	public componentDidMount() {
+		const blurViewHandle = findNodeHandle(this.blurView);
+		this.setState({blurViewRef: blurViewHandle});
+	}
+
 	public render() {
 		return (
 			<View style={{flex: 1}}>
+				<ModalCreateGroup
+					visible={this.state.groupInfoModalVisible}
+					confirmHandler={() => this.toggleGroupInfoModal(true)}
+					declineHandler={() => this.toggleGroupInfoModal()}
+					updateGroupName={this.updateGroupNameHanlder}
+					updateGroupDescription={this.updateGroupDescriptionHandler}
+					blurViewRef={this.state.blurViewRef}
+					onModalHide={this.onGroupInfoModalHide}
+				/>
 				<ModalInvitePeople
-					visible={this.state.modalVisible}
+					visible={this.state.invitePeopleModalVisible}
 					createHandler={this.handleCreateNewGroup}
-					cancelHandler={this.toggleCreateGroupModal}
+					cancelHandler={this.toggleInvitePeopleModal}
 					blurViewRef={this.state.blurViewRef}
 					onSearchUpdated={this.createGroupSearchUpdated}
 					searchResults={this.state.createGroupSearchResults}
@@ -184,7 +207,7 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 					searchResults={this.state.searchResults}
 					selectedFilter={this.state.selectedFilter}
 					setNewFilter={this.updateSelectedFilter}
-					createGroupHandler={this.prepareCreateGroupHandler}
+					createGroupHandler={() => this.toggleGroupInfoModal()}
 				/>
 			</View>
 		);
@@ -204,19 +227,9 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 		});
 	}
 
-	private prepareCreateGroupHandler = () => {
-		if (Platform.OS === 'ios') {
-			this.toggleCreateGroupModal();
-		} else {
-			const blurViewHandle = findNodeHandle(this.blurView);
-			this.setState({blurViewRef: blurViewHandle});
-			this.toggleCreateGroupModal();
-		}
-	}
-
-	private toggleCreateGroupModal = () => {
+	private toggleInvitePeopleModal = () => {
 		this.setState({
-			modalVisible: !this.state.modalVisible,
+			invitePeopleModalVisible: !this.state.invitePeopleModalVisible,
 			createGroupSearchResults: [],
 			selectedUsers: [],
 		});
@@ -224,6 +237,30 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 
 	private selectNewUserForGroupHandler = (userId: string) => {
 		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
+	}
+
+	private toggleGroupInfoModal = (prepareNext = false) => {
+		this.setState({
+			groupInfoModalVisible: !this.state.groupInfoModalVisible,
+			groupName: '',
+			groupDescription: '',
+			nextShowInvitePeople: prepareNext,
+		});
+	}
+
+	private updateGroupNameHanlder = (text: string) => {
+		this.setState({groupName: text});
+	}
+
+	private updateGroupDescriptionHandler = (text: string) => {
+		this.setState({groupDescription: text});
+	}
+
+	private onGroupInfoModalHide = () => {
+		if (this.state.nextShowInvitePeople) {
+			this.toggleInvitePeopleModal();
+			this.setState({nextShowInvitePeople: false});
+		}
 	}
 
 	private getSearchResults = (term: string, filterValue: SearchFilterValues = this.state.selectedFilter) => {
@@ -239,8 +276,8 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 	}
 
 	private handleCreateNewGroup = () => {
-		this.toggleCreateGroupModal();
-		// console.log('handleCreateNewGroup: ' + this.state.selectedUsers);
+		this.toggleInvitePeopleModal();
+		// TODO: check state variables: groupName, groupDescription, selectedUsers
 	}
 
 	private createGroupSearchUpdated = (term: string) => {
