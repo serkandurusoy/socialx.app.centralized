@@ -7,6 +7,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
+import MessagingScreen from '../screens/MessagingScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
@@ -23,7 +24,6 @@ import UserProfileScreen from '../screens/UserProfileScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
 import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
-import MessagingScreen from '../screens/MessagingScreen';
 
 const MainScreenTabNavigation = TabNavigator(
 	{
