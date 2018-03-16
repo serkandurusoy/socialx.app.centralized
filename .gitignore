@@ -58,3 +58,4 @@ buck-out/
 .env
 dist
 .jest
+.vscode

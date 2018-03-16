@@ -27,7 +27,7 @@ export default class UserFeedScreenComponent extends Component<IUserFeedScreenPr
 					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
 					<TouchableWithoutFeedback onPress={this.props.showNewWallPostPage}>
 						<View style={style.shareTextContainer}>
-							<Text style={style.shareTextPlaceholder}>{'Share with your group what you think'}</Text>
+							<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
 						</View>
 					</TouchableWithoutFeedback>
 				</View>

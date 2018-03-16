@@ -10,6 +10,7 @@ export interface IFriendRequestProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;
+	onRequestConfirmed: () => void;
 }
 
 export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
@@ -18,10 +19,6 @@ export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
 			return <Text style={style.username}>{'@' + props.username}</Text>;
 		}
 		return null;
-	};
-
-	const approveFriendRequestHandler = () => {
-		alert('TBD: approveFriendRequestHandler');
 	};
 
 	return (
@@ -39,7 +36,7 @@ export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
 				size={ButtonSizes.Small}
 				autoWidth={true}
 				borderColor={Colors.transparent}
-				onPress={approveFriendRequestHandler}
+				onPress={props.onRequestConfirmed}
 			/>
 		</View>
 	);

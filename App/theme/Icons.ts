@@ -21,4 +21,7 @@ export default {
 	peopleSearchResultIsFriend: require('../../assets/icons/people_search_result_is_friend.png'),
 	iconHeartWhiteFilled: require('../../assets/icons/heart_white_filled.png'),
 	iconHeartWhiteOutline: require('../../assets/icons/heart_white_outline.png'),
+	iconNotificationsScreenEmpty: require('../../assets/icons/icon_notifications_screen_empty.png'),
+	socxCoinIcon: require('../../assets/icons/socx_icon.png'),
+	ethCoinIcon: require('../../assets/icons/eth_icon.png'),
 };

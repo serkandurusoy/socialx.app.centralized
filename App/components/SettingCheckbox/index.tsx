@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, Switch, Text, View} from 'react-native';
 
+import {OS_TYPES} from '../../constants';
 import {Colors} from '../../theme/';
 import style from './style';
 
@@ -38,7 +39,7 @@ export class SettingCheckbox extends Component<ISettingCheckboxProps, ISettingCh
 					style={style.switch}
 					value={this.state.value}
 					onValueChange={this.valueUpdated}
-					thumbTintColor={Platform.OS === 'android' ? Colors.white : null}
+					thumbTintColor={Platform.OS === OS_TYPES.Android ? Colors.white : null}
 					onTintColor={Colors.postHour}
 				/>
 			</View>

@@ -98,19 +98,19 @@ export class AddWallPostModal extends React.Component<IAddWallPostModalProps, IA
 	private backDropPressHandler = () => {
 		this.setState({modalVisible: false});
 		// Keyboard.dismiss(); // doesn't work!
-	}
+	};
 
 	private keyboardDidShow = (event: any) => {
 		this.setState({
 			marginBottom: event.endCoordinates.height,
 		});
-	}
+	};
 
 	private keyboardDidHide = () => {
 		this.setState({
 			marginBottom: 0,
 		});
-	}
+	};
 
 	private addMediaHandler = () => {
 		ActionSheet.show(
@@ -130,7 +130,7 @@ export class AddWallPostModal extends React.Component<IAddWallPostModalProps, IA
 				}
 			},
 		);
-	}
+	};
 
 	private showGalleryPhotoPicker = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
@@ -147,11 +147,11 @@ export class AddWallPostModal extends React.Component<IAddWallPostModalProps, IA
 		this.setState({
 			mediaObjects: this.state.mediaObjects.concat(localImagePath),
 		});
-	}
+	};
 
 	private takeCameraPhoto = async () => {
 		alert('takeCameraPhoto');
-	}
+	};
 
 	private renderPostMediaObjects = () => {
 		const ret: any = [];
@@ -178,5 +178,5 @@ export class AddWallPostModal extends React.Component<IAddWallPostModalProps, IA
 			}
 		});
 		return ret;
-	}
+	};
 }

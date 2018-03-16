@@ -10,6 +10,10 @@ const containerStyle = {
 	paddingHorizontal: 0,
 };
 
+const friendRequestConfirmedHandler = () => {
+	alert('friendRequestConfirmedHandler');
+};
+
 storiesOf('FriendRequest')
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
@@ -20,5 +24,12 @@ storiesOf('FriendRequest')
 		);
 		const fullName = text('User full name', 'Teresa Lamb');
 		const username = text('Username', 'terlamb');
-		return <FriendRequest avatarURL={avatarURL} fullName={fullName} username={username} />;
+		return (
+			<FriendRequest
+				avatarURL={avatarURL}
+				fullName={fullName}
+				username={username}
+				onRequestConfirmed={friendRequestConfirmedHandler}
+			/>
+		);
 	});

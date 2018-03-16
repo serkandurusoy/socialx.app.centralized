@@ -89,6 +89,8 @@ const ApplicationStyles: any = {
 		fontSize: Sizes.smartHorizontalScale(13),
 		letterSpacing: 1,
 		color: Colors.white,
+		textAlign: 'center',
+		flex: 1,
 	},
 };
 

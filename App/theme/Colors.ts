@@ -2,6 +2,9 @@ const SocialXColors = {
 	transparent: 'rgba(0,0,0,0)',
 	white: 'white',
 	black: '#000000',
+	blackWithAlpha: (alpha: number) => {
+		return 'rgba(0, 0, 0, ' + alpha + ')';
+	},
 	pink: 'rgb(255,0,153)',
 	background: 'rgb(74,89,99)',
 	darkGray: 'rgb(84,100,110)',
@@ -12,7 +15,7 @@ const SocialXColors = {
 	userAvatarFullName: '#006BFF',
 	dustWhite: '#EEEEEE',
 	grayText: '#9B9B9B',
-	gradientButtonLeft: '#814FBE',
+	fuchsiaBlue: '#814FBE',
 	iron: '#D3D6DA',
 	iron2: '#D6D9DE',
 	rhino: '#273851',
@@ -24,6 +27,13 @@ const SocialXColors = {
 	silverSand: '#BFC3C8',
 	searchFilterButtonSelectedBg: 'rgba(3,157,226,0.06)',
 	searchFilterButtonUnselectedText: 'rgba(109,120,134,0.7)',
+	pigeonPost: '#A7BAD4',
+	activityCardBottomBorder: 'rgba(168,182,200,0.3)',
+	midnight: '#000F2B',
+	catskillWhite: '#F0F3F8',
+	sushi: '#79B933',
+	grayNurse05: 'rgba(230,231,230,0.5)',
+	shuttleGray: '#54646E',
 };
 
 export default SocialXColors;

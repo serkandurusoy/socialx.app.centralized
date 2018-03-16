@@ -9,6 +9,9 @@ const style: any = {
 		alignItems: 'center',
 		paddingLeft: Sizes.smartHorizontalScale(25),
 		paddingRight: Sizes.smartHorizontalScale(12),
+		paddingVertical: Sizes.smartVerticalScale(24),
+		borderBottomColor: Colors.activityCardBottomBorder,
+		borderBottomWidth: Sizes.smartHorizontalScale(1),
 	},
 	leftContainer: {
 		flexDirection: 'row',
@@ -32,7 +35,7 @@ const style: any = {
 	username: {
 		...Fonts.centuryGothic,
 		color: Colors.postHour,
-		fontSize: Sizes.smartHorizontalScale(10),
+		fontSize: Sizes.smartHorizontalScale(11),
 	},
 	friendRequest: {
 		...Fonts.centuryGothic,
