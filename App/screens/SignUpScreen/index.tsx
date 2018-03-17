@@ -2,11 +2,16 @@ import React, {Component} from 'react';
 import {Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {connect} from 'react-redux';
 import {AvatarPicker} from '../../components/AvatarPicker';
 import {SXButton} from '../../components/Button';
+import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
 import {Colors, Images} from '../../theme';
 import style from './style';
+
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {ConfirmSignup, ISignup, resendSignup, Signup} from '../../utils';
 
 export interface ISignUpScreenState {
 	email: string;
@@ -15,14 +20,20 @@ export interface ISignUpScreenState {
 	password: string;
 	confirmPassword: string;
 	avatarImage: any;
+	phone: string;
 	updatedAvatarImageBase64: string | null;
+	showModalForSMSCode: boolean;
 }
 
 export interface ISignUpScreenProps {
 	navigation: NavigationScreenProp<any>;
+	SignupLoading: () => void;
+	ConfirmSignupLoading: () => void;
+	ResendCodeLoading: () => void;
+	HideLoader: () => void;
 }
 
-export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
+class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'REGISTER',
 	};
@@ -31,10 +42,12 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		email: '',
 		name: '',
 		username: '',
+		phone: '',
 		password: '',
 		confirmPassword: '',
 		avatarImage: Images.user_avatar_placeholder,
 		updatedAvatarImageBase64: null,
+		showModalForSMSCode: false,
 	};
 
 	private inputRefs: any = {};
@@ -46,6 +59,13 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
 			>
+				<ModalInputSMSCode
+					visible={this.state.showModalForSMSCode}
+					confirmHandler={this.smsCodeConfirmedHandler}
+					declineHandler={this.smsCodeDeclinedHandler}
+					resendHandler={this.smsCodeResendHandler}
+					phoneNumber={this.state.phone}
+				/>
 				<View style={style.buttonContainer}>
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
 				</View>
@@ -53,6 +73,7 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 				<View style={style.avatarPickerContainer}>
 					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
 				</View>
+				{/* TODO: disable all inputfields on submit */}
 				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 					<SXTextInput
 						iconColor={Colors.iron}
@@ -88,9 +109,22 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
-						onSubmitPressed={() => this.handleInputSubmitPressed('password')}
+						onSubmitPressed={() => this.handleInputSubmitPressed('phone')}
 						onChangeText={(value) => this.handleInputChangeText(value, 'username')}
 						ref={(ref: any) => this.updateInputRef(ref, 'username')}
+					/>
+				</View>
+				<View style={style.textInputContainer}>
+					<SXTextInput
+						iconColor={Colors.iron}
+						icon={'phone'}
+						placeholder={'Phone number (with country code)'}
+						placeholderColor={Colors.postText}
+						borderColor={Colors.transparent}
+						returnKeyType={TRKeyboardKeys.next}
+						onSubmitPressed={() => this.handleInputSubmitPressed('password')}
+						onChangeText={(value) => this.handleInputChangeText(value, 'phone')}
+						ref={(ref: any) => this.updateInputRef(ref, 'phone')}
 					/>
 				</View>
 				<View style={style.textInputContainer}>
@@ -145,19 +179,69 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		}
 	}
 
-	private startRegister = () => {
-		// TODO: hookup register here
-		// console.log(
-		// 	'Start register',
-		// 	this.state.email,
-		// 	this.state.name,
-		// 	this.state.username,
-		// 	this.state.password,
-		// 	this.state.confirmPassword,
-		// 	this.state.updatedAvatarImageBase64,
-		// );
+	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
-		this.props.navigation.navigate('SaveKeyScreen');
+		this.setState({
+			showModalForSMSCode: visible,
+		});
+	}
+
+	private smsCodeConfirmedHandler = async (code: string) => {
+		try {
+			this.props.ConfirmSignupLoading();
+			const res = await ConfirmSignup(this.state.username, code);
+
+			Keyboard.dismiss();
+			this.toggleVisibleModalSMS(false);
+			this.props.navigation.navigate('MainScreen');
+			this.props.HideLoader();
+			// this.props.navigation.navigate('SaveKeyScreen');
+		} catch (ex) {
+			// TODO: alert here
+		}
+	}
+
+	private smsCodeDeclinedHandler = () => {
+		// TODO: do something here.. (remove user data?)
+		this.toggleVisibleModalSMS(false);
+		// console.log('TODO: smsCodeDeclinedHandler');
+	}
+
+	private smsCodeResendHandler = async () => {
+		try {
+			this.props.ResendCodeLoading();
+			const res = await resendSignup(this.state.username);
+			this.props.HideLoader();
+		} catch (ex) {
+			// TODO: alert here
+		}
+	}
+
+	private startRegister = async () => {
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
+		if (password !== confirmPassword) {
+			// TODO: alert here or somrthing
+			return;
+		}
+		const signupParams: ISignup = {
+			username,
+			password,
+			attributes: {
+				phone_number: phone,
+				email,
+			},
+		};
+
+		try {
+			this.props.SignupLoading();
+			const res = await Signup(signupParams);
+
+			Keyboard.dismiss();
+			this.toggleVisibleModalSMS();
+			this.props.HideLoader();
+		} catch (ex) {
+			// TODO: alert here
+		}
 	}
 
 	private updateAvatarImage = (base64Photo: string) => {
@@ -167,3 +251,12 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		});
 	}
 }
+
+const MapDispatchToProps = (dispatch: any) => ({
+	SignupLoading: () => dispatch(showActivityIndicator('Signing you up', 'please wait..')),
+	ConfirmSignupLoading: () => dispatch(showActivityIndicator('Confirming your code')),
+	ResendCodeLoading: () => dispatch(showActivityIndicator('Resending code..')),
+	HideLoader: () => dispatch(hideActivityIndicator()),
+});
+
+export default connect(null, MapDispatchToProps)(SignUpScreen as any);
