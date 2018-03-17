@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -68,6 +67,16 @@
 		E969829425D747B58E37B9D2 /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C884C50D530C4E4AB2F71DCD /* libReactNativeConfig.a */; };
 		ECB8EBA617284A628A5E62FF /* Roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3A1B98ED9324A0A90040D99 /* Roboto_medium.ttf */; };
 		FBCF9EB3A08B44F5B10AC80A /* century_gothic_italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D823A0DB583C48ECA2281FBC /* century_gothic_italic.ttf */; };
+		91E25C11F05A4098B48777B5 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CC094855D504645A4C4E55F /* Entypo.ttf */; };
+		6780437747E94BFF816F8A1C /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DB86867395C4229BF0F7745 /* EvilIcons.ttf */; };
+		836C84B4B92E478E929D82B2 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3BF733F39F945EBB5C78B4E /* FontAwesome.ttf */; };
+		60FE326EA28E465D9AC95221 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 503E655590F348AEBEDEA49F /* Foundation.ttf */; };
+		CEDD4933BE5A45F19EE025E5 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6CC24830989449990A75D5D /* Ionicons.ttf */; };
+		32688BFEA16F473D8CA8C608 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 216EEF9354704639A4675945 /* MaterialIcons.ttf */; };
+		868D2F7B8B554E898344E1BB /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DDD8EC1C4BF346F38EF5D085 /* Octicons.ttf */; };
+		266AC6D4F3874A42A144D4D1 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1F4492371978420C8F748E32 /* SimpleLineIcons.ttf */; };
+		1E43D91ACF0E45B3A2BAB835 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 259326B281A74C1EB89D3934 /* Zocial.ttf */; };
+		8D5EA4B6603A4861A2CCCA63 /* libRNAWSCognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E895669CF77F43739E8BC9F5 /* libRNAWSCognito.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -502,6 +511,17 @@
 		EE33762ABAF34FA3AEDD3C3B /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		EFECD3A2428E4969A42909CF /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		F7E060A82849492CB3844E81 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		7CC094855D504645A4C4E55F /* Entypo.ttf */ = {isa = PBXFileReference; name = "Entypo.ttf"; path = "../node_modules/native-base/Fonts/Entypo.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1DB86867395C4229BF0F7745 /* EvilIcons.ttf */ = {isa = PBXFileReference; name = "EvilIcons.ttf"; path = "../node_modules/native-base/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A3BF733F39F945EBB5C78B4E /* FontAwesome.ttf */ = {isa = PBXFileReference; name = "FontAwesome.ttf"; path = "../node_modules/native-base/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		503E655590F348AEBEDEA49F /* Foundation.ttf */ = {isa = PBXFileReference; name = "Foundation.ttf"; path = "../node_modules/native-base/Fonts/Foundation.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C6CC24830989449990A75D5D /* Ionicons.ttf */ = {isa = PBXFileReference; name = "Ionicons.ttf"; path = "../node_modules/native-base/Fonts/Ionicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		216EEF9354704639A4675945 /* MaterialIcons.ttf */ = {isa = PBXFileReference; name = "MaterialIcons.ttf"; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DDD8EC1C4BF346F38EF5D085 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1F4492371978420C8F748E32 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		259326B281A74C1EB89D3934 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AD40387E4A3E493088D533A5 /* RNAWSCognito.xcodeproj */ = {isa = PBXFileReference; name = "RNAWSCognito.xcodeproj"; path = "../node_modules/amazon-cognito-identity-js/ios/RNAWSCognito.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		E895669CF77F43739E8BC9F5 /* libRNAWSCognito.a */ = {isa = PBXFileReference; name = "libRNAWSCognito.a"; path = "libRNAWSCognito.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -540,6 +560,7 @@
 				E245E89391C94F3E97FE0C61 /* libRNBlur.a in Frameworks */,
 				D8DE8DADE2DA4D4EAAA9AC1F /* libRNTextGradient.a in Frameworks */,
 				3731345801E14E99A7403619 /* libRCTOrientation.a in Frameworks */,
+				8D5EA4B6603A4861A2CCCA63 /* libRNAWSCognito.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -705,6 +726,15 @@
 				E3A1B98ED9324A0A90040D99 /* Roboto_medium.ttf */,
 				398B5412AC6648DAB76F4ADF /* Roboto.ttf */,
 				B691CEF4B4A3469A99D1F311 /* rubicon-icon-font.ttf */,
+				7CC094855D504645A4C4E55F /* Entypo.ttf */,
+				1DB86867395C4229BF0F7745 /* EvilIcons.ttf */,
+				A3BF733F39F945EBB5C78B4E /* FontAwesome.ttf */,
+				503E655590F348AEBEDEA49F /* Foundation.ttf */,
+				C6CC24830989449990A75D5D /* Ionicons.ttf */,
+				216EEF9354704639A4675945 /* MaterialIcons.ttf */,
+				DDD8EC1C4BF346F38EF5D085 /* Octicons.ttf */,
+				1F4492371978420C8F748E32 /* SimpleLineIcons.ttf */,
+				259326B281A74C1EB89D3934 /* Zocial.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -759,6 +789,7 @@
 				EE33762ABAF34FA3AEDD3C3B /* RNBlur.xcodeproj */,
 				D4E28FC3EDA74FAE88B76B89 /* RNTextGradient.xcodeproj */,
 				0B585CB96CE24CC9A246E82C /* RCTOrientation.xcodeproj */,
+				AD40387E4A3E493088D533A5 /* RNAWSCognito.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1471,6 +1502,15 @@
 				ECB8EBA617284A628A5E62FF /* Roboto_medium.ttf in Resources */,
 				A3BFF5D0362D4620BBCDEBF0 /* Roboto.ttf in Resources */,
 				A81A33404DDD40AEAF8F8E83 /* rubicon-icon-font.ttf in Resources */,
+				91E25C11F05A4098B48777B5 /* Entypo.ttf in Resources */,
+				6780437747E94BFF816F8A1C /* EvilIcons.ttf in Resources */,
+				836C84B4B92E478E929D82B2 /* FontAwesome.ttf in Resources */,
+				60FE326EA28E465D9AC95221 /* Foundation.ttf in Resources */,
+				CEDD4933BE5A45F19EE025E5 /* Ionicons.ttf in Resources */,
+				32688BFEA16F473D8CA8C608 /* MaterialIcons.ttf in Resources */,
+				868D2F7B8B554E898344E1BB /* Octicons.ttf in Resources */,
+				266AC6D4F3874A42A144D4D1 /* SimpleLineIcons.ttf in Resources */,
+				1E43D91ACF0E45B3A2BAB835 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1604,12 +1644,14 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
+					"$(SRCROOT)\..\node_modules\amazon-cognito-identity-js\ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActressTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1638,12 +1680,14 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
+					"$(SRCROOT)\..\node_modules\amazon-cognito-identity-js\ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActressTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1673,6 +1717,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
+					"$(SRCROOT)\..\node_modules\amazon-cognito-identity-js\ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActress/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1703,6 +1748,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
+					"$(SRCROOT)\..\node_modules\amazon-cognito-identity-js\ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActress/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1740,11 +1786,13 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
+					"$(SRCROOT)\..\node_modules\amazon-cognito-identity-js\ios/**",
 				);
 				INFOPLIST_FILE = "SocialxTypeActress-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1783,11 +1831,13 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
+					"$(SRCROOT)\..\node_modules\amazon-cognito-identity-js\ios/**",
 				);
 				INFOPLIST_FILE = "SocialxTypeActress-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1822,6 +1872,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.SocialxTypeActress-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1846,6 +1897,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

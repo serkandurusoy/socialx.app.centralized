@@ -28,7 +28,9 @@
     "storybook": "storybook start -p 7007"
   },
   "dependencies": {
+    "amazon-cognito-identity-js": "^2.0.1",
     "aws-amplify": "^0.2.9",
+    "aws-amplify-react-native": "^0.2.5",
     "axios": "^0.18.0",
     "lodash": "^4.17.5",
     "moment": "^2.20.1",
@@ -58,8 +60,7 @@
     "redux-axios-middleware": "^4.0.0",
     "redux-persist": "^5.9.1",
     "redux-saga": "^0.16.0",
-    "typesafe-actions": "^1.1.2",
-    "utility-types": "^1.1.0"
+    "typesafe-actions": "^1.1.2"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.3.14",
