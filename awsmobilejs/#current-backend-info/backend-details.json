@@ -4,9 +4,79 @@
 	"region": "eu-west-1",
 	"state": "NORMAL",
 	"createdDate": "2018-03-15T09:36:04.255Z",
-	"lastUpdatedDate": "2018-03-15T09:36:04.255Z",
+	"lastUpdatedDate": "2018-03-16T15:22:26.849Z",
 	"consoleUrl": "https://console.aws.amazon.com/mobilehub/home#/47bc67d8-2834-11e8-a001-2b6eb07055e5/build",
 	"resources": [
+		{
+			"type": "AWS::S3::Bucket",
+			"name": "socialxbeta-userfiles-mobilehub-1418679691",
+			"arn": null,
+			"feature": "user-data",
+			"attributes": {
+				"lastUpdateRequestID": "d24d052d-292d-11e8-8d3d-df5fa617fa6e",
+				"region": "eu-west-1",
+				"s3-bucket-console-url": "https://s3.console.aws.amazon.com/s3/buckets/socialxbeta-userfiles-mobilehub-1418679691"
+			}
+		},
+		{
+			"type": "AWS::IAM::Policy",
+			"name": "socialxbeta_userfiles_MOBILEHUB_1418679691",
+			"arn": null,
+			"feature": "user-data",
+			"attributes": {
+				"authType": "authenticated",
+				"lastUpdateRequestID": "d24d052d-292d-11e8-8d3d-df5fa617fa6e",
+				"role": "socialxbeta_auth_MOBILEHUB_1418679691"
+			}
+		},
+		{
+			"type": "AWS::Cognito::IdentityPool",
+			"name": "socialxbeta_MOBILEHUB_1418679691",
+			"arn": "eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b",
+			"feature": "user-signin",
+			"attributes": {
+				"lastUpdateRequestID": "671144ee-285b-11e8-b72a-b7bc90cf879e",
+				"poolid": "eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b",
+				"roleARNs": "arn:aws:iam::412074505518:role/socialxbeta_auth_MOBILEHUB_1418679691"
+			}
+		},
+		{
+			"type": "AWS::IAM::Role",
+			"name": "socialxbeta_smsverification_MOBILEHUB_1418679691",
+			"arn": "arn:aws:iam::412074505518:role/service-role/socialxbeta_smsverification_MOBILEHUB_1418679691",
+			"feature": "user-signin",
+			"attributes": {
+				"lastUpdateRequestID": "5d3ca333-285b-11e8-b579-2d96dac54177",
+				"user-pools-role-key": "user-pools-execution-role"
+			}
+		},
+		{
+			"type": "AWS::Cognito::UserPool",
+			"name": "socialxbeta_userpool_MOBILEHUB_1418679691",
+			"arn": "eu-west-1_qTHb8cGn3",
+			"feature": "user-signin",
+			"attributes": {
+				"alias-attributes": "[\"preferred_username\"]",
+				"lastUpdateRequestID": "5d3ca333-285b-11e8-b579-2d96dac54177",
+				"mfa-configuration": "OFF",
+				"password-policy": "{\"minimumLength\":8,\"requireUppercase\":true,\"requireLowercase\":true,\"requireNumbers\":true,\"requireSymbols\":true}",
+				"region": "eu-west-1",
+				"user-pools-client-id": "6j4nup66vu7t14updbagesj3c",
+				"user-pools-client-secret": "11avs6u65g108kcl9bdeuua2iq7iq0hs85aalt62areg20u9ltnd",
+				"user-pools-id": "eu-west-1_qTHb8cGn3",
+				"user-pools-web-client-id": "6d2fat5hf21fdk2leqm2aqqll7"
+			}
+		},
+		{
+			"type": "AWS::IAM::Role",
+			"name": "socialxbeta_auth_MOBILEHUB_1418679691",
+			"arn": "arn:aws:iam::412074505518:role/socialxbeta_auth_MOBILEHUB_1418679691",
+			"feature": "user-signin",
+			"attributes": {
+				"authType": "authenticated",
+				"lastUpdateRequestID": "671144ee-285b-11e8-b72a-b7bc90cf879e"
+			}
+		},
 		{
 			"type": "AWS::Pinpoint::AnalyticsApplication",
 			"name": "socialxbeta_MobileHub",
@@ -22,30 +92,20 @@
 			"arn": null,
 			"feature": "analytics",
 			"attributes": {
-				"authType": "unauthenticated",
-				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
-				"role": "socialxbeta_unauth_MOBILEHUB_1418679691"
+				"authType": "authenticated",
+				"lastUpdateRequestID": "671144ee-285b-11e8-b72a-b7bc90cf879e",
+				"role": "socialxbeta_auth_MOBILEHUB_1418679691"
 			}
 		},
 		{
-			"type": "AWS::Cognito::IdentityPool",
-			"name": "socialxbeta_MOBILEHUB_1418679691",
-			"arn": "eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b",
-			"feature": "user-signin",
+			"type": "AWS::IAM::Policy",
+			"name": "socialxbeta_userprofiles_MOBILEHUB_1418679691",
+			"arn": null,
+			"feature": "user-data",
 			"attributes": {
-				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
-				"poolid": "eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b",
-				"roleARNs": "arn:aws:iam::412074505518:role/socialxbeta_unauth_MOBILEHUB_1418679691"
-			}
-		},
-		{
-			"type": "AWS::IAM::Role",
-			"name": "socialxbeta_unauth_MOBILEHUB_1418679691",
-			"arn": "arn:aws:iam::412074505518:role/socialxbeta_unauth_MOBILEHUB_1418679691",
-			"feature": "user-signin",
-			"attributes": {
-				"authType": "unauthenticated",
-				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177"
+				"authType": "authenticated",
+				"lastUpdateRequestID": "d24d052d-292d-11e8-8d3d-df5fa617fa6e",
+				"role": "socialxbeta_auth_MOBILEHUB_1418679691"
 			}
 		},
 		{
@@ -76,9 +136,9 @@
 			"arn": null,
 			"feature": "hosting",
 			"attributes": {
-				"authType": "unauthenticated",
-				"lastUpdateRequestID": "47c0facd-2834-11e8-b579-2d96dac54177",
-				"role": "socialxbeta_unauth_MOBILEHUB_1418679691"
+				"authType": "authenticated",
+				"lastUpdateRequestID": "671144ee-285b-11e8-b72a-b7bc90cf879e",
+				"role": "socialxbeta_auth_MOBILEHUB_1418679691"
 			}
 		},
 		{

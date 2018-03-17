@@ -6,7 +6,7 @@
 	"LastNPMInstallTime": "",
 	"FrontendLastBuildTime": "",
 	"LastPublishTime": "",
-	"BackendLastSyncTime": "2018-03-15-11-36-21",
+	"BackendLastSyncTime": "2018-03-17-12-44-32",
 	"BackendLastBuildTime": "",
 	"BackendLastPushTime": "",
 	"BackendLastPushSuccessful": false,
@@ -14,6 +14,6 @@
 	"BackendProjectName": "SocialxBeta",
 	"BackendProjectConsoleUrl": "https://console.aws.amazon.com/mobilehub/home#/47bc67d8-2834-11e8-a001-2b6eb07055e5/build",
 	"BackendProjectCreationTime": "2018-03-15T09:36:04.255Z",
-	"BackendProjectLastUpdatedTime": "2018-03-15T09:36:04.255Z",
+	"BackendProjectLastUpdatedTime": "2018-03-16T15:22:26.849Z",
 	"Framework": "react-native"
 }
