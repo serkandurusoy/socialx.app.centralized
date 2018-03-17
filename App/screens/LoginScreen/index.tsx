@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Alert, Keyboard, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { NavigationScreenProp } from 'react-navigation';
+import {connect} from 'react-redux';
 import { SXButton } from '../../components/Button';
 import { ModalInputSMSCode } from '../../components/ModalInputSMSCode';
 import { SXTextInput, TKeyboardKeys, TRKeyboardKeys } from '../../components/TextInput';
@@ -9,6 +10,7 @@ import { Colors } from '../../theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
+import { hideActivityIndicator, showActivityIndicator } from '../../actions';
 import { ConfirmSignin, Signin } from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
@@ -21,9 +23,12 @@ export interface ILoginScreenState {
 
 export interface ILoginScreenProps {
 	navigation: NavigationScreenProp<any>;
+	SigninLoader: () => void;
+	ConfirmLoader: () => void;
+	HideLoader: () => void;
 }
 
-export default class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
+class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	private static navigationOptions = {
 		headerTitle: 'LOGIN',
 	};
@@ -133,11 +138,10 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 
 	private fireSignin = async () => {
 		const { usernameValue, passwordValue } = this.state;
+		this.props.SigninLoader();
 		try {
-			// toggle loader here..
 			const res = await Signin(usernameValue, passwordValue);
-			this.toggleVisibleModalSMS();
-			// toggle sms
+			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
 			// better alert here
 			Alert.alert('Wrong username/password');
@@ -145,20 +149,21 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				this.usernameInput.focusInput();
 			}
 		}
+		this.props.HideLoader();
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
 		const { usernameValue } = this.state;
+		this.props.SigninLoader();
 		try {
-			// toggle loader here
 			const res = await ConfirmSignin(usernameValue, code);
-			// show a welcome message here maybe?
 			this.toggleVisibleModalSMS(false);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
 			// better alert here
 			Alert.alert('Wrong confirmation code');
 		}
+		this.props.HideLoader();
 	}
 
 	private smsCodeDeclinedHandler = () => {
@@ -171,3 +176,11 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 		// console.log('TODO: smsCodeResendHandler');
 	}
 }
+
+const MapDispatchToProps = (dispatch: any) => ({
+	SigninLoader: () => dispatch(showActivityIndicator('Signing in..')),
+	ConfirmLoader: () => dispatch(showActivityIndicator('Confirming code..')),
+	HideLoader: () => dispatch(hideActivityIndicator()),
+});
+
+export default connect(null, MapDispatchToProps)(LoginScreen as any);
