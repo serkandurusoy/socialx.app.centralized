@@ -7,7 +7,7 @@ import {Colors} from '../../theme';
 import {TKeyboardKeys} from '../TextInput';
 import style from './style';
 
-const NUMBER_OF_DIGITS = 4;
+const NUMBER_OF_DIGITS = 6;
 
 const INITIAL_STATE = {
 	inputHasValue: new Array(NUMBER_OF_DIGITS).fill(false),
@@ -154,4 +154,4 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 	}
 }
 
-export const ModalInputSMSCode = withResizeOnKeyboardShow(ModalInputSMSCodeComponent);
+export const ModalInputSMSCode: any = withResizeOnKeyboardShow(ModalInputSMSCodeComponent);
