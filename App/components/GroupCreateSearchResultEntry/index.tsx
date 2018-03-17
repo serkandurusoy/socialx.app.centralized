@@ -26,7 +26,7 @@ export const GroupCreateSearchResultEntry: React.SFC<IGroupCreateSearchResultEnt
 		return (
 			<Animatable.View
 				animation={IN_ANIMATION_NAME}
-				easing='ease-out'
+				easing="ease-out"
 				iterationCount={1}
 				duration={IN_ANIMATION_DURATION}
 			>

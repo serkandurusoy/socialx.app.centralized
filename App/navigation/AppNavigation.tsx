@@ -18,6 +18,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import WalletActivityScreen from '../screens/WalletActivityScreen';
 import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
 
@@ -68,6 +69,7 @@ const PrimaryNav = StackNavigator(
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
+		WalletActivityScreen: {screen: WalletActivityScreen}, // TODO: later to be moved!
 		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
 	},
 	{
