@@ -66,7 +66,7 @@ export class ModalConfirmation extends Component<IModalConfirmationProps, IModal
 		if (this.props.confirmHandler) {
 			this.props.confirmHandler();
 		}
-	}
+	};
 
 	private actionCanceled = () => {
 		this.setState({
@@ -75,5 +75,5 @@ export class ModalConfirmation extends Component<IModalConfirmationProps, IModal
 		if (this.props.declineHandler) {
 			this.props.declineHandler();
 		}
-	}
+	};
 }

@@ -52,7 +52,7 @@ export default class LoginScreen extends Component<ILoginScreenProps, ILoginScre
 				/>
 				<Text style={style.welcomeText}>{'Welcome Back!'}</Text>
 				<SXTextInput
-					placeholder={'Email'}
+					placeholder={'Username'}
 					placeholderColor={Colors.postText}
 					returnKeyType={TRKeyboardKeys.next}
 					onSubmitPressed={this.emailSubmitPressedHandler}

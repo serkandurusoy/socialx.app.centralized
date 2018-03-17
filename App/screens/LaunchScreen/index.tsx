@@ -1,17 +1,22 @@
-import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
-import {SXButton} from '../../components/Button';
-import {SXGradientButton} from '../../components/GradientButton';
-import {TextGradient} from '../../components/TextGradient';
-import {Colors, Images} from '../../theme';
+import React, { Component } from 'react';
+import { Image, Text, View } from 'react-native';
+import { NavigationScreenProp } from 'react-navigation';
+import { connect } from 'react-redux';
+import { SXButton } from '../../components/Button';
+import { SXGradientButton } from '../../components/GradientButton';
+import { TextGradient } from '../../components/TextGradient';
+import { Colors, Images } from '../../theme';
 import style from './style';
+
+import { hideActivityIndicator, showActivityIndicator } from '../../actions';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
+	showActivityIndicator: () => void;
+	hideActivityIndicator: () => void;
 }
 
-export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
+class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	private static navigationOptions = {
 		header: null,
 	};
@@ -46,10 +51,21 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
-		this.props.navigation.navigate('LoginScreen');
+		this.props.showActivityIndicator();
+		setTimeout(() => {
+			this.props.navigation.navigate('LoginScreen');
+			this.props.hideActivityIndicator();
+		}, 2000);
 	}
 
 	private navigateToSignUpScreen = () => {
 		this.props.navigation.navigate('SignUpScreen');
 	}
 }
+
+const mapDispatchToProps = (dispatch: any): Partial<ILaunchScreenProps> => ({
+	showActivityIndicator: () => dispatch(showActivityIndicator('Simple')),
+	hideActivityIndicator: () => dispatch(hideActivityIndicator()),
+});
+
+export default connect(null, mapDispatchToProps)(LaunchScreen);

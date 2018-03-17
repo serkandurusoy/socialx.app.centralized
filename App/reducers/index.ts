@@ -3,10 +3,12 @@ import {combineReducers} from 'redux';
 import root from '../Sagas';
 import configureStore from './CreateStore';
 import {NavigationReducer, NavigationState} from './NavigationReducers';
+import {PopupsReducers} from './PopupsReducers';
 
 /* ------------- Assemble The Reducers ------------- */
 export const reducers = combineReducers({
 	nav: NavigationReducer,
+	popups: PopupsReducers,
 });
 
 export interface State {
