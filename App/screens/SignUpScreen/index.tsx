@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {connect} from 'react-redux';
 import {AvatarPicker} from '../../components/AvatarPicker';
 import {SXButton} from '../../components/Button';
 import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
@@ -9,7 +10,8 @@ import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextI
 import {Colors, Images} from '../../theme';
 import style from './style';
 
-import { ConfirmSignup, ISignup, resendSignup, Signup } from '../../utils';
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {ConfirmSignup, ISignup, resendSignup, Signup} from '../../utils';
 
 export interface ISignUpScreenState {
 	email: string;
@@ -25,9 +27,13 @@ export interface ISignUpScreenState {
 
 export interface ISignUpScreenProps {
 	navigation: NavigationScreenProp<any>;
+	SignupLoading: () => void;
+	ConfirmSignupLoading: () => void;
+	ResendCodeLoading: () => void;
+	HideLoader: () => void;
 }
 
-export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
+class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'REGISTER',
 	};
@@ -181,17 +187,18 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
-		// console.log('TODO: Start login', this.state.emailValue, this.state.passwordValue);
 		try {
-			// TODO: load here
+			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
+
 			Keyboard.dismiss();
-			this.props.navigation.navigate('SaveKeyScreen');
+			this.toggleVisibleModalSMS(false);
+			this.props.navigation.navigate('MainScreen');
+			this.props.HideLoader();
+			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			// TODO: alert here
 		}
-		this.toggleVisibleModalSMS(false);
-		this.props.navigation.navigate('MainScreen');
 	}
 
 	private smsCodeDeclinedHandler = () => {
@@ -202,17 +209,16 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 
 	private smsCodeResendHandler = async () => {
 		try {
-			// TODO: load here
-			await resendSignup(this.state.username);
-			// TODO: alert here (code resent)
+			this.props.ResendCodeLoading();
+			const res = await resendSignup(this.state.username);
+			this.props.HideLoader();
 		} catch (ex) {
 			// TODO: alert here
 		}
-		// console.log('TODO: smsCodeResendHandler');
 	}
 
 	private startRegister = async () => {
-		const { email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone } = this.state;
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
 		if (password !== confirmPassword) {
 			// TODO: alert here or somrthing
 			return;
@@ -227,10 +233,12 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		};
 
 		try {
-			// TODO: loading here
+			this.props.SignupLoading();
 			const res = await Signup(signupParams);
+
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS();
+			this.props.HideLoader();
 		} catch (ex) {
 			// TODO: alert here
 		}
@@ -243,3 +251,12 @@ export default class SignUpScreen extends Component<ISignUpScreenProps, ISignUpS
 		});
 	}
 }
+
+const MapDispatchToProps = (dispatch: any) => ({
+	SignupLoading: () => dispatch(showActivityIndicator('Signing you up', 'please wait..')),
+	ConfirmSignupLoading: () => dispatch(showActivityIndicator('Confirming your code')),
+	ResendCodeLoading: () => dispatch(showActivityIndicator('Resending code..')),
+	HideLoader: () => dispatch(hideActivityIndicator()),
+});
+
+export default connect(null, MapDispatchToProps)(SignUpScreen as any);

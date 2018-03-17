@@ -14,12 +14,22 @@ const awsmobile = {
     'aws_content_delivery_bucket_region': 'eu-west-1',
     'aws_content_delivery_cloudfront': 'enable',
     'aws_content_delivery_cloudfront_domain': 'd8zwx06hd9bob.cloudfront.net',
+    'aws_mandatory_sign_in': 'enable',
     'aws_mobile_analytics_app_id': '26bdccc32b23472996eaed86fec64591',
     'aws_mobile_analytics_app_region': 'us-east-1',
     'aws_project_id': '47bc67d8-2834-11e8-a001-2b6eb07055e5',
     'aws_project_name': 'SocialxBeta',
     'aws_project_region': 'eu-west-1',
     'aws_resource_name_prefix': 'socialxbeta-mobilehub-1418679691',
+    'aws_sign_in_enabled': 'enable',
+    'aws_user_files': 'enable',
+    'aws_user_files_s3_bucket': 'socialxbeta-userfiles-mobilehub-1418679691',
+    'aws_user_files_s3_bucket_region': 'eu-west-1',
+    'aws_user_pools': 'enable',
+    'aws_user_pools_id': 'eu-west-1_qTHb8cGn3',
+    'aws_user_pools_mfa_type': 'OFF',
+    'aws_user_pools_web_client_id': '6d2fat5hf21fdk2leqm2aqqll7',
+    'aws_user_settings': 'enable',
 }
 
 export default awsmobile;
