@@ -141,6 +141,10 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		this.props.SigninLoader();
 		try {
 			const res = await Signin(usernameValue, passwordValue);
+			// TODO: save tokens to device storage
+			// res.signInUserSession.idToken.jwtToken
+			// res.signInUserSession.refreshToken.token
+			// res.signInUserSession.accessToken.jwtToken
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
 			// better alert here
