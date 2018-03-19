@@ -8,3 +8,22 @@ const mapDispatchToProps = (dispatch: any): Props => ({
 });
 
 export default connect(null, mapDispatchToProps)(RootContainer);
+
+// appsync config
+import appsyncConfig from '../../config/appsync';
+
+import AWSAppSyncClient from 'aws-appsync';
+import { AUTH_TYPE } from 'aws-appsync/lib/link/auth-link';
+
+export { Rehydrated } from 'aws-appsync-react';
+
+import { CurrentUserSession } from '../../utils/';
+
+export const AppsyncClient = new AWSAppSyncClient({
+	url: appsyncConfig.graphqlEndpoint,
+	region: appsyncConfig.region,
+	auth: {
+		type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
+		jwtToken: async () => (await CurrentUserSession()).getIdToken().getJwtToken(),
+	},
+});

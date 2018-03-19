@@ -1,4 +1,4 @@
-import { HIDE_ACTIVITY_INDICATOR, IPopupAction, SHOW_ACTIVITY_INDICATOR } from '../types';
+import { HIDE_ACTIVITY_INDICATOR, IPopupAction, SHOW_ACTIVITY_INDICATOR } from '../types/popup';
 
 export const showActivityIndicator = (
 	activityIndicatorTitle?: string,
