@@ -13,6 +13,7 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
+import SendCoinsScreen from '../screens/SendCoinsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SocialXAccountScreen from '../screens/SocialXAccountScreen';
@@ -73,10 +74,12 @@ const PrimaryNav = StackNavigator(
 		WalletActivityScreen: {screen: WalletActivityScreen}, // TODO: later to be moved!
 		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
 		SocialXAccountScreen: {screen: SocialXAccountScreen}, // TODO: later to be moved!
+		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
+		// initialRouteName: 'LaunchScreen',
+		initialRouteName: 'SendCoinsScreen',
 		navigationOptions: {
 			headerStyle: styles.header,
 			headerTintColor: Colors.white, // color for screen title and back button
