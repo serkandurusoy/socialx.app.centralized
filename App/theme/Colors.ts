@@ -36,6 +36,7 @@ const SocialXColors = {
 	shuttleGray: '#54646E',
 	grayNurse: '#E6E7E6',
 	tundora: '#4A4A4A',
+	ceriseRed: '#E0295A',
 };
 
 export default SocialXColors;

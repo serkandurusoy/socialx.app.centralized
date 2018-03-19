@@ -6,6 +6,7 @@ const style: any = {
 		flex: 1,
 		width: '100%',
 		paddingHorizontal: Sizes.smartHorizontalScale(26),
+		backgroundColor: Colors.white,
 	},
 	buttonContainer: {
 		paddingBottom: Sizes.smartVerticalScale(28),
@@ -15,8 +16,10 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(20),
 		lineHeight: Sizes.smartHorizontalScale(60),
 		color: Colors.postFullName,
-		paddingTop: Sizes.smartVerticalScale(32),
-		paddingBottom: Sizes.smartVerticalScale(17),
+		paddingTop: Sizes.smartVerticalScale(28),
+	},
+	bottomContainer: {
+		paddingTop: Sizes.smartVerticalScale(45),
 	},
 };
 
