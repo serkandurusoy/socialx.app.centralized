@@ -18,11 +18,9 @@ const style: any = {
 		width: Sizes.smartHorizontalScale(100),
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 	},
-	rightContainer: {
-		paddingRight: Sizes.smartHorizontalScale(10),
-		backgroundColor: 'orange',
+	lineChart: {
 		width: Sizes.smartHorizontalScale(70),
-		height: '100%',
+		height: Sizes.smartHorizontalScale(40),
 	},
 	coinIcon: {
 		width: CURRENCY_ICON_SIZE,

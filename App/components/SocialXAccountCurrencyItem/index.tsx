@@ -1,27 +1,12 @@
+import * as shape from 'd3-shape';
 import numeral from 'numeral';
 import React from 'react';
 import {Image, Text, View} from 'react-native';
+import {LineChart} from 'react-native-svg-charts';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {CoinFullName, CoinIcons, CoinSymbol} from '../../constants';
 import {Colors, Sizes} from '../../theme';
-import {Icons} from '../../theme/';
 import style from './style';
-
-export enum CoinSymbol {
-	// here the values are in sync with CoinIcons keys
-	SOCX = 'SOCX',
-	ETH = 'ETH',
-}
-
-export enum CoinFullName {
-	// here the values are in sync with CoinIcons keys
-	SOCX = 'SOCX',
-	ETH = 'Ethereum',
-}
-
-enum CoinIcons {
-	SOCX = Icons.socxCoinIcon,
-	ETH = Icons.ethCoinIcon,
-}
 
 export interface AccountCurrencyData {
 	coinSymbol: CoinSymbol;
@@ -32,8 +17,8 @@ export interface AccountCurrencyData {
 }
 
 export const SocialXAccountCurrencyItem: React.SFC<AccountCurrencyData> = (props) => {
-	const usdValueWithFormat = numeral(props.usdValue).format('($ 0.00 a)');
-	const coinAmountWithFormat = numeral(props.coinAmount).format('0a');
+	const usdValueWithFormat = numeral(props.usdValue).format('($0.00a)');
+	const coinAmountWithFormat = numeral(props.coinAmount).format('0.00a');
 	const trendIconColor = props.trendPercentage < 0 ? Colors.ceriseRed : Colors.sushi;
 	const trendIconValue = props.trendPercentage < 0 ? 'md-arrow-down' : 'md-arrow-up';
 	const trendPercentageStyles = [style.trendPercentage];
@@ -43,24 +28,31 @@ export const SocialXAccountCurrencyItem: React.SFC<AccountCurrencyData> = (props
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<Image source={CoinIcons[props.coinSymbol]} style={style.coinIcon} resizeMode={'contain'}/>
+				<Image source={CoinIcons[props.coinSymbol]} style={style.coinIcon} resizeMode={'contain'} />
 				<View>
-					<Text style={style.coinFullName}>
-						{CoinFullName[props.coinSymbol]}
-					</Text>
-					<Text style={style.coinAmount}>
-						{coinAmountWithFormat + ' ' + props.coinSymbol}
-					</Text>
+					<Text style={style.coinFullName}>{CoinFullName[props.coinSymbol]}</Text>
+					<Text style={style.coinAmount}>{coinAmountWithFormat + ' ' + props.coinSymbol}</Text>
 				</View>
 			</View>
 			<View style={style.centerContainer}>
 				<Text style={style.usdValue}>{usdValueWithFormat}</Text>
 				<View style={style.trendContainer}>
-					<Icon name={trendIconValue} size={Sizes.smartHorizontalScale(15)} color={trendIconColor}/>
-					<Text style={trendPercentageStyles}>{Math.abs(props.trendPercentage)}{'%'}</Text>
+					<Icon name={trendIconValue} size={Sizes.smartHorizontalScale(15)} color={trendIconColor} />
+					<Text style={trendPercentageStyles}>
+						{Math.abs(props.trendPercentage)}
+						{'%'}
+					</Text>
 				</View>
 			</View>
-			<View style={style.rightContainer}/>
+			<LineChart
+				style={style.lineChart}
+				data={props.graphData}
+				svg={{stroke: trendIconColor}}
+				animate={true}
+				showGrid={false}
+				curve={shape.curveNatural}
+				animationDuration={300}
+			/>
 		</View>
 	);
 };

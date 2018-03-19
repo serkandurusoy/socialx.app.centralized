@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {AccountCurrencyData, CoinSymbol} from '../../components/SocialXAccountCurrencyItem';
+import {AccountCurrencyData} from '../../components/SocialXAccountCurrencyItem';
+import {CoinSymbol} from '../../constants/';
 import SocialXAccountScreenComponent from './screen';
 
 const MY_DIGITAL_COINS: AccountCurrencyData[] = [
@@ -9,14 +10,14 @@ const MY_DIGITAL_COINS: AccountCurrencyData[] = [
 		coinAmount: 799151.311,
 		usdValue: 34621,
 		trendPercentage: 4.5,
-		graphData: [],
+		graphData: [0.2, 0.22, 0.19, 0.15, 0.18, 0.25, 0.23, 0.26, 0.2, 0.22, 0.19, 0.15, 0.18, 0.25, 0.23, 0.26],
 	},
 	{
 		coinSymbol: CoinSymbol.ETH,
 		coinAmount: 10.578,
 		usdValue: 1341415,
 		trendPercentage: -2.6,
-		graphData: [],
+		graphData: [800, 850, 820, 840, 780, 810, 750, 720, 800, 850, 820, 840, 780, 810, 750, 720],
 	},
 ];
 
@@ -40,6 +41,20 @@ export default class SocialXAccountScreen extends Component<any, ISocialXAccount
 	};
 
 	public render() {
-		return <SocialXAccountScreenComponent {...this.state} />;
+		return (
+			<SocialXAccountScreenComponent
+				{...this.state}
+				sendHandler={this.onSendHandler}
+				receiveHandler={this.onReceiveHandler}
+			/>
+		);
+	}
+
+	private onSendHandler = () => {
+		alert('onSendHandler');
+	}
+
+	private onReceiveHandler = () => {
+		alert('onReceiveHandler');
 	}
 }

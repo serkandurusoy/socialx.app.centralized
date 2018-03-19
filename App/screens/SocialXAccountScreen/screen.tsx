@@ -11,6 +11,8 @@ export interface ISocialXAccountScreenComponentProps {
 	myContribution: number;
 	returnPercentage: number;
 	myDigitalCoins: AccountCurrencyData[];
+	sendHandler: () => void;
+	receiveHandler: () => void;
 }
 
 export default class SocialXAccountScreenComponent extends Component<ISocialXAccountScreenComponentProps, any> {
@@ -23,25 +25,23 @@ export default class SocialXAccountScreenComponent extends Component<ISocialXAcc
 					returnPercentage={this.props.returnPercentage}
 				/>
 				<Text style={style.accountTitle}>{'Account'}</Text>
-				{this.renderMyDigitalCoins()}
+				{this.renderMyCurrencyItems()}
 				<View style={style.bottomContainer}>
 					<View style={style.buttonContainer}>
-						<SXButton label={'SEND'} borderColor={Colors.transparent}/>
+						<SXButton label={'SEND'} borderColor={Colors.transparent} onPress={this.props.sendHandler} />
 					</View>
 					<View style={style.buttonContainer}>
-						<SXButton label={'RECEIVE'} borderColor={Colors.transparent}/>
+						<SXButton label={'RECEIVE'} borderColor={Colors.transparent} onPress={this.props.receiveHandler} />
 					</View>
 				</View>
 			</ScrollView>
 		);
 	}
 
-	private renderMyDigitalCoins = () => {
+	private renderMyCurrencyItems = () => {
 		const ret = [];
 		for (let i = 0; i < this.props.myDigitalCoins.length; i++) {
-			ret.push(
-				<SocialXAccountCurrencyItem key={i} {...this.props.myDigitalCoins[i]}/>,
-			);
+			ret.push(<SocialXAccountCurrencyItem key={i} {...this.props.myDigitalCoins[i]} />);
 		}
 		return ret;
 	}

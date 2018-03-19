@@ -14,7 +14,7 @@ export interface ISocialXAccountTitleCardProps {
 
 export const SocialXAccountTitleCard: React.SFC<ISocialXAccountTitleCardProps> = (props) => {
 	const renderTrendIcon = () => {
-		return <Icon name={'md-trending-up'} size={Sizes.smartHorizontalScale(23)} color={Colors.sushi}/>;
+		return <Icon name={'md-trending-up'} size={Sizes.smartHorizontalScale(23)} color={Colors.sushi} />;
 	};
 
 	return (
@@ -32,7 +32,7 @@ export const SocialXAccountTitleCard: React.SFC<ISocialXAccountTitleCardProps> =
 					</Text>
 				</View>
 				<View style={style.spacer}>
-					<View style={style.spacerLine}/>
+					<View style={style.spacerLine} />
 				</View>
 				<View>
 					<Text style={style.opacityGrayText}>{'Return'}</Text>

@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {Platform} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {TitleWithSubtitle} from '../../components/TitleWithSubtitle';
+import {OS_TYPES} from '../../constants';
 import {Colors, Images} from '../../theme';
-import {NewGroupPostData} from '../NewWallPostScreen';
+import {NewWallPostData} from '../NewWallPostScreen';
 import GroupFeedScreenComponent from './screen';
 
 const USER_FULL_NAME = 'Marcel Füssinger';
@@ -62,7 +63,7 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 		headerTitle: <TitleWithSubtitle title={'TESTGROUP'} subtitle={'Some subtitle example text'} />,
 		headerStyle: {
 			backgroundColor: Colors.pink,
-			height: Platform.OS === 'ios' ? 52 : 54,
+			height: Platform.OS === OS_TYPES.iOS ? 52 : 54,
 		},
 	};
 
@@ -100,7 +101,7 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 		});
 	}
 
-	private addGroupPostHandler = (data: NewGroupPostData) => {
+	private addGroupPostHandler = (data: NewWallPostData) => {
 		const newPost: IGroupPostData = {
 			text: data.text,
 			imageSource: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,

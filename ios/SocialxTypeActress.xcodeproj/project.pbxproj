@@ -63,6 +63,7 @@
 		AEA49E3FE8B44942B094B793 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 61F4CD9FFA3D40C292C92868 /* EvilIcons.ttf */; };
 		B0942369941948ADB095CADF /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7E060A82849492CB3844E81 /* Ionicons.ttf */; };
 		BC901FAD4CC44FD1814406C3 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BAFB9F6A99C745B09FBAE740 /* Foundation.ttf */; };
+		C6E655319AFA47B8B29D653C /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7020121AA204336B92762E5 /* libRNSVG.a */; };
 		D5FCCC87D9224FEA9FC34CB6 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9BCC00B35EF447D1AAF49176 /* Entypo.ttf */; };
 		D8DE8DADE2DA4D4EAAA9AC1F /* libRNTextGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 176DD81A2C7A4C289738A1FB /* libRNTextGradient.a */; };
 		E245E89391C94F3E97FE0C61 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCFD3F89FDFA4E29A6000E97 /* libRNBlur.a */; };
@@ -422,6 +423,20 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNAWSCognito;
 		};
+		9CB5A89B205FE55D005949C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8969794F12744356A7F39EFF /* RNSVG.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
+			remoteInfo = RNSVG;
+		};
+		9CB5A89D205FE55D005949C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8969794F12744356A7F39EFF /* RNSVG.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 94DDAC5C1F3D024300EED511;
+			remoteInfo = "RNSVG-tvOS";
+		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
@@ -484,8 +499,10 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		61F4CD9FFA3D40C292C92868 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		66F7EF946281456EB0B665BB /* century_gothic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = century_gothic.ttf; path = ../assets/fonts/century_gothic.ttf; sourceTree = "<group>"; };
+		6D8C2C241AAF4B26AE98141D /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		8969794F12744356A7F39EFF /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		8AAD247B15F2402A9CA53D71 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		943A14A1D3E74FE1A2E9F18C /* libimageCropPicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libimageCropPicker.a; sourceTree = "<group>"; };
 		9BCC00B35EF447D1AAF49176 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
@@ -497,6 +514,7 @@
 		AD40387E4A3E493088D533A5 /* RNAWSCognito.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAWSCognito.xcodeproj; path = "../node_modules/amazon-cognito-identity-js/ios/RNAWSCognito.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B691CEF4B4A3469A99D1F311 /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
+		B7020121AA204336B92762E5 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		BAFB9F6A99C745B09FBAE740 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		C884C50D530C4E4AB2F71DCD /* libReactNativeConfig.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeConfig.a; sourceTree = "<group>"; };
 		CB42513280ED4EDDAB82F915 /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = imageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; };
@@ -551,6 +569,7 @@
 				D8DE8DADE2DA4D4EAAA9AC1F /* libRNTextGradient.a in Frameworks */,
 				3731345801E14E99A7403619 /* libRCTOrientation.a in Frameworks */,
 				8D5EA4B6603A4861A2CCCA63 /* libRNAWSCognito.a in Frameworks */,
+				C6E655319AFA47B8B29D653C /* libRNSVG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -771,6 +790,7 @@
 				D4E28FC3EDA74FAE88B76B89 /* RNTextGradient.xcodeproj */,
 				0B585CB96CE24CC9A246E82C /* RCTOrientation.xcodeproj */,
 				AD40387E4A3E493088D533A5 /* RNAWSCognito.xcodeproj */,
+				8969794F12744356A7F39EFF /* RNSVG.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -841,6 +861,8 @@
 				176DD81A2C7A4C289738A1FB /* libRNTextGradient.a */,
 				4033C6D2A6334CE8A43386CD /* libRCTOrientation.a */,
 				E895669CF77F43739E8BC9F5 /* libRNAWSCognito.a */,
+				B7020121AA204336B92762E5 /* libRNSVG.a */,
+				6D8C2C241AAF4B26AE98141D /* libRNSVG-tvOS.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -900,6 +922,15 @@
 			isa = PBXGroup;
 			children = (
 				9CB5A84E205FA54A005949C8 /* libRNAWSCognito.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9CB5A897205FE55D005949C8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9CB5A89C205FE55D005949C8 /* libRNSVG.a */,
+				9CB5A89E205FE55D005949C8 /* libRNSVG-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1104,6 +1135,10 @@
 				{
 					ProductGroup = 9C4C224120593F020004D137 /* Products */;
 					ProjectRef = EE33762ABAF34FA3AEDD3C3B /* RNBlur.xcodeproj */;
+				},
+				{
+					ProductGroup = 9CB5A897205FE55D005949C8 /* Products */;
+					ProjectRef = 8969794F12744356A7F39EFF /* RNSVG.xcodeproj */;
 				},
 				{
 					ProductGroup = 9C211349205BB0EB00B32F18 /* Products */;
@@ -1461,6 +1496,20 @@
 			remoteRef = 9CB5A84D205FA54A005949C8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		9CB5A89C205FE55D005949C8 /* libRNSVG.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSVG.a;
+			remoteRef = 9CB5A89B205FE55D005949C8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		9CB5A89E205FE55D005949C8 /* libRNSVG-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNSVG-tvOS.a";
+			remoteRef = 9CB5A89D205FE55D005949C8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1637,6 +1686,7 @@
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/amazon-cognito-identity-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActressTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1672,6 +1722,7 @@
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/amazon-cognito-identity-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActressTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1708,6 +1759,7 @@
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/amazon-cognito-identity-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActress/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1739,6 +1791,7 @@
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/amazon-cognito-identity-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = SocialxTypeActress/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1777,6 +1830,7 @@
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/amazon-cognito-identity-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = "SocialxTypeActress-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1821,6 +1875,7 @@
 					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios",
 					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
 					"$(SRCROOT)/../node_modules/amazon-cognito-identity-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 				);
 				INFOPLIST_FILE = "SocialxTypeActress-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

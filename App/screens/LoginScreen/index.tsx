@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { Alert, Keyboard, Text, TouchableOpacity, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { NavigationScreenProp } from 'react-navigation';
+import React, {Component} from 'react';
+import {Alert, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import { SXButton } from '../../components/Button';
-import { ModalInputSMSCode } from '../../components/ModalInputSMSCode';
-import { SXTextInput, TKeyboardKeys, TRKeyboardKeys } from '../../components/TextInput';
-import { Colors } from '../../theme/';
+import {SXButton} from '../../components/Button';
+import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
+import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
+import {Colors} from '../../theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
-import { hideActivityIndicator, showActivityIndicator } from '../../actions';
-import { ConfirmSignin, Signin } from '../../utils';
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {ConfirmSignin, Signin} from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
 
@@ -120,9 +120,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		}
 	}
 
-	private handleUsernameInputKeyPressed = (value: string) => this.setState({ usernameValue: value });
+	private handleUsernameInputKeyPressed = (value: string) => this.setState({usernameValue: value});
 
-	private handlePasswordInputKeyPressed = (value: string) => this.setState({ passwordValue: value });
+	private handlePasswordInputKeyPressed = (value: string) => this.setState({passwordValue: value});
 
 	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
@@ -137,7 +137,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	}
 
 	private fireSignin = async () => {
-		const { usernameValue, passwordValue } = this.state;
+		const {usernameValue, passwordValue} = this.state;
 		this.props.SigninLoader();
 		try {
 			const res = await Signin(usernameValue, passwordValue);
@@ -157,7 +157,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
-		const { usernameValue } = this.state;
+		const {usernameValue} = this.state;
 		this.props.SigninLoader();
 		try {
 			const res = await ConfirmSignin(usernameValue, code);
