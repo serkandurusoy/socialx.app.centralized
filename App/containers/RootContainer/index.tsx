@@ -1,3 +1,4 @@
+import {AsyncStorage} from 'react-native';
 import {connect} from 'react-redux';
 
 import {StartupActions} from '../../reducers/StartupReducers';
@@ -24,6 +25,15 @@ export const AppsyncClient = new AWSAppSyncClient({
 	region: appsyncConfig.region,
 	auth: {
 		type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
-		jwtToken: async () => (await CurrentUserSession()).getIdToken().getJwtToken(),
+		jwtToken: async () => {
+			try {
+				let currentUserJwt = await CurrentUserSession();
+				currentUserJwt = currentUserJwt.getIdToken().getJwtToken();
+				return currentUserJwt;
+			} catch (ex) {
+				const idToken = await AsyncStorage.getItem('jwtToken');
+				return idToken;
+			}
+		},
 	},
 });

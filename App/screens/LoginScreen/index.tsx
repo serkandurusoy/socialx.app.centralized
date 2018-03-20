@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Keyboard, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { NavigationScreenProp } from 'react-navigation';
 import {connect} from 'react-redux';
@@ -141,12 +141,13 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		this.props.SigninLoader();
 		try {
 			const res = await Signin(usernameValue, passwordValue);
-			// TODO: save tokens to device storage
-			// res.signInUserSession.idToken.jwtToken
-			// res.signInUserSession.refreshToken.token
-			// res.signInUserSession.accessToken.jwtToken
+			// saving..
+			await AsyncStorage.setItem('jwtToken', res.signInUserSession.idToken.jwtToken);
+			await AsyncStorage.setItem('refreshToken', res.signInUserSession.refreshToken.token);
+			await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
+			console.log(ex);
 			// better alert here
 			Alert.alert('Wrong username/password');
 			if (this.usernameInput) {

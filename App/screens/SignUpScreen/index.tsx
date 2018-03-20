@@ -235,7 +235,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		try {
 			this.props.SignupLoading();
 			const res = await Signup(signupParams);
-
+			console.log(res);
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS();
 			this.props.HideLoader();

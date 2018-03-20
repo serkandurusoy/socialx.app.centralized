@@ -11,9 +11,11 @@ export default class App extends Component<{}, {}> {
 	public render() {
 		return (
 			<ApolloProvider client={AppsyncClient}>
+				<Rehydrated>
 					<Provider store={store}>
 						<RootContainer />
 					</Provider>
+				</Rehydrated>
 			</ApolloProvider>
 		);
 	}
