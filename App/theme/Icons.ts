@@ -24,4 +24,7 @@ export default {
 	iconNotificationsScreenEmpty: require('../../assets/icons/icon_notifications_screen_empty.png'),
 	socxCoinIcon: require('../../assets/icons/socx_icon.png'),
 	ethCoinIcon: require('../../assets/icons/eth_icon.png'),
+	messagingContactsFilterIcon: require('../../assets/icons/messaging_contacts_fliter_icon.png'),
+	messagingGroupFilterIcon: require('../../assets/icons/messaging_group_fliter_icon.png'),
+	messagingRecentFilterIcon: require('../../assets/icons/messaging_recent_fliter_icon.png'),
 };
