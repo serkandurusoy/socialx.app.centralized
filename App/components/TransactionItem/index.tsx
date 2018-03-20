@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import {Image, Text, View} from 'react-native';
-import {Icons} from '../../theme/';
+import {CoinIcons, CoinSymbol} from '../../constants/';
 import style from './style';
 
 export enum TransactionType {
@@ -9,23 +9,12 @@ export enum TransactionType {
 	BOUGHT = 'Bought',
 }
 
-export enum CoinType {
-	// here the values are in sync with CoinIcons keys
-	SOCX = 'SOCX',
-	ETH = 'ETH',
-}
-
-enum CoinIcons {
-	SOCX = Icons.socxCoinIcon,
-	ETH = Icons.ethCoinIcon,
-}
-
 export interface TransactionData {
 	type: TransactionType;
 	firstAmount: number;
-	firstCoin: CoinType;
+	firstCoin: CoinSymbol;
 	secondAmount: number;
-	secondCoin: CoinType;
+	secondCoin: CoinSymbol;
 	date: Date;
 }
 

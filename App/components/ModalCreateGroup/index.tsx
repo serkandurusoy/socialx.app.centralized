@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
+import {OS_TYPES} from '../../constants';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
 import {InputSizes, SXTextInput, TRKeyboardKeys} from '../TextInput';
@@ -100,7 +101,7 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 
 	private getResizableStyles = () => {
 		const ret = [style.keyboardView];
-		if (Platform.OS === 'ios') {
+		if (Platform.OS === OS_TYPES.iOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;

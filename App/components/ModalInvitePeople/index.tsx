@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
+import {OS_TYPES} from '../../constants';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {SearchResultCreateGroup} from '../../screens/SearchScreen';
 import {Colors} from '../../theme';
@@ -74,7 +75,7 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 
 	private getResizableStyles = () => {
 		const ret = [style.keyboardView];
-		if (Platform.OS === 'ios') {
+		if (Platform.OS === OS_TYPES.iOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;
