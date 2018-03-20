@@ -147,7 +147,6 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
-			console.log(ex);
 			// better alert here
 			Alert.alert('Wrong username/password');
 			if (this.usernameInput) {
