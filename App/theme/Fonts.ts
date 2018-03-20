@@ -15,7 +15,7 @@ const FontsStyles = {
 	centuryGothicItalic: {
 		fontFamily: Platform.OS === OS_TYPES.Android ? 'century_gothic_italic' : 'CenturyGothic-Italic',
 		fontWeight: 'normal',
-		fontStyle: Platform.OS === 'android' ? 'normal' : 'italic',
+		fontStyle: Platform.OS === OS_TYPES.Android ? 'normal' : 'italic',
 	},
 	centuryGothicBoldItalic: {
 		fontFamily: Platform.OS === OS_TYPES.Android ? 'century_gothic_bold_italic' : 'CenturyGothic-BoldItalic',
