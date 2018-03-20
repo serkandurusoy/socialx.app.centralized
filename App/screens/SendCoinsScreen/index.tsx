@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
+import {CoinSymbol} from '../../constants';
 import SendCoinsScreenComponent from './screen';
 
 export default class SendCoinsScreen extends Component {
@@ -11,7 +12,7 @@ export default class SendCoinsScreen extends Component {
 		return <SendCoinsScreenComponent onContinue={this.onContinueHandler} myCoins={53680} />;
 	}
 
-	private onContinueHandler = () => {
-		alert('onContinueHandler');
+	private onContinueHandler = (userId: string, amount: number, currency: CoinSymbol) => {
+		// console.log('onContinueHandler: ' + userId + ' ' + amount + ' ' + currency);
 	}
 }

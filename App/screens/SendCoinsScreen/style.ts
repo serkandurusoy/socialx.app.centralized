@@ -5,14 +5,15 @@ const style: any = {
 	container: {
 		flex: 1,
 		width: '100%',
+	},
+	scrollView: {
 		backgroundColor: Colors.white,
+	},
+	contentContainer: {
+		flex: 1,
 		paddingHorizontal: Sizes.smartHorizontalScale(25),
 		paddingTop: Sizes.smartVerticalScale(4),
 		justifyContent: 'space-between',
-		paddingBottom: Sizes.smartVerticalScale(30),
-	},
-	continueButtonContainer: {
-		paddingTop: Sizes.smartVerticalScale(40),
 	},
 	middleContainer: {
 		width: '100%',
@@ -26,10 +27,11 @@ const style: any = {
 	firstInputContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingTop: Sizes.smartVerticalScale(40),
-		paddingBottom: Sizes.smartVerticalScale(32),
+		paddingTop: Sizes.smartVerticalScale(20),
+		paddingBottom: Sizes.smartVerticalScale(12),
 	},
 	textInputFirst: {
+		height: Sizes.smartVerticalScale(62),
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(22),
 		color: Colors.postFullName,
@@ -38,9 +40,10 @@ const style: any = {
 	secondInputContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingTop: Sizes.smartVerticalScale(29),
+		paddingTop: Sizes.smartVerticalScale(10),
 	},
 	textInputSecond: {
+		height: Sizes.smartVerticalScale(62),
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(22),
 		color: Colors.postFullName,
@@ -51,6 +54,10 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(20),
 		color: Colors.tundora,
 		paddingLeft: Sizes.smartHorizontalScale(15),
+	},
+	continueButtonContainer: {
+		justifyContent: 'center',
+		minHeight: Sizes.smartVerticalScale(100),
 	},
 };
 

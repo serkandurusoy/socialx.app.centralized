@@ -1,41 +1,60 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {ScrollView, Text, TextInput, View} from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {SXButton} from '../../components/Button';
 import {SendCoinsHeader} from '../../components/SendCoinsHeader';
 import {TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
 import {CoinSymbol} from '../../constants';
-import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
 import style from './style';
 
 interface ISendCoinsScreenComponentProps {
-	marginBottom: number;
 	onContinue: (userId: string, amount: number, currency: CoinSymbol) => void;
 	myCoins: number;
 }
 
-class SendCoinsScreenComponent extends Component<ISendCoinsScreenComponentProps, any> {
-	private secondInput: TextInput;
+const SendCoinsScreenComponent: React.SFC<ISendCoinsScreenComponentProps> = (props) => {
+	let secondInput: TextInput;
 
-	public render() {
-		const containerStyles = [style.container, {marginBottom: this.props.marginBottom}];
-		return (
+	let userId: string = '';
+	let transferAmount: number = 0;
+
+	const continueHandler = () => {
+		props.onContinue(userId, transferAmount, CoinSymbol.SOCX);
+	};
+
+	const userOnInputSubmit = () => {
+		secondInput.focus();
+	};
+
+	const userIdUpdated = (value: string) => {
+		userId = value;
+	};
+
+	const transferAmountUpdated = (value: string) => {
+		transferAmount = parseFloat(value);
+	};
+
+	return (
+		<View style={style.container}>
 			<ScrollView
-				contentContainerStyle={containerStyles}
+				style={style.scrollView}
+				contentContainerStyle={style.contentContainer}
 				keyboardShouldPersistTaps={'handled'}
 				alwaysBounceVertical={false}
 			>
 				<View>
-					<SendCoinsHeader myCoins={this.props.myCoins} />
+					<SendCoinsHeader myCoins={props.myCoins} />
 					<View style={style.middleContainer}>
 						<View style={style.firstInputContainer}>
 							<TextInput
 								style={style.textInputFirst}
 								autoFocus={true}
-								// onChangeText={this.textChangedHandler}
-								onSubmitEditing={this.userOnInputSubmit}
+								onChangeText={userIdUpdated}
+								onSubmitEditing={userOnInputSubmit}
 								returnKeyType={TRKeyboardKeys.next}
 								autoCorrect={false}
+								autoComplete={false}
 								underlineColorAndroid={Colors.transparent}
 								autoCapitalize='none'
 								blurOnSubmit={false}
@@ -45,12 +64,12 @@ class SendCoinsScreenComponent extends Component<ISendCoinsScreenComponentProps,
 						<View style={style.borderLine} />
 						<View style={style.secondInputContainer}>
 							<TextInput
-								ref={(ref: TextInput) => (this.secondInput = ref)}
+								ref={(ref: TextInput) => (secondInput = ref)}
 								style={style.textInputSecond}
-								// onChangeText={this.textChangedHandler}
-								// returnKeyType={TRKeyboardKeys.done}
+								onChangeText={transferAmountUpdated}
 								keyboardType={TKeyboardKeys.numeric}
 								autoCorrect={false}
+								autoComplete={false}
 								underlineColorAndroid={Colors.transparent}
 								autoCapitalize='none'
 								blurOnSubmit={true}
@@ -60,19 +79,12 @@ class SendCoinsScreenComponent extends Component<ISendCoinsScreenComponentProps,
 					</View>
 				</View>
 				<View style={style.continueButtonContainer}>
-					<SXButton label={'CONTINUE'} onPress={this.continueHandler} />
+					<SXButton label={'CONTINUE'} onPress={continueHandler} />
 				</View>
 			</ScrollView>
-		);
-	}
+			<KeyboardSpacer />
+		</View>
+	);
+};
 
-	private continueHandler = () => {
-		this.props.onContinue('ae351f3gjk58', 56712, CoinSymbol.SOCX);
-	}
-
-	private userOnInputSubmit = () => {
-		this.secondInput.focus();
-	}
-}
-
-export default withResizeOnKeyboardShow(SendCoinsScreenComponent);
+export default SendCoinsScreenComponent;

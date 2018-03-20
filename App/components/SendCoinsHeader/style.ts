@@ -15,6 +15,7 @@ const style: any = {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
+		elevation: 3,
 	},
 	leftContainer: {
 		flexDirection: 'row',
