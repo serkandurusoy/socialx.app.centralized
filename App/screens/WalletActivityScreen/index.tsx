@@ -1,48 +1,49 @@
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {TrendOptions} from '../../components/MyWalletInfo';
-import {CoinType, TransactionData, TransactionType} from '../../components/TransactionItem';
+import {TransactionData, TransactionType} from '../../components/TransactionItem';
+import {CoinSymbol} from '../../constants/';
 import WalletActivityScreenComponent from './screen';
 
 const SAMPLE_TRANSACTIONS: TransactionData[] = [
 	{
 		type: TransactionType.BOUGHT,
 		firstAmount: 23,
-		firstCoin: CoinType.SOCX,
+		firstCoin: CoinSymbol.SOCX,
 		secondAmount: 0.2,
-		secondCoin: CoinType.ETH,
+		secondCoin: CoinSymbol.ETH,
 		date: new Date(2018, 2, 13),
 	},
 	{
 		type: TransactionType.SOLD,
 		firstAmount: 0.2,
-		firstCoin: CoinType.ETH,
+		firstCoin: CoinSymbol.ETH,
 		secondAmount: 23,
-		secondCoin: CoinType.SOCX,
+		secondCoin: CoinSymbol.SOCX,
 		date: new Date(2018, 1, 17),
 	},
 	{
 		type: TransactionType.SOLD,
 		firstAmount: 23,
-		firstCoin: CoinType.SOCX,
+		firstCoin: CoinSymbol.SOCX,
 		secondAmount: 0.2,
-		secondCoin: CoinType.ETH,
+		secondCoin: CoinSymbol.ETH,
 		date: new Date(2018, 4, 8),
 	},
 	{
 		type: TransactionType.BOUGHT,
 		firstAmount: 0.2,
-		firstCoin: CoinType.ETH,
+		firstCoin: CoinSymbol.ETH,
 		secondAmount: 23,
-		secondCoin: CoinType.SOCX,
+		secondCoin: CoinSymbol.SOCX,
 		date: new Date(2018, 5, 1),
 	},
 	{
 		type: TransactionType.SOLD,
 		firstAmount: 0.2,
-		firstCoin: CoinType.ETH,
+		firstCoin: CoinSymbol.ETH,
 		secondAmount: 23,
-		secondCoin: CoinType.SOCX,
+		secondCoin: CoinSymbol.SOCX,
 		date: new Date(2018, 11, 12),
 	},
 ];

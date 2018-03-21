@@ -1,8 +1,10 @@
 import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
 
+import {CurrentUserInfo} from '../utils';
+
 const options: any = {
-	fetchPolicy: 'cache-first',
+	fetchPolicy: 'no-cache',
 };
 
 export const createUser = gql`
@@ -34,7 +36,7 @@ export const createUser = gql`
 `;
 
 export const user = gql`
-	mutation user($userId: ID!) {
+	query user($userId: ID!) {
 		user(userId: $userId) {
 			userId
 			username
@@ -53,6 +55,9 @@ export const createUserHoc = (component: any) => {
 	return graphql(createUser, {name: 'createUser', options})(component);
 };
 
-export const userHoc = (component: any) => {
-	return graphql(user, {name: 'user', options})(component);
+export const userHoc = async (component: any) => {
+	console.log(await CurrentUserInfo());
+	// TODO: get userId from cog attr
+	const variables: any = { userId: '' };
+	return graphql(user, {name: 'user', options: { variables } })(component);
 };

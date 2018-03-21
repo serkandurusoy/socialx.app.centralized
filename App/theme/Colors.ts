@@ -34,6 +34,9 @@ const SocialXColors = {
 	sushi: '#79B933',
 	grayNurse05: 'rgba(230,231,230,0.5)',
 	shuttleGray: '#54646E',
+	grayNurse: '#E6E7E6',
+	tundora: '#4A4A4A',
+	ceriseRed: '#E0295A',
 };
 
 export default SocialXColors;
