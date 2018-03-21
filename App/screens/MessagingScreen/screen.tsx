@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {MessagingChatListEntry} from '../../components/MessagingChatListEntry';
+import {NavigationActions, NavigationContainer, TabNavigator} from 'react-navigation';
+import {IContactListItem} from '../../components/ContactsList';
 import {MessagingTabButton} from '../../components/MessagingTabButton';
 import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../components/TextInput';
-import {Colors, Sizes} from '../../theme';
+import {Colors} from '../../theme';
+import ChatScreenTab from './chat.screen';
+import ContactsScreenTab from './contacts.screen';
 import {IChatListEntry, MessagingFilterValues} from './index';
 import style from './style';
 
@@ -16,12 +19,37 @@ interface IMessagingScreenProps {
 	loadMoreChatEntries: () => void;
 	hasMore: boolean;
 	searchTermUpdated: (term: string) => void;
+	filterUpdatedHandler: (filterValue: MessagingFilterValues) => void;
+	onContactSelect: (data: IContactListItem) => void;
+	contactsList: IContactListItem[];
 }
 
-export interface IMessagingScreenComponentState {}
+const MessagingTabs = TabNavigator(
+	{
+		Contacts: {screen: ContactsScreenTab},
+		Chat: {screen: ChatScreenTab}, // TODO: any options to use as keys values from enum MessagingFilterValues?
+	}, {
+		// TODO: this will cause contacts list right side scroll list with letter not to work correct on iOS
+		animationEnabled: true,
+		swipeEnabled: false,
+		lazy: false,
+		navigationOptions: {
+			tabBarVisible: false,
+		},
+	},
+);
 
-export default class MessagingComponent extends Component<IMessagingScreenProps, IMessagingScreenComponentState> {
-	public static defaultProps: Partial<IMessagingScreenProps> = {};
+export default class MessagingComponent extends Component<IMessagingScreenProps> {
+
+	private tabsInstance: NavigationContainer | null = null;
+
+	public componentWillReceiveProps(nextProps: Readonly<IMessagingScreenProps>): void {
+		if (nextProps.selectedFilter !== this.props.selectedFilter && this.tabsInstance) {
+			this.tabsInstance.dispatch(
+				NavigationActions.navigate({routeName: nextProps.selectedFilter}),
+			);
+		}
+	}
 
 	public render() {
 		return (
@@ -39,68 +67,29 @@ export default class MessagingComponent extends Component<IMessagingScreenProps,
 							blurOnSubmit={true}
 							returnKeyType={TRKeyboardKeys.done}
 							size={InputSizes.Small}
-							borderWidth={Sizes.smartHorizontalScale(0.5)}
+							borderWidth={1}
 						/>
 					</View>
 				</View>
-				<View style={style.tabsContainer}>
+				<View style={style.tabButtonsContainer}>
 					<MessagingTabButton
-						text={'Chat'}
+						text={MessagingFilterValues.Chat}
 						selected={this.props.selectedFilter === MessagingFilterValues.Chat}
 						onPress={() => this.props.setNewFilter(MessagingFilterValues.Chat)}
 					/>
 					<MessagingTabButton
-						text={'Contacts '}
+						text={MessagingFilterValues.Contacts}
 						selected={this.props.selectedFilter === MessagingFilterValues.Contacts}
 						onPress={() => this.props.setNewFilter(MessagingFilterValues.Contacts)}
 					/>
 				</View>
-				{this.conditionalRender()}
+				<View style={style.tabsContainer}>
+					<MessagingTabs
+						screenProps={this.props}
+						ref={(ref: any) => (this.tabsInstance = ref)}
+					/>
+				</View>
 			</View>
 		);
-	}
-
-	private renderChatSection() {
-		return (
-			<FlatList
-				refreshing={this.props.refreshing}
-				onRefresh={this.props.refreshData}
-				data={this.props.chatListData}
-				keyExtractor={(item: IChatListEntry, index: number) => index.toString()}
-				renderItem={this.renderUserWithLastMessage}
-				onEndReached={this.props.loadMoreChatEntries}
-				onEndReachedThreshold={0.2}
-				keyboardShouldPersistTaps={'handled'}
-				extraData={this.props.hasMore}
-				ListFooterComponent={this.renderFooterWhenLoading}
-			/>
-		);
-	}
-
-	private conditionalRender = () => {
-		if (this.props.selectedFilter === MessagingFilterValues.Chat) {
-			return this.renderChatSection();
-		} else if (this.props.selectedFilter === MessagingFilterValues.Contacts) {
-			return this.renderContactsSection();
-		}
-	}
-
-	private renderContactsSection = () => {
-		return <Text>{'renderContactsSection'}</Text>;
-	}
-
-	private renderUserWithLastMessage = (data: {item: IChatListEntry; index: number}) => {
-		return <MessagingChatListEntry {...data.item} />;
-	}
-
-	private renderFooterWhenLoading = () => {
-		if (this.props.hasMore) {
-			return (
-				<View style={style.bottomLoadingContainer}>
-					<ActivityIndicator size={'small'} />
-				</View>
-			);
-		}
-		return null;
 	}
 }

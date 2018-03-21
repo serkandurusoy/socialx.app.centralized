@@ -32,7 +32,7 @@ const style: any = {
 		...Fonts.centuryGothic,
 		color: Colors.postText,
 		fontSize: Sizes.smartHorizontalScale(11),
-		paddingVertical: Sizes.smartHorizontalScale(2),
+		// paddingVertical: Sizes.smartHorizontalScale(2),
 		width: Sizes.smartHorizontalScale(30),
 		textAlign: 'center',
 	},
@@ -47,6 +47,9 @@ const style: any = {
 		...Fonts.centuryGothic,
 		color: Colors.tundora,
 		fontSize: Sizes.smartHorizontalScale(16),
+	},
+	testStyle: {
+		justifyContent: 'space-around',
 	},
 };
 

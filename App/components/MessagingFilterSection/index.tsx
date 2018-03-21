@@ -42,7 +42,7 @@ export const MessagingFilterSection: React.SFC<IMessagingFilterSectionProps> = (
 			ret.push(
 				<View style={style.buttonContainer} key={index}>
 					<TouchableOpacity style={style.button} onPress={() => props.onSelectionChange(buttonData.value)}>
-						<Image source={buttonData.icon} resizeMode={'cover'} style={style.buttonIcon} />
+						<Image source={buttonData.icon} resizeMode={'contain'} style={style.buttonIcon} />
 						<Text style={textStyles}>{buttonData.label}</Text>
 					</TouchableOpacity>
 				</View>,

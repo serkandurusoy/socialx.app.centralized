@@ -24,7 +24,7 @@ const style: any = {
 	inputContainer: {
 		flex: 1,
 	},
-	tabsContainer: {
+	tabButtonsContainer: {
 		flexDirection: 'row',
 		width: '100%',
 		justifyContent: 'space-between',
@@ -33,8 +33,9 @@ const style: any = {
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 		borderBottomColor: Colors.dustWhite,
 	},
-	bottomLoadingContainer: {
-		paddingVertical: Sizes.smartVerticalScale(10),
+	tabsContainer: {
+		flex: 1,
+		width: '100%',
 	},
 };
 

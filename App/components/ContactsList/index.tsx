@@ -30,7 +30,7 @@ interface IContactsListProps {
 const ContactListItem: React.SFC<IContactListItemProps> = (props) => {
 	return (
 		<TouchableOpacity style={style.contactListItemCell} onPress={() => props.onSelect(props.item)}>
-			<Image source={{uri: props.item.avatarURL}} style={style.avatarImg} />
+			<Image source={{uri: props.item.avatarURL}} style={style.avatarImg}/>
 			<Text style={style.fullName}>{props.item.name}</Text>
 		</TouchableOpacity>
 	);
@@ -68,16 +68,23 @@ export const ContactsList: React.SFC<IContactsListProps> = (props) => {
 			}
 			ret[nameInitial].push(contact);
 		});
+		// console.log('Number of letters', Object.keys(ret).length);
 		return ret;
 	};
 
+	// const layoutHandler = (event: any) => {
+	// 	console.log('layoutHandler', event.nativeEvent.layout.height);
+	// };
+
 	return (
 		<AlphabetListView
+			// onLayout={(nativeEvent) => layoutHandler(nativeEvent)}
 			style={style.listElement}
 			data={getFormattedData(contactsListSorted)}
 			cell={ContactListItem}
 			onCellSelect={props.onContactSelect}
 			cellHeight={LIST_ITEM_HEIGHT}
+			sectionListStyle={style.testStyle}
 			sectionListItem={ContactListSectionItemRight}
 			sectionHeader={ContactListSectionHeader}
 			sectionHeaderHeight={SECTION_HEADER_HEIGHT}

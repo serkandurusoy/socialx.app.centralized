@@ -10,8 +10,6 @@ const style: any = {
 		width: '100%',
 		paddingTop: Sizes.smartHorizontalScale(10),
 		paddingBottom: Sizes.smartHorizontalScale(13),
-		borderTopColor: Colors.dustWhite,
-		borderTopWidth: Sizes.smartHorizontalScale(1),
 		borderBottomColor: Colors.dustWhite,
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 	},

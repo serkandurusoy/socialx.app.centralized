@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
+import {DUMMY_CONTACTS_LIST} from '../../../storybook/stories/ContactsList.stories';
+import {IContactListItem} from '../../components/ContactsList';
 import MessagingComponent from './screen';
 
 export enum MessagingFilterValues {
-	Chat = 'chat',
-	Contacts = 'contacts',
+	Chat = 'Chat',
+	Contacts = 'Contacts',
 }
 
 export interface IChatListEntry {
@@ -24,6 +26,7 @@ interface IMessagingScreenState {
 	chatListData: IChatListEntry[];
 	refreshing: boolean;
 	hasMore: boolean;
+	contactsList: IContactListItem[];
 }
 
 const FILTERED_CHAT_MESSAGES: IChatListEntry[] = [
@@ -88,6 +91,7 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 		selectedFilter: MessagingFilterValues.Chat,
 		refreshing: false,
 		hasMore: true,
+		contactsList: DUMMY_CONTACTS_LIST,
 	};
 
 	private isLoading = false;
@@ -100,9 +104,12 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 				setNewFilter={this.updateSelectedFilter}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshDataHandler}
-				loadMoreChatEntries={this.loadMoreChatEntriesHanlder}
+				loadMoreChatEntries={this.loadMoreChatEntriesHandler}
 				hasMore={this.state.hasMore}
 				searchTermUpdated={this.searchTermUpdatedHandler}
+				filterUpdatedHandler={this.filterUpdatedHandler}
+				onContactSelect={this.onContactSelectHandler}
+				contactsList={this.state.contactsList}
 			/>
 		);
 	}
@@ -134,7 +141,7 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 		}, 1500);
 	}
 
-	private loadMoreChatEntriesHanlder = () => {
+	private loadMoreChatEntriesHandler = () => {
 		if (this.state.chatListData.length < TOTAL_NUMBER_OF_CHAT_ENTRIES) {
 			if (!this.isLoading) {
 				this.isLoading = true;
@@ -148,5 +155,14 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 		} else {
 			this.setState({hasMore: false});
 		}
+	}
+
+	private filterUpdatedHandler = (filterValue: MessagingFilterValues) => {
+		alert(filterValue);
+	}
+
+	private onContactSelectHandler(data: IContactListItem) {
+		alert('Selected contact ' + data.name);
+		//	TODO: here we should filter contacts and update  this.state.contactsList
 	}
 }
