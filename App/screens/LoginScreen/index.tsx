@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -11,7 +11,8 @@ import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-import {ConfirmSignin, Signin} from '../../utils';
+import {userHoc} from '../../graphql';
+import {ConfirmSignin, CurrentUserInfo, Signin} from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
 
@@ -41,6 +42,11 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 
 	private passwordInput: SXTextInput | null = null;
 	private usernameInput: SXTextInput | null = null;
+
+	public async componentDidMount() {
+		const res = await CurrentUserInfo();
+		console.log(res);
+	}
 
 	public render() {
 		return (
@@ -141,10 +147,10 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		this.props.SigninLoader();
 		try {
 			const res = await Signin(usernameValue, passwordValue);
-			// TODO: save tokens to device storage
-			// res.signInUserSession.idToken.jwtToken
-			// res.signInUserSession.refreshToken.token
-			// res.signInUserSession.accessToken.jwtToken
+			// saving..
+			await AsyncStorage.setItem('jwtToken', res.signInUserSession.idToken.jwtToken);
+			await AsyncStorage.setItem('refreshToken', res.signInUserSession.refreshToken.token);
+			await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
 			// better alert here
@@ -187,4 +193,5 @@ const MapDispatchToProps = (dispatch: any) => ({
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(null, MapDispatchToProps)(LoginScreen as any);
+const reduxWrapper = connect(null, MapDispatchToProps)(LoginScreen as any);
+export default reduxWrapper;

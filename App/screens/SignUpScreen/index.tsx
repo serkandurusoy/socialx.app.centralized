@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Keyboard, Text, View} from 'react-native';
+import {Alert, Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -11,7 +11,12 @@ import {Colors, Images} from '../../theme';
 import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-import {ConfirmSignup, ISignup, resendSignup, Signup} from '../../utils';
+import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from '../../utils';
+
+import {createUserHoc} from '../../graphql';
+import {createUserFunc} from '../../types/gql';
+
+import uuidv1 from 'uuid/v1';
 
 export interface ISignUpScreenState {
 	email: string;
@@ -21,8 +26,9 @@ export interface ISignUpScreenState {
 	confirmPassword: string;
 	avatarImage: any;
 	phone: string;
-	updatedAvatarImageBase64: string | null;
+	updatedAvatarImageBase64: string;
 	showModalForSMSCode: boolean;
+	uuid: string;
 }
 
 export interface ISignUpScreenProps {
@@ -31,6 +37,7 @@ export interface ISignUpScreenProps {
 	ConfirmSignupLoading: () => void;
 	ResendCodeLoading: () => void;
 	HideLoader: () => void;
+	createUser: createUserFunc;
 }
 
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
@@ -46,8 +53,9 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		password: '',
 		confirmPassword: '',
 		avatarImage: Images.user_avatar_placeholder,
-		updatedAvatarImageBase64: null,
+		updatedAvatarImageBase64: '',
 		showModalForSMSCode: false,
+		uuid: '',
 	};
 
 	private inputRefs: any = {};
@@ -187,9 +195,27 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone, uuid} = this.state;
+		const {createUser} = this.props;
+
 		try {
 			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
+
+			// signin to get access to appsync
+			const resin = await Signin(username, password);
+
+			await updateUserAttr({
+				avatarImage: this.updateAvatarImage,
+				userId: uuid,
+			});
+
+			// do appsync
+			await createUser({
+				variables: {
+					userId: uuid, username, name, avatar: updatedAvatarImageBase64, email,
+				},
+			});
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
@@ -197,7 +223,9 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
-			// TODO: alert here
+			console.log(ex);
+			Alert.alert('Wrong confirmation code');
+			this.props.HideLoader();
 		}
 	}
 
@@ -213,34 +241,46 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			const res = await resendSignup(this.state.username);
 			this.props.HideLoader();
 		} catch (ex) {
-			// TODO: alert here
+			Alert.alert('Could not resend confirmation code');
+			this.props.HideLoader();
 		}
 	}
 
 	private startRegister = async () => {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
+		const {createUser} = this.props;
+
 		if (password !== confirmPassword) {
-			// TODO: alert here or somrthing
+			Alert.alert('Your passwords dont match');
 			return;
 		}
-		const signupParams: ISignup = {
-			username,
-			password,
-			attributes: {
-				phone_number: phone,
-				email,
-			},
-		};
+
+		const userId = uuidv1();
+		console.log('userid: ', userId);
 
 		try {
 			this.props.SignupLoading();
+			// do cognito
+			const signupParams: any = {
+				username,
+				password,
+				attributes: {
+					phone_number: phone,
+					email,
+				},
+			};
 			const res = await Signup(signupParams);
+
+			this.setState({uuid: userId});
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS();
 			this.props.HideLoader();
 		} catch (ex) {
-			// TODO: alert here
+			Alert.alert(ex.message);
+			Keyboard.dismiss();
+			this.toggleVisibleModalSMS();
+			this.props.HideLoader();
 		}
 	}
 
@@ -259,4 +299,5 @@ const MapDispatchToProps = (dispatch: any) => ({
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(null, MapDispatchToProps)(SignUpScreen as any);
+const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
+export default createUserHoc(reduxWrapper);

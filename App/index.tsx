@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import {ApolloProvider} from 'react-apollo';
 import {Provider} from 'react-redux';
 
-import RootContainer from './containers/RootContainer';
+import RootContainer, {AppsyncClient, Rehydrated} from './containers/RootContainer';
 import createStore from './reducers';
 
 const store = createStore();
@@ -9,9 +10,13 @@ const store = createStore();
 export default class App extends Component<{}, {}> {
 	public render() {
 		return (
-			<Provider store={store}>
-				<RootContainer />
-			</Provider>
+			<ApolloProvider client={AppsyncClient}>
+				<Rehydrated>
+					<Provider store={store}>
+						<RootContainer />
+					</Provider>
+				</Rehydrated>
+			</ApolloProvider>
 		);
 	}
 }

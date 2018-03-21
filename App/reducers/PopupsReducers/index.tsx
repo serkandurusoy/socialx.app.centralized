@@ -1,4 +1,4 @@
-import {HIDE_ACTIVITY_INDICATOR, IPopupAction, IPopupStateProps, SHOW_ACTIVITY_INDICATOR} from '../../types';
+import {HIDE_ACTIVITY_INDICATOR, IPopupAction, IPopupStateProps, SHOW_ACTIVITY_INDICATOR} from '../../types/popup';
 
 const initialState: IPopupStateProps = {
 	showActivityIndicator: false,
