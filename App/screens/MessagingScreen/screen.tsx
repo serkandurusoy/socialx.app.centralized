@@ -1,80 +1,58 @@
 import React, {Component} from 'react';
-import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {MessagingChatListEntry} from '../../components/MessagingChatListEntry';
+import {MessagingTabButton} from '../../components/MessagingTabButton';
+import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../components/TextInput';
+import {Colors, Sizes} from '../../theme';
+import {IChatListEntry, MessagingFilterValues} from './index';
 import style from './style';
-import {MessagePerson} from '../../components/MessagePerson';
-import {MessagingTabButtons} from '../../components/MessagingTabButtons';
-import {SearchFilterValues} from '../SearchScreen';
-import {InputSizes, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
-import {Colors} from '../../theme';
 
 interface IMessagingScreenProps {
-	messageList: any[];
-	selectedFilter: SearchFilterValues;
-	setNewFilter: (value: SearchFilterValues) => void;
+	chatListData: IChatListEntry[];
+	selectedFilter: MessagingFilterValues;
+	setNewFilter: (value: MessagingFilterValues) => void;
+	refreshing: boolean;
+	refreshData: () => void;
+	loadMoreChatEntries: () => void;
+	hasMore: boolean;
+	searchTermUpdated: (term: string) => void;
 }
 
-export interface IMessagingScreenComponentState {
-}
+export interface IMessagingScreenComponentState {}
 
 export default class MessagingComponent extends Component<IMessagingScreenProps, IMessagingScreenComponentState> {
 	public static defaultProps: Partial<IMessagingScreenProps> = {};
-
-	public state = {
-		modeState: 'chat',
-	};
-	private conditionalRender = () => {
-		let ret = null;
-		if (this.state.modeState === 'chat') {
-			ret = this.renderChatSection();
-		} else {
-			ret = this.renderContactsSection();
-		}
-		return ret;
-	}
-	private renderContactsSection = () => {
-
-	}
-	private keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
-	private renderUserWithLastMessage = (data: any) => {
-		return (
-			<View style={style.wallPostContainer}>
-				<MessagePerson {...data.item} />
-			</View>
-		);
-	}
 
 	public render() {
 		return (
 			<View style={style.container}>
 				<View style={style.searchContainer}>
 					<Text style={style.friendsText}>{'Friends'}</Text>
-					{/*<View style={style.inputSearch}>*/}
+					<View style={style.inputContainer}>
 						<SXTextInput
-							value={this.state.email}
-							iconColor={Colors.iron}
+							iconColor={Colors.cadetBlue}
 							icon={'search'}
-							placeholder={'Email'}
-							placeholderColor={Colors.iron}
-							borderColor={Colors.iron}
-							// onChangeText={(value) => this.handleInputChangeText(value, 'email')}
-							// keyboardType={TKeyboardKeys.emailAddress}
-							// blurOnSubmit={true}
-							// returnKeyType={TRKeyboardKeys.done}
+							placeholder={'Search'}
+							placeholderColor={Colors.cadetBlue}
+							borderColor={Colors.darkGray}
+							onChangeText={this.props.searchTermUpdated}
+							blurOnSubmit={true}
+							returnKeyType={TRKeyboardKeys.done}
 							size={InputSizes.Small}
+							borderWidth={Sizes.smartHorizontalScale(0.5)}
 						/>
-					{/*</View>*/}
-
+					</View>
 				</View>
-				<View style={style.tabContainer}>
-					<MessagingTabButtons
+				<View style={style.tabsContainer}>
+					<MessagingTabButton
 						text={'Chat'}
-						selected={this.props.selectedFilter === SearchFilterValues.People}
-						onPress={() => this.props.setNewFilter(SearchFilterValues.People)}
+						selected={this.props.selectedFilter === MessagingFilterValues.Chat}
+						onPress={() => this.props.setNewFilter(MessagingFilterValues.Chat)}
 					/>
-					<MessagingTabButtons
-						text={'Contacts'}
-						selected={this.props.selectedFilter === SearchFilterValues.People}
-						onPress={() => this.props.setNewFilter(SearchFilterValues.People)}
+					<MessagingTabButton
+						text={'Contacts '}
+						selected={this.props.selectedFilter === MessagingFilterValues.Contacts}
+						onPress={() => this.props.setNewFilter(MessagingFilterValues.Contacts)}
 					/>
 				</View>
 				{this.conditionalRender()}
@@ -85,12 +63,44 @@ export default class MessagingComponent extends Component<IMessagingScreenProps,
 	private renderChatSection() {
 		return (
 			<FlatList
-				data={this.props.messageList}
-				keyExtractor={this.keyExtractor}
+				refreshing={this.props.refreshing}
+				onRefresh={this.props.refreshData}
+				data={this.props.chatListData}
+				keyExtractor={(item: IChatListEntry, index: number) => index.toString()}
 				renderItem={this.renderUserWithLastMessage}
-				alwaysBounceVertical={false}
+				onEndReached={this.props.loadMoreChatEntries}
+				onEndReachedThreshold={0.2}
 				keyboardShouldPersistTaps={'handled'}
+				extraData={this.props.hasMore}
+				ListFooterComponent={this.renderFooterWhenLoading}
 			/>
 		);
+	}
+
+	private conditionalRender = () => {
+		if (this.props.selectedFilter === MessagingFilterValues.Chat) {
+			return this.renderChatSection();
+		} else if (this.props.selectedFilter === MessagingFilterValues.Contacts) {
+			return this.renderContactsSection();
+		}
+	}
+
+	private renderContactsSection = () => {
+		return <Text>{'renderContactsSection'}</Text>;
+	}
+
+	private renderUserWithLastMessage = (data: {item: IChatListEntry; index: number}) => {
+		return <MessagingChatListEntry {...data.item} />;
+	}
+
+	private renderFooterWhenLoading = () => {
+		if (this.props.hasMore) {
+			return (
+				<View style={style.bottomLoadingContainer}>
+					<ActivityIndicator size={'small'} />
+				</View>
+			);
+		}
+		return null;
 	}
 }

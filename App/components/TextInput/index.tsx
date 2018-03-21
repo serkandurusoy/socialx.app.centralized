@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Keyboard, Text, TextInput, TextInputStatic, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Sizes} from '../../theme';
-import {Colors} from '../../theme/';
+import {Colors, Sizes} from '../../theme/';
 import style from './style';
 
 export enum TKeyboardKeys {
@@ -48,6 +47,7 @@ export interface ISXTextInputProps {
 	value?: string;
 	autoFocus?: boolean;
 	size?: InputSizes;
+	borderWidth?: number;
 }
 
 export interface ISXTextInputState {
@@ -75,6 +75,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		value: '',
 		autoFocus: false,
 		size: InputSizes.Normal,
+		borderWidth: Sizes.smartHorizontalScale(2),
 	};
 
 	public state = {
@@ -85,9 +86,16 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	private inputComponent: any;
 
 	public render() {
+		const inputContainerStyles = [
+			style.inputContainer,
+			{
+				borderColor: this.props.borderColor,
+				borderWidth: this.props.borderWidth,
+			},
+		];
 		return (
 			<View style={this.getContainerStyles()}>
-				<View style={[style.inputContainer, {borderColor: this.props.borderColor}]}>
+				<View style={inputContainerStyles}>
 					{this.renderInputIcon()}
 					{/* allowFontScaling={false} => does not exist */}
 					<TextInput

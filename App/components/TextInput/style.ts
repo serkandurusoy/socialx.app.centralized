@@ -16,7 +16,6 @@ const style: any = {
 		flex: 1,
 		backgroundColor: Colors.white,
 		borderRadius: Sizes.smartHorizontalScale(6),
-		borderWidth: Sizes.smartHorizontalScale(2),
 		height: '100%',
 	},
 	textInput: {

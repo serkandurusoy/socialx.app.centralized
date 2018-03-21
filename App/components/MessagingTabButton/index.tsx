@@ -1,15 +1,15 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 
 import style from './style';
 
-export interface ISearchFilterButtonProps {
-	selected: string;
+export interface IMessagingTabButtonProps {
+	selected: boolean;
 	text: string;
 	onPress: () => void;
 }
 
-export const MessagingTabButtons: React.SFC<ISearchFilterButtonProps> = (props) => {
+export const MessagingTabButton: React.SFC<IMessagingTabButtonProps> = (props) => {
 	const getTextStyle = () => {
 		const ret = [style.text];
 		if (props.selected) {

@@ -24,7 +24,6 @@ import UserProfileScreen from '../screens/UserProfileScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
 import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
-import MessagingScreen from '../screens/MessagingScreen';
 
 const MainScreenTabNavigation = TabNavigator(
 	{

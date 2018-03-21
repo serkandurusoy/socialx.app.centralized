@@ -1,14 +1,15 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../theme';
 
+const AVATAR_SIZE = Sizes.smartHorizontalScale(40);
+
 const style: any = {
 	container: {
 		width: '100%',
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingLeft: Sizes.smartHorizontalScale(15),
-		paddingRight: Sizes.smartHorizontalScale(12),
+		alignSelf: 'flex-start',
+		paddingLeft: Sizes.smartHorizontalScale(12),
+		paddingRight: Sizes.smartHorizontalScale(26),
 		paddingVertical: Sizes.smartVerticalScale(15),
 	},
 	leftContainer: {
@@ -17,32 +18,30 @@ const style: any = {
 		flex: 1,
 	},
 	avatarImage: {
-		width: Sizes.smartHorizontalScale(40),
-		height: Sizes.smartHorizontalScale(40),
-		borderRadius: Sizes.smartHorizontalScale(40) / 2,
-		marginRight: Sizes.smartHorizontalScale(25),
-	},
-	avatarNameContainer: {
-		flex: 1,
+		width: AVATAR_SIZE,
+		height: AVATAR_SIZE,
+		borderRadius: AVATAR_SIZE / 2,
+		marginRight: Sizes.smartHorizontalScale(30),
 	},
 	time: {
-		alignSelf: 'flex-start',
-		marginTop: Sizes.smartHorizontalScale(5),
-		marginRight: Sizes.smartHorizontalScale(15),
-		width: Sizes.smartHorizontalScale(45),
+		width: Sizes.smartHorizontalScale(55),
 		fontSize: Sizes.smartHorizontalScale(10),
 		color: Colors.postHour,
 	},
-	username: {
+	verticalContainer: {
+		flex: 1,
+	},
+	fullName: {
 		...Fonts.centuryGothic,
 		color: Colors.postFullName,
 		fontSize: Sizes.smartHorizontalScale(14),
+		lineHeight: Sizes.smartHorizontalScale(17),
 	},
 	message: {
 		...Fonts.centuryGothic,
 		color: Colors.postText,
 		fontSize: Sizes.smartHorizontalScale(14),
-		lineHeight: Sizes.smartHorizontalScale(23),
+		lineHeight: Sizes.smartHorizontalScale(17),
 		paddingTop: Sizes.smartVerticalScale(3),
 	},
 };

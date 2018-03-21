@@ -3,23 +3,24 @@ import {Colors, Fonts, Sizes} from '../../theme/';
 
 const style: any = {
 	background: {
-		backgroundColor: Colors.white,
-		// backgroundColor: 'lime',
+		backgroundColor: Colors.transparent,
 	},
 	backgroundSelected: {
-		backgroundColor: Colors.searchFilterButtonSelectedBg,
+		backgroundColor: Colors.pink,
+		borderRadius: Sizes.smartHorizontalScale(32),
 	},
 	text: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
-		paddingHorizontal: Sizes.smartHorizontalScale(39),
-		paddingVertical: Sizes.smartVerticalScale(15),
+		paddingHorizontal: Sizes.smartHorizontalScale(30),
+		paddingVertical: Sizes.smartVerticalScale(8),
 	},
 	textSelected: {
-		color: Colors.postHour,
+		color: Colors.white,
 	},
 	textUnselected: {
-		color: Colors.searchFilterButtonUnselectedText,
+		color: Colors.postFullName,
+		opacity: 0.5,
 	},
 };
 
