@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { NavigationScreenProp } from 'react-navigation';
+import React, {Component} from 'react';
+import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 import {SXButton} from '../../components/Button';
 import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
@@ -11,7 +11,8 @@ import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-import {ConfirmSignin, Signin} from '../../utils';
+import {userHoc} from '../../graphql';
+import {ConfirmSignin, CurrentUserInfo, Signin} from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
 
@@ -41,6 +42,11 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 
 	private passwordInput: SXTextInput | null = null;
 	private usernameInput: SXTextInput | null = null;
+
+	public async componentDidMount() {
+		const res = await CurrentUserInfo();
+		console.log(res);
+	}
 
 	public render() {
 		return (
@@ -147,7 +153,6 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
-			console.log(ex);
 			// better alert here
 			Alert.alert('Wrong username/password');
 			if (this.usernameInput) {
@@ -188,4 +193,5 @@ const MapDispatchToProps = (dispatch: any) => ({
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(null, MapDispatchToProps)(LoginScreen as any);
+const reduxWrapper = connect(null, MapDispatchToProps)(LoginScreen as any);
+export default reduxWrapper;

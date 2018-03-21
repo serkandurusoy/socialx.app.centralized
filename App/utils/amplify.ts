@@ -6,6 +6,11 @@ export interface ISignup {
 	attributes: {
 		phone_number: string;
 		email: string;
+		custom: {
+			avatarImage?: string;
+			userId: string;
+			name: string;
+		}
 	};
 }
 
