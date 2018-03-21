@@ -17,6 +17,7 @@ import './stories/ActivityRecentCommentCard.stories';
 import './stories/ActivitySuperLikedCard.stories';
 import './stories/TextGradient.stories';
 import './stories/ModalInvitePeople.stories';
+import './stories/ModalShareOptions.stories';
 import './stories/ModalWallet.stories';
 import './stories/ContactsList.stories';
 import './stories/MessagingFilterSection.stories';
