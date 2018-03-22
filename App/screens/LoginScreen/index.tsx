@@ -11,7 +11,6 @@ import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-import {userHoc} from '../../graphql';
 import {ConfirmSignin, CurrentUserInfo, Signin} from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
@@ -42,11 +41,6 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 
 	private passwordInput: SXTextInput | null = null;
 	private usernameInput: SXTextInput | null = null;
-
-	public async componentDidMount() {
-		const res = await CurrentUserInfo();
-		console.log(res);
-	}
 
 	public render() {
 		return (
