@@ -33,7 +33,6 @@ interface IUserFeedScreenState {
 const INITIAL_USER_POSTS: IWallPostData[] = [
 	{
 		text: 'text',
-		imageSource: undefined,
 		smallAvatar: 'https://placeimg.com/110/110/people',
 		fullName: 'Ionut Movila',
 		timestamp: new Date(),
