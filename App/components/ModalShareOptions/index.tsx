@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
-import style from './style';
 import {Icons} from '../../theme';
 import {ButtonIconWithName} from '../ButtonIconWithName';
+import style from './style';
 
 const BUTTON_NAMES = {
 	wallet: 'Wallet',
@@ -13,7 +13,7 @@ const BUTTON_NAMES = {
 	audio: 'Audio',
 	location: 'Location',
 	contact: 'Contact' ,
-}
+};
 
 interface IModalInvitePeopleProps {
 	visible: boolean;

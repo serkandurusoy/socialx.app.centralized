@@ -38,7 +38,7 @@ export interface ISXTextInputProps {
 	returnKeyType?: TRKeyboardKeys;
 	cancelButtonTextColor?: string;
 	canCancel?: boolean;
-	onSubmitPressed?: () => void;
+	onSubmitPressed?: (event: any) => void;
 	onChangeText?: (value: string) => void;
 	hasFocus?: boolean;
 	blurOnSubmit?: boolean;
@@ -83,7 +83,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		textValue: 'value' in this.props ? this.props.value : '',
 	};
 
-	private inputComponent: any;
+	public inputComponent: any;
 
 	public render() {
 		const inputContainerStyles = [

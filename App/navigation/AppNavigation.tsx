@@ -3,6 +3,7 @@ import {StackNavigator, TabNavigator} from 'react-navigation';
 import LaunchScreen from '../screens/LaunchScreen';
 
 import {TabBarBottom} from '../components/TabBarBottom';
+import ChatThreadScreen from '../screens/ChatThreadScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -76,10 +77,12 @@ const PrimaryNav = StackNavigator(
 		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
 		SocialXAccountScreen: {screen: SocialXAccountScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
+		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
+		// initialRouteName: 'LaunchScreen',
+		initialRouteName: 'ChatThreadScreen',
 		navigationOptions: {
 			headerStyle: styles.header,
 			headerTintColor: Colors.white, // color for screen title and back button

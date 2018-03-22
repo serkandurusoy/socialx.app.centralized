@@ -1,8 +1,8 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {Colors} from '../../App/theme';
 import {ModalShareOptions} from '../../App/components/ModalShareOptions';
+import {Colors} from '../../App/theme';
 import SXBlurView from '../SXBlurView';
 
 const containerStyle = {
