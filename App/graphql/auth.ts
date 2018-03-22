@@ -49,8 +49,6 @@ export const user = gql`
 	}
 `;
 
-export const createUpdateUserHoc = (component: any) => {
-	return graphql(createUser, {name: 'createUser', options})(component);
-};
+export const createUpdateUserHoc = (comp: any) => graphql(createUser, {name: 'createUser', options})(comp);
 
-export const userHoc = () => graphql(user, { options: { fetchPolicy: 'network-only' } });
+export const userHoc = (comp: any) => graphql(user, { options: { fetchPolicy: 'network-only' } })(comp);

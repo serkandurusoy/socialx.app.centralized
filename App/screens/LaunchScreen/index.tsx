@@ -51,11 +51,7 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
-		this.props.showActivityIndicator();
-		setTimeout(() => {
-			this.props.navigation.navigate('LoginScreen');
-			this.props.hideActivityIndicator();
-		}, 2000);
+		this.props.navigation.navigate('LoginScreen');
 	}
 
 	private navigateToSignUpScreen = () => {

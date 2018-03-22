@@ -5,7 +5,7 @@ import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {user} from '../../graphql';
+import {createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
 
 export interface IWallPostData {
@@ -23,6 +23,10 @@ export interface IWallPostData {
 interface IUserFeedScreenProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
+	// TODO: create interface
+	Posts: any;
+	User: any;
+	createPost: any;
 }
 
 interface IUserFeedScreenState {
@@ -53,9 +57,19 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		refreshing: false,
 	};
 
+	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
+		const {data, Posts} = nextProps;
+		if (data.loading || Posts.loading) {
+			return;
+		}
+		console.log(nextProps);
+		this.setState({wallPosts: this.getWallPosts()});
+	}
+
 	public render() {
-		const {data} = this.props;
-		if (data.loading) {
+		const {data, Posts} = this.props;
+		if (data.loading || Posts.loading) {
+			// TODO: Loading..
 			return (
 				<UserFeedScreenComponent
 					refreshing={this.state.refreshing}
@@ -83,6 +97,27 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		);
 	}
 
+	private getWallPosts = () => {
+		const {Posts, data} = this.props;
+		const arty: any[] = [];
+		for (let i = 0; i < Posts.allPosts.length; i++) {
+			const post = Posts.allPosts[i];
+			const res = {
+				text: post.text,
+				smallAvatar: data.user.avatar,
+				fullName: data.user.name,
+				timestamp: new Date(post.createdAt),
+				numberOfLikes: 0,
+				numberOfSuperLikes: 0,
+				numberOfComments: 0,
+				numberOfWalletCoins: 0,
+			};
+			arty.push(res);
+		}
+
+		return arty;
+	}
+
 	private showNewWallPostPage = () => {
 		this.props.navigation.navigate('NewWallPostScreen', {
 			fullName: this.props.data.user.name,
@@ -98,37 +133,28 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		// });
 	}
 
-	private addWallPostHandler = (data: NewWallPostData) => {
-		// TODO
-		// const newPost: IWallPostData = {
-		// 	text: data.text,
-		// 	imageSource: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
-		// 	smallAvatar: 'https://placeimg.com/110/110/people',
-		// 	fullName: 'Ionut Movila',
-		// 	timestamp: new Date(),
-		// 	numberOfLikes: 0,
-		// 	numberOfSuperLikes: 0,
-		// 	numberOfComments: 0,
-		// 	numberOfWalletCoins: 0,
-		// };
-		// this.setState({
-		// 	wallPosts: [newPost].concat(this.state.wallPosts),
-		// });
+	private addWallPostHandler = async (data: NewWallPostData) => {
+		const {createPost} = this.props;
+		await createPost({variables: {
+			text: data.text,
+			Media: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
+		}});
+
+		this.refreshWallPosts();
 	}
 
 	private refreshWallPosts = async () => {
-		this.setState({
-			refreshing: true,
-		});
+		this.setState({refreshing: true});
 
 		await this.props.data.refetch();
 
-		this.setState({
-			refreshing: false,
-			// TODO
-			wallPosts: INITIAL_USER_POSTS,
-		});
+		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
 	}
 }
 
-export default graphql(user)(UserFeedScreen as any);
+const userWrapper = userHoc(UserFeedScreen);
+const allPostsWrapper = getAllPostsHoc(userWrapper);
+const createPostWrapper = createPostHoc(allPostsWrapper);
+const allUserPostsWrapper = getUserPostsHoc(createPostWrapper);
+
+export default allUserPostsWrapper;
