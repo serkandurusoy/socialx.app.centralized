@@ -5,11 +5,9 @@ import {MessagingFilterSection, MessagingFilterValues} from '../../components/Me
 import style from './contacts.screen.style';
 
 interface IContactsScreenTabProps {
-	screenProps: {
-		filterUpdatedHandler: (filterValue: MessagingFilterValues) => void;
-		onContactSelect: (data: IContactListItem) => void;
-		contactsList: IContactListItem[];
-	};
+	filterUpdatedHandler: (filterValue: MessagingFilterValues) => void;
+	onContactSelect: (data: IContactListItem) => void;
+	contactsList: IContactListItem[];
 }
 
 export default class ContactsScreenTab extends Component<IContactsScreenTabProps, any> {
@@ -17,13 +15,10 @@ export default class ContactsScreenTab extends Component<IContactsScreenTabProps
 		return (
 			<View style={style.container}>
 				<MessagingFilterSection
-					onSelectionChange={this.props.screenProps.filterUpdatedHandler}
+					onSelectionChange={this.props.filterUpdatedHandler}
 					selectedOption={MessagingFilterValues.Contacts}
 				/>
-				<ContactsList
-					listData={this.props.screenProps.contactsList}
-					onContactSelect={this.props.screenProps.onContactSelect}
-				/>
+				<ContactsList listData={this.props.contactsList} onContactSelect={this.props.onContactSelect} />
 			</View>
 		);
 	}

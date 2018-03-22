@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {NavigationActions, NavigationContainer, TabNavigator} from 'react-navigation';
+import {Animated, Easing, LayoutEvent, Text, View} from 'react-native';
 import {IContactListItem} from '../../components/ContactsList';
+import {MessagingFilterValues} from '../../components/MessagingFilterSection';
 import {MessagingTabButton} from '../../components/MessagingTabButton';
 import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../components/TextInput';
 import {Colors} from '../../theme';
 import ChatScreenTab from './chat.screen';
 import ContactsScreenTab from './contacts.screen';
-import {IChatListEntry, MessagingFilterValues} from './index';
+import {IChatListEntry, MessagingTabValues} from './index';
 import style from './style';
 
-interface IMessagingScreenProps {
+export interface IMessagingScreenProps {
 	chatListData: IChatListEntry[];
-	selectedFilter: MessagingFilterValues;
-	setNewFilter: (value: MessagingFilterValues) => void;
+	selectedTab: MessagingTabValues;
+	setNewTab: (value: MessagingTabValues) => void;
 	refreshing: boolean;
 	refreshData: () => void;
 	loadMoreChatEntries: () => void;
@@ -24,30 +24,17 @@ interface IMessagingScreenProps {
 	contactsList: IContactListItem[];
 }
 
-const MessagingTabs = TabNavigator(
-	{
-		Contacts: {screen: ContactsScreenTab},
-		Chat: {screen: ChatScreenTab}, // TODO: any options to use as keys values from enum MessagingFilterValues?
-	}, {
-		// TODO: this will cause contacts list right side scroll list with letter not to work correct on iOS
-		animationEnabled: true,
-		swipeEnabled: false,
-		lazy: false,
-		navigationOptions: {
-			tabBarVisible: false,
-		},
-	},
-);
-
 export default class MessagingComponent extends Component<IMessagingScreenProps> {
+	public state = {
+		translateX: new Animated.Value(0),
+	};
 
-	private tabsInstance: NavigationContainer | null = null;
+	private slideWidth: number = 0;
 
 	public componentWillReceiveProps(nextProps: Readonly<IMessagingScreenProps>): void {
-		if (nextProps.selectedFilter !== this.props.selectedFilter && this.tabsInstance) {
-			this.tabsInstance.dispatch(
-				NavigationActions.navigate({routeName: nextProps.selectedFilter}),
-			);
+		if (nextProps.selectedTab !== this.props.selectedTab) {
+			const slideValue = nextProps.selectedTab === MessagingTabValues.Contacts ? -this.slideWidth : 0;
+			this.runSlideTransition(slideValue);
 		}
 	}
 
@@ -73,23 +60,49 @@ export default class MessagingComponent extends Component<IMessagingScreenProps>
 				</View>
 				<View style={style.tabButtonsContainer}>
 					<MessagingTabButton
-						text={MessagingFilterValues.Chat}
-						selected={this.props.selectedFilter === MessagingFilterValues.Chat}
-						onPress={() => this.props.setNewFilter(MessagingFilterValues.Chat)}
+						text={MessagingTabValues.Chat}
+						selected={this.props.selectedTab === MessagingTabValues.Chat}
+						onPress={() => this.props.setNewTab(MessagingTabValues.Chat)}
 					/>
 					<MessagingTabButton
-						text={MessagingFilterValues.Contacts}
-						selected={this.props.selectedFilter === MessagingFilterValues.Contacts}
-						onPress={() => this.props.setNewFilter(MessagingFilterValues.Contacts)}
+						text={MessagingTabValues.Contacts}
+						selected={this.props.selectedTab === MessagingTabValues.Contacts}
+						onPress={() => this.props.setNewTab(MessagingTabValues.Contacts)}
 					/>
 				</View>
-				<View style={style.tabsContainer}>
-					<MessagingTabs
-						screenProps={this.props}
-						ref={(ref: any) => (this.tabsInstance = ref)}
-					/>
-				</View>
+				<Animated.View style={[style.animatedView, {transform: [{translateX: this.state.translateX}]}]}>
+					<View style={style.fullWidth} onLayout={this.chatScreenViewOnLayout}>
+						<ChatScreenTab
+							chatListData={this.props.chatListData}
+							refreshing={this.props.refreshing}
+							refreshData={this.props.refreshData}
+							loadMoreChatEntries={this.props.loadMoreChatEntries}
+							hasMore={this.props.hasMore}
+						/>
+					</View>
+					<View style={style.fullWidth}>
+						<ContactsScreenTab
+							filterUpdatedHandler={this.props.filterUpdatedHandler}
+							onContactSelect={this.props.onContactSelect}
+							contactsList={this.props.contactsList}
+						/>
+					</View>
+				</Animated.View>
 			</View>
 		);
+	}
+
+	private chatScreenViewOnLayout = (event: LayoutEvent) => {
+		this.slideWidth = event.nativeEvent.layout.width;
+	}
+
+	private runSlideTransition = (endValue: number) => {
+		Animated.timing(this.state.translateX, {
+			toValue: endValue,
+			easing: Easing.linear,
+			duration: 300,
+			isInteraction: false,
+			useNativeDriver: true,
+		}).start();
 	}
 }

@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
 import {DUMMY_CONTACTS_LIST} from '../../../storybook/stories/ContactsList.stories';
 import {IContactListItem} from '../../components/ContactsList';
+import {MessagingFilterValues} from '../../components/MessagingFilterSection';
 import MessagingComponent from './screen';
 
-export enum MessagingFilterValues {
+export enum MessagingTabValues {
 	Chat = 'Chat',
 	Contacts = 'Contacts',
 }
@@ -22,7 +23,7 @@ interface IMessagingScreenProps {
 
 interface IMessagingScreenState {
 	searchTerm: string;
-	selectedFilter: MessagingFilterValues;
+	selectedTab: MessagingTabValues;
 	chatListData: IChatListEntry[];
 	refreshing: boolean;
 	hasMore: boolean;
@@ -88,7 +89,7 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 	public state = {
 		chatListData: [],
 		searchTerm: '',
-		selectedFilter: MessagingFilterValues.Chat,
+		selectedTab: MessagingTabValues.Chat,
 		refreshing: false,
 		hasMore: true,
 		contactsList: DUMMY_CONTACTS_LIST,
@@ -100,8 +101,8 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 		return (
 			<MessagingComponent
 				chatListData={this.state.chatListData}
-				selectedFilter={this.state.selectedFilter}
-				setNewFilter={this.updateSelectedFilter}
+				selectedTab={this.state.selectedTab}
+				setNewTab={this.updateSelectedTab}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshDataHandler}
 				loadMoreChatEntries={this.loadMoreChatEntriesHandler}
@@ -114,9 +115,9 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 		);
 	}
 
-	private updateSelectedFilter = (value: MessagingFilterValues) => {
+	private updateSelectedTab = (value: MessagingTabValues) => {
 		this.setState({
-			selectedFilter: value,
+			selectedTab: value,
 		});
 	}
 
@@ -163,6 +164,6 @@ export default class MessagingScreen extends Component<IMessagingScreenProps, IM
 
 	private onContactSelectHandler(data: IContactListItem) {
 		alert('Selected contact ' + data.name);
-		//	TODO: here we should filter contacts and update  this.state.contactsList
+		// TODO: here we should filter contacts and update  this.state.contactsList
 	}
 }

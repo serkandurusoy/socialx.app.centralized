@@ -33,9 +33,14 @@ const style: any = {
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 		borderBottomColor: Colors.dustWhite,
 	},
-	tabsContainer: {
+	animatedView: {
 		flex: 1,
-		width: '100%',
+		width: '200%',
+		flexDirection: 'row',
+	},
+	fullWidth: {
+		width: '50%',
+		flex: 1,
 	},
 };
 

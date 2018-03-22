@@ -12,13 +12,13 @@ const containerStyle = {
 };
 
 export const DUMMY_CONTACTS_LIST = [
-	{name: 'Delilah Thorman', avatarURL: 'https://placeimg.com/100/100/any'},
-	{name: 'Roselee Coltharp', avatarURL: 'https://placeimg.com/101/101/any'},
-	{name: 'Felicia Spinner', avatarURL: 'https://placeimg.com/102/102/any'},
-	{name: 'Kiana Neher', avatarURL: 'https://placeimg.com/103/103/any'},
-	{name: 'Gale Schwantes', avatarURL: 'https://placeimg.com/104/104/any'},
-	{name: 'Norine Lawhead', avatarURL: 'https://placeimg.com/105/105/any'},
-	{name: 'Augustine Alberti', avatarURL: 'https://placeimg.com/106/106/any'},
+	{name: 'Øelilah Thorman', avatarURL: 'https://placeimg.com/100/100/any'},
+	{name: 'Òoselee Coltharp', avatarURL: 'https://placeimg.com/101/101/any'},
+	{name: '¥elicia Spinner', avatarURL: 'https://placeimg.com/102/102/any'},
+	{name: '†iana Neher', avatarURL: 'https://placeimg.com/103/103/any'},
+	{name: '∑ale Schwantes', avatarURL: 'https://placeimg.com/104/104/any'},
+	{name: 'ŒNorine Lawhead', avatarURL: 'https://placeimg.com/105/105/any'},
+	{name: '∏ugustine Alberti', avatarURL: 'https://placeimg.com/106/106/any'},
 	{name: 'Herbert Bickett', avatarURL: 'https://placeimg.com/107/107/any'},
 	{name: 'Dusti Carone', avatarURL: 'https://placeimg.com/108/108/any'},
 	{name: 'Latoria Brueggeman', avatarURL: 'https://placeimg.com/109/109/any'},

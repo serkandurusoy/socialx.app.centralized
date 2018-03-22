@@ -5,6 +5,7 @@ const AVATAR_SIZE = Sizes.smartHorizontalScale(36);
 const VERTICAL_PADDING = Sizes.smartHorizontalScale(11);
 export const LIST_ITEM_HEIGHT = AVATAR_SIZE + 2 * VERTICAL_PADDING;
 export const SECTION_HEADER_HEIGHT = Sizes.smartHorizontalScale(30);
+export const ALPHABET_ITEM_FONT_SIZE = Sizes.smartHorizontalScale(11);
 
 const style: any = {
 	listElement: {
@@ -31,8 +32,7 @@ const style: any = {
 	alphabetListItem: {
 		...Fonts.centuryGothic,
 		color: Colors.postText,
-		fontSize: Sizes.smartHorizontalScale(11),
-		// paddingVertical: Sizes.smartHorizontalScale(2),
+		fontSize: ALPHABET_ITEM_FONT_SIZE,
 		width: Sizes.smartHorizontalScale(30),
 		textAlign: 'center',
 	},
@@ -47,9 +47,6 @@ const style: any = {
 		...Fonts.centuryGothic,
 		color: Colors.tundora,
 		fontSize: Sizes.smartHorizontalScale(16),
-	},
-	testStyle: {
-		justifyContent: 'space-around',
 	},
 };
 
