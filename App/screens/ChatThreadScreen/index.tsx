@@ -1,44 +1,93 @@
 import React, {Component} from 'react';
+import {Image, Text, View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp} from 'react-navigation';
 import {sentence} from 'txtgen'; // TODO: can be removed later from package.json
+import uuidv4 from 'uuid/v4';
+import {ScreenHeaderButton} from '../../components/ScreenHeaderButton';
 import ChatThreadScreenComponent from './screen';
+import style from './style';
 
 export interface MessageData {
-	_id: number;
-	text: string;
+	_id: string;
+	text?: string;
 	createdAt: Date;
 	ownMessage: boolean;
+	imageURL?: string;
+	base64Image?: string; // we should try to avoid this option!
+	user?: any; // just to avoid library warnings
 }
 
 export interface IChatThreadScreenState {
 	messages: MessageData[];
 }
 
-let currentMessageId = 0;
+interface IChatThreadScreenProps {
+	navigation: NavigationScreenProp<any>;
+}
+
+const NUMBER_OF_HISTORY_MESSAGES = 10;
 
 const getHistoryMessages = () => {
 	const ret = [];
-	for (let i = 0; i < 30; i++) {
-		ret.push({
-			_id: ++currentMessageId,
-			text: sentence(),
+	for (let i = 0; i < NUMBER_OF_HISTORY_MESSAGES; i++) {
+		const isImageMessage = Math.random() >= 0.7;
+		const imageWidth = Math.round(Math.random() * 2000);
+		const imageHeight = Math.round(Math.random() * 1125);
+		const newMessage: MessageData = {
+			_id: uuidv4(),
 			createdAt: new Date(),
 			ownMessage: Math.random() >= 0.5,
-		});
+			user: {},
+		};
+		if (isImageMessage) {
+			newMessage.imageURL = `https://placeimg.com/${imageWidth}/${imageHeight}/any`;
+		} else {
+			newMessage.text = sentence();
+		}
+		ret.push(newMessage);
 	}
 	return ret;
 };
 
-export default class ChatThreadScreen extends Component<any, IChatThreadScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'ChatThreadScreen',
-	};
+export default class ChatThreadScreen extends Component<IChatThreadScreenProps, IChatThreadScreenState> {
+	private static navigationOptions = (props: IChatThreadScreenProps) => ({
+		headerTitle: () => {
+			const params = props.navigation.state.params || {};
+			if (params.user) {
+				const {fullName, avatarURL} = params.user;
+				return (
+					<View style={style.headerContainer}>
+						<Image source={{uri: avatarURL}} style={style.friendAvatar} />
+						<Text style={style.friendFullName}>{fullName.toUpperCase()}</Text>
+					</View>
+				);
+			}
+			return null;
+		},
+		headerRight: <ScreenHeaderButton iconName={'md-call'} onPress={() => ChatThreadScreen.sampleMethod(props)} />,
+	})
+
+	private static sampleMethod(props: any) {
+		const params = props.navigation.state.params || {};
+		if (params.makeCallHandler) {
+			params.makeCallHandler();
+		}
+	}
 
 	public state = {
 		messages: getHistoryMessages(), // we should init here with history messages
-		// messages: [], // we should init here with history messages
 	};
+
+	public componentWillMount() {
+		this.props.navigation.setParams({
+			user: {
+				fullName: 'Michael Perry',
+				avatarURL: 'https://placeimg.com/119/119/any',
+			},
+			makeCallHandler: this.makeCallHandler,
+		});
+	}
 
 	public render() {
 		return <ChatThreadScreenComponent messages={this.state.messages} sendOwnMessage={this.sendOwnMessageHandler} />;
@@ -47,34 +96,32 @@ export default class ChatThreadScreen extends Component<any, IChatThreadScreenSt
 	private simulateFriendResponse = () => {
 		const replyDelay = (Math.round(Math.random() * 5) + 2) * 1000;
 		const replyMessage = sentence();
-		// console.log('Friend will reply in', replyDelay, 'with message', replyMessage);
 		setTimeout(() => {
 			const friendMessage: MessageData = {
-				_id: ++currentMessageId,
+				_id: uuidv4(),
 				text: replyMessage,
 				createdAt: new Date(),
 				ownMessage: false,
 			};
-			this.addNewMessageToTheChat([friendMessage]);
+			this.addNewMessageToTheChat(friendMessage);
 		}, replyDelay);
 	}
 
-	private sendOwnMessageHandler = (message: string) => {
+	private sendOwnMessageHandler = (message: MessageData) => {
 		// TODO: Network send message
-		const newMessage: MessageData = {
-			_id: ++currentMessageId,
-			text: message,
-			createdAt: new Date(),
-			ownMessage: true,
-		};
-		this.addNewMessageToTheChat([newMessage]);
+		this.addNewMessageToTheChat(message);
 		this.simulateFriendResponse();
 	}
 
-	private addNewMessageToTheChat = (messages: MessageData[]) => {
+	private addNewMessageToTheChat = (message: MessageData) => {
 		// TODO: call this when a friend message arrives
+		message.user = {};
 		this.setState({
-			messages: GiftedChat.append(this.state.messages, messages),
+			messages: GiftedChat.append(this.state.messages, [message]),
 		});
+	}
+
+	private makeCallHandler = () => {
+		alert('TODO: makeCallHandler');
 	}
 }

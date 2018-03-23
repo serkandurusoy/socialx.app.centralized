@@ -6,10 +6,8 @@ const style: any = {
 		flexDirection: 'column',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: Sizes.smartHorizontalScale(25),
 		marginHorizontal: Sizes.smartHorizontalScale(25),
-		height: Sizes.smartVerticalScale(60),
-		width: Sizes.smartHorizontalScale(40),
+		flex: 1,
 	},
 	label: {
 		...Fonts.centuryGothic,

@@ -1,33 +1,85 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+import {GiftedChat, Send} from 'react-native-gifted-chat';
+import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../components/TextInput';
+import uuidv4 from 'uuid/v4';
+import {ModalShareOptions} from '../../components/ModalShareOptions';
+import {OS_TYPES} from '../../constants';
 import {Sizes} from '../../theme';
 import {Colors} from '../../theme/';
+import {isStringPureEmoji} from '../../utils';
 import {MessageData} from './index';
 import style from './style';
 
 interface IChatThreadScreenComponentProps {
-	sendOwnMessage: (message: string) => void;
+	sendOwnMessage: (message: MessageData) => void;
 	messages: MessageData[];
 }
 
-export default class ChatThreadScreenComponent extends Component<IChatThreadScreenComponentProps> {
-	private chatTextInputRef: SXTextInput | null = null;
+interface IChatThreadScreenComponentState {
+	modalVisible: boolean;
+}
+
+enum SHARE_OPTIONS {
+	Wallet = 'Wallet',
+	Camera = 'Camera',
+	Media = 'Media',
+	Audio = 'Audio',
+	Location = 'Location',
+	Contact = 'Contact',
+}
+
+const MESSAGE_MAX_WIDTH = '60%';
+
+export default class ChatThreadScreenComponent extends Component<
+	IChatThreadScreenComponentProps,
+	IChatThreadScreenComponentState
+> {
+	public state = {
+		modalVisible: false,
+	};
+
+	private onModalCloseAction: Func | null = null;
+
+	public componentDidMount(): void {
+		if (Platform.OS === OS_TYPES.Android) {
+			AndroidKeyboardAdjust.setAdjustResize();
+		}
+	}
+
+	public componentWillUnmount(): void {
+		if (Platform.OS === OS_TYPES.Android) {
+			AndroidKeyboardAdjust.setAdjustPan();
+		}
+	}
 
 	public render() {
 		return (
 			<View style={style.container}>
+				<ModalShareOptions
+					visible={this.state.modalVisible}
+					closeHandler={this.closeModal}
+					onModalHide={this.runOnModalCloseActionWithSmallDelay}
+					walletHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Wallet)}
+					cameraHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Camera)}
+					mediaHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Media)}
+					audioHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Audio)}
+					locationHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Location)}
+					contactHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Contact)}
+				/>
 				<GiftedChat
 					messages={this.props.messages}
 					onSend={this.addOwnMessage}
 					isAnimated={false}
 					renderMessage={this.renderMessage}
 					textInputStyle={style.textInputStyles}
-					// renderInputToolbar={this.renderInputToolbar}
+					containerStyle={style.inputContainer}
+					renderSend={this.renderSendButton}
+					renderActions={this.renderShareButton}
 					// renderFooter={} // can be used for something like typing
 				/>
 			</View>
@@ -50,19 +102,20 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 	}
 
 	private renderOwnMessage = (currentMessage: MessageData, messageDateWithFormat: string) => {
+		const messageContent = this.renderMessageContent(currentMessage, style.ownMessageText);
+		const shadowStyles = [style.ownMessageShadow];
+		shadowStyles.push(currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH});
 		return (
 			<View style={style.messageContainer}>
 				<View style={{flex: 1}} />
-				<View style={style.ownMessageShadow}>
+				<View style={shadowStyles}>
 					<LinearGradient
 						start={{x: 0, y: 0.5}}
 						end={{x: 1, y: 0.5}}
 						colors={[Colors.fuchsiaBlue, Colors.hollywoodCerise]}
 						style={style.ownMessageGradient}
 					>
-						<Text style={style.ownMessageText} selectable={true}>
-							{currentMessage.text}
-						</Text>
+						{messageContent}
 						<Text style={style.ownMessageDate}>{messageDateWithFormat}</Text>
 					</LinearGradient>
 				</View>
@@ -71,12 +124,13 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 	}
 
 	private renderFriendMessage = (currentMessage: MessageData, messageDateWithFormat: string) => {
+		const messageContent = this.renderMessageContent(currentMessage, style.friendMessageText);
+		const borderStyles = [style.friendMessageBorder];
+		borderStyles.push(currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH});
 		return (
 			<View style={style.messageContainer}>
-				<View style={style.friendMessageBorder}>
-					<Text style={style.friendMessageText} selectable={true}>
-						{currentMessage.text}
-					</Text>
+				<View style={borderStyles}>
+					{messageContent}
 					<Text style={style.friendMessageDate}>{messageDateWithFormat}</Text>
 				</View>
 				<View style={{flex: 1}} />
@@ -84,36 +138,103 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 		);
 	}
 
-	private renderInputToolbar = () => {
-		// console.log('renderInputToolbar');
+	private renderMessageContent = (currentMessage: MessageData, textStyle: number) => {
+		if (currentMessage.text) {
+			const isTextPureEmoji = isStringPureEmoji(currentMessage.text);
+			const textStyleUpdated = isTextPureEmoji ? style.pureEmojiText : textStyle;
+			return (
+				<Text style={textStyleUpdated} selectable={true}>
+					{currentMessage.text}
+				</Text>
+			);
+		} else if (currentMessage.imageURL) {
+			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'} />;
+		}
+		return null;
+	}
+
+	private renderSendButton = (props: any) => {
 		return (
-			<View style={style.inputToolbar}>
-				<View style={{flex: 1}}>
-					{/*TODO: update borderWidth*/}
-					<SXTextInput
-						ref={(input) => (this.chatTextInputRef = input)}
-						onSubmitPressed={this.sendMessageHandler}
-						returnKeyType={TRKeyboardKeys.send}
-						placeholder={'Type something...'}
-						size={InputSizes.Small}
-						borderColor={Colors.chatTextInputBorder}
-					/>
-				</View>
-				<TouchableOpacity style={style.shareButton} onPress={this.showShareOptions}>
-					<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora} />
-				</TouchableOpacity>
-			</View>
+			<Send {...props} containerStyle={style.sendContainer}>
+				<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue} />
+			</Send>
 		);
 	}
 
-	private sendMessageHandler = (event: any) => {
-		this.props.sendOwnMessage(event.nativeEvent.text);
-		if (this.chatTextInputRef) {
-			this.chatTextInputRef.inputComponent.clear();
-		}
+	private renderShareButton = () => {
+		return (
+			<TouchableOpacity style={style.shareButton} onPress={this.showShareOptions}>
+				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora} />
+			</TouchableOpacity>
+		);
 	}
 
 	private showShareOptions = () => {
-		alert('showShareOptions');
+		this.setState({
+			modalVisible: true,
+		});
+	}
+
+	private closeModal = () => {
+		this.setState({
+			modalVisible: false,
+		});
+		this.onModalCloseAction = null;
+	}
+
+	private onShareButtonPressed = (selectedOption: SHARE_OPTIONS) => {
+		this.closeModal();
+		if (selectedOption === SHARE_OPTIONS.Media) {
+			this.onModalCloseAction = this.showGalleryPhotoPicker;
+		} else if (selectedOption === SHARE_OPTIONS.Camera) {
+			this.onModalCloseAction = this.takeCameraPhoto;
+		} else {
+			this.onModalCloseAction = this.shareOptionNotImplementedHandler;
+		}
+	}
+
+	private showGalleryPhotoPicker = async () => {
+		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
+			cropping: false,
+			mediaType: 'photo',
+			includeBase64: false, // picker is getting really slow with this option!
+		});
+		this.sendPhotoMessage(image);
+	}
+
+	private takeCameraPhoto = async () => {
+		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+			cropping: false,
+			mediaType: 'photo',
+			includeBase64: false,
+		});
+		this.sendPhotoMessage(image);
+	}
+
+	private sendPhotoMessage = (image: PickerImage | PickerImage[]) => {
+		const pickImage = image as PickerImage;
+		// const base64Image = `data:${pickImage.mime};base64,${pickImage.data}`;
+		const newImageMessage: MessageData = {
+			_id: uuidv4(),
+			imageURL: 'file://' + pickImage.path,
+			createdAt: new Date(),
+			ownMessage: true,
+			// base64Image,
+		};
+		this.props.sendOwnMessage(newImageMessage);
+	}
+
+	private shareOptionNotImplementedHandler = () => {
+		alert('Share option TBD');
+	}
+
+	private runOnModalCloseActionWithSmallDelay = () => {
+		// TODO: modal is still transitioning even after onModalHide is called => causing problems with other sliding views
+		setTimeout(() => {
+			if (this.onModalCloseAction != null) {
+				this.onModalCloseAction();
+				this.onModalCloseAction = null;
+			}
+		}, 100);
 	}
 }
