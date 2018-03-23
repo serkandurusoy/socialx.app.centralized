@@ -24,4 +24,5 @@ export default {
 	iconNotificationsScreenEmpty: require('../../assets/icons/icon_notifications_screen_empty.png'),
 	socxCoinIcon: require('../../assets/icons/socx_icon.png'),
 	ethCoinIcon: require('../../assets/icons/eth_icon.png'),
+	iconModalClose: require('../../assets/icons/modal_close_icon.png'),
 };

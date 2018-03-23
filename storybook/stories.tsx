@@ -17,3 +17,4 @@ import './stories/ActivityRecentCommentCard.stories';
 import './stories/ActivitySuperLikedCard.stories';
 import './stories/TextGradient.stories';
 import './stories/ModalInvitePeople.stories';
+import './stories/ModalWallet.stories';
