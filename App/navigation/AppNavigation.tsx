@@ -7,6 +7,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
+import MessagingScreen from '../screens/MessagingScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
@@ -68,6 +69,7 @@ const PrimaryNav = StackNavigator(
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
 		MainScreen: {screen: MainScreenWithModal},
+		MessagingScreen: {screen: MessagingScreen},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
