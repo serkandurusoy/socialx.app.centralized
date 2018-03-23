@@ -28,6 +28,7 @@
     "storybook": "storybook start -p 7007"
   },
   "dependencies": {
+    "aegir": "^13.0.6",
     "amazon-cognito-identity-js": "^2.0.1",
     "apollo-cache-inmemory": "^1.1.11",
     "apollo-client": "^2.2.7",
@@ -41,6 +42,7 @@
     "d3-shape": "^1.2.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
+    "ipfs-api": "^18.2.1",
     "lodash": "^4.17.5",
     "moment": "^2.20.1",
     "native-base": "^2.3.9",
