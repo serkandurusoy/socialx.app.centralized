@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
-import {Platform, ScrollView, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {Platform, ScrollView, Tou, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
+import {OS_TYPES} from '../../constants';
 import {Icons} from '../../theme';
-import {ButtonIconWithName} from '../ButtonIconWithName';
+import {ShareOptionsButton} from '../ShareOptionsButton';
 import style from './style';
 
 const BUTTON_NAMES = {
@@ -12,66 +13,81 @@ const BUTTON_NAMES = {
 	media: 'Media',
 	audio: 'Audio',
 	location: 'Location',
-	contact: 'Contact' ,
+	contact: 'Contact',
 };
 
 interface IModalInvitePeopleProps {
 	visible: boolean;
-	blurViewRef: any;
-	walletHandlerPressed?: Func;
-	cameraHandlerPressed?: Func;
-	mediaHandlerPressed?: Func;
-	audioHandlerPressed?: Func;
-	locationHandlerPressed?: Func;
-	contactHandlerPressed?: Func;
+	walletHandlerPressed: Func;
+	cameraHandlerPressed: Func;
+	mediaHandlerPressed: Func;
+	audioHandlerPressed: Func;
+	locationHandlerPressed: Func;
+	contactHandlerPressed: Func;
+	closeHandler: Func;
+	onModalHide: Func;
 }
 
-export class ModalShareOptions extends Component<IModalInvitePeopleProps, any> {
-	public render() {
-		return (
-			<Modal
-				isVisible={this.props.visible}
-				backdropOpacity={0}
-				style={style.container}
-			>
-				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2}/>
-				<View style={style.boxContainer}>
-					<View style={style.rowContainer}>
-						<ButtonIconWithName
-							iconSource={Icons.iconWallet}
-							onPress={this.props.walletHandlerPressed}
-							label={BUTTON_NAMES.wallet}
-						/>
-						<ButtonIconWithName
-							iconSource={Icons.iconCamera}
-							onPress={this.props.cameraHandlerPressed}
-							label={BUTTON_NAMES.camera}
-						/>
-						<ButtonIconWithName
-							iconSource={Icons.iconLandscape}
-							onPress={this.props.mediaHandlerPressed}
-							label={BUTTON_NAMES.media}
-						/>
-					</View>
-					<View style={style.rowContainer}>
-						<ButtonIconWithName
-							iconSource={Icons.iconSound}
-							onPress={this.props.audioHandlerPressed}
-							label={BUTTON_NAMES.audio}
-						/>
-						<ButtonIconWithName
-							iconSource={Icons.iconLocation}
-							onPress={this.props.locationHandlerPressed}
-							label={BUTTON_NAMES.location}
-						/>
-						<ButtonIconWithName
-							iconSource={Icons.iconPerson}
-							onPress={this.props.contactHandlerPressed}
-							label={BUTTON_NAMES.contact}
-						/>
-					</View>
+export const ModalShareOptions: React.SFC<IModalInvitePeopleProps> = (props) => {
+	const renderOSBlurView = () => {
+		if (Platform.OS === OS_TYPES.iOS) {
+			return (
+				<TouchableWithoutFeedback onPress={props.closeHandler}>
+					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
+				</TouchableWithoutFeedback>
+			);
+		}
+		return null;
+	};
+
+	const backDropOpacity = Platform.OS === OS_TYPES.iOS ? 0 : 0.7;
+
+	return (
+		<Modal
+			isVisible={props.visible}
+			backdropOpacity={backDropOpacity}
+			style={style.container}
+			onBackButtonPress={props.closeHandler}
+			onBackdropPress={props.closeHandler}
+			onModalHide={props.onModalHide}
+		>
+			{renderOSBlurView()}
+			<View style={style.boxContainer}>
+				<View style={style.rowContainer}>
+					<ShareOptionsButton
+						iconSource={Icons.iconWallet}
+						onPress={props.walletHandlerPressed}
+						label={BUTTON_NAMES.wallet}
+					/>
+					<ShareOptionsButton
+						iconSource={Icons.iconCamera}
+						onPress={props.cameraHandlerPressed}
+						label={BUTTON_NAMES.camera}
+					/>
+					<ShareOptionsButton
+						iconSource={Icons.iconShareMedia}
+						onPress={props.mediaHandlerPressed}
+						label={BUTTON_NAMES.media}
+					/>
 				</View>
-			</Modal>
-		);
-	}
-}
+				<View style={style.rowContainer}>
+					<ShareOptionsButton
+						iconSource={Icons.iconSound}
+						onPress={props.audioHandlerPressed}
+						label={BUTTON_NAMES.audio}
+					/>
+					<ShareOptionsButton
+						iconSource={Icons.iconLocation}
+						onPress={props.locationHandlerPressed}
+						label={BUTTON_NAMES.location}
+					/>
+					<ShareOptionsButton
+						iconSource={Icons.iconPerson}
+						onPress={props.contactHandlerPressed}
+						label={BUTTON_NAMES.contact}
+					/>
+				</View>
+			</View>
+		</Modal>
+	);
+};

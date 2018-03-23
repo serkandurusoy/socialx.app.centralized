@@ -2,6 +2,7 @@ package com.socialxtypeactress;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
 import com.horcrux.svg.SvgPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new AndroidKeyboardAdjustPackage(),
                     new SvgPackage(),
                     new ReactVideoPackage(),
                     new VectorIconsPackage(),

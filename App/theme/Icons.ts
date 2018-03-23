@@ -29,6 +29,7 @@ export default {
 	messagingGroupFilterIcon: require('../../assets/icons/messaging_group_fliter_icon.png'),
 	messagingRecentFilterIcon: require('../../assets/icons/messaging_recent_fliter_icon.png'),
 	iconCamera: require('../../assets/icons/camera.png'),
+	iconShareMedia: require('../../assets/icons/share_media.png'),
 	iconLocation: require('../../assets/icons/location.png'),
 	iconPerson: require('../../assets/icons/person.png'),
 	iconSound: require('../../assets/icons/sound.png'),
