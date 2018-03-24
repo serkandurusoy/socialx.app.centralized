@@ -12,6 +12,8 @@ import {SXTextInput} from '../../components/TextInput';
 import {Colors, Icons, Sizes} from '../../theme';
 import style from './style';
 
+import {add, addFiles, IFileParam} from '../../utils/ipfs';
+
 const PICK_FROM_GALLERY = 'Pick from gallery';
 const TAKE_A_PHOTO = 'Take a photo/video';
 const CANCEL = 'Cancel';
@@ -145,8 +147,11 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		this.addNewMediaObject(image as PickerImage);
 	}
 
-	private addNewMediaObject = (image: PickerImage) => {
+	private addNewMediaObject = async (image: PickerImage) => {
 		const {mediaObjects} = this.state;
+		console.log(image);
+		const test = add([image.path], { progress: (e: any) => {console.log('progress', e); } });
+		console.log(test);
 		const mediaMimeType = image.mime;
 		const localImagePath: MediaObject = {
 			path: (image as PickerImage).path,

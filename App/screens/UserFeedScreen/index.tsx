@@ -62,7 +62,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (data.loading || Posts.loading) {
 			return;
 		}
-		console.log(nextProps);
 		this.setState({wallPosts: this.getWallPosts()});
 	}
 
@@ -146,7 +145,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private refreshWallPosts = async () => {
 		this.setState({refreshing: true});
 
-		await this.props.data.refetch();
+		await this.props.Posts.refetch();
 
 		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
 	}
