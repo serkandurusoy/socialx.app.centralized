@@ -21,5 +21,13 @@ storiesOf('ModalInvitePeople')
 	.addDecorator((getStory: any) => <SXBlurView style={containerStyle}>{getStory()}</SXBlurView>)
 	.addDecorator(withKnobs)
 	.add('sample', () => {
-		return <ModalInvitePeople visible={true} createHandler={createHandler} cancelHandler={cancelHandler} />;
+		return (
+			<ModalInvitePeople
+				visible={true}
+				searchResults={[]}
+				selectedUsers={[]}
+				createHandler={createHandler}
+				cancelHandler={cancelHandler}
+			/>
+		);
 	});
