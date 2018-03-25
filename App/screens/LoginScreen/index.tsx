@@ -34,8 +34,8 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	};
 
 	public state = {
-		usernameValue: '',
-		passwordValue: '',
+		usernameValue: 'jake',
+		passwordValue: 'Password1@',
 		showModalForSMSCode: false,
 	};
 

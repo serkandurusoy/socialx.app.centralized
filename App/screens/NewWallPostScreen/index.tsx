@@ -12,9 +12,8 @@ import {SXTextInput} from '../../components/TextInput';
 import {Colors, Icons, Sizes} from '../../theme';
 import style from './style';
 
-import ipfs from 'browser-ipfs';
 import RNFS from 'react-native-fs';
-// import {add} from '../../utils/ipfs';
+import {add, addBlob, addFile, addFiles} from '../../utils/ipfs';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
 const TAKE_A_PHOTO = 'Take a photo/video';
@@ -161,8 +160,6 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				content: imagecontent,
 			};
 
-			this.test(imagecontent);
-
 			this.setState({
 				mediaObjects: mediaObjects.concat([localImagePath]),
 			});
@@ -170,17 +167,6 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			// TODO: handle err
 			console.log(ex);
 		}
-	}
-
-	private test = async (data: any) => {
-		// const bloc = new Blob([data]);]
-		const frm = new XMLHttpRequest();
-		console.log(frm);
-		// ipfs.provider({host: '10.0.2.2', port: '5001'});
-		// ipfs.add('test', (err: any, rehash: any) => {
-		// 	console.log(err);
-		// 	console.log(rehash);
-		// });
 	}
 
 	private renderPostMediaObjects = () => {

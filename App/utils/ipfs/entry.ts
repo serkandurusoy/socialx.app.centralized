@@ -3,4 +3,4 @@ import ipfsAPI from '../../lib/ipfs';
 
 const ipfs = new ipfsAPI({ host: config.ipfs_server, port: config.ipfs_port });
 
-export default ipfsAPI;
+export default ipfs;
