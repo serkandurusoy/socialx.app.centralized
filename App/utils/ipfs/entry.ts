@@ -1,4 +1,6 @@
-import ipfsAPI from 'ipfs-api';
 import config from '../../config/ipfs';
+import ipfsAPI from '../../lib/ipfs';
 
-export default ipfsAPI(config.ipfs_server, config.ipfs_port, config.opts);
+const ipfs = new ipfsAPI({ host: config.ipfs_server, port: config.ipfs_port });
+
+export default ipfsAPI;
