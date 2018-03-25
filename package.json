@@ -28,6 +28,7 @@
     "storybook": "storybook start -p 7007"
   },
   "dependencies": {
+    "@hawkrives/react-native-alphabetlistview": "^1.0.0",
     "amazon-cognito-identity-js": "^2.0.1",
     "apollo-cache-inmemory": "^1.1.11",
     "apollo-client": "^2.2.7",
