@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, findNodeHandle, Image, PermissionsAndroid, Platform, Text, TouchableOpacity, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {GiftedChat, Send} from 'react-native-gifted-chat';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
@@ -12,12 +12,16 @@ import {OS_TYPES} from '../../constants';
 import {Sizes} from '../../theme';
 import {Colors} from '../../theme/';
 import {isStringPureEmoji} from '../../utils';
+import {requestResourcePermission} from '../../utils/permissions';
 import {MessageData} from './index';
 import style from './style';
 
 interface IChatThreadScreenComponentProps {
 	sendOwnMessage: (message: MessageData) => void;
 	messages: MessageData[];
+	loadEarlierMessages: () => void;
+	isLoadingEarlier: boolean;
+	hasMore: boolean;
 }
 
 interface IChatThreadScreenComponentState {
@@ -34,6 +38,10 @@ enum SHARE_OPTIONS {
 }
 
 const MESSAGE_MAX_WIDTH = '60%';
+const REQUEST_LOCATION_TITLE = 'Location access request';
+const REQUEST_LOCATION_MESSAGE =
+	'In order to share your location with friends please allow the app' + ' to read your device location.';
+const LOCATION_ACCESS_DENIED = 'Location access was denied';
 
 export default class ChatThreadScreenComponent extends Component<
 	IChatThreadScreenComponentProps,
@@ -44,6 +52,8 @@ export default class ChatThreadScreenComponent extends Component<
 	};
 
 	private onModalCloseAction: Func | null = null;
+
+	private giftedChat: any;
 
 	public componentDidMount(): void {
 		if (Platform.OS === OS_TYPES.Android) {
@@ -72,6 +82,7 @@ export default class ChatThreadScreenComponent extends Component<
 					contactHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Contact)}
 				/>
 				<GiftedChat
+					ref={(chatRef: any) => (this.giftedChat = chatRef)}
 					messages={this.props.messages}
 					onSend={this.addOwnMessage}
 					isAnimated={false}
@@ -80,6 +91,9 @@ export default class ChatThreadScreenComponent extends Component<
 					containerStyle={style.inputContainer}
 					renderSend={this.renderSendButton}
 					renderActions={this.renderShareButton}
+					loadEarlier={this.props.hasMore}
+					onLoadEarlier={this.props.loadEarlierMessages}
+					isLoadingEarlier={this.props.isLoadingEarlier}
 					// renderFooter={} // can be used for something like typing
 				/>
 			</View>
@@ -149,6 +163,15 @@ export default class ChatThreadScreenComponent extends Component<
 			);
 		} else if (currentMessage.imageURL) {
 			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'} />;
+		} else if (currentMessage.geolocation) {
+			return (
+				<Text style={textStyle} selectable={true}>
+					{'My location:\n'}
+					{currentMessage.geolocation.latitude}
+					{', '}
+					{currentMessage.geolocation.longitude}
+				</Text>
+			);
 		}
 		return null;
 	}
@@ -188,6 +211,8 @@ export default class ChatThreadScreenComponent extends Component<
 			this.onModalCloseAction = this.showGalleryPhotoPicker;
 		} else if (selectedOption === SHARE_OPTIONS.Camera) {
 			this.onModalCloseAction = this.takeCameraPhoto;
+		} else if (selectedOption === SHARE_OPTIONS.Location) {
+			this.onModalCloseAction = this.shareMyCurrentPosition;
 		} else {
 			this.onModalCloseAction = this.shareOptionNotImplementedHandler;
 		}
@@ -222,6 +247,7 @@ export default class ChatThreadScreenComponent extends Component<
 			// base64Image,
 		};
 		this.props.sendOwnMessage(newImageMessage);
+		this.giftedChat.scrollToBottom();
 	}
 
 	private shareOptionNotImplementedHandler = () => {
@@ -236,5 +262,41 @@ export default class ChatThreadScreenComponent extends Component<
 				this.onModalCloseAction = null;
 			}
 		}, 100);
+	}
+
+	private shareMyCurrentPosition = () => {
+		// TODO: 1. check why location high accuracy does not work on Android?
+		// 2. handle the case when device location is turned off,
+		// see https://github.com/webyonet/react-native-android-location-services-dialog-box
+		const locationHighAccuracyEnabled = Platform.OS === OS_TYPES.iOS;
+		requestResourcePermission(
+			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+			REQUEST_LOCATION_TITLE,
+			REQUEST_LOCATION_MESSAGE,
+		).then((permissionResult: boolean) => {
+			if (permissionResult) {
+				navigator.geolocation.getCurrentPosition(
+					(position: Position) => {
+						const newLocationMessage: MessageData = {
+							_id: uuidv4(),
+							createdAt: new Date(),
+							ownMessage: true,
+							geolocation: {
+								latitude: position.coords.latitude,
+								longitude: position.coords.longitude,
+							},
+						};
+						this.props.sendOwnMessage(newLocationMessage);
+						this.giftedChat.scrollToBottom();
+					},
+					(error: PositionError) => {
+						Alert.alert(error.message);
+					},
+					{enableHighAccuracy: locationHighAccuracyEnabled, timeout: 20000},
+				);
+			} else {
+				Alert.alert(LOCATION_ACCESS_DENIED);
+			}
+		});
 	}
 }

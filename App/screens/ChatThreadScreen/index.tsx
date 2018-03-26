@@ -16,21 +16,28 @@ export interface MessageData {
 	imageURL?: string;
 	base64Image?: string; // we should try to avoid this option!
 	user?: any; // just to avoid library warnings
+	geolocation?: {
+		latitude: number;
+		longitude: number;
+	};
 }
 
 export interface IChatThreadScreenState {
 	messages: MessageData[];
+	isLoadingEarlier: boolean;
+	hasMore: boolean;
 }
 
 interface IChatThreadScreenProps {
 	navigation: NavigationScreenProp<any>;
 }
 
-const NUMBER_OF_HISTORY_MESSAGES = 10;
+const TOTAL_NUMBER_OF_MESSAGES = 44;
+const ONE_PAGE_NUMBER_OF_MESSAGES = 10;
 
-const getHistoryMessages = () => {
+const getOnePageOfMessages = () => {
 	const ret = [];
-	for (let i = 0; i < NUMBER_OF_HISTORY_MESSAGES; i++) {
+	for (let i = 0; i < ONE_PAGE_NUMBER_OF_MESSAGES; i++) {
 		const isImageMessage = Math.random() >= 0.7;
 		const imageWidth = Math.round(Math.random() * 2000);
 		const imageHeight = Math.round(Math.random() * 1125);
@@ -76,7 +83,9 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 	}
 
 	public state = {
-		messages: getHistoryMessages(), // we should init here with history messages
+		messages: getOnePageOfMessages(), // we should init here with history messages
+		isLoadingEarlier: false,
+		hasMore: true,
 	};
 
 	public componentWillMount() {
@@ -90,7 +99,15 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 	}
 
 	public render() {
-		return <ChatThreadScreenComponent messages={this.state.messages} sendOwnMessage={this.sendOwnMessageHandler} />;
+		return (
+			<ChatThreadScreenComponent
+				messages={this.state.messages}
+				sendOwnMessage={this.sendOwnMessageHandler}
+				loadEarlierMessages={this.loadEarlierMessagesHandler}
+				isLoadingEarlier={this.state.isLoadingEarlier}
+				hasMore={this.state.hasMore}
+			/>
+		);
 	}
 
 	private simulateFriendResponse = () => {
@@ -123,5 +140,19 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 
 	private makeCallHandler = () => {
 		alert('TODO: makeCallHandler');
+	}
+
+	private loadEarlierMessagesHandler = () => {
+		if (this.state.messages.length < TOTAL_NUMBER_OF_MESSAGES) {
+			this.setState({isLoadingEarlier: true});
+			setTimeout(() => {
+				const newMessages = this.state.messages.concat(getOnePageOfMessages());
+				this.setState({
+					isLoadingEarlier: false,
+					messages: newMessages,
+					hasMore: newMessages.length < TOTAL_NUMBER_OF_MESSAGES,
+				});
+			}, 1500);
+		}
 	}
 }
