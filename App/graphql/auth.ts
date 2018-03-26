@@ -16,7 +16,7 @@ export const createUser = gql`
 		$age: Int
 		$gender: String
 		$location: String
-		$avatar: ID
+		$avatar: String
 	) {
 		createUser(
 			username: $username,

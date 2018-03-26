@@ -196,14 +196,37 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private smsCodeConfirmedHandler = async (code: string) => {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
-		const {createUser} = this.props;
+		const {createUser, addMedia} = this.props;
+
+		let mediaId: string | undefined;
 
 		try {
 			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
 
 			// signin to get access to appsync
-			const resin = await Signin(username, password);
+			await Signin(username, password);
+
+			if (updatedAvatarImageBase64 !== '') {
+				// do ipfs
+				const ipfsResp: any = await addBlob([{name: 'avatar', filename: 'avatar.jpg', data: updatedAvatarImageBase64}]);
+				const {Hash, Size} = JSON.parse(ipfsResp.data);
+
+				// do addMedia
+				const mediaObj = await addMedia({variables: {type: 'image', size: parseInt(Size, undefined), hash: Hash}});
+				mediaId = mediaObj.data.addMedia.id;
+			}
+
+			console.log('mediaId:', mediaId);
+			// do appsync
+			await createUser({
+				variables: {
+					username,
+					name,
+					avatar: mediaId,
+					email,
+				},
+			});
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
@@ -235,9 +258,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private startRegister = async () => {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
-		const {createUser, addMedia, checkUsername} = this.props;
-
-		let mediaId: string | undefined;
+		const {checkUsername} = this.props;
 
 		if (password !== confirmPassword) {
 			Alert.alert('Your passwords dont match');
@@ -262,6 +283,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			}
 		} catch (e) {
 			// --
+			console.log(e);
 		}
 
 		try {
@@ -277,26 +299,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				},
 			};
 			const res = await Signup(signupParams);
-
-			if (updatedAvatarImageBase64 !== '') {
-				// do ipfs
-				const ipfsResp: any = await addBlob([{name: 'avatar', filename: 'avatar.jpg', data: updatedAvatarImageBase64}]);
-				const {Hash, Size} = JSON.parse(ipfsResp.data);
-
-				// do addMedia
-				const mediaObj = await addMedia({variables: {type: 'image', size: parseInt(Size, undefined), hash: Hash}});
-				mediaId = mediaObj.data.addMedia.id;
-			}
-
-			// do appsync
-			await createUser({
-				variables: {
-					username,
-					name,
-					avatar: mediaId,
-					email,
-				},
-			});
 
 			this.toggleVisibleModalSMS();
 		} catch (ex) {
