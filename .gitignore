@@ -59,3 +59,4 @@ buck-out/
 dist
 .jest
 .vscode
+ios/Pods
