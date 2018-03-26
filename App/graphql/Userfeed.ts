@@ -36,7 +36,11 @@ export const getUserPosts = gql`
 				likes {
 					userId
 					username
-					avatar
+					avatar {
+                        hash
+                        size
+                        type
+                    }
 				}
 			}
 		}

@@ -13,8 +13,10 @@ import style from './style';
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from '../../utils';
 
-import {createUpdateUserHoc} from '../../graphql';
+import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from '../../graphql';
 import {createUserFunc} from '../../types/gql';
+
+import {addBlob} from '../../utils/ipfs';
 
 export interface ISignUpScreenState {
 	email: string;
@@ -34,7 +36,9 @@ export interface ISignUpScreenProps {
 	ConfirmSignupLoading: () => void;
 	ResendCodeLoading: () => void;
 	HideLoader: () => void;
-	createUser: createUserFunc;
+	createUser: any;
+	addMedia: any;
+	checkUsername: any;
 }
 
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
@@ -231,15 +235,38 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private startRegister = async () => {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
-		const {createUser} = this.props;
+		const {createUser, addMedia, checkUsername} = this.props;
+
+		let mediaId: string | undefined;
 
 		if (password !== confirmPassword) {
 			Alert.alert('Your passwords dont match');
 			return;
 		}
 
+		if (username.length < 4) {
+			Alert.alert('Enter a username bigger than 4 letters');
+			return;
+		}
+
+		if (name.length < 4) {
+			Alert.alert('Enter a name bigger than 4 letters');
+			return;
+		}
+
+		try {
+			const checkUser = await checkUsername({variables: {username}});
+			if (checkUser.data.checkUsername.userId) {
+				Alert.alert('This username is taken');
+				return;
+			}
+		} catch (e) {
+			// --
+		}
+
 		try {
 			this.props.SignupLoading();
+
 			// do cognito
 			const signupParams: any = {
 				username,
@@ -251,12 +278,22 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			};
 			const res = await Signup(signupParams);
 
+			if (updatedAvatarImageBase64 !== '') {
+				// do ipfs
+				const ipfsResp: any = await addBlob([{name: 'avatar', filename: 'avatar.jpg', data: updatedAvatarImageBase64}]);
+				const {Hash, Size} = JSON.parse(ipfsResp.data);
+
+				// do addMedia
+				const mediaObj = await addMedia({variables: {type: 'image', size: parseInt(Size, undefined), hash: Hash}});
+				mediaId = mediaObj.data.addMedia.id;
+			}
+
 			// do appsync
 			await createUser({
 				variables: {
 					username,
 					name,
-					avatar: updatedAvatarImageBase64,
+					avatar: mediaId,
 					email,
 				},
 			});
@@ -266,6 +303,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			console.log(ex);
 			Alert.alert(ex.message);
 			this.toggleVisibleModalSMS(false);
+			this.props.HideLoader();
 		}
 		Keyboard.dismiss();
 		this.props.HideLoader();
@@ -287,4 +325,8 @@ const MapDispatchToProps = (dispatch: any) => ({
 });
 
 const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
-export default createUpdateUserHoc(reduxWrapper);
+const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
+const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
+const checkUsernameWrapper = checkUsernameHoc(addMediaWrapper);
+
+export default checkUsernameWrapper;
