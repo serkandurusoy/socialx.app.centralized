@@ -25,7 +25,8 @@
     "prettier": "node_modules/.bin/prettier --write --config .prettierrc",
     "git-hook": "npm run lint -s && npm run test -s",
     "precommit": "npm run pretty && npm run fixcode",
-    "storybook": "storybook start -p 7007"
+    "storybook": "storybook start -p 7007",
+    "postinstall": "cd ios && pod install"
   },
   "dependencies": {
     "@hawkrives/react-native-alphabetlistview": "^1.0.0",
