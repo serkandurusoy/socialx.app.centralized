@@ -258,7 +258,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private startRegister = async () => {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
-		const {checkUsername} = this.props;
+		const {createUser, addMedia, checkUsername} = this.props;
 
 		if (password !== confirmPassword) {
 			Alert.alert('Your passwords dont match');
@@ -275,16 +275,16 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			return;
 		}
 
-		try {
-			const checkUser = await checkUsername({variables: {username}});
-			if (checkUser.data.checkUsername.userId) {
-				Alert.alert('This username is taken');
-				return;
-			}
-		} catch (e) {
-			// --
-			console.log(e);
-		}
+		// try {
+		// 	const checkUser = await checkUsername({variables: {username}});
+		// 	if (checkUser.data.checkUsername.userId) {
+		// 		Alert.alert('This username is taken');
+		// 		return;
+		// 	}
+		// } catch (e) {
+		// 	// --
+		// 	console.log(e);
+		// }
 
 		try {
 			this.props.SignupLoading();
