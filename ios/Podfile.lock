@@ -6,16 +6,76 @@ PODS:
     - AppCenter/Core
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
+  - QBImagePickerController (3.4.0)
+  - React/Core (0.53.3):
+    - yoga (= 0.53.3.React)
+  - React/fishhook (0.53.3)
+  - React/RCTActionSheet (0.53.3):
+    - React/Core
+  - React/RCTAnimation (0.53.3):
+    - React/Core
+  - React/RCTBlob (0.53.3):
+    - React/Core
+  - React/RCTGeolocation (0.53.3):
+    - React/Core
+  - React/RCTImage (0.53.3):
+    - React/Core
+    - React/RCTNetwork
+  - React/RCTLinkingIOS (0.53.3):
+    - React/Core
+  - React/RCTNetwork (0.53.3):
+    - React/Core
+  - React/RCTSettings (0.53.3):
+    - React/Core
+  - React/RCTText (0.53.3):
+    - React/Core
+  - React/RCTVibration (0.53.3):
+    - React/Core
+  - React/RCTWebSocket (0.53.3):
+    - React/Core
+    - React/fishhook
+    - React/RCTBlob
+  - RNImageCropPicker (0.20.0):
+    - QBImagePickerController
+    - RSKImageCropper
+  - RSKImageCropper (2.0.0)
+  - yoga (0.53.3.React)
 
 DEPENDENCIES:
   - AppCenter/Analytics (~> 1.5.0)
   - AppCenter/Crashes (~> 1.5.0)
   - AppCenterReactNativeShared (~> 1.4.0)
+  - React/Core (from `../node_modules/react-native`)
+  - React/RCTActionSheet (from `../node_modules/react-native`)
+  - React/RCTAnimation (from `../node_modules/react-native`)
+  - React/RCTGeolocation (from `../node_modules/react-native`)
+  - React/RCTImage (from `../node_modules/react-native`)
+  - React/RCTLinkingIOS (from `../node_modules/react-native`)
+  - React/RCTNetwork (from `../node_modules/react-native`)
+  - React/RCTSettings (from `../node_modules/react-native`)
+  - React/RCTText (from `../node_modules/react-native`)
+  - React/RCTVibration (from `../node_modules/react-native`)
+  - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
+
+EXTERNAL SOURCES:
+  React:
+    :path: ../node_modules/react-native
+  RNImageCropPicker:
+    :path: ../node_modules/react-native-image-crop-picker
+  yoga:
+    :path: ../node_modules/react-native/ReactCommon/yoga/yoga.podspec
 
 SPEC CHECKSUMS:
   AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
   AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
+  React: af66244a7d630be2aef03b4ddfe3570e4eff39fc
+  RNImageCropPicker: a637beb8f4c76bf9fe8a89d404ad65a33c4215ac
+  RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
+  yoga: 55da126afc384965b96bff46652464373b330add
 
-PODFILE CHECKSUM: 1a82daa4172182c5ff8394cf04334e2e4a39b5c2
+PODFILE CHECKSUM: bb13ad7fdca5e9064b7d0468dc660e135785bdc6
 
 COCOAPODS: 1.4.0
