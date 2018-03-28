@@ -13,10 +13,8 @@ import style from './style';
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from '../../utils';
 
-import {createUserHoc} from '../../graphql';
+import {createUpdateUserHoc} from '../../graphql';
 import {createUserFunc} from '../../types/gql';
-
-import uuidv1 from 'uuid/v1';
 
 export interface ISignUpScreenState {
 	email: string;
@@ -28,7 +26,6 @@ export interface ISignUpScreenState {
 	phone: string;
 	updatedAvatarImageBase64: string;
 	showModalForSMSCode: boolean;
-	uuid: string;
 }
 
 export interface ISignUpScreenProps {
@@ -55,7 +52,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		avatarImage: Images.user_avatar_placeholder,
 		updatedAvatarImageBase64: '',
 		showModalForSMSCode: false,
-		uuid: '',
 	};
 
 	private inputRefs: any = {};
@@ -75,7 +71,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					phoneNumber={this.state.phone}
 				/>
 				<View style={style.buttonContainer}>
-					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
+					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text>
 				<View style={style.avatarPickerContainer}>
@@ -195,7 +191,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
-		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone, uuid} = this.state;
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
 		const {createUser} = this.props;
 
 		try {
@@ -205,26 +201,13 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			// signin to get access to appsync
 			const resin = await Signin(username, password);
 
-			await updateUserAttr({
-				avatarImage: this.updateAvatarImage,
-				userId: uuid,
-			});
-
-			// do appsync
-			await createUser({
-				variables: {
-					userId: uuid, username, name, avatar: updatedAvatarImageBase64, email,
-				},
-			});
-
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
 			this.props.navigation.navigate('MainScreen');
 			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
-			console.log(ex);
-			Alert.alert('Wrong confirmation code');
+			Alert.alert(ex.message);
 			this.props.HideLoader();
 		}
 	}
@@ -255,9 +238,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			return;
 		}
 
-		const userId = uuidv1();
-		console.log('userid: ', userId);
-
 		try {
 			this.props.SignupLoading();
 			// do cognito
@@ -271,17 +251,24 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			};
 			const res = await Signup(signupParams);
 
-			this.setState({uuid: userId});
+			// do appsync
+			await createUser({
+				variables: {
+					username,
+					name,
+					avatar: updatedAvatarImageBase64,
+					email,
+				},
+			});
 
-			Keyboard.dismiss();
 			this.toggleVisibleModalSMS();
-			this.props.HideLoader();
 		} catch (ex) {
+			console.log(ex);
 			Alert.alert(ex.message);
-			Keyboard.dismiss();
-			this.toggleVisibleModalSMS();
-			this.props.HideLoader();
+			this.toggleVisibleModalSMS(false);
 		}
+		Keyboard.dismiss();
+		this.props.HideLoader();
 	}
 
 	private updateAvatarImage = (base64Photo: string) => {
@@ -300,4 +287,4 @@ const MapDispatchToProps = (dispatch: any) => ({
 });
 
 const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
-export default createUserHoc(reduxWrapper);
+export default createUpdateUserHoc(reduxWrapper);

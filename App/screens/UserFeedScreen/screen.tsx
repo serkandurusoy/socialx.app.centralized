@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {AvatarImage} from '../../components/AvatarImage';
 import {WallPostCard} from '../../components/WallPostCard';
@@ -17,42 +17,40 @@ interface IUserFeedScreenProps {
 
 export interface IUserFeedScreenComponentState {}
 
-export default class UserFeedScreenComponent extends Component<IUserFeedScreenProps, IUserFeedScreenComponentState> {
-	public static defaultProps: Partial<IUserFeedScreenProps> = {};
+const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
+	const keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
-	public render() {
-		return (
-			<View style={style.container}>
-				<View style={style.shareMessageContainer}>
-					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
-					<TouchableWithoutFeedback onPress={this.props.showNewWallPostPage}>
-						<View style={style.shareTextContainer}>
-							<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
-						</View>
-					</TouchableWithoutFeedback>
-				</View>
-				<FlatList
-					refreshing={this.props.refreshing}
-					onRefresh={this.props.refreshData}
-					data={this.props.wallPosts}
-					keyExtractor={this.keyExtractor}
-					renderItem={this.renderWallPosts}
-					onEndReached={this.props.loadMorePosts}
-					onEndReachedThreshold={0.2}
-					alwaysBounceVertical={false}
-					keyboardShouldPersistTaps={'handled'}
-				/>
-			</View>
-		);
-	}
-
-	private keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
-
-	private renderWallPosts = (data: any) => {
+	const renderWallPosts = (data: any) => {
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard {...data.item} />
 			</View>
 		);
-	}
-}
+	};
+
+	return (
+		<View style={style.container}>
+			<View style={style.shareMessageContainer}>
+				<AvatarImage image={props.avatarImage} style={style.avatarImage} />
+				<TouchableWithoutFeedback onPress={props.showNewWallPostPage}>
+					<View style={style.shareTextContainer}>
+						<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
+					</View>
+				</TouchableWithoutFeedback>
+			</View>
+			<FlatList
+				refreshing={props.refreshing}
+				onRefresh={props.refreshData}
+				data={props.wallPosts}
+				keyExtractor={keyExtractor}
+				renderItem={renderWallPosts}
+				onEndReached={props.loadMorePosts}
+				onEndReachedThreshold={0.2}
+				alwaysBounceVertical={false}
+				keyboardShouldPersistTaps={'handled'}
+			/>
+		</View>
+	);
+};
+
+export default UserFeedScreen;
