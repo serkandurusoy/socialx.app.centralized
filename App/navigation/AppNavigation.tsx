@@ -50,6 +50,7 @@ const MainScreenWithModal = StackNavigator(
 	{
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
 		NewWallPostScreen: {screen: NewWallPostScreen},
+		PhotoScreen: {screen: PhotoScreen},
 		MediaViewerScreen: {screen: MediaViewerScreen},
 	},
 	{
