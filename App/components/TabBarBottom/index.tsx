@@ -177,7 +177,6 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 	}
 
 	private useSelectedPhoto = (imagePath: string) => {
-		// alert('useSelectedPhoto: ' + imagePath);
-		this.props.navigation.navigate('PhotoScreen');
+		this.props.navigation.navigate('PhotoScreen', {imagePath});
 	}
 }

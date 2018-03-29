@@ -59,7 +59,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	public static defaultProps: Partial<ISXTextInputProps> = {
 		width: 0,
 		icon: '',
-		iconColor: Colors.darkGray,
+		iconColor: Colors.shuttleGray,
 		placeholder: '',
 		placeholderColor: Colors.grayText,
 		disabled: false,

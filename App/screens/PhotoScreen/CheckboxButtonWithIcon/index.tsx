@@ -14,7 +14,7 @@ export interface ICheckboxButtonWithIconProps {
 export const CheckboxButtonWithIcon: React.SFC<ICheckboxButtonWithIconProps> = (props) => {
 	return (
 		<View style={style.container}>
-			<CheckBox checked={props.selected} onPress={props.onPress} color={Colors.pink} />
+			<CheckBox checked={props.selected} onPress={props.onPress} color={Colors.pink} style={style.checkbox} />
 			<Text style={style.buttonText}>{props.text}</Text>
 			<Image source={props.iconSource} style={style.iconStyle} resizeMode={'contain'} />
 		</View>

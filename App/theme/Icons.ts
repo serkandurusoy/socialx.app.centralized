@@ -31,4 +31,5 @@ export default {
 	iconLocationPin: require('../../assets/icons/location_pin.png'),
 	iconInviteFriends: require('../../assets/icons/invite_friends.png'),
 	iconAddDescription: require('../../assets/icons/add_description.png'),
+	tagFriendSmall: require('../../assets/icons/tag_friend_small.png'),
 };

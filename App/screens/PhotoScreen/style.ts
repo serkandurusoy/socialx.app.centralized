@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../theme/';
 
 const USER_AVATAR_SIZE = Sizes.smartHorizontalScale(40);
+const FRIEND_AVATAR_SIZE = Sizes.smartHorizontalScale(22);
 
 const style: any = {
 	container: {
@@ -10,19 +11,27 @@ const style: any = {
 	},
 	scrollView: {
 		backgroundColor: Colors.white,
-		// backgroundColor: 'yellow',
-	},
-	contentContainer: {
-		// backgroundColor: 'lime',
 	},
 	shareMessageContainer: {
 		width: '100%',
 		flexDirection: 'row',
-		alignItems: 'center',
+		alignItems: 'flex-start',
 		paddingVertical: Sizes.smartVerticalScale(9),
 		paddingHorizontal: Sizes.smartHorizontalScale(16),
 		borderBottomColor: Colors.geyser,
 		borderBottomWidth: Sizes.smartHorizontalScale(0.5),
+	},
+	captionContainer: {
+		minHeight: USER_AVATAR_SIZE,
+		maxHeight: Sizes.smartVerticalScale(80),
+		flex: 1,
+		justifyContent: 'center',
+	},
+	captionTextInput: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		lineHeight: Sizes.smartHorizontalScale(24),
+		color: Colors.postFullName,
 	},
 	avatarImage: {
 		width: USER_AVATAR_SIZE,
@@ -31,7 +40,7 @@ const style: any = {
 		marginRight: Sizes.smartHorizontalScale(13),
 	},
 	photoContainer: {
-		paddingVertical: Sizes.smartVerticalScale(11),
+		paddingTop: Sizes.smartVerticalScale(11),
 		paddingHorizontal: Sizes.smartHorizontalScale(52),
 	},
 	photo: {
@@ -55,6 +64,26 @@ const style: any = {
 	},
 	withMaxHeight: {
 		maxHeight: Sizes.smartVerticalScale(80),
+	},
+	tagFriendsContainer: {
+		width: '100%',
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	taggedFriendsScroll: {
+		flex: 1,
+		borderRadius: Sizes.smartHorizontalScale(30),
+		marginRight: Sizes.smartHorizontalScale(15),
+	},
+	tagFriendsButton: {
+		padding: Sizes.smartHorizontalScale(5),
+	},
+	taggedFriendIcon: {
+		width: FRIEND_AVATAR_SIZE,
+		height: FRIEND_AVATAR_SIZE,
+		borderRadius: FRIEND_AVATAR_SIZE / 2,
+		marginRight: Sizes.smartHorizontalScale(10),
+		marginVertical: Sizes.smartHorizontalScale(10),
 	},
 };
 

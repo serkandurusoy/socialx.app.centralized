@@ -12,11 +12,11 @@ storiesOf('SXTextInput')
 		return <SXTextInput placeholder={'Enter some text here'} />;
 	})
 	.add('default, user icon', () => {
-		return <SXTextInput iconColor={Colors.darkGray} icon={'user'} placeholder={'Enter some text here'} />;
+		return <SXTextInput iconColor={Colors.shuttleGray} icon={'user'} placeholder={'Enter some text here'} />;
 	})
 	.add('password, lock icon', () => {
 		return (
-			<SXTextInput isPassword={true} iconColor={Colors.darkGray} icon={'lock'} placeholder={'Enter your password'} />
+			<SXTextInput isPassword={true} iconColor={Colors.shuttleGray} icon={'lock'} placeholder={'Enter your password'} />
 		);
 	})
 	.add('with editable props', () => {
@@ -31,7 +31,7 @@ storiesOf('SXTextInput')
 			'email-address': 'Email',
 		};
 		const keyboardType = select('Input type', inputTypesOptions, 'default');
-		const iconColor = color('Icon color', Colors.darkGray);
+		const iconColor = color('Icon color', Colors.shuttleGray);
 		const width = number('Width', 0);
 		const returnKeyOptions = {
 			done: 'Done',
