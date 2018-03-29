@@ -854,10 +854,11 @@ aws-amplify@^0.2.9, aws-amplify@^0.2.x:
     aws-sdk "2.198.0"
     axios "^0.17.0"
 
-aws-appsync-react@^1.0.6:
+"aws-appsync-react@git+https://github.com/Shadyzpop/aws-appsync-react.git":
   version "1.0.6"
-  resolved "https://registry.yarnpkg.com/aws-appsync-react/-/aws-appsync-react-1.0.6.tgz#6b90ceb7eeefd54deb9995137934104ef60ee191"
+  resolved "git+https://github.com/Shadyzpop/aws-appsync-react.git#590aa7486a47a783c2fe94de97df9c0c07602b58"
   dependencies:
+    aws-appsync "^1.0.14"
     prop-types "^15.6.0"
 
 aws-appsync@^1.0.14:
@@ -6594,10 +6595,6 @@ md5.js@^1.3.4:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-meant@~1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/meant/-/meant-1.0.1.tgz#66044fea2f23230ec806fb515efea29c44d2115d"
-
 md5@2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/md5/-/md5-2.2.1.tgz#53ab38d5fe3c8891ba465329ea23fac0540126f9"
@@ -6605,6 +6602,10 @@ md5@2.2.1:
     charenc "~0.0.1"
     crypt "~0.0.1"
     is-buffer "~1.1.1"
+
+meant@~1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/meant/-/meant-1.0.1.tgz#66044fea2f23230ec806fb515efea29c44d2115d"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -8618,6 +8619,20 @@ react-native-easy-grid@0.1.17:
   dependencies:
     lodash "^4.11.1"
 
+react-native-fetch-blob@^0.10.8:
+  version "0.10.8"
+  resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.8.tgz#4fc256abae0cb5f10e7c41f28c11b3ff330d72a9"
+  dependencies:
+    base-64 "0.1.0"
+    glob "7.0.6"
+
+react-native-fs@^2.9.11:
+  version "2.9.11"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.9.11.tgz#0fd134ecc8ae53fe8023267f51463eb77287c93a"
+  dependencies:
+    base-64 "^0.1.0"
+    utf8 "^2.1.1"
+
 react-native-gifted-chat@^0.4.3:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-0.4.3.tgz#25b4da866c802e407c06e589495f421f7dcdf70a"
@@ -8632,20 +8647,6 @@ react-native-gifted-chat@^0.4.3:
     react-native-parsed-text "^0.0.20"
     shallowequal "1.0.2"
     uuid "3.2.1"
-
-react-native-fetch-blob@^0.10.8:
-  version "0.10.8"
-  resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.8.tgz#4fc256abae0cb5f10e7c41f28c11b3ff330d72a9"
-  dependencies:
-    base-64 "0.1.0"
-    glob "7.0.6"
-
-react-native-fs@^2.9.11:
-  version "2.9.11"
-  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.9.11.tgz#0fd134ecc8ae53fe8023267f51463eb77287c93a"
-  dependencies:
-    base-64 "^0.1.0"
-    utf8 "^2.1.1"
 
 react-native-image-crop-picker@^0.20.0:
   version "0.20.0"
@@ -9724,16 +9725,16 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-shallowequal@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.0.2.tgz#1561dbdefb8c01408100319085764da3fcf83f8f"
-
 sha@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/sha/-/sha-2.0.1.tgz#6030822fbd2c9823949f8f72ed6411ee5cf25aae"
   dependencies:
     graceful-fs "^4.1.2"
     readable-stream "^2.0.2"
+
+shallowequal@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.0.2.tgz#1561dbdefb8c01408100319085764da3fcf83f8f"
 
 shallowequal@^0.2.2:
   version "0.2.2"
