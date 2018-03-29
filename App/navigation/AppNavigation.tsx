@@ -49,9 +49,8 @@ const MainScreenTabNavigation = TabNavigator(
 const MainScreenWithModal = StackNavigator(
 	{
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
-		NewWallPostScreen: {
-			screen: NewWallPostScreen,
-		},
+		NewWallPostScreen: {screen: NewWallPostScreen},
+		MediaViewerScreen: {screen: MediaViewerScreen},
 	},
 	{
 		mode: 'modal',
