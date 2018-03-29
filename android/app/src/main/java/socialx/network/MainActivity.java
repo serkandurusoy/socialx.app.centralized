@@ -1,4 +1,4 @@
-package com.socialxtypeactress;
+package socialx.network;
 
 import com.facebook.react.ReactActivity;
 
