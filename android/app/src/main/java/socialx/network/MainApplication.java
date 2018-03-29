@@ -1,4 +1,4 @@
-package com.socialxtypeactress;
+package socialx.network;
 
 import android.app.Application;
 
