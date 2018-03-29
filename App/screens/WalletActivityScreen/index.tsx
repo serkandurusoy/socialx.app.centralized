@@ -48,6 +48,8 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 	},
 ];
 
+const PAGE_SIZE = SAMPLE_TRANSACTIONS.length;
+
 const TOTAL_NUMBER_OF_TRANSACTIONS = 40;
 
 export interface IWalletActivityScreenState {
@@ -108,13 +110,22 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 	}
 
 	private loadMoreTransactionsHandler = () => {
-		if (this.state.transactions.length < TOTAL_NUMBER_OF_TRANSACTIONS) {
+		if (this.state.transactions.length < TOTAL_NUMBER_OF_TRANSACTIONS && this.state.transactions.length >= PAGE_SIZE) {
 			if (!this.isLoading) {
+				// console.log('loadMoreTransactionsHandler');
 				this.isLoading = true;
+				const placeholderTransactions = Array(PAGE_SIZE).fill({isPlaceholder: true});
+				const transactionsWithPlaceholders = this.state.transactions.concat(placeholderTransactions);
+				this.setState({transactions: transactionsWithPlaceholders});
 				setTimeout(() => {
 					this.isLoading = false;
+					let newTransactions = [].concat(this.state.transactions);
+					const toDelete = placeholderTransactions.length;
+					const spliceIndex = newTransactions.length - toDelete;
+					newTransactions.splice(spliceIndex, toDelete);
+					newTransactions = newTransactions.concat(SAMPLE_TRANSACTIONS);
 					this.setState({
-						transactions: this.state.transactions.concat(SAMPLE_TRANSACTIONS),
+						transactions: newTransactions,
 					});
 				}, 1000); // just simulate network calls delay
 			}
