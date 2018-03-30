@@ -1,7 +1,9 @@
 import moment from 'moment';
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, StyleProp, Text, View, ViewStyle} from 'react-native';
 import {CoinIcons, CoinSymbol} from '../../constants/';
+import {LoaderView} from '../LoaderView';
+import {SvgAnimatedLinearGradient} from '../SvgAnimatedLinearGradient';
 import style from './style';
 
 export enum TransactionType {
@@ -16,29 +18,38 @@ export interface TransactionData {
 	secondAmount: number;
 	secondCoin: CoinSymbol;
 	date: Date;
+	isLoading: boolean;
 }
 
 export const TransactionItem: React.SFC<TransactionData> = (props) => {
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<Image source={CoinIcons[props.firstCoin]} style={style.coinIcon} resizeMode={'contain'} />
+				<LoaderView isLoading={props.isLoading} style={style.coinIconLoader}>
+					<Image source={CoinIcons[props.firstCoin]} style={style.coinIcon} resizeMode={'contain'} />
+				</LoaderView>
 				<View>
-					<Text style={style.lineText}>
-						{props.type} {props.firstAmount} {props.firstCoin}
-					</Text>
-					<Text style={style.lineText}>
-						<Text style={style.grayText}>{'for '}</Text>
-						{props.secondAmount} {props.secondCoin}
-					</Text>
+					<LoaderView isLoading={props.isLoading} style={style.lineTextFirstLoader}>
+						<Text style={style.lineText}>
+							{props.type} {props.firstAmount} {props.firstCoin}
+						</Text>
+					</LoaderView>
+					<LoaderView isLoading={props.isLoading} style={style.lineTextSecondLoader}>
+						<Text style={style.lineText}>
+							<Text style={style.grayText}>{'for '}</Text>
+							{props.secondAmount} {props.secondCoin}
+						</Text>
+					</LoaderView>
 				</View>
 			</View>
 			<View style={style.rightContainer}>
-				<Text style={style.dateText}>{moment(props.date).format('MMM')}</Text>
-				<Text style={style.dateText}>{moment(props.date).format('DD')}</Text>
+				<LoaderView isLoading={props.isLoading} style={style.dateTextLoader}>
+					<Text style={style.dateText}>{moment(props.date).format('MMM')}</Text>
+				</LoaderView>
+				<LoaderView isLoading={props.isLoading} style={style.dateTextLoader}>
+					<Text style={style.dateText}>{moment(props.date).format('DD')}</Text>
+				</LoaderView>
 			</View>
 		</View>
 	);
 };
-
-TransactionItem.defaultProps = {};

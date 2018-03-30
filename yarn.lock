@@ -847,10 +847,11 @@ aws-amplify@^0.2.9, aws-amplify@^0.2.x:
     aws-sdk "2.198.0"
     axios "^0.17.0"
 
-aws-appsync-react@^1.0.6:
+"aws-appsync-react@git+https://github.com/Shadyzpop/aws-appsync-react.git":
   version "1.0.6"
-  resolved "https://registry.yarnpkg.com/aws-appsync-react/-/aws-appsync-react-1.0.6.tgz#6b90ceb7eeefd54deb9995137934104ef60ee191"
+  resolved "git+https://github.com/Shadyzpop/aws-appsync-react.git#590aa7486a47a783c2fe94de97df9c0c07602b58"
   dependencies:
+    aws-appsync "^1.0.14"
     prop-types "^15.6.0"
 
 aws-appsync@^1.0.14:
@@ -3229,7 +3230,7 @@ d3-interpolate-path@2.0.0:
   dependencies:
     d3-interpolate "^1.1.1"
 
-d3-interpolate@1, d3-interpolate@^1.1.1:
+d3-interpolate@1, d3-interpolate@^1.1.1, d3-interpolate@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.1.6.tgz#2cf395ae2381804df08aa1bf766b7f97b5f68fb6"
   dependencies:
