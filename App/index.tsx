@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Provider} from 'react-redux';
 
+// refactoring
 import RootContainer, {AppsyncClient, Rehydrated} from './containers/RootContainer';
 import createStore from './reducers';
 
