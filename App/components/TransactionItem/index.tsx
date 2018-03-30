@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React from 'react';
-import {Image, Text, View} from 'react-native';
-import {Rect} from 'react-native-svg';
+import {Image, StyleProp, Text, View, ViewStyle} from 'react-native';
 import {CoinIcons, CoinSymbol} from '../../constants/';
+import {LoaderView} from '../LoaderView';
 import {SvgAnimatedLinearGradient} from '../SvgAnimatedLinearGradient';
-import style, {shadowStyle} from './style';
+import style from './style';
 
 export enum TransactionType {
 	SOLD = 'Sold',
@@ -18,65 +18,37 @@ export interface TransactionData {
 	secondAmount: number;
 	secondCoin: CoinSymbol;
 	date: Date;
-	isPlaceholder?: boolean;
+	isLoading: boolean;
 }
 
 export const TransactionItem: React.SFC<TransactionData> = (props) => {
 	return (
-		<View style={style.container} onLayout={props.containerLayout}>
+		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<Image source={CoinIcons[props.firstCoin]} style={style.coinIcon} resizeMode={'contain'} />
+				<LoaderView isLoading={props.isLoading} style={style.coinIconLoader}>
+					<Image source={CoinIcons[props.firstCoin]} style={style.coinIcon} resizeMode={'contain'} />
+				</LoaderView>
 				<View>
-					<Text style={style.lineText}>
-						{props.type} {props.firstAmount} {props.firstCoin}
-					</Text>
-					<Text style={style.lineText}>
-						<Text style={style.grayText}>{'for '}</Text>
-						{props.secondAmount} {props.secondCoin}
-					</Text>
+					<LoaderView isLoading={props.isLoading} style={style.lineTextFirstLoader}>
+						<Text style={style.lineText}>
+							{props.type} {props.firstAmount} {props.firstCoin}
+						</Text>
+					</LoaderView>
+					<LoaderView isLoading={props.isLoading} style={style.lineTextSecondLoader}>
+						<Text style={style.lineText}>
+							<Text style={style.grayText}>{'for '}</Text>
+							{props.secondAmount} {props.secondCoin}
+						</Text>
+					</LoaderView>
 				</View>
 			</View>
 			<View style={style.rightContainer}>
-				<Text style={style.dateText}>{moment(props.date).format('MMM')}</Text>
-				<Text style={style.dateText}>{moment(props.date).format('DD')}</Text>
-			</View>
-		</View>
-	);
-};
-
-export const TransactionItemShadow: React.SFC = () => {
-	return (
-		<View style={shadowStyle.container}>
-			<View style={shadowStyle.leftContainer}>
-				<View style={shadowStyle.coinIcon}>
-					<SvgAnimatedLinearGradient height={'100%'} width={'100%'} duration={1200}>
-						<Rect x={0} y={0} rx={4} ry={4} width={'100%'} height={'100%'} />
-					</SvgAnimatedLinearGradient>
-				</View>
-				<View>
-					<View style={shadowStyle.lineTextFirst}>
-						<SvgAnimatedLinearGradient height={'100%'} width={'100%'} duration={1200}>
-							<Rect x={0} y={0} rx={4} ry={4} width={'100%'} height={'100%'} />
-						</SvgAnimatedLinearGradient>
-					</View>
-					<View style={shadowStyle.lineTextSecond}>
-						<SvgAnimatedLinearGradient height={'100%'} width={'100%'} duration={1200}>
-							<Rect x={0} y={0} rx={4} ry={4} width={'100%'} height={'100%'} />
-						</SvgAnimatedLinearGradient>
-					</View>
-				</View>
-			</View>
-			<View style={shadowStyle.rightContainer}>
-				<View style={shadowStyle.dateText}>
-					<SvgAnimatedLinearGradient height={'100%'} width={'100%'} duration={1200}>
-						<Rect x={0} y={0} rx={4} ry={4} width={'100%'} height={'100%'} />
-					</SvgAnimatedLinearGradient>
-				</View>
-				<View style={shadowStyle.dateText}>
-					<SvgAnimatedLinearGradient height={'100%'} width={'100%'} duration={1200}>
-						<Rect x={0} y={0} rx={4} ry={4} width={'100%'} height={'100%'} />
-					</SvgAnimatedLinearGradient>
-				</View>
+				<LoaderView isLoading={props.isLoading} style={style.dateTextLoader}>
+					<Text style={style.dateText}>{moment(props.date).format('MMM')}</Text>
+				</LoaderView>
+				<LoaderView isLoading={props.isLoading} style={style.dateTextLoader}>
+					<Text style={style.dateText}>{moment(props.date).format('DD')}</Text>
+				</LoaderView>
 			</View>
 		</View>
 	);

@@ -13,13 +13,16 @@ export class SvgAnimatedLinearGradient extends Component {
     constructor(props) {
         super(props);
 
+        const animatedOffsets = [
+            '0.0001', '0.0002', '0.0003' // Avoid duplicate value cause error in Android
+        ];
+        const staticOffsets = ['0', '0.5', '1'];
+
         this.state = {
             offsetValues: [
                 '-2', '-1.5', '-1'
             ],
-            offsets: [
-                '0.0001', '0.0002', '0.0003' // Avoid duplicate value cause error in Android
-            ],
+            offsets: props.animated ? animatedOffsets : staticOffsets,
             frequence: props.duration / 2
         }
         this._isMounted = false;
@@ -41,7 +44,9 @@ export class SvgAnimatedLinearGradient extends Component {
 
     componentDidMount(props) {
         this._isMounted = true
-        this.loopAnimation()
+        if (this.props.animated) {
+            this.loopAnimation()
+        }
     }
 
     componentWillUnmount() {
@@ -99,41 +104,71 @@ export class SvgAnimatedLinearGradient extends Component {
 
     render() {
 
-        return (
-            <AnimatedSvg height={this.props.height} width={this.props.width}>
-                <Defs>
-                    <LinearGradient id="grad" x1={this.props.x1} y1={this.props.y1} x2={this.props.x2}
-                                    y2={this.props.y2}>
-                        <Stop
-                            offset={this.state.offsets[0]}
-                            stopColor={this.props.primaryColor}
-                            stopOpacity="1"/>
-                        <Stop
-                            offset={this.state.offsets[1]}
-                            stopColor={this.props.secondaryColor}
-                            stopOpacity="1"/>
-                        <Stop
-                            offset={this.state.offsets[2]}
-                            stopColor={this.props.primaryColor}
-                            stopOpacity="1"/>
-                    </LinearGradient>
-                    <ClipPath id="clip">
-                        <G>
-                            {this.props.children}
-                        </G>
-                    </ClipPath>
-                </Defs>
+        if (this.props.animated) {
+            return (
+                <AnimatedSvg height={this.props.height} width={this.props.width}>
+                    <Defs>
+                        <LinearGradient id="grad" x1={this.props.x1} y1={this.props.y1} x2={this.props.x2}
+                                        y2={this.props.y2}>
+                            <Stop
+                                offset={this.state.offsets[0]}
+                                stopColor={this.props.primaryColor}
+                                stopOpacity="1"/>
+                            <Stop
+                                offset={this.state.offsets[1]}
+                                stopColor={this.props.secondaryColor}
+                                stopOpacity="1"/>
+                            <Stop
+                                offset={this.state.offsets[2]}
+                                stopColor={this.props.primaryColor}
+                                stopOpacity="1"/>
+                        </LinearGradient>
+                    </Defs>
 
-                <Rect
-                    x='0'
-                    y='0'
-                    height={this.props.height}
-                    width={this.props.width}
-                    fill="url(#grad)"
-                    clipPath="url(#clip)"
-                />
-            </AnimatedSvg>
-        );
+                    <Rect
+                        x='0'
+                        y='0'
+                        rx={4}
+                        ry={4}
+                        height={this.props.height}
+                        width={this.props.width}
+                        fill="url(#grad)"
+                    />
+                </AnimatedSvg>
+            );
+        } else {
+            return (
+                <Svg height={this.props.height} width={this.props.width}>
+                    <Defs>
+                        <LinearGradient id="grad" x1={this.props.x1} y1={this.props.y1} x2={this.props.x2}
+                                        y2={this.props.y2}>
+                            <Stop
+                                offset={this.state.offsets[0]}
+                                stopColor={this.props.primaryColor}
+                                stopOpacity="1"/>
+                            <Stop
+                                offset={this.state.offsets[1]}
+                                stopColor={this.props.secondaryColor}
+                                stopOpacity="1"/>
+                            <Stop
+                                offset={this.state.offsets[2]}
+                                stopColor={this.props.primaryColor}
+                                stopOpacity="1"/>
+                        </LinearGradient>
+                    </Defs>
+
+                    <Rect
+                        x='0'
+                        y='0'
+                        rx={4}
+                        ry={4}
+                        height={this.props.height}
+                        width={this.props.width}
+                        fill="url(#grad)"
+                    />
+                </Svg>
+            )
+        }
     }
 }
 
@@ -147,6 +182,7 @@ SvgAnimatedLinearGradient.propTypes = {
     y1: PropTypes.string,
     x2: PropTypes.string,
     y2: PropTypes.string,
+    animated: PropTypes.bool,
 }
 SvgAnimatedLinearGradient.defaultProps = {
     primaryColor: '#eeeeee',
@@ -157,5 +193,6 @@ SvgAnimatedLinearGradient.defaultProps = {
     x1: '0',
     y1: '0',
     x2: '100%',
-    y2: '0'
+    y2: '0',
+    animated: true,
 }

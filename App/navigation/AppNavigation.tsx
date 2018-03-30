@@ -80,8 +80,7 @@ const PrimaryNav = StackNavigator(
 	},
 	{
 		headerMode: 'screen',
-		// initialRouteName: 'LaunchScreen',
-		initialRouteName: 'WalletActivityScreen',
+		initialRouteName: 'LaunchScreen',
 		navigationOptions: {
 			headerStyle: styles.header,
 			headerTintColor: Colors.white, // color for screen title and back button
