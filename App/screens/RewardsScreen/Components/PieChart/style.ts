@@ -1,16 +1,20 @@
 import {StyleSheet} from 'react-native';
 import {Sizes} from '../../../../theme/';
 
+const CHART_SIZE = Sizes.smartHorizontalScale(170);
+
 const style: any = {
 	container: {
-		position: 'relative',
 		width: '100%',
 		justifyContent: 'center',
-		paddingVertical: Sizes.smartVerticalScale(13),
+		alignItems: 'center',
 	},
 	percentageText: {
 		position: 'absolute',
-		left: '47%',
+	},
+	chart: {
+		width: CHART_SIZE,
+		height: CHART_SIZE,
 	},
 };
 

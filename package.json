@@ -49,6 +49,7 @@
     "emoji-regex": "^6.5.1",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
+    "hex-rgb": "^2.0.0",
     "install": "^0.11.0",
     "lodash": "^4.17.5",
     "moment": "^2.20.1",

@@ -8,31 +8,31 @@ const style: any = {
 		alignItems: 'center',
 		flexDirection: 'row',
 		paddingVertical: Sizes.smartVerticalScale(5),
+	},
+	containerWithBorder: {
 		borderBottomColor: Colors.grayNurse,
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 	},
-	leftTextContainer: {
+	badgeTextContainer: {
 		width: Sizes.smartHorizontalScale(36),
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: Colors.grayNurse,
 		paddingVertical: Sizes.smartVerticalScale(5),
 		borderRadius: 50,
 	},
-	leftText: {
-		...Fonts.centuryGothic,
+	badgeText: {
+		...Fonts.centuryGothicBold,
 		fontSize: Sizes.smartHorizontalScale(10),
-		fontWeight: 'bold',
 		color: Colors.diminishedRed,
 	},
-	centerText: {
+	title: {
 		flex: 8,
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(13),
 		color: Colors.postFullName,
 		paddingLeft: Sizes.smartVerticalScale(10),
 	},
-	rightText: {
+	percentValue: {
 		flex: 3,
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(13),
