@@ -22,7 +22,7 @@ interface IMyProfileScreenProps {
 	loadMorePhotosHandler: () => void;
 	totalNumberOfPhotos: number;
 	gridPageSize: number;
-	getAllPhotos: () => any[];
+	getAllPhotos: any[];
 	navigation: NavigationScreenProp<any>;
 }
 
@@ -89,7 +89,7 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 
 	private onPhotoPressHandler = (index: number) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
-			photos: this.props.getAllPhotos(),
+			photos: this.props.getAllPhotos,
 			startIndex: index,
 		});
 	}

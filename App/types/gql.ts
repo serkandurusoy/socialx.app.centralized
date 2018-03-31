@@ -1,4 +1,4 @@
-import { QueryProps } from './gql';
+import {QueryProps} from './gql';
 
 export {QueryProps} from 'react-apollo';
 
@@ -15,9 +15,25 @@ export interface ICreateUserProps {
 	};
 }
 
+interface IMediaProps {
+	id: string;
+	hash: string;
+	type: string;
+	size: number;
+}
+
+interface IPostsProps {
+	id: string;
+	ownerId: string;
+	createdAt: string;
+	text: string;
+	Media?: IMediaProps[];
+}
+
 interface IUserQuery {
 	userId: string;
 	name: string;
+	username: string;
 	email: string;
 	bio?: string;
 	age?: number;
@@ -29,6 +45,7 @@ interface IUserQuery {
 		id: string;
 		size: number;
 	};
+	posts?: IPostsProps[];
 }
 
 interface IUserData {

@@ -3,6 +3,11 @@ import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
 
+import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
+import {IUserDataResponse} from '../../types/gql';
+
+import {Images} from '../../theme';
+
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
 
@@ -18,10 +23,16 @@ const INITIAL_STATE = {
 	avatarURL: USER_BIG_AVATAR_URL,
 	fullName: FULL_NAME,
 	username: USER_NAME,
+	loaded: false,
+	images: [] as any,
 };
 
 interface IMyProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
+	data: IUserDataResponse;
+	// todo
+	createUser: any;
+	addMedia: any;
 }
 
 interface IMyProfileScreenState {
@@ -32,9 +43,11 @@ interface IMyProfileScreenState {
 	avatarURL: any;
 	fullName: string;
 	username?: string;
+	loaded: boolean;
+	images: any;
 }
 
-export default class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
+class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = {
 		title: 'PROFILE',
 	};
@@ -43,7 +56,44 @@ export default class MyProfileScreen extends Component<IMyProfileScreenProps, IM
 
 	private lastLoadedPhotoIndex = 0;
 
+	public componentWillReceiveProps(nextProps: IMyProfileScreenProps) {
+		const {data} = nextProps;
+		if (data.loading || this.state.loaded) {
+			return;
+		}
+
+		const {user} = data;
+		const {posts, avatar} = user;
+
+		let userImages = 0;
+		if (posts) {
+			posts.forEach((x) => {
+				userImages += x.Media ? x.Media.length : 0;
+			});
+		}
+
+		const userAvatar = avatar ? 'http://10.0.2.2:8080/ipfs/' + avatar.hash : Images.user_avatar_placeholder;
+
+		this.setState({
+			numberOfPhotos: userImages,
+			numberOfLikes: 0,
+			numberOfFollowers: 0,
+			numberOfFollowing: 0,
+			avatarURL: userAvatar,
+			fullName: user.name,
+			username: user.username,
+			loaded: true,
+			images: this.preloadAllImages(),
+		});
+	}
+
 	public render() {
+		const {data} = this.props;
+		if (data.loading) {
+			// TODO: content load here
+			return <View />;
+		}
+
 		return (
 			<MyProfileScreenComponent
 				totalNumberOfPhotos={GRID_MAX_RESULTS}
@@ -55,8 +105,8 @@ export default class MyProfileScreen extends Component<IMyProfileScreenProps, IM
 				avatarURL={this.state.avatarURL}
 				fullName={this.state.fullName}
 				username={this.state.username}
-				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, GRID_MAX_RESULTS)}
-				getAllPhotos={this.getAllPhotos}
+				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, this.state.numberOfPhotos)}
+				getAllPhotos={this.state.images}
 				navigation={this.props.navigation}
 			/>
 		);
@@ -67,24 +117,48 @@ export default class MyProfileScreen extends Component<IMyProfileScreenProps, IM
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
 			if (this.lastLoadedPhotoIndex < maxResults) {
-				ret.push({
-					url: 'https://avatars2.githubusercontent.com/u/' + i,
-					index: i,
-				});
+				ret.push(this.state.images[i]);
 				this.lastLoadedPhotoIndex++;
 			}
 		}
 		return ret;
 	}
 
-	private getAllPhotos = () => {
+	private preloadAllImages = () => {
+		const {data} = this.props;
+		const {user} = data;
+
+		const {posts} = user;
+
+		if (!posts) {
+			return [];
+		}
+
+		const Imgs = [];
+		for (let y = 0; y < posts.length; y++) {
+			const currentMedia = posts[y].Media;
+			if (currentMedia) {
+				for (let x = 0; x < currentMedia.length; x++) {
+					const currentHash = currentMedia[x].hash;
+					Imgs.push(currentHash);
+				}
+			}
+		}
+
 		const ret = [];
-		for (let i = 0; i < GRID_MAX_RESULTS; i++) {
+		for (let i = 0; i < Imgs.length; i++) {
+			const current = Imgs[i];
 			ret.push({
-				url: 'https://avatars2.githubusercontent.com/u/' + i,
+				url: 'http://10.0.2.2:8080/ipfs/' + current,
 				index: i,
 			});
 		}
 		return ret;
 	}
 }
+
+const userDataWrapper = userHoc(MyProfileScreen);
+const addMediaWrapper = addMediaHoc(userDataWrapper);
+const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
+
+export default updateUserWrapper;

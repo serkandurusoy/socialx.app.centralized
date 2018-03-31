@@ -10,6 +10,9 @@ import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextI
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
+import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
+import {IUserDataResponse} from '../../types/gql';
+
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
 	aboutText: string;
@@ -28,6 +31,10 @@ interface ISettingsScreenProps {
 	email: string;
 	miningEnabled: boolean;
 	saveChanges: (data: SettingsData) => void;
+	data: IUserDataResponse;
+	// todo
+	createUser: any;
+	addMedia: any;
 }
 
 interface IISettingsScreenState {
@@ -39,7 +46,7 @@ interface IISettingsScreenState {
 	email: string;
 }
 
-export default class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenState> {
+class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenState> {
 	public static defaultProps: Partial<ISettingsScreenProps> = {
 		avatarImage: Images.user_avatar_placeholder,
 		aboutText: '',
@@ -203,3 +210,9 @@ export default class SettingsScreen extends Component<ISettingsScreenProps, IISe
 		this.props.saveChanges(saveData);
 	}
 }
+
+const userDataWrapper = userHoc(SettingsScreen);
+const addMediaWrapper = addMediaHoc(userDataWrapper);
+const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
+
+export default updateUserWrapper;

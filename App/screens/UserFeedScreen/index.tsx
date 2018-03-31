@@ -133,7 +133,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			};
 			arty.push(res);
 		}
-		console.log(JSON.stringify(arty, null, 2));
 
 		return arty;
 	}
