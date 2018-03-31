@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {Images} from '../../theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
@@ -74,18 +75,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {Posts, data} = this.props;
 		if (data.loading || Posts.loading) {
-			// TODO: Loading..
+			// TODO: content Loading..
 			return (
-				<UserFeedScreenComponent
-					refreshing={this.state.refreshing}
-					refreshData={this.refreshWallPosts}
-					fullName={''}
-					avatarImage={Images.user_avatar_placeholder}
-					wallPosts={this.state.wallPosts}
-					loadMorePosts={this.loadMorePostsHandler}
-					addWallPost={this.addWallPostHandler}
-					showNewWallPostPage={this.showNewWallPostPage}
-				/>
+				<View />
 			);
 		}
 		// TODO: make better
