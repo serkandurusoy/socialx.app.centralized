@@ -8,6 +8,8 @@ import SearchScreenComponent from './screen';
 
 import {searchUsersHoc} from '../../graphql';
 
+import {Images} from '../../theme';
+
 export enum SearchFilterValues {
 	People = 'people',
 	Groups = 'groups',
@@ -154,7 +156,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			const params = props.navigation.state.params || {};
 			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
 		},
-	})
+	});
 
 	public state = {
 		invitePeopleModalVisible: false,
@@ -235,7 +237,9 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					kind: SearchResultKind.NotFriend,
 					fullName: current.name,
 					username: current.username,
-					avatarURL: current.avatar,
+					avatarURL: current.avatar
+						? 'http://10.0.2.2:8080/ipfs/' + current.avatar.hash
+						: Images.user_avatar_placeholder,
 				});
 			}
 			console.log(results);
@@ -243,7 +247,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		} catch (ex) {
 			return results;
 		}
-	}
+	};
 
 	private updateSearchTerm = async (term: string) => {
 		const {search} = this.props;
@@ -251,14 +255,14 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			searchTerm: term,
 			searchResults: await this.doSearch(term),
 		});
-	}
+	};
 
 	private updateSelectedFilter = async (value: SearchFilterValues) => {
 		this.setState({
 			selectedFilter: value,
 			searchResults: await this.doSearch(this.state.searchTerm),
 		});
-	}
+	};
 
 	private toggleInvitePeopleModal = () => {
 		this.setState({
@@ -266,11 +270,11 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			createGroupSearchResults: [],
 			selectedUsers: [],
 		});
-	}
+	};
 
 	private selectNewUserForGroupHandler = (userId: string) => {
 		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
-	}
+	};
 
 	private toggleGroupInfoModal = (prepareNext = false) => {
 		this.setState({
@@ -279,7 +283,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			groupDescription: '',
 			nextShowInvitePeople: prepareNext,
 		});
-	}
+	};
 
 	private updateGroupNameHanlder = (text: string) => {
 		this.setState({groupName: text});
