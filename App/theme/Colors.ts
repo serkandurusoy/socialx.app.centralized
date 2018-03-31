@@ -36,6 +36,8 @@ const SocialXColors = {
 	grayNurse: '#E6E7E6',
 	tundora: '#4A4A4A',
 	ceriseRed: '#E0295A',
+	hollywoodCerise: '#FF0099',
+	chatTextInputBorder: 'rgba(151,151,151,0.5)',
 	dustGray: '#979797',
 };
 

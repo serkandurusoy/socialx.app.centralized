@@ -3,6 +3,8 @@ package socialx.network;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
+import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 
@@ -42,10 +44,11 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new AndroidKeyboardAdjustPackage(),
+                    new SvgPackage(),
                     new ReactVideoPackage(),
                     new VectorIconsPackage(),
                     new RNTextGradientPackage(),
-                    new SvgPackage(),
                     new OrientationPackage(),
                     new LinearGradientPackage(),
                     new PickerPackage(),
