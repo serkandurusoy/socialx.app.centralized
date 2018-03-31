@@ -59,11 +59,6 @@ export const getAllPosts = gql`
 				type
 				size
 			}
-			likes {
-				userId
-				username
-				avatar
-			}
 		}
 	}
 `;

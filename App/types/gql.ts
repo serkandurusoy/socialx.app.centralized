@@ -23,7 +23,12 @@ interface IUserQuery {
 	age?: number;
 	gender?: string;
 	location?: string;
-	avatar?: string;
+	avatar?: {
+		hash: string;
+		type: string;
+		id: string;
+		size: number;
+	};
 }
 
 interface IUserData {

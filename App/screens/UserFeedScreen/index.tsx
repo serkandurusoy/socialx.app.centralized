@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {Images} from '../../theme';
-import {NewWallPostData} from '../NewWallPostScreen';
+import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
@@ -10,6 +10,8 @@ import {IUserDataResponse} from '../../types/gql';
 
 import {IBlobData} from '../../lib/ipfs';
 import {addBlob} from '../../utils/ipfs';
+
+import {IMediaRec} from './types';
 
 export interface IWallPostData {
 	text: string;
@@ -62,15 +64,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
-		const {data, Posts} = nextProps;
-		if (data.loading || Posts.loading) {
+		const {data} = nextProps;
+		if (data.loading) {
 			return;
 		}
 		this.setState({wallPosts: this.getWallPosts()});
 	}
 
 	public render() {
-		const {data, Posts} = this.props;
+		const {Posts, data} = this.props;
 		if (data.loading || Posts.loading) {
 			// TODO: Loading..
 			return (
@@ -86,12 +88,17 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				/>
 			);
 		}
+		// TODO: make better
+		const avatarUri = data.user.avatar
+			? {uri: 'http://10.0.2.2:8080/ipfs/' + data.user.avatar.hash}
+			: Images.user_avatar_placeholder;
+
 		return (
 			<UserFeedScreenComponent
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
 				fullName={this.props.data.user.name}
-				avatarImage={{uri: this.props.data.user.avatar}}
+				avatarImage={avatarUri}
 				wallPosts={this.state.wallPosts}
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
@@ -101,7 +108,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private getWallPosts = () => {
-		const {Posts, data} = this.props;
+		const {data, Posts} = this.props;
 		const arty: any[] = [];
 
 		if (!Posts.allPosts) {
@@ -113,7 +120,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const post = Posts.allPosts[i];
 			const res = {
 				text: post.text,
-				smallAvatar: data.user.avatar,
+				smallAvatar: data.user.avatar
+					? 'http://10.0.2.2:8080/ipfs/' + data.user.avatar.hash
+					: Images.user_avatar_placeholder,
 				imageSource: post.Media ? 'http://10.0.2.2:8080/ipfs/' + post.Media[0].hash : undefined,
 				fullName: data.user.name,
 				timestamp: new Date(post.createdAt),
@@ -124,14 +133,18 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			};
 			arty.push(res);
 		}
+		console.log(JSON.stringify(arty, null, 2));
 
 		return arty;
 	}
 
 	private showNewWallPostPage = () => {
+		const avatarUri = this.props.data.user.avatar
+			? {uri: 'http://10.0.2.2:8080/ipfs/' + this.props.data.user.avatar.hash}
+			: Images.user_avatar_placeholder;
 		this.props.navigation.navigate('NewWallPostScreen', {
 			fullName: this.props.data.user.name,
-			avatarImage: {uri: this.props.data.user.avatar},
+			avatarImage: avatarUri,
 			postCreate: this.addWallPostHandler,
 		});
 	}
@@ -148,25 +161,20 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const blobfiles: IBlobData[] = [] as IBlobData[];
 		const ipfsHashes: any = [];
 		const mediaIds: string[] = [];
-
 		let multiflag = false;
-
-		data.mediaObjects.forEach((media) => {
+		data.mediaObjects.forEach((media: MediaObject) => {
 			blobfiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]});
 		});
-
 		try {
 			// check if user entered any text
 			if (data.text.length < 5) {
 				// TODO: add some warning
 				return;
 			}
-
 			// there is media
 			if (data.mediaObjects.length > 0) {
 				// add files to ipfs
 				let ipfsResp = await addBlob(blobfiles);
-				console.log(ipfsResp.data);
 				ipfsResp = ipfsResp.data.split('\n');
 				// parse all media files from ipfs
 				if (ipfsResp.length > 2) {
@@ -197,31 +205,36 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					});
 					mediaIds.push(resp.data.addMedia.id);
 				}
-			}
-			// create the actual post
-			await createPost({
-				variables: {
-					text: data.text,
-					Media: mediaIds,
-				},
-			});
 
-			console.log(mediaIds);
+				// create the post with media
+				await createPost({
+					variables: {
+						text: data.text,
+						Media: mediaIds,
+					},
+				});
+			} else {
+				// create the post without media
+				await createPost({
+					variables: {
+						text: data.text,
+					},
+				});
+			}
 
 			// refresh the wall posts to append the new post
 			this.refreshWallPosts();
 		} catch (ex) {
 			// TODO: err handle
 			console.log(ex);
-			console.log(mediaIds);
 		}
 	}
 
 	private refreshWallPosts = async () => {
+		const {Posts} = this.props;
+
 		this.setState({refreshing: true});
-
-		await this.props.Posts.refetch();
-
+		await Posts.refetch();
 		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
 	}
 }
@@ -229,5 +242,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 const userWrapper = userHoc(UserFeedScreen);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
+const addMediaWrapper = addMediaHoc(createPostWrapper);
 
-export default createPostWrapper;
+export default addMediaWrapper;
