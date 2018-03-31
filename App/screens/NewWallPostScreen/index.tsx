@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 import {ActionSheet} from 'native-base';
+import RNFS from 'react-native-fs';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
 import {NavigationScreenProp} from 'react-navigation';
@@ -11,9 +12,6 @@ import {ModalCloseButton} from '../../components/ModalCloseButton';
 import {SXTextInput} from '../../components/TextInput';
 import {Colors, Icons, Sizes} from '../../theme';
 import style from './style';
-
-import RNFS from 'react-native-fs';
-import {add, addBlob, addFile, addFiles} from '../../utils/ipfs';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
 const TAKE_A_PHOTO = 'Take a photo/video';
@@ -30,6 +28,8 @@ export enum MediaTypes {
 export interface MediaObject {
 	path: string;
 	type: MediaTypes;
+	size: number;
+	name: string;
 	content: any;
 }
 
@@ -157,6 +157,8 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			const localImagePath: MediaObject = {
 				path: (image as PickerImage).path,
 				type: mediaMimeType.startsWith(MediaTypes.Video) ? MediaTypes.Video : MediaTypes.Image,
+				size: image.size,
+				name: image.path.split('/')[image.path.split('/').length - 1],
 				content: imagecontent,
 			};
 
@@ -165,7 +167,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			});
 		} catch (ex) {
 			// TODO: handle err
-			console.log(ex);
+			// console.log(ex);
 		}
 	}
 
