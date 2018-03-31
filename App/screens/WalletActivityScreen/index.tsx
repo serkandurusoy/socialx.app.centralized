@@ -5,7 +5,7 @@ import {TransactionData, TransactionType} from '../../components/TransactionItem
 import {CoinSymbol} from '../../constants/';
 import WalletActivityScreenComponent from './screen';
 
-const SAMPLE_TRANSACTIONS: TransactionData[] = [
+let ONE_PAGE_TRANSACTIONS: TransactionData[] = [
 	{
 		type: TransactionType.BOUGHT,
 		firstAmount: 23,
@@ -13,6 +13,7 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 		secondAmount: 0.2,
 		secondCoin: CoinSymbol.ETH,
 		date: new Date(2018, 2, 13),
+		isLoading: false,
 	},
 	{
 		type: TransactionType.SOLD,
@@ -21,6 +22,7 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 		secondAmount: 23,
 		secondCoin: CoinSymbol.SOCX,
 		date: new Date(2018, 1, 17),
+		isLoading: false,
 	},
 	{
 		type: TransactionType.SOLD,
@@ -29,6 +31,7 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 		secondAmount: 0.2,
 		secondCoin: CoinSymbol.ETH,
 		date: new Date(2018, 4, 8),
+		isLoading: false,
 	},
 	{
 		type: TransactionType.BOUGHT,
@@ -37,6 +40,7 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 		secondAmount: 23,
 		secondCoin: CoinSymbol.SOCX,
 		date: new Date(2018, 5, 1),
+		isLoading: false,
 	},
 	{
 		type: TransactionType.SOLD,
@@ -45,10 +49,13 @@ const SAMPLE_TRANSACTIONS: TransactionData[] = [
 		secondAmount: 23,
 		secondCoin: CoinSymbol.SOCX,
 		date: new Date(2018, 11, 12),
+		isLoading: false,
 	},
 ];
+// from tests it looks like scrolling is smoother if page size is bigger!
+ONE_PAGE_TRANSACTIONS = ONE_PAGE_TRANSACTIONS.concat(ONE_PAGE_TRANSACTIONS);
 
-const TOTAL_NUMBER_OF_TRANSACTIONS = 40;
+const TOTAL_NUMBER_OF_TRANSACTIONS = 100;
 
 export interface IWalletActivityScreenState {
 	myCoins: string;
@@ -68,12 +75,10 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 		myCoins: '53,680',
 		trendPercentage: '27.21',
 		trendArrow: TrendOptions.UP,
-		transactions: SAMPLE_TRANSACTIONS,
+		transactions: ONE_PAGE_TRANSACTIONS,
 		refreshing: false,
 		hasMore: true,
 	};
-
-	private isLoading = false;
 
 	public render() {
 		return (
@@ -102,22 +107,37 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 		setTimeout(() => {
 			this.setState({
 				refreshing: false,
-				transactions: SAMPLE_TRANSACTIONS,
+				transactions: ONE_PAGE_TRANSACTIONS,
 			});
 		}, 1500);
 	}
 
-	private loadMoreTransactionsHandler = () => {
-		if (this.state.transactions.length < TOTAL_NUMBER_OF_TRANSACTIONS) {
-			if (!this.isLoading) {
-				this.isLoading = true;
-				setTimeout(() => {
-					this.isLoading = false;
-					this.setState({
-						transactions: this.state.transactions.concat(SAMPLE_TRANSACTIONS),
-					});
-				}, 1000); // just simulate network calls delay
+	private getFirstPlaceholderIndex = (transactions: TransactionData[]): number => {
+		let ret = -1;
+		transactions.every((transaction, index) => {
+			if (transaction.isLoading) {
+				ret = index;
+				return false;
 			}
+			return true;
+		});
+		return ret;
+	}
+
+	private loadMoreTransactionsHandler = () => {
+		const pageSize = ONE_PAGE_TRANSACTIONS.length;
+		if (this.state.transactions.length < TOTAL_NUMBER_OF_TRANSACTIONS) {
+			const placeholderTransactions = Array(pageSize).fill({isLoading: true});
+			const transactionsWithPlaceholders = this.state.transactions.concat(placeholderTransactions);
+			this.setState({transactions: transactionsWithPlaceholders});
+			setTimeout(() => {
+				const newTransactions = [].concat(this.state.transactions);
+				const toDelete = placeholderTransactions.length;
+				const spliceIndex = this.getFirstPlaceholderIndex(newTransactions);
+				newTransactions.splice(spliceIndex, toDelete);
+				newTransactions.splice(spliceIndex, 0, ...ONE_PAGE_TRANSACTIONS);
+				this.setState({transactions: newTransactions});
+			}, 2000); // just simulate network calls delay
 		} else {
 			this.setState({hasMore: false});
 		}

@@ -13,10 +13,10 @@ import style from './style';
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from '../../utils';
 
-import {createUserHoc} from '../../graphql';
+import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from '../../graphql';
 import {createUserFunc} from '../../types/gql';
 
-import uuidv1 from 'uuid/v1';
+import {addBlob} from '../../utils/ipfs';
 
 export interface ISignUpScreenState {
 	email: string;
@@ -28,7 +28,6 @@ export interface ISignUpScreenState {
 	phone: string;
 	updatedAvatarImageBase64: string;
 	showModalForSMSCode: boolean;
-	uuid: string;
 }
 
 export interface ISignUpScreenProps {
@@ -37,7 +36,9 @@ export interface ISignUpScreenProps {
 	ConfirmSignupLoading: () => void;
 	ResendCodeLoading: () => void;
 	HideLoader: () => void;
-	createUser: createUserFunc;
+	createUser: any;
+	addMedia: any;
+	checkUsername: any;
 }
 
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
@@ -55,7 +56,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		avatarImage: Images.user_avatar_placeholder,
 		updatedAvatarImageBase64: '',
 		showModalForSMSCode: false,
-		uuid: '',
 	};
 
 	private inputRefs: any = {};
@@ -75,7 +75,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					phoneNumber={this.state.phone}
 				/>
 				<View style={style.buttonContainer}>
-					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} />
+					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text>
 				<View style={style.avatarPickerContainer}>
@@ -195,25 +195,36 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
-		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone, uuid} = this.state;
-		const {createUser} = this.props;
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
+		const {createUser, addMedia} = this.props;
+
+		let mediaId: string | undefined;
 
 		try {
 			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
 
 			// signin to get access to appsync
-			const resin = await Signin(username, password);
+			await Signin(username, password);
 
-			await updateUserAttr({
-				avatarImage: this.updateAvatarImage,
-				userId: uuid,
-			});
+			if (updatedAvatarImageBase64 !== '') {
+				// do ipfs
+				const ipfsResp: any = await addBlob([{name: 'avatar', filename: 'avatar.jpg', data: updatedAvatarImageBase64}]);
+				const {Hash, Size} = JSON.parse(ipfsResp.data);
 
+				// do addMedia
+				const mediaObj = await addMedia({variables: {type: 'image', size: parseInt(Size, undefined), hash: Hash}});
+				mediaId = mediaObj.data.addMedia.id;
+			}
+
+			console.log('mediaId:', mediaId);
 			// do appsync
 			await createUser({
 				variables: {
-					userId: uuid, username, name, avatar: updatedAvatarImageBase64, email,
+					username,
+					name,
+					avatar: mediaId,
+					email,
 				},
 			});
 
@@ -223,8 +234,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
-			console.log(ex);
-			Alert.alert('Wrong confirmation code');
+			Alert.alert(ex.message);
 			this.props.HideLoader();
 		}
 	}
@@ -248,18 +258,37 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private startRegister = async () => {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
-		const {createUser} = this.props;
+		const {createUser, addMedia, checkUsername} = this.props;
 
 		if (password !== confirmPassword) {
 			Alert.alert('Your passwords dont match');
 			return;
 		}
 
-		const userId = uuidv1();
-		console.log('userid: ', userId);
+		if (username.length < 4) {
+			Alert.alert('Enter a username bigger than 4 letters');
+			return;
+		}
+
+		if (name.length < 4) {
+			Alert.alert('Enter a name bigger than 4 letters');
+			return;
+		}
+
+		// try {
+		// 	const checkUser = await checkUsername({variables: {username}});
+		// 	if (checkUser.data.checkUsername.userId) {
+		// 		Alert.alert('This username is taken');
+		// 		return;
+		// 	}
+		// } catch (e) {
+		// 	// --
+		// 	console.log(e);
+		// }
 
 		try {
 			this.props.SignupLoading();
+
 			// do cognito
 			const signupParams: any = {
 				username,
@@ -271,17 +300,15 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			};
 			const res = await Signup(signupParams);
 
-			this.setState({uuid: userId});
-
-			Keyboard.dismiss();
 			this.toggleVisibleModalSMS();
-			this.props.HideLoader();
 		} catch (ex) {
+			console.log(ex);
 			Alert.alert(ex.message);
-			Keyboard.dismiss();
-			this.toggleVisibleModalSMS();
+			this.toggleVisibleModalSMS(false);
 			this.props.HideLoader();
 		}
+		Keyboard.dismiss();
+		this.props.HideLoader();
 	}
 
 	private updateAvatarImage = (base64Photo: string) => {
@@ -300,4 +327,8 @@ const MapDispatchToProps = (dispatch: any) => ({
 });
 
 const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
-export default createUserHoc(reduxWrapper);
+const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
+const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
+const checkUsernameWrapper = checkUsernameHoc(addMediaWrapper);
+
+export default checkUsernameWrapper;

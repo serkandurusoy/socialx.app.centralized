@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, NativeScrollEvent, Text, View} from 'react-native';
 import {MyWalletInfo, TrendOptions} from '../../components/MyWalletInfo';
 import {TransactionData, TransactionItem} from '../../components/TransactionItem';
 import style from './style';
@@ -16,7 +16,11 @@ export interface IWalletActivityScreenComponentProps {
 	hasMore: boolean;
 }
 
+const SCROLL_THRESHOLD = 5000;
+
 export default class WalletActivityScreenComponent extends Component<IWalletActivityScreenComponentProps, any> {
+	private savedScrollHeight = 0;
+
 	public render() {
 		return (
 			<View style={style.container}>
@@ -28,32 +32,27 @@ export default class WalletActivityScreenComponent extends Component<IWalletActi
 				/>
 				<Text style={style.activityHeader}>{'Activity'}</Text>
 				<FlatList
+					onScroll={this.scrollHandler}
 					refreshing={this.props.refreshing}
 					onRefresh={this.props.refreshData}
 					data={this.props.transactions}
 					renderItem={this.renderTransaction}
-					onEndReached={this.props.loadMoreTransactions}
-					onEndReachedThreshold={0.2}
 					keyExtractor={(item: TransactionData, index: number) => index.toString()}
-					ListFooterComponent={this.renderFooterWhenLoading}
-					extraData={this.props.hasMore}
 				/>
 			</View>
 		);
 	}
 
-	private renderTransaction = (data: {item: TransactionData; index: number}) => {
-		return <TransactionItem {...data.item} />;
+	private scrollHandler = (event: NativeScrollEvent) => {
+		const scrollYOffset = event.nativeEvent.contentOffset.y;
+		const scrollHeight = event.nativeEvent.contentSize.height;
+		if (scrollYOffset + SCROLL_THRESHOLD > scrollHeight && scrollHeight > this.savedScrollHeight) {
+			this.savedScrollHeight = scrollHeight;
+			this.props.loadMoreTransactions();
+		}
 	}
 
-	private renderFooterWhenLoading = () => {
-		if (this.props.hasMore) {
-			return (
-				<View style={style.bottomLoadingContainer}>
-					<ActivityIndicator size={'small'} />
-				</View>
-			);
-		}
-		return null;
+	private renderTransaction = (data: {item: TransactionData; index: number}) => {
+		return <TransactionItem {...data.item} />;
 	}
 }

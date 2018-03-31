@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import {Colors} from '../../theme';
-import {InputSizes, SXTextInput, TRKeyboardKeys} from '../TextInput';
+import {InputSizes, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../TextInput';
 
 import {Text, TouchableOpacity, View} from 'react-native';
 import style from './style';
 
 export interface IModalWalletProps {
 	label: string;
-	rightLabel: number;
+	rightLabel: string;
 	updateTextInput: (text: string) => void;
 	value: any;
-	keyboardType?: string;
+	keyboardType?: TKeyboardKeys;
 }
 
 export class WalletInputField extends Component<IModalWalletProps> {

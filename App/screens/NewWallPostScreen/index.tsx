@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 import {ActionSheet} from 'native-base';
+import RNFS from 'react-native-fs';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
 import {NavigationScreenProp} from 'react-navigation';
@@ -27,6 +28,9 @@ export enum MediaTypes {
 export interface MediaObject {
 	path: string;
 	type: MediaTypes;
+	size: number;
+	name: string;
+	content: any;
 }
 
 export interface NewWallPostData {
@@ -145,16 +149,26 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		this.addNewMediaObject(image as PickerImage);
 	}
 
-	private addNewMediaObject = (image: PickerImage) => {
+	private addNewMediaObject = async (image: PickerImage) => {
 		const {mediaObjects} = this.state;
 		const mediaMimeType = image.mime;
-		const localImagePath: MediaObject = {
-			path: (image as PickerImage).path,
-			type: mediaMimeType.startsWith(MediaTypes.Video) ? MediaTypes.Video : MediaTypes.Image,
-		};
-		this.setState({
-			mediaObjects: mediaObjects.concat([localImagePath]),
-		});
+		try {
+			const imagecontent = await RNFS.readFile(image.path, 'base64');
+			const localImagePath: MediaObject = {
+				path: (image as PickerImage).path,
+				type: mediaMimeType.startsWith(MediaTypes.Video) ? MediaTypes.Video : MediaTypes.Image,
+				size: image.size,
+				name: image.path.split('/')[image.path.split('/').length - 1],
+				content: imagecontent,
+			};
+
+			this.setState({
+				mediaObjects: mediaObjects.concat([localImagePath]),
+			});
+		} catch (ex) {
+			// TODO: handle err
+			// console.log(ex);
+		}
 	}
 
 	private renderPostMediaObjects = () => {

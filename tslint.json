@@ -22,7 +22,8 @@
       2
     ],
     "jsx-no-lambda": false,
-    "no-implicit-dependencies": false
+    "no-implicit-dependencies": false,
+    "prefer-for-of": false
   },
   "include": [
     "App/**/*.ts",

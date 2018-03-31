@@ -22,7 +22,7 @@ const style: any = {
 		...Fonts.centuryGothic,
 		fontSize: INPUT_FONT_SIZE,
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
-		color: Colors.darkGray,
+		color: Colors.shuttleGray,
 		flex: 1,
 		maxHeight: '100%',
 	},

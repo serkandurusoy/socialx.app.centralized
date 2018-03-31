@@ -1,11 +1,29 @@
+import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Image, TouchableWithoutFeedback, View} from 'react-native';
+import {Image, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons, Sizes} from '../../theme';
 import style from './style';
 
-const MENU_ITEMS = [
+interface TabMenuItem {
+	screenName?: string;
+	image: number;
+	imageSelected?: number;
+	style: {
+		width: number;
+		height: number;
+	};
+	custom: boolean;
+}
+
+const PICK_FROM_GALLERY = 'Pick from gallery';
+const TAKE_A_PHOTO = 'Open camera';
+const CANCEL = 'Cancel';
+const ACTION_SHEET_TITLE = 'Share a photo';
+
+const MENU_ITEMS: TabMenuItem[] = [
 	{
 		screenName: 'UserFeedTab',
 		image: Icons.iconTabBarHome,
@@ -14,6 +32,7 @@ const MENU_ITEMS = [
 			width: Sizes.smartHorizontalScale(20),
 			height: Sizes.smartHorizontalScale(16),
 		},
+		custom: false,
 	},
 	{
 		screenName: 'SearchTab',
@@ -23,15 +42,15 @@ const MENU_ITEMS = [
 			width: Sizes.smartHorizontalScale(17),
 			height: Sizes.smartHorizontalScale(17),
 		},
+		custom: false,
 	},
 	{
-		screenName: 'PhotoTab',
 		image: Icons.iconTabBarPhoto,
-		imageSelected: Icons.iconTabBarPhotoSelected,
 		style: {
 			width: Sizes.smartHorizontalScale(22),
 			height: Sizes.smartHorizontalScale(18),
 		},
+		custom: true,
 	},
 	{
 		screenName: 'NotificationsTab',
@@ -41,6 +60,7 @@ const MENU_ITEMS = [
 			width: Sizes.smartHorizontalScale(20),
 			height: Sizes.smartHorizontalScale(16),
 		},
+		custom: false,
 	},
 	{
 		screenName: 'MyProfileTab',
@@ -50,6 +70,7 @@ const MENU_ITEMS = [
 			width: Sizes.smartHorizontalScale(16),
 			height: Sizes.smartHorizontalScale(18),
 		},
+		custom: false,
 	},
 ];
 
@@ -74,26 +95,38 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 		);
 	}
 
-	private getMenuItemComponent = (menuItem: any, index: number) => {
-		const tabIsSelected = this.state.selectedTab === menuItem.screenName;
-		return (
-			<View style={style.menuItemContainer} key={index}>
-				<TouchableWithoutFeedback onPress={() => this.handleTabChange(menuItem.screenName)}>
-					<View style={style.imageContainer}>
-						<Image
-							source={menuItem.image}
-							resizeMode={'contain'}
-							style={[menuItem.style, {opacity: tabIsSelected ? 0 : 1}]}
-						/>
-						<Image
-							source={menuItem.imageSelected}
-							resizeMode={'contain'}
-							style={[menuItem.style, style.imageSelected, {opacity: tabIsSelected ? 1 : 0}]}
-						/>
-					</View>
-				</TouchableWithoutFeedback>
-			</View>
-		);
+	private getMenuItemComponent = (menuItem: TabMenuItem, index: number) => {
+		if (menuItem.custom) {
+			return (
+				<View style={style.menuItemContainer} key={index}>
+					<TouchableOpacity onPress={this.showPhotoOptionsMenu}>
+						<View style={style.imageContainer}>
+							<Image source={menuItem.image} resizeMode={'contain'} style={menuItem.style} />
+						</View>
+					</TouchableOpacity>
+				</View>
+			);
+		} else {
+			const tabIsSelected = this.state.selectedTab === menuItem.screenName;
+			return (
+				<View style={style.menuItemContainer} key={index}>
+					<TouchableWithoutFeedback onPress={() => this.handleTabChange(menuItem.screenName)}>
+						<View style={style.imageContainer}>
+							<Image
+								source={menuItem.image}
+								resizeMode={'contain'}
+								style={[menuItem.style, {opacity: tabIsSelected ? 0 : 1}]}
+							/>
+							<Image
+								source={menuItem.imageSelected}
+								resizeMode={'contain'}
+								style={[menuItem.style, style.imageSelected, {opacity: tabIsSelected ? 1 : 0}]}
+							/>
+						</View>
+					</TouchableWithoutFeedback>
+				</View>
+			);
+		}
 	}
 
 	private handleTabChange = (screenName: string) => {
@@ -103,5 +136,47 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 				selectedTab: screenName,
 			});
 		}
+	}
+
+	private showPhotoOptionsMenu = () => {
+		ActionSheet.show(
+			{
+				options: [PICK_FROM_GALLERY, TAKE_A_PHOTO, CANCEL],
+				cancelButtonIndex: 2,
+				title: ACTION_SHEET_TITLE,
+			},
+			(buttonIndex: number) => {
+				switch (buttonIndex) {
+					case 0:
+						this.showGalleryPhotoPicker();
+						break;
+					case 1:
+						this.takeCameraPhoto();
+						break;
+				}
+			},
+		);
+	}
+
+	private showGalleryPhotoPicker = async () => {
+		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
+			cropping: false,
+			mediaType: 'photo',
+		});
+		const retImage = image as PickerImage;
+		this.useSelectedPhoto(retImage.path);
+	}
+
+	private takeCameraPhoto = async () => {
+		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+			cropping: false,
+			mediaType: 'photo',
+		});
+		const retImage = image as PickerImage;
+		this.useSelectedPhoto(retImage.path);
+	}
+
+	private useSelectedPhoto = (imagePath: string) => {
+		this.props.navigation.navigate('PhotoScreen', {imagePath});
 	}
 }

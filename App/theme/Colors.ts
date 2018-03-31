@@ -1,13 +1,13 @@
 const SocialXColors = {
 	transparent: 'rgba(0,0,0,0)',
-	white: 'white',
+	white: '#FFFFFF',
 	black: '#000000',
 	blackWithAlpha: (alpha: number) => {
 		return 'rgba(0, 0, 0, ' + alpha + ')';
 	},
-	pink: 'rgb(255,0,153)',
-	background: 'rgb(74,89,99)',
-	darkGray: 'rgb(84,100,110)',
+	pink: '#ff0099',
+	background: '#4a5963',
+	shuttleGray: '#54646e',
 	postText: '#6D7886',
 	postFullName: '#1F3149',
 	postHour: '#039DE2',
@@ -33,7 +33,6 @@ const SocialXColors = {
 	catskillWhite: '#F0F3F8',
 	sushi: '#79B933',
 	grayNurse05: 'rgba(230,231,230,0.5)',
-	shuttleGray: '#54646E',
 	grayNurse: '#E6E7E6',
 	tundora: '#4A4A4A',
 	ceriseRed: '#E0295A',

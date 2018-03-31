@@ -3,7 +3,7 @@ import {Colors, Fonts, Sizes} from '../../theme/';
 
 const style: any = {
 	closeIcon: {
-		marginRight: Sizes.smartHorizontalScale(15),
+		marginHorizontal: Sizes.smartHorizontalScale(15),
 	},
 };
 

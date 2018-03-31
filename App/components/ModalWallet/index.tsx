@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Image, Image, Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
@@ -7,6 +7,7 @@ import {OS_TYPES} from '../../constants';
 import {Colors} from '../../theme';
 import Icons from '../../theme/Icons';
 import {SXButton} from '../Button';
+import {TKeyboardKeys} from '../TextInput';
 import {WalletInputField} from '../WalletInputField';
 import style from './style';
 
@@ -49,55 +50,8 @@ export class ModalWallet extends Component<IModalWalletProps, any> {
 		FeeGas: '14000',
 		selected: false,
 	};
+
 	private animatedButton: any = null;
-	private renderIsSelected = () => {
-		return (
-			<Animatable.View
-				animation={IN_ANIMATION_NAME}
-				easing='ease-out'
-				iterationCount={1}
-				duration={IN_ANIMATION_DURATION}
-			>
-				<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isSendSelected} />
-			</Animatable.View>
-		);
-	}
-	private addButtonPressedHandler = () => {
-		this.animatedButton.animate(OUT_ANIMATION_NAME, OUT_ANIMATION_DURATION).then(() => {
-			this.onButtonHandler();
-		});
-	}
-	private renderSend = () => {
-		return (
-			<Animatable.View ref={(ref) => (this.animatedButton = ref)}>
-				<SXButton
-					label={'SEND'}
-					autoWidth={true}
-					borderColor={Colors.transparent}
-					onPress={this.addButtonPressedHandler}
-				/>
-			</Animatable.View>
-		);
-	}
-	private conditionalRendering = () => {
-		return this.state.selected ? this.renderIsSelected() : this.renderSend();
-	}
-	private getResizableStyles = () => {
-		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.iOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
-	private updateSentText = (text: string) => {
-		this.setState({sendSocXAmount: text});
-	}
-	private updateDestinationText = (text: string) => {
-		this.setState({destinationToSend: text});
-	}
-	private updateFeeText = (text: string) => {
-		this.setState({FeeGas: text});
-	}
 
 	public render() {
 		return (
@@ -120,7 +74,7 @@ export class ModalWallet extends Component<IModalWalletProps, any> {
 
 						<WalletInputField
 							value={this.state.sendSocXAmount}
-							keyboardType='numeric'
+							keyboardType={TKeyboardKeys.numeric}
 							label={PAGE_TEXTS.sendField.label}
 							rightLabel={PAGE_TEXTS.sendField.rightLabel}
 							updateTextInput={this.updateSentText}
@@ -133,7 +87,7 @@ export class ModalWallet extends Component<IModalWalletProps, any> {
 						/>
 						<WalletInputField
 							value={this.state.FeeGas}
-							keyboardType='numeric'
+							keyboardType={TKeyboardKeys.numeric}
 							label={PAGE_TEXTS.feesGas.label}
 							rightLabel={PAGE_TEXTS.feesGas.rightLabel}
 							updateTextInput={this.updateFeeText}
@@ -149,5 +103,61 @@ export class ModalWallet extends Component<IModalWalletProps, any> {
 		if (!this.state.selected) {
 			this.setState({selected: true});
 		}
+	}
+
+	private renderIsSelected = () => {
+		return (
+			<Animatable.View
+				animation={IN_ANIMATION_NAME}
+				easing='ease-out'
+				iterationCount={1}
+				duration={IN_ANIMATION_DURATION}
+			>
+				<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isSendSelected} />
+			</Animatable.View>
+		);
+	}
+
+	private addButtonPressedHandler = () => {
+		this.animatedButton.animate(OUT_ANIMATION_NAME, OUT_ANIMATION_DURATION).then(() => {
+			this.onButtonHandler();
+		});
+	}
+
+	private renderSend = () => {
+		return (
+			<Animatable.View ref={(ref) => (this.animatedButton = ref)}>
+				<SXButton
+					label={'SEND'}
+					autoWidth={true}
+					borderColor={Colors.transparent}
+					onPress={this.addButtonPressedHandler}
+				/>
+			</Animatable.View>
+		);
+	}
+
+	private conditionalRendering = () => {
+		return this.state.selected ? this.renderIsSelected() : this.renderSend();
+	}
+
+	private getResizableStyles = () => {
+		const ret = [style.keyboardView];
+		if (Platform.OS === OS_TYPES.iOS) {
+			ret.push({marginBottom: this.props.marginBottom});
+		}
+		return ret;
+	}
+
+	private updateSentText = (text: string) => {
+		this.setState({sendSocXAmount: text});
+	}
+
+	private updateDestinationText = (text: string) => {
+		this.setState({destinationToSend: text});
+	}
+
+	private updateFeeText = (text: string) => {
+		this.setState({FeeGas: text});
 	}
 }

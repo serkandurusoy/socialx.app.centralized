@@ -4,35 +4,12 @@ import {Images} from '../../theme';
 import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
-const USER_FULL_NAME = 'Marcel Füssinger';
+import {graphql} from 'react-apollo';
+import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
+import {IUserDataResponse} from '../../types/gql';
 
-const INITIAL_USER_POSTS = [
-	{
-		text:
-			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
-			'Then ellipsis will show to indicate that more text is hidden. ' +
-			'To a general advertiser outdoor advertising is worthy of consideration',
-		imageSource: 'https://c1.staticflickr.com/8/7378/13997705508_a218e00c81_b.jpg',
-		smallAvatar: 'https://s.yimg.com/pw/images/buddyicon00.png',
-		fullName: 'Tom Thompson',
-		timestamp: new Date('Jan 20 2018'),
-		numberOfLikes: 20,
-		numberOfSuperLikes: 4,
-		numberOfComments: 3,
-		numberOfWalletCoins: 5,
-	},
-	{
-		text: 'Hey, my first post to SocialX network!',
-		imageSource: 'https://placeimg.com/640/550/any',
-		smallAvatar: 'https://placeimg.com/120/120/people',
-		fullName: 'Ionut Movila',
-		timestamp: new Date('Jun 17 2017'),
-		numberOfLikes: 11,
-		numberOfSuperLikes: 6,
-		numberOfComments: 4,
-		numberOfWalletCoins: 2,
-	},
-];
+import {IBlobData} from '../../lib/ipfs';
+import {addBlob} from '../../utils/ipfs';
 
 export interface IWallPostData {
 	text: string;
@@ -48,6 +25,12 @@ export interface IWallPostData {
 
 interface IUserFeedScreenProps {
 	navigation: NavigationScreenProp<any>;
+	data: IUserDataResponse;
+	// TODO: create interface
+	Posts: any;
+	User: any;
+	createPost: any;
+	addMedia: any;
 }
 
 interface IUserFeedScreenState {
@@ -55,7 +38,20 @@ interface IUserFeedScreenState {
 	refreshing: boolean;
 }
 
-export default class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
+const INITIAL_USER_POSTS: IWallPostData[] = [
+	{
+		text: 'text',
+		smallAvatar: 'https://placeimg.com/110/110/people',
+		fullName: 'Ionut Movila',
+		timestamp: new Date(),
+		numberOfLikes: 0,
+		numberOfSuperLikes: 0,
+		numberOfComments: 0,
+		numberOfWalletCoins: 0,
+	},
+];
+
+class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'FEED',
 	};
@@ -65,13 +61,37 @@ export default class UserFeedScreen extends Component<IUserFeedScreenProps, IUse
 		refreshing: false,
 	};
 
+	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
+		const {data, Posts} = nextProps;
+		if (data.loading || Posts.loading) {
+			return;
+		}
+		this.setState({wallPosts: this.getWallPosts()});
+	}
+
 	public render() {
+		const {data, Posts} = this.props;
+		if (data.loading || Posts.loading) {
+			// TODO: Loading..
+			return (
+				<UserFeedScreenComponent
+					refreshing={this.state.refreshing}
+					refreshData={this.refreshWallPosts}
+					fullName={''}
+					avatarImage={Images.user_avatar_placeholder}
+					wallPosts={this.state.wallPosts}
+					loadMorePosts={this.loadMorePostsHandler}
+					addWallPost={this.addWallPostHandler}
+					showNewWallPostPage={this.showNewWallPostPage}
+				/>
+			);
+		}
 		return (
 			<UserFeedScreenComponent
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
-				fullName={USER_FULL_NAME}
-				avatarImage={Images.user_avatar_placeholder}
+				fullName={this.props.data.user.name}
+				avatarImage={{uri: this.props.data.user.avatar}}
 				wallPosts={this.state.wallPosts}
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
@@ -80,46 +100,128 @@ export default class UserFeedScreen extends Component<IUserFeedScreenProps, IUse
 		);
 	}
 
+	private getWallPosts = () => {
+		const {Posts, data} = this.props;
+		const arty: any[] = [];
+		for (let i = 0; i < Posts.allPosts.length; i++) {
+			const post = Posts.allPosts[i];
+			const res = {
+				text: post.text,
+				smallAvatar: data.user.avatar,
+				imageSource: post.Media ? 'http://10.0.2.2:8080/ipfs/' + post.Media[0].hash : undefined,
+				fullName: data.user.name,
+				timestamp: new Date(post.createdAt),
+				numberOfLikes: 0,
+				numberOfSuperLikes: 0,
+				numberOfComments: 0,
+				numberOfWalletCoins: 0,
+			};
+			arty.push(res);
+		}
+
+		return arty;
+	}
+
 	private showNewWallPostPage = () => {
 		this.props.navigation.navigate('NewWallPostScreen', {
-			fullName: USER_FULL_NAME,
-			avatarImage: Images.user_avatar_placeholder,
+			fullName: this.props.data.user.name,
+			avatarImage: {uri: this.props.data.user.avatar},
 			postCreate: this.addWallPostHandler,
 		});
 	}
 
 	private loadMorePostsHandler = () => {
-		this.setState({
-			wallPosts: this.state.wallPosts.concat(INITIAL_USER_POSTS),
-		});
+		// TODO
+		// this.setState({
+		// 	wallPosts: this.state.wallPosts.concat(INITIAL_USER_POSTS),
+		// });
 	}
 
-	private addWallPostHandler = (data: NewWallPostData) => {
-		const newPost: IWallPostData = {
-			text: data.text,
-			imageSource: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
-			smallAvatar: 'https://placeimg.com/110/110/people',
-			fullName: 'Ionut Movila',
-			timestamp: new Date(),
-			numberOfLikes: 0,
-			numberOfSuperLikes: 0,
-			numberOfComments: 0,
-			numberOfWalletCoins: 0,
-		};
-		this.setState({
-			wallPosts: [newPost].concat(this.state.wallPosts),
+	private addWallPostHandler = async (data: NewWallPostData) => {
+		const {createPost, addMedia} = this.props;
+		const blobfiles: IBlobData[] = [] as IBlobData[];
+		const ipfsHashes: any = [];
+		const mediaIds: string[] = [];
+
+		let multiflag = false;
+
+		data.mediaObjects.forEach((media) => {
+			blobfiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]});
 		});
+
+		try {
+			// check if user entered any text
+			if (data.text.length < 5) {
+				// TODO: add some warning
+				return;
+			}
+
+			// there is media
+			if (data.mediaObjects.length > 0) {
+				// add files to ipfs
+				let ipfsResp = await addBlob(blobfiles);
+				console.log(ipfsResp.data);
+				ipfsResp = ipfsResp.data.split('\n');
+				// parse all media files from ipfs
+				if (ipfsResp.length > 2) {
+					multiflag = true;
+					ipfsResp.forEach((resp: string) => {
+						if (resp !== '') {
+							const parsed = JSON.parse(resp);
+							ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
+						}
+					});
+				} else {
+					const parsed = JSON.parse(ipfsResp[0]);
+					ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
+				}
+				// add media file/s to appsync
+				if (multiflag) {
+					for (let i = 0; i < ipfsHashes.length; i++) {
+						const ipfsData = ipfsHashes[i];
+						const resp = await addMedia({
+							variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
+						});
+						mediaIds.push(resp.data.addMedia.id);
+					}
+				} else {
+					const ipfsData = ipfsHashes[0];
+					const resp = await addMedia({
+						variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
+					});
+					mediaIds.push(resp.data.addMedia.id);
+				}
+			}
+			// create the actual post
+			await createPost({variables: {
+				text: data.text,
+				Media: mediaIds,
+			}});
+
+			console.log(mediaIds);
+
+			// refresh the wall posts to append the new post
+			this.refreshWallPosts();
+		} catch (ex) {
+			// TODO: err handle
+			console.log(ex);
+			console.log(mediaIds);
+		}
 	}
 
-	private refreshWallPosts = () => {
-		this.setState({
-			refreshing: true,
-		});
-		setTimeout(() => {
-			this.setState({
-				refreshing: false,
-				wallPosts: INITIAL_USER_POSTS,
-			});
-		}, 1500);
+	private refreshWallPosts = async () => {
+		this.setState({refreshing: true});
+
+		await this.props.Posts.refetch();
+
+		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
 	}
 }
+
+const userWrapper = userHoc(UserFeedScreen);
+const allPostsWrapper = getAllPostsHoc(userWrapper);
+const createPostWrapper = createPostHoc(allPostsWrapper);
+const allUserPostsWrapper = getUserPostsHoc(createPostWrapper);
+const addMediaWrapper = addMediaHoc(allUserPostsWrapper);
+
+export default addMediaWrapper;

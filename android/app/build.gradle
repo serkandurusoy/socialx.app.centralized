@@ -98,7 +98,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.socialxtypeactress"
+        applicationId "socialx.network"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -162,6 +162,11 @@ dependencies {
     compile project(':react-native-linear-gradient')
     compile project(':react-native-config')
     compile project(':amazon-cognito-identity-js')
+    compile project(':react-native-fs')
+    compile project(':react-native-fetch-blob')
+    compile project(':appcenter-analytics')
+    compile project(':appcenter-crashes')
+    compile project(':appcenter')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
