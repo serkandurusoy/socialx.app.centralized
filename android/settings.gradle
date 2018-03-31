@@ -1,8 +1,4 @@
 rootProject.name = 'SocialxTypeActress'
-<<<<<<< HEAD
-include ':react-native-android-keyboard-adjust'
-project(':react-native-android-keyboard-adjust').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-keyboard-adjust/android')
-=======
 include ':appcenter-crashes'
 project(':appcenter-crashes').projectDir = new File(rootProject.projectDir, '../node_modules/appcenter-crashes/android')
 include ':appcenter-analytics'
@@ -17,12 +13,8 @@ include ':react-native-fetch-blob'
 project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fetch-blob/android')
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
-<<<<<<< HEAD
->>>>>>> 19fed13426e818d877633a973c5a684be7c499f0
-=======
 include ':react-native-android-keyboard-adjust'
 project(':react-native-android-keyboard-adjust').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-keyboard-adjust/android')
->>>>>>> 22ed393bd5ff9f6e0f0498e8b6f48f645a18c781
 include ':react-native-svg'
 project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 include ':react-native-video'

@@ -3,15 +3,8 @@ package socialx.network;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-<<<<<<< HEAD:android/app/src/main/java/socialx/network/MainApplication.java
-<<<<<<< HEAD:android/app/src/main/java/com/socialxtypeactress/MainApplication.java
-import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
 import com.horcrux.svg.SvgPackage;
-=======
->>>>>>> 19fed13426e818d877633a973c5a684be7c499f0:android/app/src/main/java/socialx/network/MainApplication.java
-=======
 import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
->>>>>>> 22ed393bd5ff9f6e0f0498e8b6f48f645a18c781:android/app/src/main/java/com/socialxtypeactress/MainApplication.java
 import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 
@@ -51,16 +44,8 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
-<<<<<<< HEAD:android/app/src/main/java/socialx/network/MainApplication.java
-<<<<<<< HEAD:android/app/src/main/java/com/socialxtypeactress/MainApplication.java
                     new AndroidKeyboardAdjustPackage(),
                     new SvgPackage(),
-=======
->>>>>>> 19fed13426e818d877633a973c5a684be7c499f0:android/app/src/main/java/socialx/network/MainApplication.java
-=======
-                    new AndroidKeyboardAdjustPackage(),
-                    new SvgPackage(),
->>>>>>> 22ed393bd5ff9f6e0f0498e8b6f48f645a18c781:android/app/src/main/java/com/socialxtypeactress/MainApplication.java
                     new ReactVideoPackage(),
                     new VectorIconsPackage(),
                     new RNTextGradientPackage(),
