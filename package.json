@@ -63,14 +63,10 @@
     "react-native-blur": "^3.2.2",
     "react-native-config": "^0.11.5",
     "react-native-drawer": "^2.5.0",
-<<<<<<< HEAD
-    "react-native-gifted-chat": "^0.4.3",
-    "react-native-image-crop-picker": "^0.19.3",
-=======
     "react-native-fetch-blob": "^0.10.8",
     "react-native-fs": "^2.9.11",
     "react-native-image-crop-picker": "^0.20.0",
->>>>>>> 19fed13426e818d877633a973c5a684be7c499f0
+    "react-native-gifted-chat": "^0.4.3",
     "react-native-keyboard-aware-scroll-view": "^0.4.4",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-linear-gradient": "^2.4.0",
