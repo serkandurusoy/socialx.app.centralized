@@ -49,7 +49,7 @@ export default class MessagingComponent extends Component<IMessagingScreenProps>
 							icon={'search'}
 							placeholder={'Search'}
 							placeholderColor={Colors.cadetBlue}
-							borderColor={Colors.darkGray}
+							borderColor={Colors.shuttleGray}
 							onChangeText={this.props.searchTermUpdated}
 							blurOnSubmit={true}
 							returnKeyType={TRKeyboardKeys.done}

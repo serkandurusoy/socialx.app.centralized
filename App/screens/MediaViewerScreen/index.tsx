@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {ModalCloseButton} from '../../components/ModalCloseButton';
 import {DeviceOrientations} from '../../constants';
 import MediaViewerScreenComponent from './screen';
-
-const START_INDEX = 562;
-const TOTAL_NUMBER_OF_PHOTOS = 1000;
 
 export interface IPhotoData {
 	url: string;
 }
 
 interface IMediaViewerScreenState {
-	photos: any[];
-	startIndex: number;
 	orientation: string;
 }
 
@@ -25,6 +21,7 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 	private static navigationOptions = (props: IMediaViewerScreenProps) => {
 		const ret: Partial<NavigationStackScreenOptions> = {
 			title: 'PHOTO',
+			headerRight: <ModalCloseButton navigation={props.navigation} />,
 		};
 		const params = props.navigation.state.params || {};
 		if (params.hideHeader) {
@@ -33,14 +30,9 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 		return ret;
 	}
 
-	constructor(props: any) {
-		super(props);
-		this.state = {
-			photos: this.getPhotos(),
-			startIndex: START_INDEX,
-			orientation: DeviceOrientations.Portrait,
-		};
-	}
+	public state = {
+		orientation: DeviceOrientations.Portrait,
+	};
 
 	public componentDidMount() {
 		Orientation.unlockAllOrientations();
@@ -53,10 +45,11 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 	}
 
 	public render() {
+		const navParams = this.props.navigation.state.params;
 		return (
 			<MediaViewerScreenComponent
-				photos={this.state.photos}
-				startIndex={this.state.startIndex}
+				photos={navParams.photos}
+				startIndex={navParams.startIndex}
 				orientation={this.state.orientation}
 			/>
 		);
@@ -65,13 +58,5 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 	private orientationDidChange = (orient: orientation) => {
 		this.props.navigation.setParams({hideHeader: orient === DeviceOrientations.Landscape});
 		this.setState({orientation: orient});
-	}
-
-	private getPhotos = () => {
-		const ret: IPhotoData[] = [];
-		for (let i = 1; i <= TOTAL_NUMBER_OF_PHOTOS; i++) {
-			ret.push({url: 'https://avatars2.githubusercontent.com/u/' + i});
-		}
-		return ret;
 	}
 }
