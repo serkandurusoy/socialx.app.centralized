@@ -154,6 +154,5 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 const userWrapper = userHoc(UserFeedScreen);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
-const allUserPostsWrapper = getUserPostsHoc(createPostWrapper);
 
-export default allUserPostsWrapper;
+export default createPostWrapper;

@@ -201,12 +201,23 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			// signin to get access to appsync
 			const resin = await Signin(username, password);
 
+			// do appsync
+			await createUser({
+				variables: {
+					username,
+					name,
+					avatar: updatedAvatarImageBase64,
+					email,
+				},
+			});
+
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
 			this.props.navigation.navigate('MainScreen');
 			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
+			console.log(ex);
 			Alert.alert(ex.message);
 			this.props.HideLoader();
 		}
@@ -250,16 +261,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				},
 			};
 			const res = await Signup(signupParams);
-
-			// do appsync
-			await createUser({
-				variables: {
-					username,
-					name,
-					avatar: updatedAvatarImageBase64,
-					email,
-				},
-			});
 
 			this.toggleVisibleModalSMS();
 		} catch (ex) {
