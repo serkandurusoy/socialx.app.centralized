@@ -57,7 +57,7 @@
     "numeral": "^2.0.6",
     "react": "16.3.0-alpha.1",
     "react-apollo": "^2.0.4",
-    "react-native": "0.54.4",
+    "react-native": "0.54.0-rc.3",
     "react-native-android-keyboard-adjust": "^1.1.1",
     "react-native-animatable": "^1.2.4",
     "react-native-blur": "^3.2.2",

@@ -229,12 +229,23 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				},
 			});
 
+			// do appsync
+			await createUser({
+				variables: {
+					username,
+					name,
+					avatar: updatedAvatarImageBase64,
+					email,
+				},
+			});
+
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
 			this.props.navigation.navigate('MainScreen');
 			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
+			console.log(ex);
 			Alert.alert(ex.message);
 			this.props.HideLoader();
 		}
