@@ -103,6 +103,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private getWallPosts = () => {
 		const {Posts, data} = this.props;
 		const arty: any[] = [];
+
+		if (!Posts.allPosts) {
+			// TODO: replace with an empty handler
+			return arty;
+		}
+
 		for (let i = 0; i < Posts.allPosts.length; i++) {
 			const post = Posts.allPosts[i];
 			const res = {
@@ -193,10 +199,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				}
 			}
 			// create the actual post
-			await createPost({variables: {
-				text: data.text,
-				Media: mediaIds,
-			}});
+			await createPost({
+				variables: {
+					text: data.text,
+					Media: mediaIds,
+				},
+			});
 
 			console.log(mediaIds);
 
