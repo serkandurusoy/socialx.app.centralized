@@ -1,3 +1,4 @@
+import {IBlobData} from '../../../lib/ipfs';
 import ipfs from '../entry';
 
 /**
@@ -10,9 +11,7 @@ export const addFile = (file: any, opts?: any): Promise<any> => ipfs.addFile(fil
 export const addJson = (json: object): Promise<any> => ipfs.addJson(json);
 export const addBlob = (data: any): Promise<any> => new Promise(async (resolve) => {
 	const res = await ipfs.addBlob(data);
-	if (res.data) {
-		resolve(JSON.parse(res.data));
-	}
+	resolve(res);
 });
 
 /**

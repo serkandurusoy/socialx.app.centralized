@@ -8,6 +8,12 @@ export interface IProviderParams {
 	root?: string;
 }
 
+export interface IBlobData {
+	name?: string;
+	filename?: string;
+	data: string;
+}
+
 export default class Ipfslib {
 	private config: IProviderParams = {host: '127.0.0.1', port: '5001', protocol: 'http', root: '/api/v0'};
 	private responseData: any;
@@ -24,9 +30,7 @@ export default class Ipfslib {
 	}
 
 	public addBlob = (data: any) => {
-		return RNFetchBlob.fetch('POST', this.apiUrl('/add'), {'Content-Type': 'multipart/form-data'}, [
-			{name: data.name, filename: data.filename, data: data.content},
-		]);
+		return RNFetchBlob.fetch('POST', this.apiUrl('/add'), {'Content-Type': 'multipart/form-data'}, data);
 	}
 
 	public addFile = (file: any, opts?: any): Promise<any> =>

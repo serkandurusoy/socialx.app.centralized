@@ -6,6 +6,8 @@ import {ModalInvitePeople} from '../../components/ModalInvitePeople';
 import {SearchHeader} from '../../components/SearchHeader';
 import SearchScreenComponent from './screen';
 
+import {searchUsersHoc} from '../../graphql';
+
 export enum SearchFilterValues {
 	People = 'people',
 	Groups = 'groups',
@@ -129,6 +131,7 @@ export interface SearchResultCreateGroup {
 
 interface ISearchScreenProps {
 	navigation: NavigationScreenProp<any>;
+	search: any;
 }
 
 interface ISearchScreenState {
@@ -145,7 +148,7 @@ interface ISearchScreenState {
 	nextShowInvitePeople: boolean;
 }
 
-export default class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
+class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private static navigationOptions = (props: ISearchScreenProps) => ({
 		header: () => {
 			const params = props.navigation.state.params || {};
@@ -213,17 +216,47 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 		);
 	}
 
-	private updateSearchTerm = (term: string) => {
+	private doSearch = async (query: string) => {
+		const {search} = this.props;
+		const results: SearchResultPeople[] = [];
+		if (query.length < 2) {
+			return results;
+		}
+		try {
+			let resp = await search({variables: {query}});
+			resp = resp.data.searchUsers;
+			if (resp.length === 0) {
+				return results;
+			}
+			for (let i = 0; i < resp.length; i++) {
+				const current = resp[i];
+				results.push({
+					id: current.userId,
+					kind: SearchResultKind.NotFriend,
+					fullName: current.name,
+					username: current.username,
+					avatarURL: current.avatar,
+				});
+			}
+			console.log(results);
+			return results;
+		} catch (ex) {
+			return results;
+		}
+	}
+
+	private updateSearchTerm = async (term: string) => {
+		const {search} = this.props;
 		this.setState({
 			searchTerm: term,
-			searchResults: this.getSearchResults(term),
+			searchResults: await this.doSearch(term),
 		});
 	}
 
-	private updateSelectedFilter = (value: SearchFilterValues) => {
+	private updateSelectedFilter = async (value: SearchFilterValues) => {
 		this.setState({
 			selectedFilter: value,
-			searchResults: this.getSearchResults(this.state.searchTerm, value),
+			searchResults: await this.doSearch(this.state.searchTerm),
 		});
 	}
 
@@ -288,3 +321,7 @@ export default class SearchScreen extends Component<ISearchScreenProps, ISearchS
 		this.setState({createGroupSearchResults});
 	}
 }
+
+const searchUsersWrapper = searchUsersHoc(SearchScreen);
+
+export default searchUsersWrapper;
