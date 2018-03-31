@@ -12,8 +12,6 @@ const style: any = {
 		paddingLeft: Sizes.smartHorizontalScale(12),
 		paddingRight: Sizes.smartHorizontalScale(24),
 		paddingVertical: Sizes.smartVerticalScale(11),
-		borderBottomColor: Colors.geyser,
-		borderBottomWidth: Sizes.smartHorizontalScale(0.5),
 	},
 	containerSelected: {
 		backgroundColor: Colors.catskillWhite,

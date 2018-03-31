@@ -16,7 +16,8 @@ const style: any = {
 		paddingTop: Sizes.smartVerticalScale(17),
 	},
 	bottomLoadingContainer: {
-		paddingVertical: Sizes.smartVerticalScale(10),
+		// backgroundColor: 'lime',
+		// paddingVertical: Sizes.smartVerticalScale(10),
 	},
 };
 

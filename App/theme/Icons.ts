@@ -28,4 +28,8 @@ export default {
 	messagingContactsFilterIcon: require('../../assets/icons/messaging_contacts_fliter_icon.png'),
 	messagingGroupFilterIcon: require('../../assets/icons/messaging_group_fliter_icon.png'),
 	messagingRecentFilterIcon: require('../../assets/icons/messaging_recent_fliter_icon.png'),
+	iconLocationPin: require('../../assets/icons/location_pin.png'),
+	iconInviteFriends: require('../../assets/icons/invite_friends.png'),
+	iconAddDescription: require('../../assets/icons/add_description.png'),
+	tagFriendSmall: require('../../assets/icons/tag_friend_small.png'),
 };
