@@ -218,12 +218,13 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			}
 
 			console.log('mediaId:', mediaId);
+
 			// do appsync
 			await createUser({
 				variables: {
 					username,
 					name,
-					avatar: mediaId,
+					avatar: mediaId ? mediaId : '',
 					email,
 				},
 			});
@@ -329,6 +330,5 @@ const MapDispatchToProps = (dispatch: any) => ({
 const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
 const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
-const checkUsernameWrapper = checkUsernameHoc(addMediaWrapper);
 
-export default checkUsernameWrapper;
+export default addMediaWrapper;
