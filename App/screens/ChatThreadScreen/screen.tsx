@@ -126,7 +126,7 @@ export default class ChatThreadScreenComponent extends Component<
 					<LinearGradient
 						start={{x: 0, y: 0.5}}
 						end={{x: 1, y: 0.5}}
-						colors={[Colors.fuchsiaBlue, Colors.hollywoodCerise]}
+						colors={[Colors.fuchsiaBlue, Colors.pink]}
 						style={style.ownMessageGradient}
 					>
 						{messageContent}

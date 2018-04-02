@@ -16,7 +16,7 @@ const style: any = {
 		paddingVertical: Sizes.smartHorizontalScale(10),
 	},
 	ownMessageShadow: {
-		shadowColor: Colors.hollywoodCerise,
+		shadowColor: Colors.pink,
 		shadowOffset: {width: 0, height: 8},
 		shadowOpacity: 0.3,
 		shadowRadius: 25,
