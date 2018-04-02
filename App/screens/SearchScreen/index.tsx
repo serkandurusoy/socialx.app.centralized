@@ -172,11 +172,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 
 	private blurView = null;
 
-	public componentWillMount() {
-		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
-	}
-
 	public componentDidMount() {
+		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
 		const blurViewHandle = findNodeHandle(this.blurView);
 		this.setState({blurViewRef: blurViewHandle});
 	}

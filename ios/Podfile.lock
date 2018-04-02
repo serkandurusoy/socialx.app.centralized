@@ -7,31 +7,31 @@ PODS:
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
   - QBImagePickerController (3.4.0)
-  - React/Core (0.53.3):
-    - yoga (= 0.53.3.React)
-  - React/fishhook (0.53.3)
-  - React/RCTActionSheet (0.53.3):
+  - React/Core (0.54.0-rc.3):
+    - yoga (= 0.54.0-rc.3.React)
+  - React/fishhook (0.54.0-rc.3)
+  - React/RCTActionSheet (0.54.0-rc.3):
     - React/Core
-  - React/RCTAnimation (0.53.3):
+  - React/RCTAnimation (0.54.0-rc.3):
     - React/Core
-  - React/RCTBlob (0.53.3):
+  - React/RCTBlob (0.54.0-rc.3):
     - React/Core
-  - React/RCTGeolocation (0.53.3):
+  - React/RCTGeolocation (0.54.0-rc.3):
     - React/Core
-  - React/RCTImage (0.53.3):
+  - React/RCTImage (0.54.0-rc.3):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.53.3):
+  - React/RCTLinkingIOS (0.54.0-rc.3):
     - React/Core
-  - React/RCTNetwork (0.53.3):
+  - React/RCTNetwork (0.54.0-rc.3):
     - React/Core
-  - React/RCTSettings (0.53.3):
+  - React/RCTSettings (0.54.0-rc.3):
     - React/Core
-  - React/RCTText (0.53.3):
+  - React/RCTText (0.54.0-rc.3):
     - React/Core
-  - React/RCTVibration (0.53.3):
+  - React/RCTVibration (0.54.0-rc.3):
     - React/Core
-  - React/RCTWebSocket (0.53.3):
+  - React/RCTWebSocket (0.54.0-rc.3):
     - React/Core
     - React/fishhook
     - React/RCTBlob
@@ -39,7 +39,7 @@ PODS:
     - QBImagePickerController
     - RSKImageCropper
   - RSKImageCropper (2.0.0)
-  - yoga (0.53.3.React)
+  - yoga (0.54.0-rc.3.React)
 
 DEPENDENCIES:
   - AppCenter/Analytics (~> 1.5.0)
@@ -71,7 +71,7 @@ SPEC CHECKSUMS:
   AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
   AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
-  React: af66244a7d630be2aef03b4ddfe3570e4eff39fc
+  React: c237e42de9c70e5cac6eeb52b4cfd3a0910c1f00
   RNImageCropPicker: a637beb8f4c76bf9fe8a89d404ad65a33c4215ac
   RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
   yoga: 55da126afc384965b96bff46652464373b330add
