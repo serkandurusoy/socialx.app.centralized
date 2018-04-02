@@ -27,7 +27,7 @@ export default class SearchScreenComponent extends Component<ISearchScreenCompon
 	private keyboardDidShowListener: any;
 	private keyboardDidHideListener: any;
 
-	public componentWillMount() {
+	public componentDidMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
 	}

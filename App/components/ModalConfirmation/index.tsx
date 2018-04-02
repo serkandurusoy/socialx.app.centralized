@@ -23,13 +23,15 @@ export class ModalConfirmation extends Component<IModalConfirmationProps, IModal
 		cancelButton: 'No',
 	};
 
+	public static getDerivedStateFromProps(nextProps: Readonly<IModalConfirmationProps>) {
+		return {
+			modalVisible: nextProps.visible,
+		};
+	}
+
 	public state = {
 		modalVisible: this.props.visible,
 	};
-
-	public componentWillReceiveProps(nextProps: Readonly<IModalConfirmationProps>): void {
-		this.setState({modalVisible: nextProps.visible});
-	}
 
 	public render() {
 		return (

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {NavigationScreenProp} from 'react-navigation';
-import {sentence} from 'txtgen'; // TODO: can be removed later from package.json
 import uuidv4 from 'uuid/v4';
 import {ScreenHeaderButton} from '../../components/ScreenHeaderButton';
 import ChatThreadScreenComponent from './screen';
@@ -50,7 +49,7 @@ const getOnePageOfMessages = () => {
 		if (isImageMessage) {
 			newMessage.imageURL = `https://placeimg.com/${imageWidth}/${imageHeight}/any`;
 		} else {
-			newMessage.text = sentence();
+			newMessage.text = 'hey';
 		}
 		ret.push(newMessage);
 	}
@@ -112,7 +111,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 
 	private simulateFriendResponse = () => {
 		const replyDelay = (Math.round(Math.random() * 5) + 2) * 1000;
-		const replyMessage = sentence();
+		const replyMessage = 'hi';
 		setTimeout(() => {
 			const friendMessage: MessageData = {
 				_id: uuidv4(),

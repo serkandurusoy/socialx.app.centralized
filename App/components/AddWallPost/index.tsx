@@ -33,6 +33,12 @@ interface IAddWallPostModalState {
 }
 
 export class AddWallPostModal extends React.Component<IAddWallPostModalProps, IAddWallPostModalState> {
+	public static getDerivedStateFromProps(nextProps: Readonly<IAddWallPostModalProps>) {
+		return {
+			modalVisible: nextProps.visible,
+		};
+	}
+
 	public state = {
 		modalVisible: this.props.visible,
 		marginBottom: 0,
@@ -42,11 +48,7 @@ export class AddWallPostModal extends React.Component<IAddWallPostModalProps, IA
 	private keyboardDidShowListener: any;
 	private keyboardDidHideListener: any;
 
-	public componentWillReceiveProps(nextProps: Readonly<IAddWallPostModalProps>): void {
-		this.setState({modalVisible: nextProps.visible});
-	}
-
-	public componentWillMount() {
+	public componentDidMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
 	}

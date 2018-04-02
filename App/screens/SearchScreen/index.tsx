@@ -156,7 +156,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			const params = props.navigation.state.params || {};
 			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
 		},
-	});
+	})
 
 	public state = {
 		invitePeopleModalVisible: false,
@@ -174,11 +174,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 
 	private blurView = null;
 
-	public componentWillMount() {
-		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
-	}
-
 	public componentDidMount() {
+		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
 		const blurViewHandle = findNodeHandle(this.blurView);
 		this.setState({blurViewRef: blurViewHandle});
 	}
@@ -247,7 +244,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		} catch (ex) {
 			return results;
 		}
-	};
+	}
 
 	private updateSearchTerm = async (term: string) => {
 		const {search} = this.props;
@@ -255,14 +252,14 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			searchTerm: term,
 			searchResults: await this.doSearch(term),
 		});
-	};
+	}
 
 	private updateSelectedFilter = async (value: SearchFilterValues) => {
 		this.setState({
 			selectedFilter: value,
 			searchResults: await this.doSearch(this.state.searchTerm),
 		});
-	};
+	}
 
 	private toggleInvitePeopleModal = () => {
 		this.setState({
@@ -270,11 +267,11 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			createGroupSearchResults: [],
 			selectedUsers: [],
 		});
-	};
+	}
 
 	private selectNewUserForGroupHandler = (userId: string) => {
 		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
-	};
+	}
 
 	private toggleGroupInfoModal = (prepareNext = false) => {
 		this.setState({
@@ -283,7 +280,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			groupDescription: '',
 			nextShowInvitePeople: prepareNext,
 		});
-	};
+	}
 
 	private updateGroupNameHanlder = (text: string) => {
 		this.setState({groupName: text});

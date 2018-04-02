@@ -102,12 +102,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private getWallPosts = () => {
 		const {data, Posts} = this.props;
 		const arty: any[] = [];
-
-		if (!Posts.allPosts) {
-			// TODO: replace with an empty handler
-			return arty;
-		}
-
 		for (let i = 0; i < Posts.allPosts.length; i++) {
 			const post = Posts.allPosts[i];
 			const res = {

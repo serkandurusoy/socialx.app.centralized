@@ -26,27 +26,46 @@ interface IUserProfileScreenProps {
 	gridPageSize: number;
 }
 
-export default class UserProfileScreenComponent extends Component<IUserProfileScreenProps, any> {
-	private scrollView: any;
-	private isScrolled = false;
+interface IUserProfileScreenComponent {
+	isFollowed: boolean;
+	scrollView: any;
+	isScrolled: boolean;
+}
 
-	public componentWillReceiveProps(nextProps: Readonly<IUserProfileScreenProps>, nextContext: any) {
-		if (this.props.isFollowed !== nextProps.isFollowed) {
+export default class UserProfileScreenComponent extends Component<
+	IUserProfileScreenProps,
+	IUserProfileScreenComponent
+> {
+	public static getDerivedStateFromProps(
+		nextProps: Readonly<IUserProfileScreenProps>,
+		prevState: Readonly<IUserProfileScreenComponent>,
+	) {
+		if (nextProps.isFollowed !== prevState.isFollowed) {
 			setTimeout(() => {
-				this.scrollView.scrollTo({x: 0, y: 0, animated: true});
-				this.isScrolled = false;
+				prevState.scrollView.scrollTo({x: 0, y: 0, animated: true});
 			}, 500);
+			return {
+				isFollowed: nextProps.isFollowed,
+				isScrolled: false,
+			};
 		}
+		return null;
 	}
+
+	public state = {
+		scrollView: null,
+		isScrolled: false,
+		isFollowed: this.props.isFollowed,
+	};
 
 	public render() {
 		return (
 			<ScrollView
-				scrollEnabled={!this.props.isFollowed}
+				scrollEnabled={!this.state.isFollowed}
 				style={style.container}
 				contentContainerStyle={style.scrollContainer}
 				showsVerticalScrollIndicator={false}
-				ref={(ref: any) => (this.scrollView = ref)}
+				ref={this.setScrollView}
 			>
 				<View style={style.topContainer}>
 					<UserAvatar
@@ -66,8 +85,14 @@ export default class UserProfileScreenComponent extends Component<IUserProfileSc
 		);
 	}
 
+	private setScrollView = (ref: any) => {
+		this.setState({
+			scrollView: ref,
+		});
+	}
+
 	private conditionalRendering = () => {
-		if (this.props.isFollowed) {
+		if (this.state.isFollowed) {
 			return this.renderFollowedState();
 		} else {
 			return this.renderNotFollowedState();
@@ -119,13 +144,17 @@ export default class UserProfileScreenComponent extends Component<IUserProfileSc
 	}
 
 	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
-		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.isScrolled) {
-			this.scrollView.scrollToEnd({animated: true});
-			this.isScrolled = true;
+		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.state.isScrolled) {
+			this.state.scrollView.scrollToEnd({animated: true});
+			this.setState({
+				isScrolled: true,
+			});
 		}
-		if (offsetY <= 0 && this.isScrolled) {
-			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
-			this.isScrolled = false;
+		if (offsetY <= 0 && this.state.isScrolled) {
+			this.state.scrollView.scrollTo({x: 0, y: 0, animated: true});
+			this.setState({
+				isScrolled: false,
+			});
 		}
 	}
 
