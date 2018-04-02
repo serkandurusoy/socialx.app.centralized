@@ -100,7 +100,7 @@ android {
     defaultConfig {
         applicationId "socialx.network"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         ndk {
@@ -151,6 +151,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-android-keyboard-adjust')
     compile project(':react-native-svg')
     compile project(':react-native-text-gradient')
     compile project(':react-native-orientation')
