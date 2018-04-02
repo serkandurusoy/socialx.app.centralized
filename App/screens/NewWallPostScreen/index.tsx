@@ -63,7 +63,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 
 	private keyboardDidShowListener: any;
 
-	public componentWillMount() {
+	public componentDidMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 	}
 

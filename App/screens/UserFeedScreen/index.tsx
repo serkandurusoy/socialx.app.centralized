@@ -52,22 +52,52 @@ const INITIAL_USER_POSTS: IWallPostData[] = [
 ];
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
+	public static getDerivedStateFromProps(nextProps: Readonly<IUserFeedScreenProps>) {
+		const {data, Posts} = nextProps;
+		if (data.loading || Posts.loading) {
+			return null;
+		}
+		return {
+			wallPosts: UserFeedScreen.getWallPosts(nextProps),
+		};
+	}
+
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'FEED',
 	};
+
+	private static getWallPosts(props: IUserFeedScreenProps) {
+		const {Posts, data} = props;
+		const arty: any[] = [];
+
+		if (!Posts.allPosts) {
+			// TODO: replace with an empty handler
+			return arty;
+		}
+
+		for (let i = 0; i < Posts.allPosts.length; i++) {
+			const post = Posts.allPosts[i];
+			const res = {
+				text: post.text,
+				smallAvatar: data.user.avatar,
+				imageSource: post.Media ? 'http://10.0.2.2:8080/ipfs/' + post.Media[0].hash : undefined,
+				fullName: data.user.name,
+				timestamp: new Date(post.createdAt),
+				numberOfLikes: 0,
+				numberOfSuperLikes: 0,
+				numberOfComments: 0,
+				numberOfWalletCoins: 0,
+			};
+			arty.push(res);
+		}
+
+		return arty;
+	}
 
 	public state = {
 		wallPosts: INITIAL_USER_POSTS,
 		refreshing: false,
 	};
-
-	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
-		const {data, Posts} = nextProps;
-		if (data.loading || Posts.loading) {
-			return;
-		}
-		this.setState({wallPosts: this.getWallPosts()});
-	}
 
 	public render() {
 		const {data, Posts} = this.props;
@@ -98,34 +128,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				showNewWallPostPage={this.showNewWallPostPage}
 			/>
 		);
-	}
-
-	private getWallPosts = () => {
-		const {Posts, data} = this.props;
-		const arty: any[] = [];
-
-		if (!Posts.allPosts) {
-			// TODO: replace with an empty handler
-			return arty;
-		}
-
-		for (let i = 0; i < Posts.allPosts.length; i++) {
-			const post = Posts.allPosts[i];
-			const res = {
-				text: post.text,
-				smallAvatar: data.user.avatar,
-				imageSource: post.Media ? 'http://10.0.2.2:8080/ipfs/' + post.Media[0].hash : undefined,
-				fullName: data.user.name,
-				timestamp: new Date(post.createdAt),
-				numberOfLikes: 0,
-				numberOfSuperLikes: 0,
-				numberOfComments: 0,
-				numberOfWalletCoins: 0,
-			};
-			arty.push(res);
-		}
-
-		return arty;
 	}
 
 	private showNewWallPostPage = () => {
@@ -186,7 +188,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					for (let i = 0; i < ipfsHashes.length; i++) {
 						const ipfsData = ipfsHashes[i];
 						const resp = await addMedia({
-							variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
+							variables: {
+								hash: ipfsData.hash,
+								type: ipfsData.type,
+								size: parseInt(ipfsData.size, undefined),
+							},
 						});
 						mediaIds.push(resp.data.addMedia.id);
 					}
@@ -222,7 +228,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		await this.props.Posts.refetch();
 
-		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
+		this.setState({refreshing: false, wallPosts: UserFeedScreen.getWallPosts(this.props)});
 	}
 }
 
