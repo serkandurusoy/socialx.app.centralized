@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Animated, Easing, LayoutEvent, Text, View} from 'react-native';
+import {Animated, Easing, LayoutEvent, Text, Value, View} from 'react-native';
 import {IContactListItem} from '../../components/ContactsList';
 import {MessagingFilterValues} from '../../components/MessagingFilterSection';
 import {MessagingTabButton} from '../../components/MessagingTabButton';
@@ -10,7 +10,7 @@ import ContactsScreenTab from './contacts.screen';
 import {IChatListEntry, MessagingTabValues} from './index';
 import style from './style';
 
-export interface IMessagingScreenProps {
+interface IMessagingComponentProps {
 	chatListData: IChatListEntry[];
 	selectedTab: MessagingTabValues;
 	setNewTab: (value: MessagingTabValues) => void;
@@ -24,19 +24,42 @@ export interface IMessagingScreenProps {
 	contactsList: IContactListItem[];
 }
 
-export default class MessagingComponent extends Component<IMessagingScreenProps> {
-	public state = {
-		translateX: new Animated.Value(0),
-	};
+interface IMessagingComponentState {
+	selectedTab: MessagingTabValues;
+	translateX: Value;
+	slideWidth: number;
+}
 
-	private slideWidth: number = 0;
-
-	public componentWillReceiveProps(nextProps: Readonly<IMessagingScreenProps>): void {
-		if (nextProps.selectedTab !== this.props.selectedTab) {
-			const slideValue = nextProps.selectedTab === MessagingTabValues.Contacts ? -this.slideWidth : 0;
-			this.runSlideTransition(slideValue);
+export default class MessagingComponent extends Component<IMessagingComponentProps, IMessagingComponentState> {
+	public static getDerivedStateFromProps(
+		nextProps: Readonly<IMessagingComponentProps>,
+		prevState: Readonly<IMessagingComponentState>,
+	) {
+		if (nextProps.selectedTab !== prevState.selectedTab) {
+			const slideValue = nextProps.selectedTab === MessagingTabValues.Contacts ? -prevState.slideWidth : 0;
+			MessagingComponent.runSlideTransition(slideValue, prevState);
+			return {
+				selectedTab: nextProps.selectedTab,
+			};
 		}
+		return null;
 	}
+
+	private static runSlideTransition(endValue: number, state: IMessagingComponentState) {
+		Animated.timing(state.translateX, {
+			toValue: endValue,
+			easing: Easing.linear,
+			duration: 300,
+			isInteraction: false,
+			useNativeDriver: true,
+		}).start();
+	}
+
+	public state = {
+		selectedTab: this.props.selectedTab,
+		translateX: new Animated.Value(0),
+		slideWidth: 0,
+	};
 
 	public render() {
 		return (
@@ -61,12 +84,12 @@ export default class MessagingComponent extends Component<IMessagingScreenProps>
 				<View style={style.tabButtonsContainer}>
 					<MessagingTabButton
 						text={MessagingTabValues.Chat}
-						selected={this.props.selectedTab === MessagingTabValues.Chat}
+						selected={this.state.selectedTab === MessagingTabValues.Chat}
 						onPress={() => this.props.setNewTab(MessagingTabValues.Chat)}
 					/>
 					<MessagingTabButton
 						text={MessagingTabValues.Contacts}
-						selected={this.props.selectedTab === MessagingTabValues.Contacts}
+						selected={this.state.selectedTab === MessagingTabValues.Contacts}
 						onPress={() => this.props.setNewTab(MessagingTabValues.Contacts)}
 					/>
 				</View>
@@ -93,16 +116,8 @@ export default class MessagingComponent extends Component<IMessagingScreenProps>
 	}
 
 	private chatScreenViewOnLayout = (event: LayoutEvent) => {
-		this.slideWidth = event.nativeEvent.layout.width;
-	}
-
-	private runSlideTransition = (endValue: number) => {
-		Animated.timing(this.state.translateX, {
-			toValue: endValue,
-			easing: Easing.linear,
-			duration: 300,
-			isInteraction: false,
-			useNativeDriver: true,
-		}).start();
+		this.setState({
+			slideWidth: event.nativeEvent.layout.width,
+		});
 	}
 }

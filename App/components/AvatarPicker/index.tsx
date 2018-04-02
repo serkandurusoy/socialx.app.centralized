@@ -4,8 +4,7 @@ import {ActionSheet} from 'native-base';
 import {TouchableOpacity, View} from 'react-native';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Sizes} from '../../theme';
-import {Colors} from '../../theme/';
+import {Colors, Sizes} from '../../theme';
 import {AvatarImage} from '../AvatarImage';
 import style from './style';
 

@@ -92,13 +92,10 @@ export default class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScre
 
 	private photoScreen: PhotoScreenComponent | null = null;
 
-	public componentWillMount() {
-		this.props.navigation.setParams({onSendPress: this.sendPostHandler});
-	}
-
 	public componentDidMount() {
 		const blurViewHandle = findNodeHandle(this.photoScreen);
 		this.setState({blurViewRef: blurViewHandle});
+		this.props.navigation.setParams({onSendPress: this.sendPostHandler});
 	}
 
 	public render() {

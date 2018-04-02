@@ -12,3 +12,4 @@ declare module 'react-native-vector-icons';
 declare module 'redux-axios-middleware';
 declare module 'react-navigation-redux-helpers';
 declare module 'react-native-gifted-chat';
+declare module 'react-native-android-keyboard-adjust';

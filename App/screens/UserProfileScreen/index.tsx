@@ -93,7 +93,7 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 
 	private lastLoadedPhotoIndex = 0;
 
-	public componentWillMount() {
+	public componentDidMount() {
 		this.props.navigation.setParams({isFollowed: this.state.isFollowed});
 		this.props.navigation.setParams({toggleFollow: this.toggleFollowHandler});
 	}

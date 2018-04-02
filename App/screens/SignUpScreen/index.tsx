@@ -218,12 +218,23 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			}
 
 			console.log('mediaId:', mediaId);
+
 			// do appsync
 			await createUser({
 				variables: {
 					username,
 					name,
-					avatar: mediaId,
+					avatar: mediaId ? mediaId : '',
+					email,
+				},
+			});
+
+			// do appsync
+			await createUser({
+				variables: {
+					username,
+					name,
+					avatar: updatedAvatarImageBase64,
 					email,
 				},
 			});
@@ -234,6 +245,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
+			console.log(ex);
 			Alert.alert(ex.message);
 			this.props.HideLoader();
 		}
@@ -329,6 +341,5 @@ const MapDispatchToProps = (dispatch: any) => ({
 const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
 const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
-const checkUsernameWrapper = checkUsernameHoc(addMediaWrapper);
 
-export default checkUsernameWrapper;
+export default addMediaWrapper;

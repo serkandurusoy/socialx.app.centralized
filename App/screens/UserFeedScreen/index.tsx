@@ -5,11 +5,8 @@ import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
+import {createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
-
-import {IBlobData} from '../../lib/ipfs';
-import {addBlob} from '../../utils/ipfs';
 
 export interface IWallPostData {
 	text: string;
@@ -30,7 +27,6 @@ interface IUserFeedScreenProps {
 	Posts: any;
 	User: any;
 	createPost: any;
-	addMedia: any;
 }
 
 interface IUserFeedScreenState {
@@ -108,7 +104,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const res = {
 				text: post.text,
 				smallAvatar: data.user.avatar,
-				imageSource: post.Media ? 'http://10.0.2.2:8080/ipfs/' + post.Media[0].hash : undefined,
 				fullName: data.user.name,
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: 0,
@@ -138,75 +133,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
-		const {createPost, addMedia} = this.props;
-		const blobfiles: IBlobData[] = [] as IBlobData[];
-		const ipfsHashes: any = [];
-		const mediaIds: string[] = [];
+		const {createPost} = this.props;
+		await createPost({variables: {
+			text: data.text,
+			Media: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
+		}});
 
-		let multiflag = false;
-
-		data.mediaObjects.forEach((media) => {
-			blobfiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]});
-		});
-
-		try {
-			// check if user entered any text
-			if (data.text.length < 5) {
-				// TODO: add some warning
-				return;
-			}
-
-			// there is media
-			if (data.mediaObjects.length > 0) {
-				// add files to ipfs
-				let ipfsResp = await addBlob(blobfiles);
-				console.log(ipfsResp.data);
-				ipfsResp = ipfsResp.data.split('\n');
-				// parse all media files from ipfs
-				if (ipfsResp.length > 2) {
-					multiflag = true;
-					ipfsResp.forEach((resp: string) => {
-						if (resp !== '') {
-							const parsed = JSON.parse(resp);
-							ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
-						}
-					});
-				} else {
-					const parsed = JSON.parse(ipfsResp[0]);
-					ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
-				}
-				// add media file/s to appsync
-				if (multiflag) {
-					for (let i = 0; i < ipfsHashes.length; i++) {
-						const ipfsData = ipfsHashes[i];
-						const resp = await addMedia({
-							variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
-						});
-						mediaIds.push(resp.data.addMedia.id);
-					}
-				} else {
-					const ipfsData = ipfsHashes[0];
-					const resp = await addMedia({
-						variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
-					});
-					mediaIds.push(resp.data.addMedia.id);
-				}
-			}
-			// create the actual post
-			await createPost({variables: {
-				text: data.text,
-				Media: mediaIds,
-			}});
-
-			console.log(mediaIds);
-
-			// refresh the wall posts to append the new post
-			this.refreshWallPosts();
-		} catch (ex) {
-			// TODO: err handle
-			console.log(ex);
-			console.log(mediaIds);
-		}
+		this.refreshWallPosts();
 	}
 
 	private refreshWallPosts = async () => {
@@ -221,7 +154,5 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 const userWrapper = userHoc(UserFeedScreen);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
-const allUserPostsWrapper = getUserPostsHoc(createPostWrapper);
-const addMediaWrapper = addMediaHoc(allUserPostsWrapper);
 
-export default addMediaWrapper;
+export default createPostWrapper;

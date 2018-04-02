@@ -10,7 +10,7 @@ export const withResizeOnKeyboardShow = (BaseComponent: any) => {
 		private keyboardDidShowListener: any;
 		private keyboardDidHideListener: any;
 
-		public componentWillMount() {
+		public componentDidMount() {
 			this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
 			this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
 		}
