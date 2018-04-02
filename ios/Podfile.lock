@@ -7,31 +7,31 @@ PODS:
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
   - QBImagePickerController (3.4.0)
-  - React/Core (0.54.0-rc.3):
-    - yoga (= 0.54.0-rc.3.React)
-  - React/fishhook (0.54.0-rc.3)
-  - React/RCTActionSheet (0.54.0-rc.3):
+  - React/Core (0.54.4):
+    - yoga (= 0.54.4.React)
+  - React/fishhook (0.54.4)
+  - React/RCTActionSheet (0.54.4):
     - React/Core
-  - React/RCTAnimation (0.54.0-rc.3):
+  - React/RCTAnimation (0.54.4):
     - React/Core
-  - React/RCTBlob (0.54.0-rc.3):
+  - React/RCTBlob (0.54.4):
     - React/Core
-  - React/RCTGeolocation (0.54.0-rc.3):
+  - React/RCTGeolocation (0.54.4):
     - React/Core
-  - React/RCTImage (0.54.0-rc.3):
+  - React/RCTImage (0.54.4):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.54.0-rc.3):
+  - React/RCTLinkingIOS (0.54.4):
     - React/Core
-  - React/RCTNetwork (0.54.0-rc.3):
+  - React/RCTNetwork (0.54.4):
     - React/Core
-  - React/RCTSettings (0.54.0-rc.3):
+  - React/RCTSettings (0.54.4):
     - React/Core
-  - React/RCTText (0.54.0-rc.3):
+  - React/RCTText (0.54.4):
     - React/Core
-  - React/RCTVibration (0.54.0-rc.3):
+  - React/RCTVibration (0.54.4):
     - React/Core
-  - React/RCTWebSocket (0.54.0-rc.3):
+  - React/RCTWebSocket (0.54.4):
     - React/Core
     - React/fishhook
     - React/RCTBlob
@@ -39,7 +39,7 @@ PODS:
     - QBImagePickerController
     - RSKImageCropper
   - RSKImageCropper (2.0.0)
-  - yoga (0.54.0-rc.3.React)
+  - yoga (0.54.4.React)
 
 DEPENDENCIES:
   - AppCenter/Analytics (~> 1.5.0)
