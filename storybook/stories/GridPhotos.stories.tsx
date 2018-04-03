@@ -27,7 +27,7 @@ const getPhotosStartingWithIndex = (numberOfResults: number, maxResults: number)
 
 let currentIndex = 0;
 
-storiesOf('GridPhotos')
+storiesOf('GridPhotos', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with github avatars', () => {

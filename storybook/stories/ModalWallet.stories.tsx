@@ -9,7 +9,7 @@ const containerStyle = {
 	backgroundColor: Colors.white,
 };
 
-storiesOf('ModalWallet')
+storiesOf('ModalWallet', module)
 	.addDecorator((getStory: any) => <SXBlurView style={containerStyle}>{getStory()}</SXBlurView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {

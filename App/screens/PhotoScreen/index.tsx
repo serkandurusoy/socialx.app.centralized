@@ -14,10 +14,10 @@ export interface FriendsSearchResult {
 }
 
 export interface WallPostPhoto {
-	caption?: string;
+	title?: string;
+	text?: string;
 	location?: string;
 	taggedFriends?: FriendsSearchResult[];
-	description?: string;
 	localPhotoURL: string;
 	includeTaggedFriends: boolean;
 }

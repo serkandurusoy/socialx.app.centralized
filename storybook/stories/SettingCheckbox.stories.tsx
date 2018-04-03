@@ -10,7 +10,7 @@ const containerStyle = {
 	backgroundColor: Colors.white,
 };
 
-storiesOf('SettingCheckbox')
+storiesOf('SettingCheckbox', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {

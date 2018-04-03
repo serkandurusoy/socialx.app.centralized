@@ -118,7 +118,7 @@ const contactSelectedHandler = (data: IContactListItem) => {
 	alert('contactSelectedHandler: ' + data.name);
 };
 
-storiesOf('Contacts list')
+storiesOf('Contacts list', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('sample', () => {

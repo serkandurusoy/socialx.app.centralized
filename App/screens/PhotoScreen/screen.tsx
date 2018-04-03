@@ -17,34 +17,34 @@ interface IPhotoScreenComponentProps {
 interface IPhotoScreenComponentState {
 	locationEnabled: boolean;
 	tagFriends: boolean;
-	descriptionEnabled: boolean;
-	caption: string;
+	textEnabled: boolean;
+	title: string;
 	location: string;
-	description: string;
+	text: string;
 }
 
 export default class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoScreenComponentState> {
 	public state = {
 		locationEnabled: false,
 		tagFriends: false,
-		descriptionEnabled: false,
-		caption: '',
+		textEnabled: false,
+		title: '',
 		location: '',
-		description: '',
+		text: '',
 	};
 
 	public getWallPostData = (): Partial<WallPostPhoto> => {
 		const ret: Partial<WallPostPhoto> = {
 			includeTaggedFriends: this.state.tagFriends,
 		};
-		if (this.state.caption !== '') {
-			ret.caption = this.state.caption;
+		if (this.state.title !== '') {
+			ret.title = this.state.title;
 		}
 		if (this.state.locationEnabled && this.state.location !== '') {
 			ret.location = this.state.location;
 		}
-		if (this.state.descriptionEnabled && this.state.description !== '') {
-			ret.description = this.state.description;
+		if (this.state.textEnabled && this.state.text !== '') {
+			ret.text = this.state.text;
 		}
 		return ret;
 	}
@@ -68,8 +68,8 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 							multiline={true}
 							placeholder={'Write a caption...'}
 							style={style.captionTextInput}
-							value={this.state.caption}
-							onChangeText={(value: string) => this.textChangedHandler('caption', value)}
+							value={this.state.title}
+							onChangeText={(value: string) => this.textChangedHandler('title', value)}
 						/>
 					</View>
 				</View>
@@ -169,7 +169,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 			<View>
 				<CheckboxButtonWithIcon
 					iconSource={Icons.iconAddDescription}
-					selected={this.state.descriptionEnabled}
+					selected={this.state.textEnabled}
 					text={'ADD DESCRIPTION'}
 					onPress={this.toggleDescriptionEnabledHandler}
 				/>
@@ -179,7 +179,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 	}
 
 	private renderAddDescription = () => {
-		if (this.state.descriptionEnabled) {
+		if (this.state.textEnabled) {
 			return (
 				<View>
 					<Text style={style.smallText}>{'Add description'}</Text>
@@ -192,8 +192,8 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 							numberOfLines={2}
 							multiline={true}
 							style={style.multilineTextInput}
-							value={this.state.description}
-							onChangeText={(value: string) => this.textChangedHandler('description', value)}
+							value={this.state.text}
+							onChangeText={(value: string) => this.textChangedHandler('text', value)}
 						/>
 					</View>
 				</View>
@@ -216,7 +216,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 
 	private toggleDescriptionEnabledHandler = () => {
 		this.setState({
-			descriptionEnabled: !this.state.descriptionEnabled,
+			textEnabled: !this.state.textEnabled,
 		});
 	}
 

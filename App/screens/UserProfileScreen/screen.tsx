@@ -3,7 +3,7 @@ import {Dimensions, ScrollView, Text, View} from 'react-native';
 import {GridPhotos} from '../../components/GridPhotos';
 import {ProfileStatistics} from '../../components/ProfileStatistics';
 import {UserAvatar} from '../../components/UserAvatar';
-import {WallPostCard} from '../../components/WallPostCard';
+import {IWallPostCardProp, WallPostCard} from '../../components/WallPostCard';
 import {Metrics} from '../../theme';
 import style from './style';
 
@@ -20,7 +20,7 @@ interface IUserProfileScreenProps {
 	fullName: string;
 	username?: string;
 	aboutMeText: string;
-	recentPosts: any[];
+	recentPosts: IWallPostCardProp[];
 	loadMorePhotosHandler: () => void;
 	totalNumberOfPhotos: number;
 	gridPageSize: number;

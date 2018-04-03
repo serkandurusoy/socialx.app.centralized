@@ -1,12 +1,12 @@
 import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {AvatarImage} from '../../components/AvatarImage';
-import {WallPostCard} from '../../components/WallPostCard';
+import {IWallPostCardProp, WallPostCard} from '../../components/WallPostCard';
 import style from './style';
 
 interface IUserFeedScreenProps {
 	avatarImage: any;
-	wallPosts: any[];
+	wallPosts: IWallPostCardProp[];
 	fullName: string;
 	refreshing: boolean;
 	loadMorePosts: () => void;
@@ -15,12 +15,10 @@ interface IUserFeedScreenProps {
 	showNewWallPostPage: () => void;
 }
 
-export interface IUserFeedScreenComponentState {}
-
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
 	const keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
-	const renderWallPosts = (data: any) => {
+	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard {...data.item} />

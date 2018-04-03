@@ -14,7 +14,7 @@ const filterUpdatedHandler = (filterValue: MessagingFilterValues) => {
 	alert('Was selected: ' + filterValue);
 };
 
-storiesOf('Messaging filter')
+storiesOf('Messaging filter', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('section', () => {

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {TitleWithSubtitle} from '../../components/TitleWithSubtitle';
+import {IWallPostCardProp} from '../../components/WallPostCard';
 import {OS_TYPES} from '../../constants';
 import {Colors, Images} from '../../theme';
 import {NewWallPostData} from '../NewWallPostScreen';
@@ -37,24 +38,12 @@ const INITIAL_USER_POSTS = [
 	},
 ];
 
-export interface IGroupPostData {
-	text: string;
-	imageSource?: string;
-	smallAvatar: string;
-	fullName: string;
-	timestamp: Date;
-	numberOfLikes: number;
-	numberOfSuperLikes: number;
-	numberOfComments: number;
-	numberOfWalletCoins: number;
-}
-
 interface IGroupFeedScreenProps {
 	navigation: NavigationScreenProp<any>;
 }
 
 interface IGroupFeedScreenState {
-	groupPosts: IGroupPostData[];
+	groupPosts: IWallPostCardProp[];
 	refreshing: boolean;
 }
 
@@ -102,7 +91,7 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 	}
 
 	private addGroupPostHandler = (data: NewWallPostData) => {
-		const newPost: IGroupPostData = {
+		const newPost: IWallPostCardProp = {
 			text: data.text,
 			imageSource: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
 			smallAvatar: 'https://placeimg.com/110/110/people',

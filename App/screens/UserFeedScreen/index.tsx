@@ -5,20 +5,9 @@ import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
+import {IWallPostCardProp} from '../../components/WallPostCard';
 import {createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
-
-export interface IWallPostData {
-	text: string;
-	imageSource?: string;
-	smallAvatar: string;
-	fullName: string;
-	timestamp: Date;
-	numberOfLikes: number;
-	numberOfSuperLikes: number;
-	numberOfComments: number;
-	numberOfWalletCoins: number;
-}
 
 interface IUserFeedScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -30,13 +19,15 @@ interface IUserFeedScreenProps {
 }
 
 interface IUserFeedScreenState {
-	wallPosts: IWallPostData[];
+	wallPosts: IWallPostCardProp[];
 	refreshing: boolean;
 }
 
-const INITIAL_USER_POSTS: IWallPostData[] = [
+const INITIAL_USER_POSTS: IWallPostCardProp[] = [
 	{
-		text: 'text',
+		title: 'Post title here',
+		text: 'Sample existing post text',
+		location: 'Tower Bridge, London',
 		smallAvatar: 'https://placeimg.com/110/110/people',
 		fullName: 'Ionut Movila',
 		timestamp: new Date(),
@@ -134,10 +125,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
 		const {createPost} = this.props;
-		await createPost({variables: {
-			text: data.text,
-			Media: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
-		}});
+		await createPost({
+			variables: {
+				text: data.text,
+				Media: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
+			},
+		});
 
 		this.refreshWallPosts();
 	}
