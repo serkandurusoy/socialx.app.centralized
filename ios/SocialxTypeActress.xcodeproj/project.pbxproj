@@ -1961,7 +1961,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = socialxnetwork;
 				PRODUCT_NAME = SocialxTypeActress;
-				PROVISIONING_PROFILE = "da2f8a53-27d3-43b1-b3b0-57c8e7e2619d";
+				PROVISIONING_PROFILE = "07c3e1c5-ecd2-4b16-9dcb-5650117c0c97";
 				PROVISIONING_PROFILE_SPECIFIER = "SocialX Distribution";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";

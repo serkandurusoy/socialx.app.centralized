@@ -14,7 +14,7 @@ const groupConfirmedHandler = () => {
 	alert('groupConfirmedHandler');
 };
 
-storiesOf('GroupRequest')
+storiesOf('GroupRequest', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {

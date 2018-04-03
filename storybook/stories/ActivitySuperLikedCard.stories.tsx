@@ -43,7 +43,7 @@ const profilePhotoPressedHandler = (postId: string) => {
 	alert('profilePhotoPressedHandler for ID ' + postId);
 };
 
-storiesOf('Activity Superliked card')
+storiesOf('Activity Superliked card', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('editable', () => {

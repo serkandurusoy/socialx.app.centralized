@@ -5,7 +5,7 @@ import {InputSizes, SXTextInput} from '../../App/components/TextInput';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 
-storiesOf('SXTextInput')
+storiesOf('SXTextInput', module)
 	.addDecorator((getStory: any) => <CenterView>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('default, no icon', () => {

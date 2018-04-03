@@ -11,7 +11,7 @@ const saveHandler = (data: SettingsData) => {
 	// }
 };
 
-storiesOf('SettingsScreen').add('demo', () => {
+storiesOf('SettingsScreen', module).add('demo', () => {
 	const aboutText = 'This is my very start on the SocialX network';
 	const firstName = 'Marcel';
 	const lastName = 'Fussinger';

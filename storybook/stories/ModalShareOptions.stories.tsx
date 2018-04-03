@@ -9,15 +9,11 @@ const containerStyle = {
 	backgroundColor: Colors.white,
 };
 
-storiesOf('ModalShareOptions')
+storiesOf('ModalShareOptions', module)
 	.addDecorator((getStory: any) => <SXBlurView style={containerStyle}>{getStory()}</SXBlurView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {
 		const visible = boolean('Visible', true);
 
-		return (
-			<ModalShareOptions
-				visible={visible}
-			/>
-		);
+		return <ModalShareOptions visible={visible} />;
 	});

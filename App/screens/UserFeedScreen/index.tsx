@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {IWallPostCardProp} from '../../components/WallPostCard';
 import {Images} from '../../theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
@@ -14,18 +15,6 @@ import {addBlob} from '../../utils/ipfs';
 
 import {IMediaRec} from './types';
 
-export interface IWallPostData {
-	text: string;
-	imageSource?: string;
-	smallAvatar: string;
-	fullName: string;
-	timestamp: Date;
-	numberOfLikes: number;
-	numberOfSuperLikes: number;
-	numberOfComments: number;
-	numberOfWalletCoins: number;
-}
-
 interface IUserFeedScreenProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
@@ -37,13 +26,15 @@ interface IUserFeedScreenProps {
 }
 
 interface IUserFeedScreenState {
-	wallPosts: IWallPostData[];
+	wallPosts: IWallPostCardProp[];
 	refreshing: boolean;
 }
 
-const INITIAL_USER_POSTS: IWallPostData[] = [
+const INITIAL_USER_POSTS: IWallPostCardProp[] = [
 	{
-		text: 'text',
+		title: 'Post title here',
+		text: 'Sample existing post text',
+		location: 'Tower Bridge, London',
 		smallAvatar: 'https://placeimg.com/110/110/people',
 		fullName: 'Ionut Movila',
 		timestamp: new Date(),

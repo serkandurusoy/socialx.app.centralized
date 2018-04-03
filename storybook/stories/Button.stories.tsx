@@ -6,7 +6,7 @@ import {ButtonSizes, SXButton} from '../../App/components/Button';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 
-storiesOf('Button')
+storiesOf('Button', module)
 	.addDecorator((getStory: any) => <CenterView>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('rounded, full width, pink bg', () => {

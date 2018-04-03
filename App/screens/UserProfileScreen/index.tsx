@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {ToggleIconButton} from '../../components/ToggleIconButton';
 import {IWallPostCardProp} from '../../components/WallPostCard';
@@ -17,6 +17,7 @@ const USER_NAME = 'LesterWheeler';
 
 const RECENT_USER_POSTS = [
 	{
+		title: 'My first post!',
 		text:
 			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
 			'Then ellipsis will show to indicate that more text is hidden. ' +
@@ -31,7 +32,9 @@ const RECENT_USER_POSTS = [
 		numberOfWalletCoins: 5,
 	},
 	{
-		text: 'Hey, my first post to SocialX network!',
+		taggedFriends: [{fullName: 'Isabelle Wilson'}, {fullName: 'Teddy Decola'}, {fullName: 'Michiko Bisson'}],
+		location: 'Miami Beach, Florida',
+		title: 'Hey, my second post to SocialX network!',
 		imageSource: 'https://placeimg.com/640/550/any',
 		smallAvatar: USER_SMALL_AVATAR_URL,
 		fullName: FULL_NAME,
