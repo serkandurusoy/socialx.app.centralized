@@ -72,7 +72,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 
-		const userAvatar = avatar ? 'http://10.0.2.2:8080/ipfs/' + avatar.hash : Images.user_avatar_placeholder;
+		const userAvatar = avatar ?
+		 'http://testnet.socialx.network:8080/ipfs/' + avatar.hash : Images.user_avatar_placeholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
@@ -149,7 +150,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		for (let i = 0; i < Imgs.length; i++) {
 			const current = Imgs[i];
 			ret.push({
-				url: 'http://10.0.2.2:8080/ipfs/' + current,
+				url: 'http://testnet.socialx.network:8080/ipfs/' + current,
 				index: i,
 			});
 		}

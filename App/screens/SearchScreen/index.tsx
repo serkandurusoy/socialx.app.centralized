@@ -235,7 +235,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					fullName: current.name,
 					username: current.username,
 					avatarURL: current.avatar
-						? 'http://10.0.2.2:8080/ipfs/' + current.avatar.hash
+						? 'http://testnet.socialx.network:8080/ipfs/' + current.avatar.hash
 						: Images.user_avatar_placeholder,
 				});
 			}

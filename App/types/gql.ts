@@ -22,15 +22,15 @@ interface IMediaProps {
 	size: number;
 }
 
-interface IPostsProps {
+export interface IPostsProps {
 	id: string;
-	ownerId: string;
 	createdAt: string;
 	text: string;
 	Media?: IMediaProps[];
+	owner: IUserQuery;
 }
 
-interface IUserQuery {
+export interface IUserQuery {
 	userId: string;
 	name: string;
 	username: string;
@@ -52,6 +52,12 @@ interface IUserData {
 	user: IUserQuery;
 }
 
+interface IPostsData {
+	allPosts: IPostsProps[];
+}
+
 export type IUserDataResponse = QueryProps & IUserData;
+
+export type IAllPostsDataResponse = QueryProps & IPostsData;
 
 export type createUserFunc = (params: ICreateUserProps) => void;

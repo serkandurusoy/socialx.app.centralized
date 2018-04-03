@@ -53,7 +53,13 @@ export const user = gql`
 			posts {
 				id
 				text
-				ownerId
+				owner {
+					username
+					avatar {
+						id
+						hash
+					}
+				}
 				createdAt
 				Media {
 					id

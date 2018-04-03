@@ -30,17 +30,6 @@ export const getUserPosts = gql`
 				Media {
 					id
 					hash
-					type
-					size
-				}
-				likes {
-					userId
-					username
-					avatar {
-                        hash
-                        size
-                        type
-                    }
 				}
 			}
 		}
@@ -56,20 +45,25 @@ export const getAllPosts = gql`
 			Media {
 				id
 				hash
-				type
-				size
+			}
+			owner {
+				username
+				avatar {
+					id
+					hash
+				}
 			}
 		}
 	}
 `;
 
 export const getAllPostsHoc = (comp: any) =>
-	graphql(getAllPosts, {name: 'Posts', options: {fetchPolicy: 'network-only'}})(comp);
+	graphql(getAllPosts, {name: 'Posts'})(comp);
 
 export const getUserPostsHoc = (comp: any) =>
-	graphql(getUserPosts, {name: 'User', options: {fetchPolicy: 'network-only'}})(comp);
+	graphql(getUserPosts, {name: 'User'})(comp);
 
 export const addMediaHoc = (comp: any) =>
-	graphql(addMediaMut, {name: 'addMedia', options: {fetchPolicy: 'no-cache'}})(comp);
+	graphql(addMediaMut, {name: 'addMedia'})(comp);
 
 export const createPostHoc = (comp: any) => graphql(createPostMut, {name: 'createPost'})(comp);
