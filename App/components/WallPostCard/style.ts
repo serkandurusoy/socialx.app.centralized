@@ -25,8 +25,11 @@ const style: any = {
 	fullName: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
-		lineHeight: Sizes.smartHorizontalScale(14),
+		lineHeight: Sizes.smartHorizontalScale(24),
 		color: Colors.postFullName,
+	},
+	grayText: {
+		color: Colors.postText,
 	},
 	timestamp: {
 		...Fonts.centuryGothic,
@@ -35,20 +38,37 @@ const style: any = {
 		color: Colors.postText,
 		paddingTop: Sizes.smartVerticalScale(6),
 	},
-	timestampHour: {
-		color: Colors.postHour,
+	postTitle: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(15),
+		color: Colors.postFullName,
+		paddingTop: Sizes.smartHorizontalScale(14),
+		paddingBottom: Sizes.smartHorizontalScale(4),
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+	},
+	postTextContainer: {
+		flexDirection: 'row',
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		paddingBottom: Sizes.smartVerticalScale(4),
 	},
 	postText: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(24),
 		color: Colors.postText,
-		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
-		paddingVertical: Sizes.smartVerticalScale(4),
 	},
 	postImage: {
 		width: '100%',
 		height: Sizes.smartVerticalScale(254),
+	},
+	locationPin: {
+		height: Sizes.smartHorizontalScale(14),
+	},
+	showMoreText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postHour,
+		paddingLeft: Sizes.smartHorizontalScale(5),
 	},
 };
 

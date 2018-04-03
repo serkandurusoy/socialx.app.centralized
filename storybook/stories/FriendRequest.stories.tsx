@@ -14,7 +14,7 @@ const friendRequestConfirmedHandler = () => {
 	alert('friendRequestConfirmedHandler');
 };
 
-storiesOf('FriendRequest')
+storiesOf('FriendRequest', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {

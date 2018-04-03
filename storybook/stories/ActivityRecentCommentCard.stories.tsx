@@ -46,7 +46,7 @@ const postThumbPressedHandler = (postId: string) => {
 	alert('postThumbPressedHandler for ID ' + postId);
 };
 
-storiesOf('Activity recent comment')
+storiesOf('Activity recent comment', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('editable', () => {

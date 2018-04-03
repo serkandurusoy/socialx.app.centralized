@@ -12,7 +12,7 @@ const containerStyle = {
 	paddingHorizontal: 0,
 };
 
-storiesOf('SearchResultEntry')
+storiesOf('SearchResultEntry', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {

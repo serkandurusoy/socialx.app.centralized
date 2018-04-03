@@ -11,7 +11,7 @@ const containerStyle = {
 	paddingHorizontal: 0,
 };
 
-storiesOf('ProfileStatistics')
+storiesOf('ProfileStatistics', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {

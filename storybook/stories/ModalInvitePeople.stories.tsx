@@ -17,7 +17,7 @@ const cancelHandler = () => {
 	alert('cancelHandler');
 };
 
-storiesOf('ModalInvitePeople')
+storiesOf('ModalInvitePeople', module)
 	.addDecorator((getStory: any) => <SXBlurView style={containerStyle}>{getStory()}</SXBlurView>)
 	.addDecorator(withKnobs)
 	.add('sample', () => {
