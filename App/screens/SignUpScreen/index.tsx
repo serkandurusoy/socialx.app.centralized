@@ -213,7 +213,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				const {Hash, Size} = JSON.parse(ipfsResp.data);
 
 				// do addMedia
-				const mediaObj = await addMedia({variables: {type: 'image', size: parseInt(Size, undefined), hash: Hash}});
+				const mediaObj = await addMedia({variables: {type: 'ProfileImage', size: parseInt(Size, undefined), hash: Hash}});
 				mediaId = mediaObj.data.addMedia.id;
 			}
 

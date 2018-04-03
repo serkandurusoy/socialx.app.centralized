@@ -19,13 +19,13 @@ export const createUser = gql`
 		$avatar: ID
 	) {
 		createUser(
-			username: $username,
-			name: $name,
-			email: $email,
-			bio: $bio,
-			age: $age,
-			gender: $gender,
-			location: $location,
+			username: $username
+			name: $name
+			email: $email
+			bio: $bio
+			age: $age
+			gender: $gender
+			location: $location
 			avatar: $avatar
 		) {
 			userId
@@ -33,6 +33,7 @@ export const createUser = gql`
 	}
 `;
 
+// TODO: deref all nested objs
 export const user = gql`
 	query user {
 		user {
@@ -49,10 +50,28 @@ export const user = gql`
 				size
 				type
 			}
+			posts {
+				id
+				text
+				owner {
+					username
+					avatar {
+						id
+						hash
+					}
+				}
+				createdAt
+				Media {
+					id
+					type
+					hash
+					size
+				}
+			}
 		}
 	}
 `;
 
 export const createUpdateUserHoc = (comp: any) => graphql(createUser, {name: 'createUser', options})(comp);
 
-export const userHoc = (comp: any) => graphql(user, { options: { fetchPolicy: 'network-only' } })(comp);
+export const userHoc = (comp: any) => graphql(user, {options: {fetchPolicy: 'network-only'}})(comp);

@@ -8,6 +8,8 @@ import SearchScreenComponent from './screen';
 
 import {searchUsersHoc} from '../../graphql';
 
+import {Images} from '../../theme';
+
 export enum SearchFilterValues {
 	People = 'people',
 	Groups = 'groups',
@@ -232,7 +234,9 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					kind: SearchResultKind.NotFriend,
 					fullName: current.name,
 					username: current.username,
-					avatarURL: current.avatar,
+					avatarURL: current.avatar
+						? 'http://testnet.socialx.network:8080/ipfs/' + current.avatar.hash
+						: Images.user_avatar_placeholder,
 				});
 			}
 			console.log(results);
