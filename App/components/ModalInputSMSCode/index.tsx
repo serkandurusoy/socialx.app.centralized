@@ -60,7 +60,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 							<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={style.button} onPress={this.actionConfirmed} disabled={okDisabled}>
-							<View style={okDisabled ? style.buttonDisabled : {}}>
+							<View>
 								<Text style={[style.buttonText, style.buttonTextConfirm]}>{'OK!'}</Text>
 							</View>
 						</TouchableOpacity>
