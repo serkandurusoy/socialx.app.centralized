@@ -1,7 +1,6 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {LinearTextGradient} from 'react-native-text-gradient';
-// TODO: remember to upgrade this lib when upgrading to React native 0.54!
 
 export interface ITextGradientProps {
 	text: string;

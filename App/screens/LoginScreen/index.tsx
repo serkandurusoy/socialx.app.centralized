@@ -11,6 +11,7 @@ import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {ConfirmSignin, CurrentUserInfo, Signin} from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
@@ -147,11 +148,13 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
-			// better alert here
-			Alert.alert('Wrong username/password');
-			if (this.usernameInput) {
-				this.usernameInput.focusInput();
-			}
+			ModalManager.safeRunAfterModalClosed(() => {
+				// better alert here
+				Alert.alert('Wrong username/password');
+				if (this.usernameInput) {
+					this.usernameInput.focusInput();
+				}
+			});
 		}
 		this.props.HideLoader();
 	}
@@ -164,8 +167,10 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			this.toggleVisibleModalSMS(false);
 			this.props.navigation.navigate('MainScreen');
 		} catch (ex) {
-			// better alert here
-			Alert.alert('Wrong confirmation code');
+			ModalManager.safeRunAfterModalClosed(() => {
+				// better alert here
+				Alert.alert('Wrong confirmation code'); // TODO: update here!
+			});
 		}
 		this.props.HideLoader();
 	}

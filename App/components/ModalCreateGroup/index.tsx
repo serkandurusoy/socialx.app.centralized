@@ -3,6 +3,7 @@ import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
 import {InputSizes, SXTextInput, TRKeyboardKeys} from '../TextInput';
@@ -17,6 +18,8 @@ export interface IModalCreateGroupProps {
 	updateGroupDescription: (text: string) => void;
 	marginBottom: number;
 	onModalHide: () => void;
+	onDismiss: () => void;
+	afterDismiss: () => void;
 }
 
 class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
@@ -27,12 +30,14 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 	public render() {
 		return (
 			<Modal
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
 				isVisible={this.props.visible}
 				backdropOpacity={0}
 				animationIn={'slideInDown'}
 				animationOut={this.state.outAnimation}
 				style={style.container}
-				onModalHide={this.props.onModalHide}
+				afterDismiss={this.props.afterDismiss}
 			>
 				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
 				<View style={this.getResizableStyles()}>
@@ -108,4 +113,4 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 	}
 }
 
-export const ModalCreateGroup = withResizeOnKeyboardShow(ModalCreateGroupComponent);
+export const ModalCreateGroup = withManagedTransitions(withResizeOnKeyboardShow(ModalCreateGroupComponent));

@@ -1,7 +1,11 @@
+import hexRgb from 'hex-rgb';
+
+// TODO: transform all RGB color to hex and rgba should use colorWithAlpha
 const SocialXColors = {
 	transparent: 'rgba(0,0,0,0)',
 	white: '#FFFFFF',
 	black: '#000000',
+	red: '#FF0000',
 	blackWithAlpha: (alpha: number) => {
 		return 'rgba(0, 0, 0, ' + alpha + ')';
 	},
@@ -36,9 +40,13 @@ const SocialXColors = {
 	grayNurse: '#E6E7E6',
 	tundora: '#4A4A4A',
 	ceriseRed: '#E0295A',
-	hollywoodCerise: '#FF0099',
 	chatTextInputBorder: 'rgba(151,151,151,0.5)',
 	dustGray: '#979797',
 };
 
 export default SocialXColors;
+
+export const colorWithAlpha = (color: string, alpha: number) => {
+	const rgbValue = hexRgb(color);
+	return `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},${alpha})`;
+};

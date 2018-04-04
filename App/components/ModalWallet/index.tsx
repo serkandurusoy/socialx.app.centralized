@@ -4,6 +4,7 @@ import * as Animatable from 'react-native-animatable';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {Colors} from '../../theme';
 import Icons from '../../theme/Icons';
 import {SXButton} from '../Button';
@@ -39,9 +40,11 @@ interface IModalWalletProps {
 	socXWallet: any;
 	addHandler: () => void;
 	onCloseButtonHandler: () => void;
+	onDismiss: () => void;
+	onModalHide: () => void;
 }
 
-export class ModalWallet extends Component<IModalWalletProps, any> {
+class ModalWalletComponent extends Component<IModalWalletProps, any> {
 	public state = {
 		postText: '',
 		socXInWallet: '53,680',
@@ -55,7 +58,13 @@ export class ModalWallet extends Component<IModalWalletProps, any> {
 
 	public render() {
 		return (
-			<Modal isVisible={this.props.visible} backdropOpacity={0} style={style.container}>
+			<Modal
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
+				isVisible={this.props.visible}
+				backdropOpacity={0}
+				style={style.container}
+			>
 				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
 				<View style={this.getResizableStyles()}>
 					<View style={style.boxContainer}>
@@ -161,3 +170,5 @@ export class ModalWallet extends Component<IModalWalletProps, any> {
 		this.setState({FeeGas: text});
 	}
 }
+
+export const ModalWallet = withManagedTransitions(ModalWalletComponent);

@@ -3,6 +3,7 @@ import {Platform, ScrollView, Tou, TouchableWithoutFeedback, View} from 'react-n
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {Icons} from '../../theme';
 import {ShareOptionsButton} from '../ShareOptionsButton';
 import style from './style';
@@ -25,10 +26,11 @@ interface IModalInvitePeopleProps {
 	locationHandlerPressed: Func;
 	contactHandlerPressed: Func;
 	closeHandler: Func;
-	onModalHide: Func;
+	onDismiss: () => void;
+	onModalHide: () => void;
 }
 
-export const ModalShareOptions: React.SFC<IModalInvitePeopleProps> = (props) => {
+const ModalShareOptionsSFC: React.SFC<IModalInvitePeopleProps> = (props) => {
 	const renderOSBlurView = () => {
 		if (Platform.OS === OS_TYPES.iOS) {
 			return (
@@ -44,12 +46,13 @@ export const ModalShareOptions: React.SFC<IModalInvitePeopleProps> = (props) => 
 
 	return (
 		<Modal
+			onDismiss={props.onDismiss}
+			onModalHide={props.onModalHide}
 			isVisible={props.visible}
 			backdropOpacity={backDropOpacity}
 			style={style.container}
 			onBackButtonPress={props.closeHandler}
 			onBackdropPress={props.closeHandler}
-			onModalHide={props.onModalHide}
 		>
 			{renderOSBlurView()}
 			<View style={style.boxContainer}>
@@ -91,3 +94,5 @@ export const ModalShareOptions: React.SFC<IModalInvitePeopleProps> = (props) => 
 		</Modal>
 	);
 };
+
+export const ModalShareOptions = withManagedTransitions(ModalShareOptionsSFC);
