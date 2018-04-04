@@ -21,3 +21,4 @@ import './stories/ModalShareOptions.stories';
 import './stories/ModalWallet.stories';
 import './stories/ContactsList.stories';
 import './stories/MessagingFilterSection.stories';
+import './stories/ChartListDataRow.stories';

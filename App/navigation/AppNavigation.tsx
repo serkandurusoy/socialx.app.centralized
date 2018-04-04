@@ -13,6 +13,7 @@ import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
+import {RewardsScreen} from '../screens/RewardsScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
 import SendCoinsScreen from '../screens/SendCoinsScreen';
@@ -79,6 +80,7 @@ const PrimaryNav = StackNavigator(
 		SocialXAccountScreen: {screen: SocialXAccountScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
+		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'screen',
