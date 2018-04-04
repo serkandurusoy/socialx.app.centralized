@@ -232,29 +232,24 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					},
 				});
 				mediaId = mediaObj.data.addMedia.id;
+
+				await createUser({
+					variables: {
+						username,
+						name,
+						avatar: mediaId,
+						email,
+					},
+				});
+			} else {
+				await createUser({
+					variables: {
+						username,
+						name,
+						email,
+					},
+				});
 			}
-
-			console.log('mediaId:', mediaId);
-
-			// do appsync
-			await createUser({
-				variables: {
-					username,
-					name,
-					avatar: mediaId ? mediaId : '',
-					email,
-				},
-			});
-
-			// do appsync
-			await createUser({
-				variables: {
-					username,
-					name,
-					avatar: updatedAvatarImageBase64,
-					email,
-				},
-			});
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
@@ -291,17 +286,21 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
 		const {createUser, addMedia, checkUsername} = this.props;
 
+		// closing the modla when using alerts, issue MD-163
 		if (password !== confirmPassword) {
+			this.toggleVisibleModalSMS();
 			Alert.alert('Your passwords don\'t match');
 			return;
 		}
 
 		if (username.length < 4) {
+			this.toggleVisibleModalSMS();
 			Alert.alert('Enter a username bigger than 4 letters');
 			return;
 		}
 
 		if (name.length < 4) {
+			this.toggleVisibleModalSMS();
 			Alert.alert('Enter a name bigger than 4 letters');
 			return;
 		}
