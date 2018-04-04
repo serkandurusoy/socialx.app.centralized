@@ -96,13 +96,17 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	}
 	private tooltipsReportPressedHandler = () => {
-		this.toggleDeclineReportModal();
-		return <ModalReportProblem
-			visible={this.state.modalVisibleReportProblem}
-			// confirmHandler={() => this.toggleGroupInfoModal(true)}
-			declineHandler={() => this.toggleDeclineReportModal()}
-			blurViewRef={this.state.blurViewRef}
-		/>
+		this.setState({
+			modalVisibleReportProblem: true,
+		});
+		return (
+			<ModalReportProblem
+				visible={this.state.modalVisibleReportProblem}
+				// confirmHandler={() => this.toggleGroupInfoModal(true)}
+				declineHandler={() => this.toggleDeclineReportModal()}
+				blurViewRef={this.state.blurViewRef}
+			/>
+		);
 	}
 
 	private renderPostDescription = () => {
@@ -153,12 +157,12 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			{
 				label: 'Report a Problem',
 				icon: Icons.iconReport,
-				actionHandler: () => this.tooltipsReportPressedHandler,
+				actionHandler: () => this.tooltipsReportPressedHandler(),
 			},
 			{
 				label: 'Delete Post',
 				icon: Icons.iconDelete,
-				actionHandler: () => this.tooltipsDeletePressedHandler,
+				actionHandler: () => this.tooltipsDeletePressedHandler(),
 			},
 		];
 	}

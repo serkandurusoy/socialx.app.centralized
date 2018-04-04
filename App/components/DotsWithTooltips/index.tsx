@@ -5,8 +5,8 @@ import {Icons} from '../../theme';
 import style from './style';
 
 export interface ITooltipDotsProps {
-	reportHandler: () => void;
-	deleteHandler: () => void;
+	reportHandler: () => {};
+	deleteHandler: () => {};
 	items: any;
 }
 

@@ -27,39 +27,6 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 		pickerSelected: '',
 		description: '',
 	};
-	private declineHandler = () => {
-		this.setState(
-			{
-				outAnimation: 'slideOutUp',
-			},
-			() => {
-				this.props.declineHandler();
-			},
-		);
-	}
-	private confirmHandler = () => {
-		this.setState(
-			{
-				outAnimation: 'slideOutLeft',
-			},
-			() => {
-				this.props.confirmHandler();
-			},
-		);
-	}
-	private getResizableStyles = () => {
-		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.iOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
-	private updateReport = (text: string) => {
-		this.setState({reason: text});
-	}
-	private updateReportDescription = (text: string) => {
-		this.setState({description: text});
-	}
 
 	public render() {
 		return (
@@ -115,6 +82,40 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 				pickerSelected: selectedValue,
 			},
 		);
+	}
+
+	private declineHandler = () => {
+		this.setState(
+			{
+				outAnimation: 'slideOutUp',
+			},
+			() => {
+				this.props.declineHandler();
+			},
+		);
+	}
+	private confirmHandler = () => {
+		this.setState(
+			{
+				outAnimation: 'slideOutLeft',
+			},
+			() => {
+				this.props.confirmHandler();
+			},
+		);
+	}
+	private getResizableStyles = () => {
+		const ret = [style.keyboardView];
+		if (Platform.OS === OS_TYPES.iOS) {
+			ret.push({marginBottom: this.props.marginBottom});
+		}
+		return ret;
+	}
+	private updateReport = (text: string) => {
+		this.setState({reason: text});
+	}
+	private updateReportDescription = (text: string) => {
+		this.setState({description: text});
 	}
 }
 
