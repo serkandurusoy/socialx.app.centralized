@@ -3,6 +3,7 @@ import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {FriendsSearchResult} from '../../screens/PhotoScreen';
 import {Colors} from '../../theme';
@@ -20,12 +21,16 @@ interface IModalTagFriendsProps {
 	selectedUsers: FriendsSearchResult[];
 	onSearchUpdated: (term: string) => void;
 	selectTagUserInModal: (friend: FriendsSearchResult) => void;
+	onDismiss: () => void;
+	onModalHide: () => void;
 }
 
 class ModalTagFriendsComponent extends Component<IModalTagFriendsProps, any> {
 	public render() {
 		return (
 			<Modal
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
 				isVisible={this.props.visible}
 				backdropOpacity={0}
 				animationIn={'slideInUp'}
@@ -98,4 +103,4 @@ class ModalTagFriendsComponent extends Component<IModalTagFriendsProps, any> {
 	}
 }
 
-export const ModalTagFriends = withResizeOnKeyboardShow(ModalTagFriendsComponent);
+export const ModalTagFriends = withManagedTransitions(withResizeOnKeyboardShow(ModalTagFriendsComponent));

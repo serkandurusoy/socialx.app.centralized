@@ -16,6 +16,7 @@ import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} fr
 import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from '../../graphql';
 import {createUserFunc} from '../../types/gql';
 
+import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {addBlob} from '../../utils/ipfs';
 
 export interface ISignUpScreenState {
@@ -28,6 +29,7 @@ export interface ISignUpScreenState {
 	phone: string;
 	updatedAvatarImageBase64: string;
 	showModalForSMSCode: boolean;
+	smsCodeErrorMessage: string | null;
 }
 
 export interface ISignUpScreenProps {
@@ -56,6 +58,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		avatarImage: Images.user_avatar_placeholder,
 		updatedAvatarImageBase64: '',
 		showModalForSMSCode: false,
+		smsCodeErrorMessage: null,
 	};
 
 	private inputRefs: any = {};
@@ -66,8 +69,10 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				style={style.keyboardView}
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
+				keyboardShouldPersistTaps={'handled'}
 			>
 				<ModalInputSMSCode
+					errorMessage={this.state.smsCodeErrorMessage}
 					visible={this.state.showModalForSMSCode}
 					confirmHandler={this.smsCodeConfirmedHandler}
 					declineHandler={this.smsCodeDeclinedHandler}
@@ -209,11 +214,23 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 			if (updatedAvatarImageBase64 !== '') {
 				// do ipfs
-				const ipfsResp: any = await addBlob([{name: 'avatar', filename: 'avatar.jpg', data: updatedAvatarImageBase64}]);
+				const ipfsResp: any = await addBlob([
+					{
+						name: 'avatar',
+						filename: 'avatar.jpg',
+						data: updatedAvatarImageBase64,
+					},
+				]);
 				const {Hash, Size} = JSON.parse(ipfsResp.data);
 
 				// do addMedia
-				const mediaObj = await addMedia({variables: {type: 'ProfileImage', size: parseInt(Size, undefined), hash: Hash}});
+				const mediaObj = await addMedia({
+					variables: {
+						type: 'ProfileImage',
+						size: parseInt(Size, undefined),
+						hash: Hash,
+					},
+				});
 				mediaId = mediaObj.data.addMedia.id;
 			}
 
@@ -242,13 +259,14 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
 			this.props.navigation.navigate('MainScreen');
-			this.props.HideLoader();
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			console.log(ex);
-			Alert.alert(ex.message);
-			this.props.HideLoader();
+			this.setState({
+				smsCodeErrorMessage: ex.message,
+			});
 		}
+		this.props.HideLoader();
 	}
 
 	private smsCodeDeclinedHandler = () => {
@@ -261,11 +279,12 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		try {
 			this.props.ResendCodeLoading();
 			const res = await resendSignup(this.state.username);
-			this.props.HideLoader();
 		} catch (ex) {
-			Alert.alert('Could not resend confirmation code');
-			this.props.HideLoader();
+			ModalManager.safeRunAfterModalClosed(() => {
+				Alert.alert('Could not resend confirmation code');
+			});
 		}
+		this.props.HideLoader();
 	}
 
 	private startRegister = async () => {
@@ -273,7 +292,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		const {createUser, addMedia, checkUsername} = this.props;
 
 		if (password !== confirmPassword) {
-			Alert.alert('Your passwords dont match');
+			Alert.alert('Your passwords don\'t match');
 			return;
 		}
 
@@ -312,12 +331,15 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			};
 			const res = await Signup(signupParams);
 
-			this.toggleVisibleModalSMS();
+			ModalManager.safeRunAfterModalClosed(() => {
+				this.toggleVisibleModalSMS();
+			});
 		} catch (ex) {
 			console.log(ex);
-			Alert.alert(ex.message);
+			ModalManager.safeRunAfterModalClosed(() => {
+				Alert.alert(ex.message);
+			});
 			this.toggleVisibleModalSMS(false);
-			this.props.HideLoader();
 		}
 		Keyboard.dismiss();
 		this.props.HideLoader();

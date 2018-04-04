@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import uuidv4 from 'uuid/v4';
 import {ModalShareOptions} from '../../components/ModalShareOptions';
 import {OS_TYPES} from '../../constants';
+import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {Colors, Sizes} from '../../theme';
 import {isStringPureEmoji} from '../../utils';
 import {requestResourcePermission} from '../../utils/permissions';
@@ -50,8 +51,6 @@ export default class ChatThreadScreenComponent extends Component<
 		modalVisible: false,
 	};
 
-	private onModalCloseAction: Func | null = null;
-
 	private giftedChat: any;
 
 	public componentDidMount(): void {
@@ -71,8 +70,7 @@ export default class ChatThreadScreenComponent extends Component<
 			<View style={style.container}>
 				<ModalShareOptions
 					visible={this.state.modalVisible}
-					closeHandler={this.closeModal}
-					onModalHide={this.runOnModalCloseActionWithSmallDelay}
+					closeHandler={this.toggleShareOptionsModal}
 					walletHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Wallet)}
 					cameraHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Camera)}
 					mediaHandlerPressed={() => this.onShareButtonPressed(SHARE_OPTIONS.Media)}
@@ -185,35 +183,28 @@ export default class ChatThreadScreenComponent extends Component<
 
 	private renderShareButton = () => {
 		return (
-			<TouchableOpacity style={style.shareButton} onPress={this.showShareOptions}>
+			<TouchableOpacity style={style.shareButton} onPress={this.toggleShareOptionsModal}>
 				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora} />
 			</TouchableOpacity>
 		);
 	}
 
-	private showShareOptions = () => {
+	private toggleShareOptionsModal = () => {
 		this.setState({
-			modalVisible: true,
+			modalVisible: !this.state.modalVisible,
 		});
-	}
-
-	private closeModal = () => {
-		this.setState({
-			modalVisible: false,
-		});
-		this.onModalCloseAction = null;
 	}
 
 	private onShareButtonPressed = (selectedOption: SHARE_OPTIONS) => {
-		this.closeModal();
+		this.toggleShareOptionsModal();
 		if (selectedOption === SHARE_OPTIONS.Media) {
-			this.onModalCloseAction = this.showGalleryPhotoPicker;
+			ModalManager.safeRunAfterModalClosed(this.showGalleryPhotoPicker);
 		} else if (selectedOption === SHARE_OPTIONS.Camera) {
-			this.onModalCloseAction = this.takeCameraPhoto;
+			ModalManager.safeRunAfterModalClosed(this.takeCameraPhoto);
 		} else if (selectedOption === SHARE_OPTIONS.Location) {
-			this.onModalCloseAction = this.shareMyCurrentPosition;
+			ModalManager.safeRunAfterModalClosed(this.shareMyCurrentPosition);
 		} else {
-			this.onModalCloseAction = this.shareOptionNotImplementedHandler;
+			ModalManager.safeRunAfterModalClosed(this.shareOptionNotImplementedHandler);
 		}
 	}
 
@@ -251,16 +242,6 @@ export default class ChatThreadScreenComponent extends Component<
 
 	private shareOptionNotImplementedHandler = () => {
 		alert('Share option TBD');
-	}
-
-	private runOnModalCloseActionWithSmallDelay = () => {
-		// TODO: modal is still transitioning even after onModalHide is called => causing problems with other sliding views
-		setTimeout(() => {
-			if (this.onModalCloseAction != null) {
-				this.onModalCloseAction();
-				this.onModalCloseAction = null;
-			}
-		}, 100);
 	}
 
 	private shareMyCurrentPosition = () => {

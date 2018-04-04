@@ -2,6 +2,7 @@ const SocialXColors = {
 	transparent: 'rgba(0,0,0,0)',
 	white: '#FFFFFF',
 	black: '#000000',
+	red: '#FF0000',
 	blackWithAlpha: (alpha: number) => {
 		return 'rgba(0, 0, 0, ' + alpha + ')';
 	},
