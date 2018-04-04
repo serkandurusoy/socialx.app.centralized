@@ -210,34 +210,30 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			if (updatedAvatarImageBase64 !== '') {
 				// do ipfs
 				const ipfsResp: any = await addBlob([{name: 'avatar', filename: 'avatar.jpg', data: updatedAvatarImageBase64}]);
+				console.log(ipfsResp);
 				const {Hash, Size} = JSON.parse(ipfsResp.data);
 
 				// do addMedia
 				const mediaObj = await addMedia({variables: {type: 'ProfileImage', size: parseInt(Size, undefined), hash: Hash}});
 				mediaId = mediaObj.data.addMedia.id;
+
+				await createUser({
+					variables: {
+						username,
+						name,
+						avatar: mediaId,
+						email,
+					},
+				});
+			} else {
+				await createUser({
+					variables: {
+						username,
+						name,
+						email,
+					},
+				});
 			}
-
-			console.log('mediaId:', mediaId);
-
-			// do appsync
-			await createUser({
-				variables: {
-					username,
-					name,
-					avatar: mediaId ? mediaId : '',
-					email,
-				},
-			});
-
-			// do appsync
-			await createUser({
-				variables: {
-					username,
-					name,
-					avatar: updatedAvatarImageBase64,
-					email,
-				},
-			});
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
