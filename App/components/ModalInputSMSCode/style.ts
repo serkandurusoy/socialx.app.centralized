@@ -91,6 +91,15 @@ const style: any = {
 	digitInputWithValue: {
 		borderColor: Colors.pink,
 	},
+	errorMessage: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.red,
+		lineHeight: Sizes.smartHorizontalScale(24),
+		width: '100%',
+		textAlign: 'center',
+		paddingBottom: Sizes.smartHorizontalScale(5),
+	},
 };
 
 export default StyleSheet.create(style);

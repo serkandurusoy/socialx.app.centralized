@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
 import {TKeyboardKeys} from '../TextInput';
@@ -21,6 +22,9 @@ export interface IModalInputSMSCodeComponentProps {
 	resendHandler: () => void;
 	phoneNumber: string;
 	marginBottom: number;
+	onDismiss: () => void;
+	onModalHide: () => void;
+	errorMessage?: string;
 }
 
 export interface IModalInputSMSCodeComponentState {
@@ -37,6 +41,8 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 		const okDisabled = this.state.inputValues.join('').length < 4;
 		return (
 			<Modal
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
 				isVisible={this.props.visible}
 				backdropOpacity={0.7}
 				animationIn={'zoomIn'}
@@ -50,6 +56,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 						<Text style={style.message}>{'Please type the verification code sent to ' + this.props.phoneNumber}</Text>
 						<View style={style.inputCellsContainer}>{this.renderInputCells()}</View>
 					</View>
+					{this.renderErrorMessage()}
 					<View style={style.buttonsContainer}>
 						<TouchableOpacity style={[style.button]} onPress={this.actionResend}>
 							<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Resend Code'}</Text>
@@ -68,6 +75,13 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 				</View>
 			</Modal>
 		);
+	}
+
+	private renderErrorMessage = () => {
+		if (this.props.errorMessage) {
+			return <Text style={style.errorMessage}>{this.props.errorMessage}</Text>;
+		}
+		return null;
 	}
 
 	private getModalStyles = () => {
@@ -154,4 +168,4 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 	}
 }
 
-export const ModalInputSMSCode: any = withResizeOnKeyboardShow(ModalInputSMSCodeComponent);
+export const ModalInputSMSCode: any = withManagedTransitions(withResizeOnKeyboardShow(ModalInputSMSCodeComponent));

@@ -2,6 +2,7 @@ import React from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {connect} from 'react-redux';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {Colors} from '../../theme';
 import style from './style';
 
@@ -9,6 +10,8 @@ export interface IModalActivityIndicatorProps {
 	activityIndicatorTitle?: string | null;
 	activityIndicatorMessage?: string | null;
 	showActivityIndicator: boolean;
+	onDismiss: () => void;
+	onModalHide: () => void;
 }
 
 const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (props) => {
@@ -23,6 +26,9 @@ const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (prop
 
 	return (
 		<Modal
+			onDismiss={props.onDismiss}
+			onModalHide={props.onModalHide}
+			visiblePropName={'showActivityIndicator'}
 			isVisible={props.showActivityIndicator}
 			backdropOpacity={0.2}
 			animationIn={'slideInDown'}
@@ -38,8 +44,10 @@ const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (prop
 	);
 };
 
+const ManagedModalActivityIndicator = withManagedTransitions(ModalActivityIndicatorSFC);
+
 const mapStateToProps: any = (state: any): IModalActivityIndicatorProps => ({
 	...state.popups,
 });
 
-export const ModalActivityIndicator = connect<any>(mapStateToProps)(ModalActivityIndicatorSFC);
+export const ModalActivityIndicator = connect<any>(mapStateToProps)(ManagedModalActivityIndicator);

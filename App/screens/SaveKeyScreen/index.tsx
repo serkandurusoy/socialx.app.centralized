@@ -34,6 +34,7 @@ export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveK
 					title={'Important Notification'}
 					message={'Are you sure you saved your private key at a secure location?'}
 					confirmHandler={this.confirmKeySaved}
+					declineHandler={this.toggleModalShow}
 					visible={this.state.modalVisible}
 				/>
 				<Image source={Images.unlock_key} resizeMode={'cover'} style={style.unlockImage} />
@@ -44,15 +45,15 @@ export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveK
 					{'We removed any trace of your password.'}
 				</Text>
 				<View style={style.chooseKeyButton}>
-					<SXButton label={'DOWNLOAD UNLOCK FILE'} onPress={this.showModal} />
+					<SXButton label={'DOWNLOAD UNLOCK FILE'} onPress={this.toggleModalShow} />
 				</View>
 			</View>
 		);
 	}
 
-	private showModal = () => {
+	private toggleModalShow = () => {
 		this.setState({
-			modalVisible: true,
+			modalVisible: !this.state.modalVisible,
 		});
 	}
 

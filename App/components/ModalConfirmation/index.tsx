@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import style from './style';
 
 export interface IModalConfirmationProps {
@@ -11,36 +12,26 @@ export interface IModalConfirmationProps {
 	cancelButton?: string;
 	confirmHandler?: () => void;
 	declineHandler?: () => void;
+	onDismiss: () => void;
+	onModalHide: () => void;
 }
 
-export interface IModalConfirmationState {
-	modalVisible: boolean;
-}
-
-export class ModalConfirmation extends Component<IModalConfirmationProps, IModalConfirmationState> {
+class ModalConfirmationComponent extends Component<IModalConfirmationProps> {
 	public static defaultProps: Partial<IModalConfirmationProps> = {
 		confirmButton: 'Yes!',
 		cancelButton: 'No',
 	};
 
-	public static getDerivedStateFromProps(nextProps: Readonly<IModalConfirmationProps>) {
-		return {
-			modalVisible: nextProps.visible,
-		};
-	}
-
-	public state = {
-		modalVisible: this.props.visible,
-	};
-
 	public render() {
 		return (
 			<Modal
-				isVisible={this.state.modalVisible}
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
+				isVisible={this.props.visible}
 				backdropOpacity={0.2}
 				animationIn={'zoomIn'}
 				animationOut={'zoomOut'}
-				onBackdropPress={() => this.setState({modalVisible: false})}
+				onBackdropPress={this.props.declineHandler}
 				style={style.container}
 			>
 				<View style={style.boxContainer}>
@@ -49,10 +40,10 @@ export class ModalConfirmation extends Component<IModalConfirmationProps, IModal
 						<Text style={style.message}>{this.props.message}</Text>
 					</View>
 					<View style={style.buttonsContainer}>
-						<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.actionCanceled}>
+						<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.props.declineHandler}>
 							<Text style={[style.buttonText, style.buttonTextCancel]}>{this.props.cancelButton}</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={style.button} onPress={this.actionConfirmed}>
+						<TouchableOpacity style={style.button} onPress={this.props.confirmHandler}>
 							<Text style={[style.buttonText, style.buttonTextConfirm]}>{this.props.confirmButton}</Text>
 						</TouchableOpacity>
 					</View>
@@ -60,22 +51,6 @@ export class ModalConfirmation extends Component<IModalConfirmationProps, IModal
 			</Modal>
 		);
 	}
-
-	private actionConfirmed = () => {
-		this.setState({
-			modalVisible: false,
-		});
-		if (this.props.confirmHandler) {
-			this.props.confirmHandler();
-		}
-	}
-
-	private actionCanceled = () => {
-		this.setState({
-			modalVisible: false,
-		});
-		if (this.props.declineHandler) {
-			this.props.declineHandler();
-		}
-	}
 }
+
+export const ModalConfirmation = withManagedTransitions(ModalConfirmationComponent);

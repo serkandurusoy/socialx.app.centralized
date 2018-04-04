@@ -190,7 +190,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					updateGroupName={this.updateGroupNameHanlder}
 					updateGroupDescription={this.updateGroupDescriptionHandler}
 					blurViewRef={this.state.blurViewRef}
-					onModalHide={this.onGroupInfoModalHide}
+					afterDismiss={this.onGroupInfoModalHide}
 				/>
 				<ModalInvitePeople
 					visible={this.state.invitePeopleModalVisible}

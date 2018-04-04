@@ -3,6 +3,7 @@ import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {SearchResultCreateGroup} from '../../screens/SearchScreen';
 import {Colors} from '../../theme';
@@ -20,12 +21,16 @@ interface IModalInvitePeopleProps {
 	selectedUsers: string[];
 	onSearchUpdated: (term: string) => void;
 	selectNewUserForGroup: (userId: string) => void;
+	onDismiss: () => void;
+	onModalHide: () => void;
 }
 
 class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any> {
 	public render() {
 		return (
 			<Modal
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
 				isVisible={this.props.visible}
 				backdropOpacity={0}
 				animationIn={'slideInRight'}
@@ -98,4 +103,4 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 	}
 }
 
-export const ModalInvitePeople = withResizeOnKeyboardShow(ModalInvitePeopleComponent);
+export const ModalInvitePeople = withManagedTransitions(withResizeOnKeyboardShow(ModalInvitePeopleComponent));
