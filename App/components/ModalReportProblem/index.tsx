@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -12,34 +12,48 @@ import style from './style';
 
 export interface IModalReportProblemComponentProps {
 	visible: boolean;
-	blurViewRef: any;
-	confirmHandler: () => void;
+	confirmHandler: (data: IReportData) => void;
 	declineHandler: () => void;
 	marginBottom: number;
 	onModalHide: () => void;
 	pickerOptions: any;
 }
 
-const PICKER_OPTIONS = ['Something', 'Nothing', 'Anything', 'Everything'];
+export interface IReportData {
+	reportReason: string;
+	description: string;
+}
 
-class ModalReportProblemComponent extends Component<IModalReportProblemComponentProps, any> {
+interface IModalReportProblemComponentState extends IReportData {}
+
+const REPORT_REASONS = [
+	'Nothing',
+	'Anything',
+	'Everything',
+	'Some very long reason goes here. Should display in more lines',
+];
+
+class ModalReportProblemComponent extends Component<
+	IModalReportProblemComponentProps,
+	IModalReportProblemComponentState
+> {
 	public state = {
-		outAnimation: 'slideOutLeft',
-		pickerSelected: '',
+		reportReason: REPORT_REASONS[0],
 		description: '',
 	};
 
 	public render() {
+		const backDropOpacity = Platform.OS === OS_TYPES.iOS ? 0 : 0.7;
 		return (
 			<Modal
 				isVisible={this.props.visible}
-				backdropOpacity={0}
+				backdropOpacity={backDropOpacity}
 				animationIn={'slideInDown'}
-				animationOut={this.state.outAnimation}
+				animationOut={'slideOutUp'}
 				style={style.container}
 				onModalHide={this.props.onModalHide}
 			>
-				<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
+				{this.renderOSBlurView()}
 				<View style={this.getResizableStyles()}>
 					<View style={style.boxContainer}>
 						<View style={style.titleContainer}>
@@ -48,15 +62,19 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 
 						<View style={style.inputContainer}>
 							<View style={style.pickerContainer}>
+								<View style={style.iconContainer}>
+									<Image source={Icons.iconDropDown} style={style.icon} resizeMode={'contain'} />
+								</View>
 								<ModalDropdown
+									keyboardShouldPersistTaps={'handled'}
 									style={style.pickerStyle}
+									dropdownStyle={style.dropdownStyle}
 									dropdownTextStyle={style.dropdownTextStyle}
 									textStyle={style.dropdownTextStyle}
-									options={PICKER_OPTIONS}
-									defaultValue={PICKER_OPTIONS[0]}
-									onSelect={(index: any, value: any) => this.setNewSelection(value)}
+									options={REPORT_REASONS}
+									defaultValue={REPORT_REASONS[0]}
+									onSelect={this.setNewSelection}
 								/>
-								<Image source={Icons.iconDropDown} style={style.icon} resizeMode={'contain'} />
 							</View>
 
 							<View style={style.descriptionContainer}>
@@ -71,10 +89,10 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 						</View>
 
 						<View style={style.buttonsContainer}>
-							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.declineHandler}>
+							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.props.declineHandler}>
 								<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
 							</TouchableOpacity>
-							<TouchableOpacity style={style.button} onPress={this.confirmHandler}>
+							<TouchableOpacity style={style.button} onPress={() => this.props.confirmHandler(this.state)}>
 								<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Send'}</Text>
 							</TouchableOpacity>
 						</View>
@@ -84,32 +102,24 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 		);
 	}
 
-	private setNewSelection(selectedValue: any) {
+	private renderOSBlurView = () => {
+		if (Platform.OS === OS_TYPES.iOS) {
+			return (
+				// TODO: check why this onPress is not working!
+				<TouchableWithoutFeedback onPress={this.props.declineHandler}>
+					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
+				</TouchableWithoutFeedback>
+			);
+		}
+		return null;
+	}
+
+	private setNewSelection = (index: number, value: string) => {
 		this.setState({
-			pickerSelected: selectedValue,
+			reportReason: value,
 		});
 	}
 
-	private declineHandler = () => {
-		this.setState(
-			{
-				outAnimation: 'slideOutUp',
-			},
-			() => {
-				this.props.declineHandler();
-			},
-		);
-	}
-	private confirmHandler = () => {
-		this.setState(
-			{
-				outAnimation: 'slideOutLeft',
-			},
-			() => {
-				this.props.confirmHandler();
-			},
-		);
-	}
 	private getResizableStyles = () => {
 		const ret = [style.keyboardView];
 		if (Platform.OS === OS_TYPES.iOS) {
@@ -117,9 +127,7 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 		}
 		return ret;
 	}
-	private updateReport = (text: string) => {
-		this.setState({reason: text});
-	}
+
 	private updateReportDescription = (text: string) => {
 		this.setState({description: text});
 	}

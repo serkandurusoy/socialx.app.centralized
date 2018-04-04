@@ -58,19 +58,28 @@ const style: any = {
 		borderColor: Colors.mercury,
 		borderWidth: Sizes.smartHorizontalScale(2),
 		padding: Sizes.smartVerticalScale(5),
+		height: Sizes.smartVerticalScale(30),
 	},
 	pickerStyle: {
-		flex: 11,
+		position: 'absolute',
+		width: '100%',
+	},
+	dropdownStyle: {
+		width: '68%',
 	},
 	dropdownTextStyle: {
-		width: '100%',
 		...Fonts.centuryGothic,
 		color: Colors.postFullName,
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(18),
+		paddingRight: '10%',
+		paddingLeft: Sizes.smartHorizontalScale(10),
+	},
+	iconContainer: {
+		width: '100%',
+		alignItems: 'flex-end',
 	},
 	icon: {
-		flex: 1,
 		height: Sizes.smartVerticalScale(5),
 		width: Sizes.smartHorizontalScale(8),
 		marginLeft: Sizes.smartHorizontalScale(5),

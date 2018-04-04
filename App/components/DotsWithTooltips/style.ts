@@ -3,15 +3,10 @@ import {Fonts, Sizes} from '../../theme/';
 
 const style: any = {
 	container: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		flex: 1,
-		flexDirection: 'row',
+		padding: Sizes.smartHorizontalScale(7),
 	},
 	lineContainer: {
-		alignItems: 'flex-start',
-		justifyContent: 'flex-start',
-		flex: 1,
+		alignItems: 'center',
 		flexDirection: 'row',
 	},
 	dots: {
