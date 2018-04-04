@@ -107,7 +107,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? 'http://testnet.socialx.network:8080/ipfs/' + post.owner.avatar.hash
 					: Images.user_avatar_placeholder,
 				imageSource: media,
-				fullName: data.user.name,
+				fullName: post.owner.username,
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: 0,
 				numberOfSuperLikes: 0,
