@@ -39,6 +39,7 @@ export default {
 	iconAddDescription: require('../../assets/icons/add_description.png'),
 	tagFriendSmall: require('../../assets/icons/tag_friend_small.png'),
 	iconDots: require('../../assets/icons/dots.png'),
-	iconDelete: require('../../assets/icons/delete.png'), //TODO x2 and x3 are missing
-	iconReport: require('../../assets/icons/report.png'), //TODO x2 and x3 are missing
+	iconDelete: require('../../assets/icons/delete.png'),
+	iconReport: require('../../assets/icons/report.png'),
+	iconDropDown: require('../../assets/icons/drop_down.png'),
 };

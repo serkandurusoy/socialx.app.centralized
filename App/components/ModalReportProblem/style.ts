@@ -49,10 +49,38 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(24),
 		paddingTop: Sizes.smartVerticalScale(40),
 	},
+	pickerContainer: {
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		width: '100%',
+		borderRadius: Sizes.smartHorizontalScale(6),
+		borderColor: Colors.mercury,
+		borderWidth: Sizes.smartHorizontalScale(2),
+		padding: Sizes.smartVerticalScale(5),
+	},
+	pickerStyle: {
+		flex: 11,
+	},
+	dropdownTextStyle: {
+		width: '100%',
+		...Fonts.centuryGothic,
+		color: Colors.postFullName,
+		fontSize: Sizes.smartHorizontalScale(14),
+		lineHeight: Sizes.smartHorizontalScale(18),
+	},
+	icon: {
+		flex: 1,
+		height: Sizes.smartVerticalScale(5),
+		width: Sizes.smartHorizontalScale(8),
+		marginLeft: Sizes.smartHorizontalScale(5),
+		marginRight: Sizes.smartHorizontalScale(10),
+	},
 	descriptionContainer: {
 		maxHeight: Sizes.smartVerticalScale(150),
 		paddingTop: Sizes.smartVerticalScale(9),
 		paddingBottom: Sizes.smartVerticalScale(21),
+		width: '100%',
 	},
 	buttonsContainer: {
 		flexDirection: 'row',

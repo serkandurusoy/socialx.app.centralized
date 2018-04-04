@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import {Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
+import ModalDropdown from 'react-native-modal-dropdown';
 import {OS_TYPES} from '../../constants';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
-import ModalDropdown from 'react-native-modal-dropdown';
-import {InputSizes, SXTextInput, TRKeyboardKeys} from '../TextInput';
+import Icons from '../../theme/Icons';
+import {SXTextInput} from '../TextInput';
 import style from './style';
 
 export interface IModalReportProblemComponentProps {
@@ -19,7 +20,7 @@ export interface IModalReportProblemComponentProps {
 	pickerOptions: any;
 }
 
-const PICKER_OPTIONS = ['Something', 'Nothing', 'Anything', 'Everything']
+const PICKER_OPTIONS = ['Something', 'Nothing', 'Anything', 'Everything'];
 
 class ModalReportProblemComponent extends Component<IModalReportProblemComponentProps, any> {
 	public state = {
@@ -38,7 +39,7 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 				style={style.container}
 				onModalHide={this.props.onModalHide}
 			>
-				<BlurView style={style.blurView} blurType='dark' blurAmount={2}/>
+				<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
 				<View style={this.getResizableStyles()}>
 					<View style={style.boxContainer}>
 						<View style={style.titleContainer}>
@@ -46,11 +47,17 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 						</View>
 
 						<View style={style.inputContainer}>
-							{/*<ModalDropdown
-								options={PICKER_OPTIONS}
-								defaultValue={PICKER_OPTIONS[0]}
-								onSelect={(index: any, value: any) => this.setNewSelection(value)}
-							/>*/}
+							<View style={style.pickerContainer}>
+								<ModalDropdown
+									style={style.pickerStyle}
+									dropdownTextStyle={style.dropdownTextStyle}
+									textStyle={style.dropdownTextStyle}
+									options={PICKER_OPTIONS}
+									defaultValue={PICKER_OPTIONS[0]}
+									onSelect={(index: any, value: any) => this.setNewSelection(value)}
+								/>
+								<Image source={Icons.iconDropDown} style={style.icon} resizeMode={'contain'} />
+							</View>
 
 							<View style={style.descriptionContainer}>
 								<SXTextInput
@@ -79,9 +86,8 @@ class ModalReportProblemComponent extends Component<IModalReportProblemComponent
 
 	private setNewSelection(selectedValue: any) {
 		this.setState({
-				pickerSelected: selectedValue,
-			},
-		);
+			pickerSelected: selectedValue,
+		});
 	}
 
 	private declineHandler = () => {

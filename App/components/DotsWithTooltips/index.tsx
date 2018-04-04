@@ -11,6 +11,19 @@ export interface ITooltipDotsProps {
 }
 
 export class TooltipDots extends Component<ITooltipDotsProps, any> {
+	public render() {
+		return (
+				<PopoverTooltip
+					buttonComponent={
+						<View style={style.container}>
+							<Image source={Icons.iconDots} style={style.dots} resizeMode={'contain'}/>
+						</View>}
+					items={this.getTooltipItems()}
+					animationType='spring'
+					springConfig={{tension: 100, friction: 3}}
+				/>
+		);
+	}
 
 	private getTooltipItems = () => {
 		const ret: any = [];
@@ -28,20 +41,5 @@ export class TooltipDots extends Component<ITooltipDotsProps, any> {
 			});
 		});
 		return ret;
-	}
-
-	public render() {
-		return (
-				<PopoverTooltip
-					buttonComponent={
-						<View style={style.container}>
-							<Image source={Icons.iconDots} style={style.dots} resizeMode={'contain'}/>
-						</View>
-					}
-					items={this.getTooltipItems()}
-					animationType='spring'
-					springConfig={{tension: 100, friction: 3}}
-				/>
-		);
 	}
 }

@@ -3,13 +3,12 @@ import React, {Component} from 'react';
 import {findNodeHandle, Image, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from '../../theme';
+import Icons from '../../theme/Icons';
+import {TooltipDots} from '../DotsWithTooltips';
+import {ModalReportProblem} from '../ModalReportProblem';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
 import {WallPostComments} from './WallPostComments';
-import {ModalReportProblem} from '../ModalReportProblem';
-import {TooltipDots} from '../DotsWithTooltips';
-import {SearchFilterValues} from '../../screens/SearchScreen';
-import Icons from '../../theme/Icons';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 
@@ -32,24 +31,78 @@ export interface IWallPostCardProp {
 
 export interface IWallPostCardState {
 	fullDescriptionVisible: boolean;
+	modalVisibleReportProblem: boolean;
+	blurViewRef: any;
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public state = {
 		fullDescriptionVisible: false,
-		modalVisibleReportProblem: false,
+		modalVisibleReportProblem: true,
 		blurViewRef: null,
 	};
 
 	private blurView = null;
+
+	public componentDidMount() {
+		const blurViewHandle = findNodeHandle(this.blurView);
+		this.setState({blurViewRef: blurViewHandle});
+	}
+
+	public render() {
+		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
+		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
+		return (
+			<View style={style.container}>
+				<ModalReportProblem
+					visible={this.state.modalVisibleReportProblem}
+					// confirmHandler={() => this.toggleGroupInfoModal(true)}
+					declineHandler={this.toggleDeclineReportModal}
+					blurViewRef={this.state.blurViewRef}
+				/>
+				<View style={style.topContainer}>
+					<Image source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
+					<View style={style.topRightContainer}>
+						<Text style={style.fullName}>
+							{this.props.fullName}
+							{this.renderTaggedFriends()}
+							{this.renderLocation()}
+						</Text>
+						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
+					</View>
+					<TooltipDots
+						items={this.getTooltipLines()}
+						deleteHandler={this.tooltipsDeletePressedHandler}
+						reportHandler={this.tooltipsReportPressedHandler}
+					/>
+				</View>
+				{this.renderPostTitle()}
+				{this.renderPostDescription()}
+				{this.renderWallPostImage()}
+				<WallPostActions
+					numberOfLikes={this.props.numberOfLikes}
+					numberOfSuperLikes={this.props.numberOfSuperLikes}
+					numberOfComments={this.props.numberOfComments}
+					numberOfWalletCoins={this.props.numberOfWalletCoins}
+					likeButtonPressed={this.likeButtonPressedHandler}
+					superLikeButtonPressed={this.superLikeButtonPressedHandler}
+					commentsButtonPressed={this.commentsButtonPressedHandler}
+					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
+					shareButtonPressed={this.shareButtonPressedHandler}
+				/>
+				<WallPostComments />
+			</View>
+		);
+	}
+
 	private renderWallPostImage = () => {
 		if (this.props.imageSource) {
-			return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'}/>;
+			return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
 		}
 		return null;
 	}
 	private shareButtonPressedHandler = () => {
-		return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'}/>;
+		return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
 	}
 
 	private renderTaggedFriends = () => {
@@ -95,18 +148,13 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		}
 		return null;
 	}
+
 	private tooltipsReportPressedHandler = () => {
-		this.setState({
-			modalVisibleReportProblem: true,
-		});
-		return (
-			<ModalReportProblem
-				visible={this.state.modalVisibleReportProblem}
-				// confirmHandler={() => this.toggleGroupInfoModal(true)}
-				declineHandler={() => this.toggleDeclineReportModal()}
-				blurViewRef={this.state.blurViewRef}
-			/>
-		);
+		setTimeout(() => {
+			this.setState({
+				modalVisibleReportProblem: true,
+			});
+		}, 1000);
 	}
 
 	private renderPostDescription = () => {
@@ -167,52 +215,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		];
 	}
 	private tooltipsDeletePressedHandler = () => {
-		alert('Delete this post');
-	}
-
-	public componentDidMount() {
-		const blurViewHandle = findNodeHandle(this.blurView);
-		this.setState({blurViewRef: blurViewHandle});
-	}
-
-	public render() {
-		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
-		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
-		return (
-			<View style={style.container}>
-				<View style={style.topContainer}>
-					<Image source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage}/>
-					<View style={style.topRightContainer}>
-						<Text style={style.fullName}>
-							{this.props.fullName}
-							{this.renderTaggedFriends()}
-							{this.renderLocation()}
-						</Text>
-						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
-					</View>
-					<TooltipDots
-						items={this.getTooltipLines()}
-						deleteHandler={this.tooltipsDeletePressedHandler}
-						reportHandler={this.tooltipsReportPressedHandler}
-					/>
-				</View>
-				{this.renderPostTitle()}
-				{this.renderPostDescription()}
-				{this.renderWallPostImage()}
-				<WallPostActions
-					numberOfLikes={this.props.numberOfLikes}
-					numberOfSuperLikes={this.props.numberOfSuperLikes}
-					numberOfComments={this.props.numberOfComments}
-					numberOfWalletCoins={this.props.numberOfWalletCoins}
-					likeButtonPressed={this.likeButtonPressedHandler}
-					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.commentsButtonPressedHandler}
-					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
-					shareButtonPressed={this.shareButtonPressedHandler}
-				/>
-				<WallPostComments/>
-			</View>
-		);
+		console.log('Delete this post');
 	}
 
 	private likeButtonPressedHandler = () => {
