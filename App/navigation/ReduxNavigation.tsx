@@ -31,7 +31,7 @@ function ReduxNavigation(props: any) {
 	return (
 		<Root>
 			<AppNavigation />
-			<ModalActivityIndicator />
+			<ModalActivityIndicator visiblePropName={'showActivityIndicator'} />
 		</Root>
 	);
 }

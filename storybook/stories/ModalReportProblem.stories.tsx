@@ -9,14 +9,10 @@ const containerStyle = {
 	backgroundColor: Colors.white,
 };
 
-storiesOf('ModalReportProblem')
+storiesOf('ModalReportProblem', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('with editable props', () => {
 		const visible = boolean('Visible', true);
-		return (
-			<ModalReportProblem
-				visible={visible}
-			/>
-		);
+		return <ModalReportProblem visible={visible} />;
 	});

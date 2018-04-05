@@ -4,6 +4,7 @@ import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {OS_TYPES} from '../../constants';
+import {withManagedTransitions} from '../../hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors} from '../../theme';
 import Icons from '../../theme/Icons';
@@ -16,6 +17,7 @@ export interface IModalReportProblemComponentProps {
 	declineHandler: () => void;
 	marginBottom: number;
 	onModalHide: () => void;
+	onDismiss: () => void;
 	pickerOptions: any;
 }
 
@@ -46,12 +48,13 @@ class ModalReportProblemComponent extends Component<
 		const backDropOpacity = Platform.OS === OS_TYPES.iOS ? 0 : 0.7;
 		return (
 			<Modal
+				onDismiss={this.props.onDismiss}
+				onModalHide={this.props.onModalHide}
 				isVisible={this.props.visible}
 				backdropOpacity={backDropOpacity}
 				animationIn={'slideInDown'}
 				animationOut={'slideOutUp'}
 				style={style.container}
-				onModalHide={this.props.onModalHide}
 			>
 				{this.renderOSBlurView()}
 				<View style={this.getResizableStyles()}>
@@ -105,7 +108,6 @@ class ModalReportProblemComponent extends Component<
 	private renderOSBlurView = () => {
 		if (Platform.OS === OS_TYPES.iOS) {
 			return (
-				// TODO: check why this onPress is not working!
 				<TouchableWithoutFeedback onPress={this.props.declineHandler}>
 					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
 				</TouchableWithoutFeedback>
@@ -133,4 +135,4 @@ class ModalReportProblemComponent extends Component<
 	}
 }
 
-export const ModalReportProblem = withResizeOnKeyboardShow(ModalReportProblemComponent);
+export const ModalReportProblem = withResizeOnKeyboardShow(withManagedTransitions(ModalReportProblemComponent));

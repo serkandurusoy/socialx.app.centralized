@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {Rect} from 'react-native-svg';
 import {Colors} from '../../theme/';
-import {SvgAnimatedLinearGradient} from '../SvgAnimatedLinearGradient';
+import {SvgAnimatedLinearGradient} from '../_lib/SvgAnimatedLinearGradient';
 
 interface ILoaderViewProps {
 	isLoading: boolean;

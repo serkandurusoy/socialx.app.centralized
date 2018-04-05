@@ -15,7 +15,6 @@ const style: any = {
 		right: 0,
 	},
 	keyboardView: {
-		flex: 1,
 		width: '100%',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -31,7 +30,6 @@ const style: any = {
 		shadowRadius: 8,
 		width: '100%',
 		overflow: 'hidden',
-		maxHeight: '90%',
 	},
 	titleContainer: {
 		width: '100%',

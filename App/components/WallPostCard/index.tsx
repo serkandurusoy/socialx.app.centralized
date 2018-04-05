@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {OS_TYPES} from '../../constants';
+import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {Colors, Sizes} from '../../theme';
 import Icons from '../../theme/Icons';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
@@ -146,12 +147,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private tooltipsReportPressedHandler = () => {
-		setTimeout(() => {
+		ModalManager.safeRunAfterModalClosed(() => {
 			this.setState({
 				modalVisibleReportProblem: true,
 			});
-		}, 1000);
-		// TODO: get rid of this hack after we integrate changes from MD-163
+		});
 	}
 
 	private renderPostDescription = () => {
@@ -209,23 +209,23 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			{
 				label: 'Report a Problem',
 				icon: Icons.iconReport,
-				actionHandler: () => this.tooltipsReportPressedHandler(),
+				actionHandler: this.tooltipsReportPressedHandler,
 			},
 			{
 				label: 'Delete Post',
 				icon: Icons.iconDelete,
-				actionHandler: () => this.tooltipsDeletePressedHandler(),
+				actionHandler: this.tooltipsDeletePressedHandler,
 			},
 		];
 	}
 
 	private tooltipsDeletePressedHandler = () => {
-		console.log('Delete this post');
+		// console.log('Delete this post');
 	}
 
 	private reportProblemHandler = (data: IReportData) => {
 		this.toggleDeclineReportModal();
-		console.log('Report a problem', data);
+		// console.log('Report a problem', data);
 	}
 
 	private likeButtonPressedHandler = () => {

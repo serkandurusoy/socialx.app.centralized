@@ -3,7 +3,6 @@ import React from 'react';
 import {Image, StyleProp, Text, View, ViewStyle} from 'react-native';
 import {CoinIcons, CoinSymbol} from '../../constants/';
 import {LoaderView} from '../LoaderView';
-import {SvgAnimatedLinearGradient} from '../SvgAnimatedLinearGradient';
 import style from './style';
 
 export enum TransactionType {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
-import PopoverTooltip from 'react-native-popover-tooltip';
+import PopoverTooltip from '../../components/_lib/PopoverTooltip';
 import {Icons} from '../../theme';
 import style from './style';
 
