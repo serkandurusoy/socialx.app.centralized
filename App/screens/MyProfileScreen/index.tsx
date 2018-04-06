@@ -3,6 +3,8 @@ import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
 
+import base from '../../config/ipfs';
+
 import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
 
@@ -72,8 +74,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 
-		const userAvatar = avatar ?
-		 'http://testnet.socialx.network:8080/ipfs/' + avatar.hash : Images.user_avatar_placeholder;
+		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : Images.user_avatar_placeholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
@@ -150,7 +151,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		for (let i = 0; i < Imgs.length; i++) {
 			const current = Imgs[i];
 			ret.push({
-				url: 'http://testnet.socialx.network:8080/ipfs/' + current,
+				url: base.ipfs_URL + current,
 				index: i,
 			});
 		}
