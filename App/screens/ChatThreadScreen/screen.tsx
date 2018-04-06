@@ -7,7 +7,7 @@ import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker'
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import uuidv4 from 'uuid/v4';
-import {ModalShareOptions} from '../../components/ModalShareOptions';
+import {ModalShareOptions} from '../../components/Modals';
 import {OS_TYPES} from '../../constants';
 import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {Colors, Sizes} from '../../theme';

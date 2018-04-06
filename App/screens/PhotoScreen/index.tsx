@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {findNodeHandle, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {ModalCloseButton} from '../../components/ModalCloseButton';
-import {ModalTagFriends} from '../../components/ModalTagFriends';
+import {ModalCloseButton, ModalTagFriends} from '../../components/Modals';
 import PhotoScreenComponent from './screen';
 import {SendPostButton} from './SendPostButton';
 

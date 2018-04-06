@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IWallPostCardProp} from '../../components/WallPostCard';
+import {IWallPostCardProp} from '../../components/Displayers';
 import {Images} from '../../theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';

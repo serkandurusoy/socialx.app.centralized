@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {Animated, Easing, LayoutEvent, Text, Value, View} from 'react-native';
-import {IContactListItem} from '../../components/ContactsList';
-import {MessagingFilterValues} from '../../components/MessagingFilterSection';
-import {MessagingTabButton} from '../../components/MessagingTabButton';
-import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../components/TextInput';
+import {IContactListItem} from '../../components/Displayers';
+import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../components/Inputs';
+import {MessagingFilterValues, MessagingTabButton} from '../../components/Messaging';
 import {Colors} from '../../theme';
 import ChatScreenTab from './chat.screen';
 import ContactsScreenTab from './contacts.screen';

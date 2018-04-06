@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {ModalWallet} from '../../App/components/ModalWallet';
+import {ModalWallet} from '../../App/components/Modals';
 import {Colors} from '../../App/theme';
 import SXBlurView from '../SXBlurView';
 

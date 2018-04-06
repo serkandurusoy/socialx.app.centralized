@@ -3,10 +3,8 @@ import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from '
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {AvatarName} from '../../components/AvatarName';
-import {AvatarPicker} from '../../components/AvatarPicker';
-import {SettingCheckbox} from '../../components/SettingCheckbox';
-import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
+import {AvatarName, AvatarPicker} from '../../components/Avatar';
+import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
@@ -101,7 +99,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							placeholder={'About you text'}
 							borderColor={Colors.dustWhite}
 							numberOfLines={3}
-							onChangeText={(value) => this.handleInputChangeText(value, 'aboutText')}
+							onChangeText={(value: string) => this.handleInputChangeText(value, 'aboutText')}
 						/>
 					</View>
 					<Text style={style.personalDetails}>{'PERSONAL DETAILS'}</Text>
@@ -112,7 +110,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							placeholder={'First name'}
 							placeholderColor={Colors.postText}
 							borderColor={Colors.transparent}
-							onChangeText={(value) => this.handleInputChangeText(value, 'firstName')}
+							onChangeText={(value: string) => this.handleInputChangeText(value, 'firstName')}
 							blurOnSubmit={true}
 							returnKeyType={TRKeyboardKeys.done}
 						/>
@@ -124,7 +122,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							placeholder={'Last name'}
 							placeholderColor={Colors.postText}
 							borderColor={Colors.transparent}
-							onChangeText={(value) => this.handleInputChangeText(value, 'lastName')}
+							onChangeText={(value: string) => this.handleInputChangeText(value, 'lastName')}
 							blurOnSubmit={true}
 							returnKeyType={TRKeyboardKeys.done}
 						/>
@@ -136,7 +134,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							placeholder={'Email'}
 							placeholderColor={Colors.postText}
 							borderColor={Colors.transparent}
-							onChangeText={(value) => this.handleInputChangeText(value, 'email')}
+							onChangeText={(value: string) => this.handleInputChangeText(value, 'email')}
 							keyboardType={TKeyboardKeys.emailAddress}
 							blurOnSubmit={true}
 							returnKeyType={TRKeyboardKeys.done}
