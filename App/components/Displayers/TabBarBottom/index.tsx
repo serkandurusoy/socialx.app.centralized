@@ -7,6 +7,8 @@ import {NavigationScreenProp} from 'react-navigation';
 import {Icons, Sizes} from '../../../theme';
 import style from './style';
 
+import RNFS from 'react-native-fs';
+
 interface TabMenuItem {
 	screenName?: string;
 	image: number;
@@ -164,7 +166,7 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 			mediaType: 'photo',
 		});
 		const retImage = image as PickerImage;
-		this.useSelectedPhoto(retImage.path);
+		this.useSelectedPhoto(retImage);
 	}
 
 	private takeCameraPhoto = async () => {
@@ -173,10 +175,13 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 			mediaType: 'photo',
 		});
 		const retImage = image as PickerImage;
-		this.useSelectedPhoto(retImage.path);
+		this.useSelectedPhoto(retImage);
 	}
 
-	private useSelectedPhoto = (imagePath: string) => {
-		this.props.navigation.navigate('PhotoScreen', {imagePath});
+	private useSelectedPhoto = async (retimage: PickerImage) => {
+		const content = await RNFS.readFile(retimage.path, 'base64');
+		const type = retimage.path.split('.')[1];
+		const image: any = {...retimage, content, type};
+		this.props.navigation.navigate('PhotoScreen', {image});
 	}
 }

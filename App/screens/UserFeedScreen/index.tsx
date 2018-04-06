@@ -113,7 +113,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			arty.push(res);
 		}
 
-		return arty;
+		return arty.sort((a, b) => {
+			a = a.timestamp;
+			b = b.timestamp;
+			return a > b ? -1 : a < b ? 1 : 0;
+		});
 	}
 
 	private showNewWallPostPage = () => {
