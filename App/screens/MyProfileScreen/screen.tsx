@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {GridPhotos} from '../../components/GridPhotos';
-import {ProfileStatistics} from '../../components/ProfileStatistics';
-import {UserAvatar} from '../../components/UserAvatar';
+import {UserAvatar} from '../../components/Avatar';
+import {GridPhotos, ProfileStatistics} from '../../components/Displayers';
 import {Metrics} from '../../theme';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';

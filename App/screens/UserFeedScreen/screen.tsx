@@ -1,7 +1,7 @@
 import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {AvatarImage} from '../../components/AvatarImage';
-import {IWallPostCardProp, WallPostCard} from '../../components/WallPostCard';
+import {AvatarImage} from '../../components/Avatar';
+import {IWallPostCardProp, WallPostCard} from '../../components/Displayers';
 import style from './style';
 
 interface IUserFeedScreenProps {

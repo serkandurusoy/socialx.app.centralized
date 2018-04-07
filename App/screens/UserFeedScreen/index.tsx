@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IWallPostCardProp} from '../../components/WallPostCard';
+import {IWallPostCardProp} from '../../components/Displayers';
 import {Images} from '../../theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
@@ -101,7 +101,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const res = {
 				text: post.text,
-				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash : Images.user_avatar_placeholder,
+				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash :
+				 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
 				fullName: post.owner.username,
 				timestamp: new Date(post.createdAt),
@@ -113,7 +114,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			arty.push(res);
 		}
 
-		return arty;
+		return arty.sort((a, b) => {
+			a = a.timestamp;
+			b = b.timestamp;
+			return a > b ? -1 : a < b ? 1 : 0;
+		});
 	}
 
 	private showNewWallPostPage = () => {

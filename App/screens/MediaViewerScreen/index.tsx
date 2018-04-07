@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {ModalCloseButton} from '../../components/ModalCloseButton';
+import {ModalCloseButton} from '../../components';
 import {DeviceOrientations} from '../../constants';
 import MediaViewerScreenComponent from './screen';
 

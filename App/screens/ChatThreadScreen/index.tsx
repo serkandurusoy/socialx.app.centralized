@@ -3,7 +3,7 @@ import {Image, Text, View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {NavigationScreenProp} from 'react-navigation';
 import uuidv4 from 'uuid/v4';
-import {ScreenHeaderButton} from '../../components/ScreenHeaderButton';
+import {ScreenHeaderButton} from '../../components/Interaction';
 import ChatThreadScreenComponent from './screen';
 import style from './style';
 

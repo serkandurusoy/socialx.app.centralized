@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Metrics, Sizes} from '../../theme/';
+import {Colors, Fonts, Metrics, Sizes} from '../../theme';
 
 const style: any = {
 	bottomLoadingContainer: {

@@ -1,10 +1,19 @@
 import React, {Component} from 'react';
 import {findNodeHandle, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {ModalCloseButton} from '../../components/ModalCloseButton';
-import {ModalTagFriends} from '../../components/ModalTagFriends';
+import {ModalCloseButton, ModalTagFriends} from '../../components/Modals';
 import PhotoScreenComponent from './screen';
 import {SendPostButton} from './SendPostButton';
+
+import {graphql} from 'react-apollo';
+import {addMediaHoc, createPostHoc, userHoc} from '../../graphql';
+import {IUserDataResponse} from '../../types/gql';
+
+import base from '../../config/ipfs';
+import {IBlobData} from '../../lib/ipfs';
+import {addBlob} from '../../utils/ipfs';
+
+import {Images} from '../../theme';
 
 export interface FriendsSearchResult {
 	id: string;
@@ -18,12 +27,15 @@ export interface WallPostPhoto {
 	text?: string;
 	location?: string;
 	taggedFriends?: FriendsSearchResult[];
-	localPhotoURL: string;
+	image: any;
 	includeTaggedFriends: boolean;
 }
 
 interface IPhotoScreenProps {
 	navigation: NavigationScreenProp<any>;
+	data: IUserDataResponse;
+	addMedia: any;
+	createPost: any;
 }
 
 interface IPhotoScreenState {
@@ -74,7 +86,7 @@ const SEARCH_RESULTS_TAG_FRIENDS: FriendsSearchResult[] = [
 	},
 ];
 
-export default class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
+class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	private static navigationOptions = (props: IPhotoScreenProps) => ({
 		title: 'ADD PHOTO',
 		headerLeft: <ModalCloseButton navigation={props.navigation} />,
@@ -99,6 +111,11 @@ export default class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScre
 	}
 
 	public render() {
+		const {data} = this.props;
+		if (data.loading) {
+			// TODO: content load
+			return <View />;
+		}
 		return (
 			<View style={{flex: 1}}>
 				<ModalTagFriends
@@ -113,8 +130,8 @@ export default class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScre
 				/>
 				<PhotoScreenComponent
 					showTagFriendsModal={this.showTagFriendsModal}
-					avatarURL={this.state.avatarURL}
-					localPhotoURL={this.props.navigation.state.params.imagePath}
+					avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : Images.user_avatar_placeholder}
+					localPhotoURL={this.props.navigation.state.params.image.path}
 					taggedFriends={this.state.taggedFriends}
 					ref={(ref) => (this.photoScreen = ref)}
 				/>
@@ -155,20 +172,48 @@ export default class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScre
 		this.setState({friendsSearchResults});
 	}
 
-	private sendPostHandler = () => {
+	private sendPostHandler = async () => {
+		const {addMedia, createPost} = this.props;
 		if (this.photoScreen) {
 			const wallPostDataInScreen = this.photoScreen.getWallPostData();
 			const localPhotoData: Partial<WallPostPhoto> = {
-				localPhotoURL: this.props.navigation.state.params.imagePath,
+				image: this.props.navigation.state.params.image,
 			};
 			if (wallPostDataInScreen.includeTaggedFriends && this.state.taggedFriends.length > 0) {
 				localPhotoData.taggedFriends = this.state.taggedFriends;
 			}
 			const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
 			delete wallPostData.includeTaggedFriends;
-			// TODO: all data is prepared here to create a new wall post
-			// console.log('Now send post with data', wallPostData);
+
+			const {title, text, location, taggedFriends, image} = wallPostData;
+			const {content, size, mime, path} = image;
+
+			const imageName = path.split('/')[path.split('/').length - 2];
+
+			// add image to ipfs
+			let ipfsResp = await addBlob([{filename: imageName, data: content, name: imageName.split('.')[0]}]);
+			ipfsResp = JSON.parse(ipfsResp.data);
+			// parse ipfs response
+			const {Size, Hash} = ipfsResp;
+
+			// create media object on aws
+			const addResp = await addMedia({variables: {hash: Hash, size, Size, type: mime}});
+
+			const mediaId = addResp.data.addMedia.id;
+			// create post
+			if (title) {
+				await createPost({variables: {text: title, Media: mediaId}});
+			} else {
+				await createPost({variables: {Media: mediaId}});
+			}
+
 			this.props.navigation.goBack();
 		}
 	}
 }
+
+const addMediaWrapper = addMediaHoc(PhotoScreen);
+const createPostWrapper = createPostHoc(addMediaWrapper);
+const userWrapper = userHoc(createPostWrapper);
+
+export default userWrapper;

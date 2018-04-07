@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AvatarImage} from '../../components/AvatarImage';
+import {AvatarImage} from '../../components/Avatar';
 import {Colors, Icons} from '../../theme/';
 import {CheckboxButtonWithIcon} from './CheckboxButtonWithIcon';
 import {FriendsSearchResult, WallPostPhoto} from './index';

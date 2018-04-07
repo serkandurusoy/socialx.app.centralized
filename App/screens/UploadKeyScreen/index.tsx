@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {SXButton} from '../../components/Button';
+import {SXButton} from '../../components/Interaction';
 import {Colors, Images} from '../../theme';
 import style from './style';
 

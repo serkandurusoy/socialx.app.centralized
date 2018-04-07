@@ -3,10 +3,10 @@ import {Alert, Keyboard, Text, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
-import {AvatarPicker} from '../../components/AvatarPicker';
-import {SXButton} from '../../components/Button';
-import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
-import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
+import {AvatarPicker} from '../../components/Avatar';
+import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
+import {SXButton} from '../../components/Interaction';
+import {ModalInputSMSCode} from '../../components/Modals';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
@@ -96,7 +96,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
 						onSubmitPressed={() => this.handleInputSubmitPressed('name')}
-						onChangeText={(value) => this.handleInputChangeText(value, 'email')}
+						onChangeText={(value: string) => this.handleInputChangeText(value, 'email')}
 						keyboardType={TKeyboardKeys.emailAddress}
 						ref={(ref: any) => this.updateInputRef(ref, 'email')}
 					/>
@@ -110,7 +110,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
 						onSubmitPressed={() => this.handleInputSubmitPressed('username')}
-						onChangeText={(value) => this.handleInputChangeText(value, 'name')}
+						onChangeText={(value: string) => this.handleInputChangeText(value, 'name')}
 						ref={(ref: any) => this.updateInputRef(ref, 'name')}
 					/>
 				</View>
@@ -123,7 +123,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
 						onSubmitPressed={() => this.handleInputSubmitPressed('phone')}
-						onChangeText={(value) => this.handleInputChangeText(value, 'username')}
+						onChangeText={(value: string) => this.handleInputChangeText(value, 'username')}
 						ref={(ref: any) => this.updateInputRef(ref, 'username')}
 					/>
 				</View>
@@ -136,7 +136,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
 						onSubmitPressed={() => this.handleInputSubmitPressed('password')}
-						onChangeText={(value) => this.handleInputChangeText(value, 'phone')}
+						onChangeText={(value: string) => this.handleInputChangeText(value, 'phone')}
 						ref={(ref: any) => this.updateInputRef(ref, 'phone')}
 					/>
 				</View>
@@ -150,7 +150,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
 						onSubmitPressed={() => this.handleInputSubmitPressed('confirmPassword')}
-						onChangeText={(value) => this.handleInputChangeText(value, 'password')}
+						onChangeText={(value: string) => this.handleInputChangeText(value, 'password')}
 						ref={(ref: any) => this.updateInputRef(ref, 'password')}
 					/>
 				</View>
@@ -164,7 +164,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.go}
 						onSubmitPressed={this.startRegister}
-						onChangeText={(value) => this.handleInputChangeText(value, 'confirmPassword')}
+						onChangeText={(value: string) => this.handleInputChangeText(value, 'confirmPassword')}
 						ref={(ref: any) => this.updateInputRef(ref, 'confirmPassword')}
 						blurOnSubmit={true}
 					/>
