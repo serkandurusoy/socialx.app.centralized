@@ -101,7 +101,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const res = {
 				text: post.text,
-				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash : Images.user_avatar_placeholder,
+				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash :
+				 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
 				fullName: post.owner.username,
 				timestamp: new Date(post.createdAt),

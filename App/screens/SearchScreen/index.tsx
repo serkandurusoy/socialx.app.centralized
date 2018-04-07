@@ -234,7 +234,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					kind: SearchResultKind.NotFriend,
 					fullName: current.name,
 					username: current.username,
-					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : Images.user_avatar_placeholder,
+					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash :
+					'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				});
 			}
 			console.log(results);

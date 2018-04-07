@@ -74,7 +74,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 
-		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : Images.user_avatar_placeholder;
+		const userAvatar = avatar ? base.ipfs_URL + avatar.hash :
+		'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
 		this.setState({
 			numberOfPhotos: userImages,
