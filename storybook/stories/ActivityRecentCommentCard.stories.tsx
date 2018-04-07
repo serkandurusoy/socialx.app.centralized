@@ -4,7 +4,7 @@ import React from 'react';
 import {
 	ActivityRecentCommentCard,
 	ActivityRecentCommentCardPosts,
-} from '../../App/components/ActivityRecentCommentCard';
+} from '../../App/components/Activity';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 

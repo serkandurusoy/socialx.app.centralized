@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {AvatarImage} from '../../components/AvatarImage';
-import {WallPostCard} from '../../components/WallPostCard';
+import {AvatarImage} from '../../components/Avatar';
+import {WallPostCard} from '../../components/Displayers';
 import style from './style';
 
 interface IGroupFeedScreenProps {

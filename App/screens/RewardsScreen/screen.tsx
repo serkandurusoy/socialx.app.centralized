@@ -12,8 +12,8 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import {ButtonSizes, SXButton} from '../../components/Button';
-import {MessagingTabButton} from '../../components/MessagingTabButton';
+import {ButtonSizes, SXButton} from '../../components/Interaction';
+import {MessagingTabButton} from '../../components/Messaging';
 import {Colors, colorWithAlpha} from '../../theme';
 import {ChartListDataRow} from './Components/ChartListDataRow';
 import {PieChartComponent} from './Components/PieChart';

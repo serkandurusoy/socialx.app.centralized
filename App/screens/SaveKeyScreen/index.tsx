@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {SXButton} from '../../components/Button';
-import {ModalConfirmation} from '../../components/ModalConfirmation';
+import {SXButton} from '../../components/Interaction';
+import {ModalConfirmation} from '../../components/Modals';
 import {Colors, Images} from '../../theme';
 import style from './style';
 

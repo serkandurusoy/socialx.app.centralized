@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
-import {SearchFilterButton} from '../../components/SearchFilterButton';
-import {SearchResultEntry} from '../../components/SearchResultEntry';
+import {SearchFilterButton, SearchResultEntry} from '../../components';
 import {Icons, Metrics} from '../../theme/';
 import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
 import style from './style';

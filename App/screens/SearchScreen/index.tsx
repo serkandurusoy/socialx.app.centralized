@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {findNodeHandle, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {ModalCreateGroup} from '../../components/ModalCreateGroup';
-import {ModalInvitePeople} from '../../components/ModalInvitePeople';
-import {SearchHeader} from '../../components/SearchHeader';
+import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from '../../components';
 import SearchScreenComponent from './screen';
 
 import base from '../../config/ipfs';

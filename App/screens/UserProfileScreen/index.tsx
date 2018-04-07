@@ -2,8 +2,8 @@ import get from 'lodash/get';
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {ToggleIconButton} from '../../components/ToggleIconButton';
-import {IWallPostCardProp} from '../../components/WallPostCard';
+import {IWallPostCardProp} from '../../components/Displayers';
+import {ToggleIconButton} from '../../components/Interaction';
 import {Icons} from '../../theme/';
 import UserProfileScreenComponent from './screen';
 

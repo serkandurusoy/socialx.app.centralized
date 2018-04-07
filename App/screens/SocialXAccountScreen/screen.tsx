@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {SXButton} from '../../components/Button';
-import {AccountCurrencyData, SocialXAccountCurrencyItem} from '../../components/SocialXAccountCurrencyItem';
-import {SocialXAccountTitleCard} from '../../components/SocialXAccountTitleCard';
+import {AccountCurrencyData, SocialXAccountCurrencyItem, SocialXAccountTitleCard} from '../../components/Displayers';
+import {SXButton} from '../../components/Interaction';
 import {Colors} from '../../theme/';
 import style from './style';
 

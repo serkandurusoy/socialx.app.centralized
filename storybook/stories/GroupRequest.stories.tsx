@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {GroupRequest} from '../../App/components/GroupRequest';
+import {GroupRequest} from '../../App/components/Displayers';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 

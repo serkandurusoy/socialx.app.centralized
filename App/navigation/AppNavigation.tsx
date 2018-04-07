@@ -2,7 +2,7 @@ import React from 'react';
 import {StackNavigator, TabNavigator} from 'react-navigation';
 import LaunchScreen from '../screens/LaunchScreen';
 
-import {TabBarBottom} from '../components/TabBarBottom';
+import {TabBarBottom} from '../components/Displayers';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
