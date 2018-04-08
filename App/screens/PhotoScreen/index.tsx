@@ -116,6 +116,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 			// TODO: content load
 			return <View />;
 		}
+		const placeHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 		return (
 			<View style={{flex: 1}}>
 				<ModalTagFriends
@@ -130,7 +131,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				/>
 				<PhotoScreenComponent
 					showTagFriendsModal={this.showTagFriendsModal}
-					avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : Images.user_avatar_placeholder}
+					avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : placeHolder}
 					localPhotoURL={this.props.navigation.state.params.image.path}
 					taggedFriends={this.state.taggedFriends}
 					ref={(ref) => (this.photoScreen = ref)}
