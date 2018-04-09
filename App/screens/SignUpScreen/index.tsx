@@ -79,10 +79,10 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					resendHandler={this.smsCodeResendHandler}
 					phoneNumber={this.state.phone}
 				/>
-				<View style={style.buttonContainer}>
+				{/* <View style={style.buttonContainer}>
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
 				</View>
-				<Text style={style.orText}>{'or'}</Text>
+				<Text style={style.orText}>{'or'}</Text> */}
 				<View style={style.avatarPickerContainer}>
 					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
 				</View>

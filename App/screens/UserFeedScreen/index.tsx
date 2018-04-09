@@ -32,20 +32,20 @@ interface IUserFeedScreenState {
 	refreshing: boolean;
 }
 
-const INITIAL_USER_POSTS: IWallPostCardProp[] = [
-	{
-		title: 'Post title here',
-		text: 'Sample existing post text',
-		location: 'Tower Bridge, London',
-		smallAvatar: 'https://placeimg.com/110/110/people',
-		fullName: 'Ionut Movila',
-		timestamp: new Date(),
-		numberOfLikes: 0,
-		numberOfSuperLikes: 0,
-		numberOfComments: 0,
-		numberOfWalletCoins: 0,
-	},
-];
+// const INITIAL_USER_POSTS: IWallPostCardProp[] = [
+// 	{
+// 		title: 'Post title here',
+// 		text: 'Sample existing post text',
+// 		location: 'Tower Bridge, London',
+// 		smallAvatar: 'https://placeimg.com/110/110/people',
+// 		fullName: 'Ionut Movila',
+// 		timestamp: new Date(),
+// 		numberOfLikes: 0,
+// 		numberOfSuperLikes: 0,
+// 		numberOfComments: 0,
+// 		numberOfWalletCoins: 0,
+// 	},
+// ];
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
@@ -53,7 +53,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public state = {
-		wallPosts: INITIAL_USER_POSTS,
+		wallPosts: [],
 		refreshing: false,
 	};
 
@@ -98,8 +98,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		for (let i = 0; i < Posts.allPosts.length; i++) {
 			const post = Posts.allPosts[i];
+			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
-			const res = {
+			const res: IWallPostCardProp = {
 				text: post.text,
 				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash :
 				 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
@@ -110,10 +111,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				numberOfSuperLikes: 0,
 				numberOfComments: 0,
 				numberOfWalletCoins: 0,
+				// TODO: append all media to this with the index of the image
+				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
 			};
 			arty.push(res);
 		}
 
+		// sort posts by time desc (most recent)
 		return arty.sort((a, b) => {
 			a = a.timestamp;
 			b = b.timestamp;
@@ -219,6 +223,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.setState({refreshing: true});
 		await Posts.refetch();
 		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
+	}
+
+	private onPhotoPressHandler = (index: number, photos: any) => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			photos,
+			startIndex: index,
+		});
 	}
 }
 

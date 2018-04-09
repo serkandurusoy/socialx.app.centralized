@@ -23,7 +23,8 @@
     ],
     "jsx-no-lambda": false,
     "no-implicit-dependencies": false,
-    "prefer-for-of": false
+    "prefer-for-of": false,
+    "jsx-no-multiline-js": false
   },
   "include": [
     "App/**/*.ts",

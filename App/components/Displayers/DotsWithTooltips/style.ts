@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Fonts, Sizes} from '../../theme/';
+import {Fonts, Sizes} from '../../../theme/';
 
 const style: any = {
 	container: {
