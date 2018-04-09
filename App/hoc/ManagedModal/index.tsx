@@ -1,18 +1,16 @@
-// ManagedModal
-
 import React from 'react';
 import {Keyboard, Platform, View} from 'react-native';
 import {OS_TYPES} from '../../constants';
 import {ModalManager} from './manager';
 
-interface IManagedModal {
+interface IManagedModalProps {
 	afterDismiss?: () => void;
 	visiblePropName: string;
 }
 
 export const withManagedTransitions = (CustomModal: any) => {
-	return class extends React.Component<IManagedModal> {
-		public static getDerivedStateFromProps(nextProps: IManagedModal) {
+	return class extends React.Component<IManagedModalProps> {
+		public static getDerivedStateFromProps(nextProps: IManagedModalProps) {
 			const visiblePropName = nextProps.visiblePropName;
 			if (nextProps[visiblePropName]) {
 				ModalManager.toggleModalShow(true);
@@ -20,7 +18,7 @@ export const withManagedTransitions = (CustomModal: any) => {
 			return null;
 		}
 
-		private static defaultProps: Partial<IManagedModal> = {
+		private static defaultProps: Partial<IManagedModalProps> = {
 			visiblePropName: 'visible',
 		};
 

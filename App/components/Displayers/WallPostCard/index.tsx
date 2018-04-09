@@ -1,8 +1,17 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+<<<<<<< HEAD:App/components/WallPostCard/index.tsx
+import {OS_TYPES} from '../../constants';
+import {ModalManager} from '../../hoc/ManagedModal/manager';
+import {Colors, Sizes} from '../../theme';
+import Icons from '../../theme/Icons';
+import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
+import {IReportData, ModalReportProblem} from '../ModalReportProblem';
+=======
 import {Colors, Sizes} from '../../../theme';
+>>>>>>> 302b2261ea9f2e08a516408ddf8cf5ea54ab6b79:App/components/Displayers/WallPostCard/index.tsx
 import style from './style';
 import {WallPostActions} from './WallPostActions';
 import {WallPostComments} from './WallPostComments';
@@ -28,11 +37,13 @@ export interface IWallPostCardProp {
 
 export interface IWallPostCardState {
 	fullDescriptionVisible: boolean;
+	modalVisibleReportProblem: boolean;
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public state = {
 		fullDescriptionVisible: false,
+		modalVisibleReportProblem: false,
 	};
 
 	public render() {
@@ -40,6 +51,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
 		return (
 			<View style={style.container}>
+				<ModalReportProblem
+					visible={this.state.modalVisibleReportProblem}
+					confirmHandler={this.reportProblemHandler}
+					declineHandler={this.toggleDeclineReportModal}
+				/>
 				<View style={style.topContainer}>
 					<Image source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
 					<View style={style.topRightContainer}>
@@ -50,6 +66,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 						</Text>
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
+					<TooltipDots
+						items={this.getTooltipItems()}
+						deleteHandler={this.tooltipsDeletePressedHandler}
+						reportHandler={this.tooltipsReportPressedHandler}
+					/>
 				</View>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
@@ -68,6 +89,17 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				<WallPostComments />
 			</View>
 		);
+	}
+
+	private renderWallPostImage = () => {
+		if (this.props.imageSource) {
+			return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
+		}
+		return null;
+	}
+
+	private shareButtonPressedHandler = () => {
+		return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
 	}
 
 	private renderTaggedFriends = () => {
@@ -104,9 +136,13 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					</Text>
 				),
 				(
-					<View style={style.locationPin} key={1}>
-						<Icon name={'md-pin'} size={Sizes.smartHorizontalScale(12)} color={Colors.postText}/>
-					</View>
+					<Icon
+						name={'md-pin'}
+						size={Sizes.smartHorizontalScale(12)}
+						color={Colors.postText}
+						style={style.locationPin}
+						key={1}
+					/>
 				),
 				<Text key={2}>{' ' + this.props.location}</Text>,
 			];
@@ -114,17 +150,23 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	}
 
-	private renderWallPostImage = () => {
-		if (this.props.imageSource) {
-			return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
-		}
-		return null;
+	private tooltipsReportPressedHandler = () => {
+		ModalManager.safeRunAfterModalClosed(() => {
+			this.setState({
+				modalVisibleReportProblem: true,
+			});
+		});
 	}
 
 	private renderPostDescription = () => {
 		const {text} = this.props;
 		if (text) {
-			const hasMore = text.length > DESCRIPTION_TEXT_LENGTH_SHORT && !this.state.fullDescriptionVisible;
+			// due to an android limitation nesting a button in the end of the text is not possible, see
+			// https://facebook.github.io/react-native/docs/text.html#nested-views-ios-only
+			const hasMore =
+				text.length > DESCRIPTION_TEXT_LENGTH_SHORT &&
+				!this.state.fullDescriptionVisible &&
+				Platform.OS === OS_TYPES.iOS;
 			const textToRender = hasMore ? text.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT) + '...' : text;
 			const showMoreButton = hasMore ? (
 				<TouchableOpacity onPress={this.toggleShowFullDescription}>
@@ -160,6 +202,36 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	}
 
+	private toggleDeclineReportModal = () => {
+		this.setState({
+			modalVisibleReportProblem: !this.state.modalVisibleReportProblem,
+		});
+	}
+
+	private getTooltipItems = (): TooltipItem[] => {
+		return [
+			{
+				label: 'Report a Problem',
+				icon: Icons.iconReport,
+				actionHandler: this.tooltipsReportPressedHandler,
+			},
+			{
+				label: 'Delete Post',
+				icon: Icons.iconDelete,
+				actionHandler: this.tooltipsDeletePressedHandler,
+			},
+		];
+	}
+
+	private tooltipsDeletePressedHandler = () => {
+		// console.log('Delete this post');
+	}
+
+	private reportProblemHandler = (data: IReportData) => {
+		this.toggleDeclineReportModal();
+		// console.log('Report a problem', data);
+	}
+
 	private likeButtonPressedHandler = () => {
 		alert('Like this post');
 	}
@@ -174,9 +246,5 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private walletCoinsButtonPressedHandler = () => {
 		alert('Go to my wallet');
-	}
-
-	private shareButtonPressedHandler = () => {
-		alert('Share this post');
 	}
 }

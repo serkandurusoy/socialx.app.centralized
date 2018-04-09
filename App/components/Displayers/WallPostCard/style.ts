@@ -13,12 +13,13 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
 	},
 	smallAvatarImage: {
+		// flex: 1,
 		width: Sizes.smartHorizontalScale(40),
 		height: Sizes.smartHorizontalScale(40),
 		borderRadius: Sizes.smartHorizontalScale(40) / 2,
 	},
 	topRightContainer: {
-		flex: 1,
+		flex: 11,
 		paddingHorizontal: Sizes.smartHorizontalScale(16),
 		justifyContent: 'center',
 	},

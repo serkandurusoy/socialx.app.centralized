@@ -25,7 +25,10 @@ const INITIAL_USER_POSTS = [
 		numberOfWalletCoins: 5,
 	},
 	{
+		title: 'Post title',
 		text: 'Hey, my first post to SocialX network!',
+		taggedFriends: [{fullName: 'Isabelle Wilson'}, {fullName: 'Teddy Decola'}, {fullName: 'Michiko Bisson'}],
+		location: 'Panselelor 47, Timisoara',
 		imageSource: 'https://placeimg.com/640/550/any',
 		smallAvatar: 'https://placeimg.com/120/120/people',
 		fullName: 'Ionut Movila',

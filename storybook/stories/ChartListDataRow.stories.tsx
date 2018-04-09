@@ -5,7 +5,7 @@ import React from 'react';
 import {ChartListDataRow} from '../../App/screens/RewardsScreen/Components/ChartListDataRow';
 import CenterView from '../CenterView';
 
-storiesOf('ChartListDataRow')
+storiesOf('ChartListDataRow', module)
 	.addDecorator((getStory: any) => <CenterView>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
 	.add('editable', () => {
