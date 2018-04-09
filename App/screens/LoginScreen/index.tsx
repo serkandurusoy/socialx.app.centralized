@@ -87,12 +87,12 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				<TouchableOpacity onPress={this.navigateToPasswordForgotScreen} style={style.forgotPassword}>
 					<Text style={style.forgotPasswordText}>{'Forgot your password'}</Text>
 				</TouchableOpacity>
-				<SXButton
+				{/* <SXButton
 					label={'Or use unlock file'}
 					onPress={this.selectUnlockFileHandler}
 					borderColor={Colors.transparent}
 					disabled={true}
-				/>
+				/> */}
 				<View style={style.noAccountContainer}>
 					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
 					<TouchableOpacity onPress={this.navigateToSignUpScreen}>

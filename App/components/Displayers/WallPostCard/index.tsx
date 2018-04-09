@@ -2,16 +2,12 @@ import moment from 'moment';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-<<<<<<< HEAD:App/components/WallPostCard/index.tsx
-import {OS_TYPES} from '../../constants';
-import {ModalManager} from '../../hoc/ManagedModal/manager';
-import {Colors, Sizes} from '../../theme';
-import Icons from '../../theme/Icons';
-import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
-import {IReportData, ModalReportProblem} from '../ModalReportProblem';
-=======
+import {OS_TYPES} from '../../../constants';
+import {ModalManager} from '../../../hoc/ManagedModal/manager';
 import {Colors, Sizes} from '../../../theme';
->>>>>>> 302b2261ea9f2e08a516408ddf8cf5ea54ab6b79:App/components/Displayers/WallPostCard/index.tsx
+import Icons from '../../../theme/Icons';
+import {IReportData, ModalReportProblem} from '../../Modals';
+import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
 import {WallPostComments} from './WallPostComments';
@@ -33,6 +29,7 @@ export interface IWallPostCardProp {
 	numberOfSuperLikes: number;
 	numberOfComments: number;
 	numberOfWalletCoins: number;
+	onImageClick: () => void;
 }
 
 export interface IWallPostCardState {
@@ -93,7 +90,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private renderWallPostImage = () => {
 		if (this.props.imageSource) {
-			return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
+			return (
+				<TouchableOpacity onPress={() => this.props.onImageClick()}>
+					<Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />
+				</TouchableOpacity>
+			);
 		}
 		return null;
 	}
