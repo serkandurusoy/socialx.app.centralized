@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
-import {GridPhotos} from '../../components/GridPhotos';
-import {ProfileStatistics} from '../../components/ProfileStatistics';
-import {UserAvatar} from '../../components/UserAvatar';
-import {IWallPostCardProp, WallPostCard} from '../../components/WallPostCard';
+import {UserAvatar} from '../../components/Avatar';
+import {GridPhotos, IWallPostCardProp, ProfileStatistics, WallPostCard} from '../../components/Displayers';
 import {Metrics} from '../../theme';
 import style from './style';
 

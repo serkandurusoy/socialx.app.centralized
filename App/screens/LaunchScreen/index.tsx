@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {SXButton} from '../../components/Button';
-import {SXGradientButton} from '../../components/GradientButton';
-import {TextGradient} from '../../components/TextGradient';
+import {SXButton, SXGradientButton, TextGradient} from '../../components';
 import {Colors, Images} from '../../theme';
 import style from './style';
 

@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {ModalInvitePeople} from '../../App/components/ModalInvitePeople';
+import {ModalInvitePeople} from '../../App/components/Modals';
 import {Colors} from '../../App/theme';
 import SXBlurView from '../SXBlurView';
 

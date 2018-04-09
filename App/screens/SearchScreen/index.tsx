@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {findNodeHandle, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {ModalCreateGroup} from '../../components/ModalCreateGroup';
-import {ModalInvitePeople} from '../../components/ModalInvitePeople';
-import {SearchHeader} from '../../components/SearchHeader';
+import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from '../../components';
 import SearchScreenComponent from './screen';
+
+import base from '../../config/ipfs';
 
 import {searchUsersHoc} from '../../graphql';
 
@@ -234,9 +234,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					kind: SearchResultKind.NotFriend,
 					fullName: current.name,
 					username: current.username,
-					avatarURL: current.avatar
-						? 'http://testnet.socialx.network:8080/ipfs/' + current.avatar.hash
-						: Images.user_avatar_placeholder,
+					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash :
+					'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				});
 			}
 			console.log(results);

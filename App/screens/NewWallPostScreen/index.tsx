@@ -6,10 +6,10 @@ import RNFS from 'react-native-fs';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
 import {NavigationScreenProp} from 'react-navigation';
-import {AvatarImage} from '../../components/AvatarImage';
-import {ButtonSizes, SXButton} from '../../components/Button';
-import {ModalCloseButton} from '../../components/ModalCloseButton';
-import {SXTextInput} from '../../components/TextInput';
+import {AvatarImage} from '../../components/Avatar';
+import {SXTextInput} from '../../components/Inputs';
+import {ButtonSizes, SXButton} from '../../components/Interaction';
+import {ModalCloseButton} from '../../components/Modals';
 import {Colors, Icons, Sizes} from '../../theme';
 import style from './style';
 

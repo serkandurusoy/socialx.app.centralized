@@ -2,18 +2,18 @@ import {applyMiddleware, compose, createStore, Reducer} from 'redux';
 
 import axios from 'axios';
 import axiosMiddle from 'redux-axios-middleware';
-import sagaMiddlewareFactory, {SagaIterator} from 'redux-saga';
+import ReduxThunk from 'redux-thunk';
 
-export default (rootReducer: Reducer<any>, rootSaga: () => SagaIterator) => {
+export default (rootReducer: Reducer<any>) => {
 	const middleware = [];
 	const enhancers = [];
 
-	const sagaMiddleware = sagaMiddlewareFactory();
+	const thunk = ReduxThunk;
 
 	const axiosClient = axios.create({responseType: 'json'});
 	const axiosMiddleware = axiosMiddle(axiosClient);
 
-	middleware.push(sagaMiddleware);
+	middleware.push(thunk);
 	middleware.push(axiosMiddleware);
 
 	enhancers.push(applyMiddleware(...middleware));
@@ -22,12 +22,5 @@ export default (rootReducer: Reducer<any>, rootSaga: () => SagaIterator) => {
 
 	const store = createStore(rootReducer, composeEnhancers(...enhancers));
 
-	// kick off root saga
-	const sagasManager = sagaMiddleware.run(rootSaga);
-
-	return {
-		store,
-		sagasManager,
-		sagaMiddleware,
-	};
+	return store;
 };

@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Platform} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {TitleWithSubtitle} from '../../components/TitleWithSubtitle';
-import {IWallPostCardProp} from '../../components/WallPostCard';
+import {IWallPostCardProp, TitleWithSubtitle} from '../../components/Displayers';
 import {OS_TYPES} from '../../constants';
 import {Colors, Images} from '../../theme';
 import {NewWallPostData} from '../NewWallPostScreen';

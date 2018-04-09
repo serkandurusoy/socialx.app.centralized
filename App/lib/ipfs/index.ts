@@ -15,7 +15,7 @@ export interface IBlobData {
 }
 
 export default class Ipfslib {
-	private config: IProviderParams = {host: '127.0.0.1', port: '5001', protocol: 'http', root: '/api/v0'};
+	private config: IProviderParams = {host: '207.154.211.163', port: '8080', protocol: 'http', root: '/api/v0'};
 	private responseData: any;
 
 	constructor(params?: IProviderParams) {

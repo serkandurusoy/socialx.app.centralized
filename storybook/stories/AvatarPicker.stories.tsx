@@ -1,6 +1,6 @@
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {AvatarPicker} from '../../App/components/AvatarPicker';
+import {AvatarPicker} from '../../App/components/Avatar';
 import {Colors, Images} from '../../App/theme';
 import CenterView from '../CenterView';
 

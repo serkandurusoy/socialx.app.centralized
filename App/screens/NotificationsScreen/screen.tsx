@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
-import {ActivityRecentCommentCard} from '../../components/ActivityRecentCommentCard';
-import {ActivitySuperLikedCard} from '../../components/ActivitySuperLikedCard';
-import {FriendRequest} from '../../components/FriendRequest';
-import {GroupRequest} from '../../components/GroupRequest';
+import {ActivityRecentCommentCard, ActivitySuperLikedCard} from '../../components/Activity';
+import {FriendRequest, GroupRequest} from '../../components/Displayers';
 import Icons from '../../theme/Icons';
 import {NOTIFICATION_TYPES} from './index';
 import style from './style';

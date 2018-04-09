@@ -2,7 +2,7 @@ import {boolean, select, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import invert from 'lodash/invert';
 import React from 'react';
-import {SearchResultEntry} from '../../App/components/SearchResultEntry';
+import {SearchResultEntry} from '../../App/components/Search';
 import {SearchResultKind} from '../../App/screens/SearchScreen';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';

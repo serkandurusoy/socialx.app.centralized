@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IWallPostCardProp} from '../../components/WallPostCard';
+import {IWallPostCardProp} from '../../components/Displayers';
 import {Images} from '../../theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
@@ -12,6 +12,8 @@ import {IAllPostsDataResponse, IPostsProps, IUserDataResponse} from '../../types
 
 import {IBlobData} from '../../lib/ipfs';
 import {addBlob} from '../../utils/ipfs';
+
+import base from '../../config/ipfs';
 
 import {IMediaRec} from './types';
 
@@ -70,9 +72,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return <View />;
 		}
 		// TODO: make better
-		const avatarUri = data.user.avatar
-			? {uri: 'http://testnet.socialx.network:8080/ipfs/' + data.user.avatar.hash}
-			: Images.user_avatar_placeholder;
+		const avatarUri = data.user.avatar ? {uri: base.ipfs_URL + data.user.avatar.hash} : Images.user_avatar_placeholder;
 
 		return (
 			<UserFeedScreenComponent
@@ -98,16 +98,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		for (let i = 0; i < Posts.allPosts.length; i++) {
 			const post = Posts.allPosts[i];
-			const media = post.Media
-				? post.Media.length > 0 ? 'http://testnet.socialx.network:8080/ipfs/' + post.Media[0].hash : undefined
-				: undefined;
+			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const res = {
 				text: post.text,
-				smallAvatar: post.owner.avatar
-					? 'http://testnet.socialx.network:8080/ipfs/' + post.owner.avatar.hash
-					: Images.user_avatar_placeholder,
+				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash :
+				 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
-				fullName: data.user.name,
+				fullName: post.owner.username,
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: 0,
 				numberOfSuperLikes: 0,
@@ -117,12 +114,16 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			arty.push(res);
 		}
 
-		return arty;
+		return arty.sort((a, b) => {
+			a = a.timestamp;
+			b = b.timestamp;
+			return a > b ? -1 : a < b ? 1 : 0;
+		});
 	}
 
 	private showNewWallPostPage = () => {
 		const avatarUri = this.props.data.user.avatar
-			? {uri: 'http://testnet.socialx.network:8080/ipfs/' + this.props.data.user.avatar.hash}
+			? {uri: base.ipfs_URL + this.props.data.user.avatar.hash}
 			: Images.user_avatar_placeholder;
 		this.props.navigation.navigate('NewWallPostScreen', {
 			fullName: this.props.data.user.name,

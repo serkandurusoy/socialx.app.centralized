@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {AccountCurrencyData} from '../../components/SocialXAccountCurrencyItem';
+import {AccountCurrencyData} from '../../components/Displayers';
 import {CoinSymbol} from '../../constants/';
 import SocialXAccountScreenComponent from './screen';
 

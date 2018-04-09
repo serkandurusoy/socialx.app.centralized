@@ -3,9 +3,7 @@ import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {SXButton} from '../../components/Button';
-import {ModalInputSMSCode} from '../../components/ModalInputSMSCode';
-import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/TextInput';
+import {ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components';
 import {Colors} from '../../theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';

@@ -2,7 +2,7 @@ import {text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 
 import React from 'react';
-import {SettingCheckbox} from '../../App/components/SettingCheckbox';
+import {SettingCheckbox} from '../../App/components/Inputs';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 

@@ -1,7 +1,7 @@
 import {boolean, color, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {UserAvatar} from '../../App/components/UserAvatar';
+import {UserAvatar} from '../../App/components/Avatar';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 

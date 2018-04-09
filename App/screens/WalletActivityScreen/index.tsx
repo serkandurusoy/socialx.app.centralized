@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {TrendOptions} from '../../components/MyWalletInfo';
-import {TransactionData, TransactionType} from '../../components/TransactionItem';
+import {TransactionData, TransactionType, TrendOptions} from '../../components/Displayers';
 import {CoinSymbol} from '../../constants/';
 import WalletActivityScreenComponent from './screen';
 

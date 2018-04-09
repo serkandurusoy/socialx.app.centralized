@@ -2,7 +2,7 @@ import {boolean, color, number, select, text, withKnobs} from '@storybook/addon-
 import {storiesOf} from '@storybook/react-native';
 
 import React from 'react';
-import {ButtonSizes, SXButton} from '../../App/components/Button';
+import {ButtonSizes, SXButton} from '../../App/components/Interaction';
 import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 

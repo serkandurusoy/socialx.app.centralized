@@ -8,7 +8,7 @@ import AppNavigation from './AppNavigation';
 import {createReactNavigationReduxMiddleware, createReduxBoundAddListener} from 'react-navigation-redux-helpers';
 
 import {Root} from 'native-base';
-import {ModalActivityIndicator} from '../components/ModalActivityIndicator';
+import {ModalActivityIndicator} from '../components/Modals';
 
 const middleware: any = createReactNavigationReduxMiddleware('root', (state: any) => state.nav);
 const addListener: any = createReduxBoundAddListener('root');
