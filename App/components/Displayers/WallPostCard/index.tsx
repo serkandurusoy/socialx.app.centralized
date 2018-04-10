@@ -63,11 +63,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 						</Text>
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
-					<TooltipDots
-						items={this.getTooltipItems()}
-						deleteHandler={this.tooltipsDeletePressedHandler}
-						reportHandler={this.tooltipsReportPressedHandler}
-					/>
+					<TooltipDots items={this.getTooltipItems()} />
 				</View>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}

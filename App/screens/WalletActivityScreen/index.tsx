@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {TransactionData, TransactionType, TrendOptions} from '../../components/Displayers';
 import {CoinSymbol} from '../../constants/';
 import WalletActivityScreenComponent from './screen';
@@ -65,7 +65,11 @@ export interface IWalletActivityScreenState {
 	hasMore: boolean;
 }
 
-export default class WalletActivityScreen extends Component<any, IWalletActivityScreenState> {
+export interface IWalletActivityScreenProps {
+	navigation: NavigationScreenProp<any>;
+}
+
+export default class WalletActivityScreen extends Component<IWalletActivityScreenProps, IWalletActivityScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'SOCIALX WALLET',
 	};
@@ -96,7 +100,7 @@ export default class WalletActivityScreen extends Component<any, IWalletActivity
 	}
 
 	private onViewAccountHandler = () => {
-		alert('onViewAccountHandler');
+		this.props.navigation.navigate('SocialXAccountScreen');
 	}
 
 	private refreshDataHandler = () => {

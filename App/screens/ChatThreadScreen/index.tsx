@@ -72,6 +72,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 			return null;
 		},
 		headerRight: <ScreenHeaderButton iconName={'md-call'} onPress={() => ChatThreadScreen.sampleMethod(props)} />,
+		headerLeft: <View />,
 	})
 
 	private static sampleMethod(props: any) {

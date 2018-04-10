@@ -178,10 +178,10 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 		this.useSelectedPhoto(retImage);
 	}
 
-	private useSelectedPhoto = async (retimage: PickerImage) => {
-		const content = await RNFS.readFile(retimage.path, 'base64');
-		const type = retimage.path.split('.')[1];
-		const image: any = {...retimage, content, type};
+	private useSelectedPhoto = async (retImage: PickerImage) => {
+		const content = await RNFS.readFile(retImage.path, 'base64');
+		const type = retImage.path.split('.')[1];
+		const image: any = {...retImage, content, type};
 		this.props.navigation.navigate('PhotoScreen', {image});
 	}
 }

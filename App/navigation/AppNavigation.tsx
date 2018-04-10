@@ -27,20 +27,46 @@ import WalletActivityScreen from '../screens/WalletActivityScreen';
 import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
 
+const navOptionsDefault = {
+	headerStyle: styles.header,
+	headerTintColor: Colors.white, // color for screen title and back button
+	headerTitleStyle: ApplicationStyles.screenHeader,
+	headerBackTitle: null,
+	gesturesEnabled: false,
+};
+
+const getSingleScreenStack = (routeName: string, screen: any) => {
+	const routeConfigMap: any = {};
+	routeConfigMap[routeName] = {screen};
+	return StackNavigator(routeConfigMap, {
+		navigationOptions: navOptionsDefault,
+	});
+};
+
+const MyProfileStackNavigator = StackNavigator(
+	{
+		MyProfileScreen: {screen: MyProfileScreen},
+		SettingsScreen: {screen: SettingsScreen},
+		WalletActivityScreen: {screen: WalletActivityScreen},
+		SocialXAccountScreen: {screen: SocialXAccountScreen},
+	},
+	{
+		navigationOptions: navOptionsDefault,
+	},
+);
+
 const MainScreenTabNavigation = TabNavigator(
 	{
-		UserFeedTab: {screen: UserFeedScreen},
-		SearchTab: {screen: SearchScreen},
-		PhotoTab: {screen: PhotoScreen},
-		NotificationsTab: {screen: NotificationsScreen},
-		MyProfileTab: {screen: MyProfileScreen},
+		UserFeedTab: getSingleScreenStack('UserFeedScreen', UserFeedScreen),
+		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
+		MyProfileTab: {screen: MyProfileStackNavigator},
 	},
 	{
 		tabBarPosition: 'bottom',
 		animationEnabled: true,
 		navigationOptions: {
-			headerTitleStyle: ApplicationStyles.screenHeader,
-			headerLeft: null,
+			header: null,
 		},
 		lazy: true,
 		swipeEnabled: false,
@@ -73,11 +99,8 @@ const PrimaryNav = StackNavigator(
 		MainScreen: {screen: MainScreenWithModal},
 		MessagingScreen: {screen: MessagingScreen},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
-		SettingsScreen: {screen: SettingsScreen}, // TODO: later to be moved!
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
-		WalletActivityScreen: {screen: WalletActivityScreen}, // TODO: later to be moved!
 		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
-		SocialXAccountScreen: {screen: SocialXAccountScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
@@ -85,13 +108,7 @@ const PrimaryNav = StackNavigator(
 	{
 		headerMode: 'screen',
 		initialRouteName: 'LaunchScreen',
-		navigationOptions: {
-			headerStyle: styles.header,
-			headerTintColor: Colors.white, // color for screen title and back button
-			headerTitleStyle: ApplicationStyles.screenHeader,
-			headerBackTitle: null,
-			gesturesEnabled: false,
-		},
+		navigationOptions: navOptionsDefault,
 	},
 );
 

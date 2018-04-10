@@ -9,6 +9,7 @@ const style: any = {
 		shadowOpacity: 1,
 		shadowRadius: 22,
 		paddingHorizontal: Sizes.smartHorizontalScale(21),
+		marginHorizontal: Sizes.smartHorizontalScale(18),
 		zIndex: 1,
 		borderRadius: Sizes.smartHorizontalScale(8),
 	},

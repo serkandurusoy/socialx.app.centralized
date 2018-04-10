@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
-import {Icons} from '../../../theme';
+import {Colors, Icons} from '../../../theme';
 import PopoverTooltip from '../../_lib/PopoverTooltip';
 import style from './style';
 
@@ -11,14 +11,18 @@ export interface TooltipItem {
 }
 
 export interface ITooltipDotsProps {
-	reportHandler: () => void;
-	deleteHandler: () => void;
 	items: TooltipItem[];
 }
 
 export class TooltipDots extends Component<ITooltipDotsProps> {
 	public render() {
-		return <PopoverTooltip buttonComponent={this.getToolTipDotsButton()} items={this.getTooltipItems()} />;
+		return (
+			<PopoverTooltip
+				buttonComponent={this.getToolTipDotsButton()}
+				items={this.getTooltipItems()}
+				labelSeparatorColor={Colors.dustWhite}
+			/>
+		);
 	}
 
 	private getToolTipDotsButton = () => {
