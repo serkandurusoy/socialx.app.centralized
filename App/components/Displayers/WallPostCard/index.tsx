@@ -3,17 +3,51 @@ import React, {Component} from 'react';
 import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {NavigationScreenProp} from 'react-navigation';
 import {OS_TYPES} from '../../../constants';
 import {ModalManager} from '../../../hoc/ManagedModal/manager';
+import {IWallPostComment} from '../../../screens/CommentsScreen';
 import {Colors, Sizes} from '../../../theme';
 import Icons from '../../../theme/Icons';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
-import {WallPostComments} from './WallPostComments';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
+
+const SAMPLE_POST_COMMENTS: IWallPostComment[] = [
+	{
+		text: 'This is some very long text comment. It should be displayed on multiple lines',
+		user: {
+			fullName: 'Ionut Movila',
+			avatarURL: 'https://placeimg.com/101/101/any',
+		},
+		timestamp: new Date('Mar 23 2018'),
+		numberOfLikes: 3,
+		replies: [
+			{
+				text: 'Hey Ionut, I might be there for this launch event',
+				user: {
+					fullName: 'John Smith',
+					avatarURL: 'https://placeimg.com/103/103/people',
+				},
+				timestamp: new Date('Mar 24 2018'),
+				numberOfLikes: 1,
+			},
+		],
+	},
+	{
+		text: 'Hey, greetings from California, where the time is perfect for surfing.',
+		user: {
+			fullName: 'Kane Wilson',
+			avatarURL: 'https://placeimg.com/105/105/any',
+		},
+		timestamp: new Date('Mar 23 2018'),
+		numberOfLikes: 24,
+		replies: [],
+	},
+];
 
 export interface IWallPostCardProp {
 	title?: string;
@@ -31,17 +65,20 @@ export interface IWallPostCardProp {
 	numberOfComments: number;
 	numberOfWalletCoins: number;
 	onImageClick: () => void;
+	navigation: NavigationScreenProp<any>;
 }
 
 export interface IWallPostCardState {
 	fullDescriptionVisible: boolean;
 	modalVisibleReportProblem: boolean;
+	comments: IWallPostComment[];
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public state = {
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
+		comments: SAMPLE_POST_COMMENTS,
 	};
 
 	public render() {
@@ -76,11 +113,10 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.likeButtonPressedHandler}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.commentsButtonPressedHandler}
+					commentsButtonPressed={this.onCommentsClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 					shareButtonPressed={this.shareButtonPressedHandler}
 				/>
-				<WallPostComments />
 			</View>
 		);
 	}
@@ -248,11 +284,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		alert('Super-Like this post');
 	}
 
-	private commentsButtonPressedHandler = () => {
-		alert('Show comments for this post');
-	}
-
 	private walletCoinsButtonPressedHandler = () => {
 		alert('Go to my wallet');
+	}
+
+	private onCommentsClick = () => {
+		this.props.navigation.navigate('CommentsScreen', {comments: this.state.comments});
 	}
 }

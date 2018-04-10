@@ -4,6 +4,7 @@ import LaunchScreen from '../screens/LaunchScreen';
 
 import {TabBarBottom} from '../components/Displayers';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
+import CommentsScreen from '../screens/CommentsScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -80,6 +81,7 @@ const MainScreenWithModal = StackNavigator(
 		NewWallPostScreen: {screen: NewWallPostScreen},
 		PhotoScreen: {screen: PhotoScreen},
 		MediaViewerScreen: {screen: MediaViewerScreen},
+		CommentsScreen: {screen: CommentsScreen},
 	},
 	{
 		mode: 'modal',
@@ -104,10 +106,13 @@ const PrimaryNav = StackNavigator(
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
+		CommentsScreen: {screen: CommentsScreen},
 	},
 	{
 		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
+		// initialRouteName: 'LaunchScreen',
+		initialRouteName: 'MainScreen',
+		// initialRouteName: 'CommentsScreen',
 		navigationOptions: navOptionsDefault,
 	},
 );
