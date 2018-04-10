@@ -18,6 +18,8 @@
 // react-native-orientation
 #import "Orientation.h"
 
+#import "SplashScreen.h"
+
 @implementation AppDelegate
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
@@ -47,6 +49,9 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [SplashScreen show];
+  
   return YES;
 }
 

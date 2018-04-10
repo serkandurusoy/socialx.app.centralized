@@ -1,20 +1,15 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {connect} from 'react-redux';
 import {SXButton, SXGradientButton, TextGradient} from '../../components';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
-	showActivityIndicator: () => void;
-	hideActivityIndicator: () => void;
 }
 
-class LaunchScreen extends Component<ILaunchScreenProps, any> {
+export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	private static navigationOptions = {
 		header: null,
 	};
@@ -56,10 +51,3 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 		this.props.navigation.navigate('SignUpScreen');
 	}
 }
-
-const mapDispatchToProps = (dispatch: any): Partial<ILaunchScreenProps> => ({
-	showActivityIndicator: () => dispatch(showActivityIndicator('Simple')),
-	hideActivityIndicator: () => dispatch(hideActivityIndicator()),
-});
-
-export default connect(null, mapDispatchToProps)(LaunchScreen);
