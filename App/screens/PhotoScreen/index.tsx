@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {findNodeHandle, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
+import {connect} from 'react-redux';
+
 import {ModalCloseButton, ModalTagFriends} from '../../components/Modals';
 import PhotoScreenComponent from './screen';
 import {SendPostButton} from './SendPostButton';
@@ -8,6 +10,8 @@ import {SendPostButton} from './SendPostButton';
 import {graphql} from 'react-apollo';
 import {addMediaHoc, createPostHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
+
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 
 import base from '../../config/ipfs';
 import {IBlobData} from '../../lib/ipfs';
@@ -36,6 +40,10 @@ interface IPhotoScreenProps {
 	data: IUserDataResponse;
 	addMedia: any;
 	createPost: any;
+	// redux
+	startMediaPost: any;
+	startPostadd: any;
+	stopLoading: any;
 }
 
 interface IPhotoScreenState {
@@ -174,8 +182,12 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	}
 
 	private sendPostHandler = async () => {
-		const {addMedia, createPost} = this.props;
+		const {addMedia, createPost, startMediaPost, startPostadd, stopLoading} = this.props;
+
 		if (this.photoScreen) {
+			// start adding media loading
+			startMediaPost();
+
 			const wallPostDataInScreen = this.photoScreen.getWallPostData();
 			const localPhotoData: Partial<WallPostPhoto> = {
 				image: this.props.navigation.state.params.image,
@@ -201,6 +213,9 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 			const addResp = await addMedia({variables: {hash: Hash, size, Size, type: mime}});
 
 			const mediaId = addResp.data.addMedia.id;
+
+			// start adding post loading
+			startPostadd();
 			// create post
 			if (title) {
 				await createPost({variables: {text: title, Media: mediaId}});
@@ -208,12 +223,22 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				await createPost({variables: {Media: mediaId}});
 			}
 
+			// stop loading
+			stopLoading();
 			this.props.navigation.goBack();
 		}
 	}
 }
 
-const addMediaWrapper = addMediaHoc(PhotoScreen);
+const MapDispatchToProps = (dispatch: any) => ({
+	startMediaPost: () => dispatch(showActivityIndicator('Decentralizing your media', 'Please wait..')),
+	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
+	stopLoading: () => dispatch(hideActivityIndicator()),
+});
+
+const reduxWrapper = connect(null, MapDispatchToProps)(PhotoScreen as any);
+
+const addMediaWrapper = addMediaHoc(reduxWrapper);
 const createPostWrapper = createPostHoc(addMediaWrapper);
 const userWrapper = userHoc(createPostWrapper);
 

@@ -151,6 +151,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-splash-screen')
     compile project(':react-native-android-keyboard-adjust')
     compile project(':react-native-svg')
     compile project(':react-native-text-gradient')
@@ -162,6 +163,7 @@ dependencies {
     compile project(':react-native-linear-gradient')
     compile project(':react-native-config')
     compile project(':amazon-cognito-identity-js')
+    compile project(':react-native-fast-image')
     compile project(':react-native-fs')
     compile project(':react-native-fetch-blob')
     compile project(':appcenter-analytics')

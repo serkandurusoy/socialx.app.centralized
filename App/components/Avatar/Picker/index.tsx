@@ -74,7 +74,7 @@ export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
 		borderRadius: props.avatarSize / 2,
 	};
 
-	const iconSize = Math.max(35, Math.round(props.avatarSize / 5));
+	const iconSize = Math.min(35, Math.round(props.avatarSize / 5));
 
 	return (
 		<View>

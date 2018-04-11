@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {OS_TYPES} from '../../../constants';
 import {ModalManager} from '../../../hoc/ManagedModal/manager';
@@ -54,7 +55,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					declineHandler={this.toggleDeclineReportModal}
 				/>
 				<View style={style.topContainer}>
-					<Image source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
+					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
 					<View style={style.topRightContainer}>
 						<Text style={style.fullName}>
 							{this.props.fullName}
@@ -63,11 +64,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 						</Text>
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
-					<TooltipDots
-						items={this.getTooltipItems()}
-						deleteHandler={this.tooltipsDeletePressedHandler}
-						reportHandler={this.tooltipsReportPressedHandler}
-					/>
+					<TooltipDots items={this.getTooltipItems()} />
 				</View>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
@@ -92,16 +89,26 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		if (this.props.imageSource) {
 			return (
 				<TouchableOpacity onPress={() => this.props.onImageClick()}>
-					<Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />
+					<FastImage
+						source={{uri: this.props.imageSource}}
+						style={style.postImage}
+						resizeMode={FastImage.resizeMode.cover}
+					/>
 				</TouchableOpacity>
 			);
 		}
 		return null;
-	}
+	};
 
 	private shareButtonPressedHandler = () => {
-		return <Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />;
-	}
+		return (
+			<FastImage
+				source={{uri: this.props.imageSource}}
+				style={style.postImage}
+				resizeMode={FastImage.resizeMode.cover}
+			/>
+		);
+	};
 
 	private renderTaggedFriends = () => {
 		if (this.props.taggedFriends && this.props.taggedFriends.length > 0) {
@@ -125,7 +132,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			return ret;
 		}
 		return null;
-	}
+	};
 
 	private renderLocation = () => {
 		if (this.props.location) {
@@ -149,7 +156,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			];
 		}
 		return null;
-	}
+	};
 
 	private tooltipsReportPressedHandler = () => {
 		ModalManager.safeRunAfterModalClosed(() => {
@@ -157,7 +164,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				modalVisibleReportProblem: true,
 			});
 		});
-	}
+	};
 
 	private renderPostDescription = () => {
 		const {text} = this.props;
@@ -184,13 +191,13 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	}
+	};
 
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
-	}
+	};
 
 	private renderPostTitle = () => {
 		if (this.props.title) {
@@ -201,7 +208,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	}
+	};
 
 	private toggleDeclineReportModal = () => {
 		this.setState({

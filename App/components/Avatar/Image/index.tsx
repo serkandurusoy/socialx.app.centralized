@@ -1,6 +1,8 @@
 import React from 'react';
 import {Image} from 'react-native';
 
+import FastImage from 'react-native-fast-image';
+
 import style from './style';
 
 export interface IAvatarImageProps {
@@ -9,7 +11,7 @@ export interface IAvatarImageProps {
 }
 
 export const AvatarImage: React.SFC<IAvatarImageProps> = (props) => {
-	return <Image source={props.image} resizeMode={'cover'} style={props.style} />;
+	return <FastImage source={props.image} resizeMode={FastImage.resizeMode.cover} style={props.style} />;
 };
 
 AvatarImage.defaultProps = {

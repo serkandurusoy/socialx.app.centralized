@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {View} from 'react-native';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {ModalCloseButton} from '../../components';
@@ -22,6 +23,7 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 		const ret: Partial<NavigationStackScreenOptions> = {
 			title: 'PHOTO',
 			headerRight: <ModalCloseButton navigation={props.navigation} />,
+			headerLeft: <View />,
 		};
 		const params = props.navigation.state.params || {};
 		if (params.hideHeader) {

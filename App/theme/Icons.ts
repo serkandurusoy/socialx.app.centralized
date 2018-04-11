@@ -42,4 +42,7 @@ export default {
 	iconDelete: require('../../assets/icons/delete.png'),
 	iconReport: require('../../assets/icons/report.png'),
 	iconDropDown: require('../../assets/icons/drop_down.png'),
+	iconProfileAnalytics: require('../../assets/icons/profile_analytics.png'),
+	iconSettingsGear: require('../../assets/icons/settings_gear.png'),
+	iconWallet2: require('../../assets/icons/wallet2.png'),
 };
