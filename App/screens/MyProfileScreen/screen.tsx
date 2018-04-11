@@ -3,7 +3,9 @@ import {Dimensions, ScrollView, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {UserAvatar} from '../../components/Avatar';
 import {GridPhotos, ProfileStatistics} from '../../components/Displayers';
+import {TooltipDots} from '../../components/Displayers/DotsWithTooltips';
 import {Metrics} from '../../theme';
+import Icons from '../../theme/Icons';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';
 
@@ -44,6 +46,9 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 						fullName={this.props.fullName}
 						username={this.props.username}
 					/>
+					<View style={style.dotsContainer}>
+						<TooltipDots items={this.getTooltipItems()} />
+					</View>
 					<ProfileStatistics
 						numberOfPhotos={this.props.numberOfPhotos}
 						numberOfLikes={this.props.numberOfLikes}
@@ -91,5 +96,38 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 			photos: this.props.getAllPhotos,
 			startIndex: index,
 		});
+	}
+
+	private getTooltipItems = () => {
+		return [
+			{
+				label: 'Profile Analytics',
+				icon: Icons.iconProfileAnalytics,
+				actionHandler: this.goToProfileAnalyticsPage,
+			},
+			{
+				label: 'Wallet',
+				icon: Icons.iconWallet2,
+				actionHandler: this.goToWalletActivityPage,
+			},
+			{
+				label: 'Settings',
+				icon: Icons.iconSettingsGear,
+				actionHandler: this.goToSettingsPage,
+			},
+		];
+	}
+
+	private goToProfileAnalyticsPage = () => {
+		// TODO: page not yet implemented
+		// console.log('goToProfileAnalyticsPage');
+	}
+
+	private goToWalletActivityPage = () => {
+		this.props.navigation.navigate('WalletActivityScreen');
+	}
+
+	private goToSettingsPage = () => {
+		this.props.navigation.navigate('SettingsScreen');
 	}
 }

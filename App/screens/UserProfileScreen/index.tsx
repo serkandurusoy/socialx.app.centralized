@@ -90,6 +90,7 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 				selected={get(props, 'navigation.state.params.isFollowed', false)}
 			/>
 		),
+		headerLeft: <View />,
 	})
 
 	public state = INITIAL_STATE;

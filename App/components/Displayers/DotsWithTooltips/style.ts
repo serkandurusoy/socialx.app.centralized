@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Fonts, Sizes} from '../../../theme/';
+import {Colors, Fonts, Sizes} from '../../../theme/';
 
 const style: any = {
 	container: {
@@ -10,17 +10,16 @@ const style: any = {
 		flexDirection: 'row',
 	},
 	dots: {
-		height: Sizes.smartVerticalScale(15),
-		width: Sizes.smartHorizontalScale(15),
+		height: Sizes.smartVerticalScale(5),
+		width: Sizes.smartHorizontalScale(19),
 	},
 	icon: {
-		height: Sizes.smartVerticalScale(15),
-		width: Sizes.smartHorizontalScale(15),
 		marginLeft: Sizes.smartHorizontalScale(5),
 		marginRight: Sizes.smartHorizontalScale(10),
 	},
 	label: {
 		...Fonts.centuryGothic,
+		color: Colors.postFullName,
 		textAlign: 'left',
 	},
 };

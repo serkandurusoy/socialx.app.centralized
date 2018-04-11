@@ -12,6 +12,11 @@ const style: any = {
 	topContainer: {
 		paddingTop: Sizes.smartVerticalScale(19),
 	},
+	dotsContainer: {
+		position: 'absolute',
+		right: Sizes.smartHorizontalScale(10),
+		marginTop: Sizes.smartVerticalScale(19),
+	},
 	aboutMeContainer: {
 		width: '100%',
 		borderTopColor: Colors.dustWhite,
