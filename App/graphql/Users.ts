@@ -25,6 +25,25 @@ const checkUsername = gql`
     }
 `;
 
+const addFriendMut = gql`
+    mutation addFriend($user: ID!){
+        addFriend(user: $user){
+            userId
+        }
+    }
+`;
+
+const removeFriendMut = gql`
+    mutation removeFriend($user: ID!){
+        removeFriend(user: $user){
+            userId
+        }
+    }
+`;
+
+export const addFriend = (comp: any) => graphql(addFriendMut, { name: 'addFriend' })(comp);
+export const removeFriend = (comp: any) => graphql(removeFriendMut, { name: 'removeFriend' })(comp);
+
 export const searchUsersHoc = (comp: any) => graphql(searchUsers, { name: 'search' })(comp);
 
 export const checkUsernameHoc = (comp: any) => graphql(checkUsername, { name: 'checkUsername' })(comp);
