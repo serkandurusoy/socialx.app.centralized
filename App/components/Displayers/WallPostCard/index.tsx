@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {OS_TYPES} from '../../../constants';
 import {ModalManager} from '../../../hoc/ManagedModal/manager';
@@ -92,7 +93,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		if (this.props.imageSource) {
 			return (
 				<TouchableOpacity onPress={() => this.props.onImageClick()}>
-					<Image source={{uri: this.props.imageSource}} style={style.postImage} resizeMode={'cover'} />
+					<FastImage
+						source={{uri: this.props.imageSource}}
+						style={style.postImage}
+						resizeMode={FastImage.resizeMode.cover}
+					/>
 				</TouchableOpacity>
 			);
 		}
