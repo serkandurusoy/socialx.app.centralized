@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
+import {connect} from 'react-redux';
+
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {IWallPostCardProp} from '../../components/Displayers';
 import {Images} from '../../theme';
@@ -9,6 +11,8 @@ import UserFeedScreenComponent from './screen';
 import {graphql} from 'react-apollo';
 import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse} from '../../types/gql';
+
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 
 import {IBlobData} from '../../lib/ipfs';
 import {addBlob} from '../../utils/ipfs';
@@ -25,6 +29,9 @@ interface IUserFeedScreenProps {
 	User: IUserDataResponse;
 	createPost: any;
 	addMedia: any;
+	startMediaPost: any;
+	startPostadd: any;
+	stopLoading: any;
 }
 
 interface IUserFeedScreenState {
@@ -117,8 +124,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const res: IWallPostCardProp = {
 				text: post.text,
 				location: 'Home',
-				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash :
-				 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+				smallAvatar: post.owner.avatar
+					? base.ipfs_URL + post.owner.avatar.hash
+					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
 				fullName: post.owner.username,
 				timestamp: new Date(post.createdAt),
@@ -178,20 +186,24 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		this.setState({
-			wallPosts: this.state.wallPosts.concat(rest),
+			wallPosts: this.state.wallPosts.concat(rest as any),
 			currentLoad: currentLoadNew,
 		});
 	}
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
-		const {createPost, addMedia} = this.props;
+		const {createPost, addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
 		const blobfiles: IBlobData[] = [] as IBlobData[];
+
 		const ipfsHashes: any = [];
 		const mediaIds: string[] = [];
+
 		let multiflag = false;
+
 		data.mediaObjects.forEach((media: MediaObject) => {
 			blobfiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]});
 		});
+
 		try {
 			// check if user entered any text
 			if (data.text.length < 5) {
@@ -200,6 +212,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			}
 			// there is media
 			if (data.mediaObjects.length > 0) {
+				// start adding media loading
+				startMediaPost();
+
 				// add files to ipfs
 				let ipfsResp = await addBlob(blobfiles);
 				ipfsResp = ipfsResp.data.split('\n');
@@ -217,6 +232,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
 				}
 				// add media file/s to appsync
+				// start creating post loading
+				startPostadd();
 				if (multiflag) {
 					for (let i = 0; i < ipfsHashes.length; i++) {
 						const ipfsData = ipfsHashes[i];
@@ -249,9 +266,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				});
 			}
 
+			// stop loading
+			stopLoading();
 			// refresh the wall posts to append the new post
 			this.refreshWallPosts();
 		} catch (ex) {
+			// stop loading
+			stopLoading();
 			// TODO: err handle
 			console.log(ex);
 		}
@@ -278,6 +299,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 }
+
+const MapDispatchToProps = (dispatch: any) => ({
+	startMediaPost: () => dispatch(showActivityIndicator('Decentralizing your media', 'Please wait..')),
+	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
+	stopLoading: () => dispatch(hideActivityIndicator()),
+});
 
 const userWrapper = userHoc(UserFeedScreen);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
