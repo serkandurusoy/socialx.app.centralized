@@ -105,6 +105,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
+				navigation={this.props.navigation}
 			/>
 		);
 	}

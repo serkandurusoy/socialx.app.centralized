@@ -2,10 +2,6 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../theme';
 
 const style: any = {
-	sampleText: {
-		fontSize: 24,
-		lineHeight: 42,
-	},
 	container: {
 		flex: 1,
 		width: '100%',
@@ -13,31 +9,32 @@ const style: any = {
 	},
 	commentsList: {
 		flex: 1,
-		// backgroundColor: 'lime',
 	},
 	inputContainer: {
-		// backgroundColor: 'orange',
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		paddingVertical: Sizes.smartVerticalScale(5),
-		borderTopColor: Colors.dustWhite,
-		borderTopWidth: Sizes.smartHorizontalScale(1),
-		maxHeight: Sizes.smartVerticalScale(100),
-		// alignItems: 'center',
+		borderTopColor: Colors.silverSand,
+		borderTopWidth: 1,
+		maxHeight: Sizes.smartVerticalScale(110),
 		justifyContent: 'flex-end',
 	},
 	textInput: {
 		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
+		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
-		backgroundColor: 'magenta',
+		backgroundColor: Colors.dustWhite,
+		borderRadius: Sizes.smartHorizontalScale(15),
+		borderColor: Colors.silverSand,
+		borderWidth: 1,
 		paddingRight: Sizes.smartHorizontalScale(50),
+		paddingLeft: Sizes.smartHorizontalScale(10),
+		paddingVertical: Sizes.smartHorizontalScale(10),
 	},
 	sendButton: {
-		// TODO: height when single line text!
 		position: 'absolute',
 		right: Sizes.smartHorizontalScale(10),
-		backgroundColor: 'lime',
-		padding: Sizes.smartHorizontalScale(5),
+		bottom: Sizes.smartHorizontalScale(8),
+		paddingHorizontal: Sizes.smartHorizontalScale(5),
 	},
 };
 

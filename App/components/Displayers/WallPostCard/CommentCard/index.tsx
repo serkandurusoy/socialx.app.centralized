@@ -1,0 +1,94 @@
+import moment from 'moment';
+import React from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {IWallPostComment, IWallPostCommentReply} from '../../../../screens/CommentsScreen';
+import {Colors, Sizes} from '../../../../theme';
+import {AvatarImage} from '../../../Avatar/Image';
+import style from './style';
+
+export interface ICommentCardProps {
+	comment: IWallPostComment;
+	onCommentLike: () => void;
+	onCommentReply: (startComment: boolean) => void;
+}
+
+export const CommentCard: React.SFC<ICommentCardProps> = (props) => {
+	const {comment} = props;
+
+	const commentTimestamp = moment(comment.timestamp).fromNow();
+
+	const renderReply = (reply: IWallPostCommentReply, index: number) => {
+		return (
+			<TouchableOpacity style={style.replyEntry} key={index} onPress={() => props.onCommentReply(false)}>
+				<AvatarImage image={{uri: reply.user.avatarURL}} style={style.replyAvatar} />
+				<Text numberOfLines={1} style={style.replyUserFullName}>
+					{reply.user.fullName}
+				</Text>
+				<Text numberOfLines={1} style={style.replyText}>
+					{reply.text}
+				</Text>
+			</TouchableOpacity>
+		);
+	};
+
+	const renderReplies = () => {
+		if (comment.replies.length > 3) {
+			const lastReply = comment.replies[comment.replies.length - 1];
+			return (
+				<View>
+					<TouchableOpacity onPress={() => props.onCommentReply(false)}>
+						<Text style={style.viewMoreReplies}>{`View ${comment.replies.length - 1} more replies`}</Text>
+					</TouchableOpacity>
+					{renderReply(lastReply, 0)}
+				</View>
+			);
+		} else if (comment.replies.length > 0) {
+			const replies = [];
+			for (const [index, reply] of comment.replies.entries()) {
+				replies.push(renderReply(reply, index));
+			}
+			return <View>{replies}</View>;
+		}
+		return null;
+	};
+
+	const renderLikes = () => {
+		if (comment.numberOfLikes > 0) {
+			return (
+				<View style={style.likesContainer}>
+					<View style={style.likesBorder}>
+						<Icon name={'md-thumbs-up'} size={Sizes.smartHorizontalScale(15)} color={Colors.pink} />
+						<Text style={style.numberOfLikes}>{comment.numberOfLikes}</Text>
+					</View>
+				</View>
+			);
+		}
+		return null;
+	};
+
+	return (
+		<View style={style.container}>
+			<AvatarImage image={{uri: comment.user.avatarURL}} style={style.avatarImage} />
+			<View style={style.rightContainer}>
+				<View>
+					<View style={style.commentBackground}>
+						<Text style={style.userFullName}>{comment.user.fullName}</Text>
+						<Text style={style.commentText}>{comment.text}</Text>
+					</View>
+					{renderLikes()}
+				</View>
+				<View style={style.actionsContainer}>
+					<Text style={style.timestamp}>{commentTimestamp}</Text>
+					<TouchableOpacity onPress={props.onCommentLike}>
+						<Text style={style.actionButtonText}>{'Like'}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => props.onCommentReply(true)}>
+						<Text style={style.actionButtonText}>{'Reply'}</Text>
+					</TouchableOpacity>
+				</View>
+				{renderReplies()}
+			</View>
+		</View>
+	);
+};

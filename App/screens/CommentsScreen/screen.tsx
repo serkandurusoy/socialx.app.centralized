@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
-import {Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Platform, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {CommentCard} from '../../components/Displayers/WallPostCard/CommentCard';
 import {OS_TYPES} from '../../constants';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors, Sizes} from '../../theme';
+import {IWallPostComment} from './index';
 import style from './style';
 
 interface ICommentsScreenComponentProps {
 	marginBottom: number;
+	comments: IWallPostComment[];
 }
 
 class CommentsScreenComponent extends Component<ICommentsScreenComponentProps> {
@@ -23,31 +26,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps> {
 		return (
 			<SafeAreaView style={containerStyles}>
 				<ScrollView style={style.commentsList} keyboardShouldPersistTaps={'handled'}>
-					<Text style={style.sampleText}>{'14235 asdoign first'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign middle'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign asgdg'}</Text>
-					<Text style={style.sampleText}>{'14235 asdoign last'}</Text>
+					{this.renderComments()}
 				</ScrollView>
 				<View style={style.inputContainer}>
 					<TextInput
@@ -56,6 +35,9 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps> {
 						placeholder={'Write a comment...'}
 						autoFocus={true}
 						multiline={true}
+						autoCorrect={false}
+						underlineColorAndroid={Colors.transparent}
+						autoCapitalize='none'
 					/>
 					{this.renderSendButton()}
 				</View>
@@ -76,6 +58,29 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps> {
 
 	private sendCommentHandler = () => {
 		// console.log('sendCommentHandler');
+	}
+
+	private renderComments = () => {
+		const ret = [];
+		for (const [index, comment] of this.props.comments.entries()) {
+			ret.push(
+				<CommentCard
+					key={index}
+					comment={comment}
+					onCommentLike={this.onCommentLikeHandler}
+					onCommentReply={this.onCommentReplyHandler}
+				/>,
+			);
+		}
+		return ret;
+	}
+
+	private onCommentLikeHandler = () => {
+		// console.log('onCommentLikeHandler');
+	}
+
+	private onCommentReplyHandler = () => {
+		// console.log('onCommentReplyHandler');
 	}
 }
 

@@ -1,7 +1,8 @@
 import {configure, getStorybookUI} from '@storybook/react-native';
 import {Root} from 'native-base';
 import React, {Component} from 'react';
-import {AppRegistry} from 'react-native';
+import {AppRegistry, Platform} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 
 configure(() => require('./stories'));
 
@@ -13,6 +14,10 @@ const StorybookUIRoot = getStorybookUI({port: 7007, onDeviceUI: true});
 // https://github.com/storybooks/storybook/issues/2081
 // eslint-disable-next-line react/prefer-stateless-function
 class StorybookUIHMRRoot extends Component {
+	public componentDidMount(): void {
+		SplashScreen.hide();
+	}
+
 	public render() {
 		return (
 			<Root>

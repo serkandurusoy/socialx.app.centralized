@@ -111,8 +111,8 @@ const PrimaryNav = StackNavigator(
 	{
 		headerMode: 'screen',
 		// initialRouteName: 'LaunchScreen',
-		initialRouteName: 'MainScreen',
-		// initialRouteName: 'CommentsScreen',
+		// initialRouteName: 'MainScreen',
+		initialRouteName: 'CommentsScreen',
 		navigationOptions: navOptionsDefault,
 	},
 );
