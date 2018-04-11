@@ -45,12 +45,14 @@ export const getAllPosts = gql`
 			Media {
 				id
 				hash
+				size
 			}
 			owner {
 				username
 				avatar {
 					id
 					hash
+					size
 				}
 			}
 		}

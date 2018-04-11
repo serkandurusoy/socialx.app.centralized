@@ -28,24 +28,27 @@ interface IUserFeedScreenProps {
 }
 
 interface IUserFeedScreenState {
+	allWallPosts: IWallPostCardProp[];
 	wallPosts: IWallPostCardProp[];
 	refreshing: boolean;
+	currentLoad: number;
 }
 
-// const INITIAL_USER_POSTS: IWallPostCardProp[] = [
-// 	{
-// 		title: 'Post title here',
-// 		text: 'Sample existing post text',
-// 		location: 'Tower Bridge, London',
-// 		smallAvatar: 'https://placeimg.com/110/110/people',
-// 		fullName: 'Ionut Movila',
-// 		timestamp: new Date(),
-// 		numberOfLikes: 0,
-// 		numberOfSuperLikes: 0,
-// 		numberOfComments: 0,
-// 		numberOfWalletCoins: 0,
-// 	},
-// ];
+const INITIAL_USER_POSTS: IWallPostCardProp[] = [
+	{
+		title: 'Post title here',
+		text: 'Sample existing post text',
+		location: 'Tower Bridge, London',
+		smallAvatar: 'https://placeimg.com/110/110/people',
+		fullName: 'Ionut Movila',
+		timestamp: new Date(),
+		numberOfLikes: 0,
+		numberOfSuperLikes: 0,
+		numberOfComments: 0,
+		numberOfWalletCoins: 0,
+		onImageClick: () => {},
+	},
+];
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
@@ -53,16 +56,27 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public state = {
+		allWallPosts: [],
 		wallPosts: [],
 		refreshing: false,
+		currentLoad: 0,
 	};
+
+	public shouldComponentUpdate(nextProp: IUserFeedScreenProps, nextState: IUserFeedScreenState) {
+		console.log('will update component');
+		return true;
+	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
 		const {data, Posts} = nextProps;
+		const {allWallPosts} = this.state;
 		if (data.loading || Posts.loading) {
 			return;
 		}
-		this.setState({wallPosts: this.getWallPosts()});
+		if (allWallPosts.length === 0) {
+			this.setState({allWallPosts: this.getWallPosts()});
+			console.log(Posts.allPosts);
+		}
 	}
 
 	public render() {
@@ -102,6 +116,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const res: IWallPostCardProp = {
 				text: post.text,
+				location: 'Home',
 				smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash :
 				 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
@@ -137,10 +152,35 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private loadMorePostsHandler = () => {
-		// TODO
-		// this.setState({
-		// 	wallPosts: this.state.wallPosts.concat(INITIAL_USER_POSTS),
-		// });
+		const {wallPosts, allWallPosts, currentLoad} = this.state;
+
+		if (allWallPosts.length < 0) {
+			return;
+		}
+
+		if (wallPosts.length === allWallPosts.length) {
+			return;
+		}
+
+		if (currentLoad === allWallPosts.length) {
+			return;
+		}
+
+		console.log(wallPosts);
+
+		const appendRate = allWallPosts.length % 2 === 0 ? 2 : 3;
+
+		const rest: IWallPostCardProp[] = [];
+		let currentLoadNew = currentLoad;
+
+		for (currentLoadNew; currentLoadNew < wallPosts.length + appendRate; currentLoadNew++) {
+			rest.push(allWallPosts[currentLoadNew]);
+		}
+
+		this.setState({
+			wallPosts: this.state.wallPosts.concat(rest),
+			currentLoad: currentLoadNew,
+		});
 	}
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
@@ -222,7 +262,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		this.setState({refreshing: true});
 		await Posts.refetch();
-		this.setState({refreshing: false, wallPosts: this.getWallPosts()});
+		this.setState({
+			refreshing: false,
+			wallPosts: [],
+			allWallPosts: this.getWallPosts(),
+			currentLoad: 0,
+		});
+		this.loadMorePostsHandler();
 	}
 
 	private onPhotoPressHandler = (index: number, photos: any) => {
