@@ -206,10 +206,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		try {
 			// check if user entered any text
-			if (data.text.length < 5) {
-				// TODO: add some warning
-				return;
-			}
+			// if (data.text.length < 5) {
+			// 	// TODO: add some warning
+			// 	return;
+			// }
 			// there is media
 			if (data.mediaObjects.length > 0) {
 				// start adding media loading
@@ -306,7 +306,9 @@ const MapDispatchToProps = (dispatch: any) => ({
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
 
-const userWrapper = userHoc(UserFeedScreen);
+const reduxWrapper = connect(null, MapDispatchToProps)(UserFeedScreen);
+
+const userWrapper = userHoc(reduxWrapper);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
