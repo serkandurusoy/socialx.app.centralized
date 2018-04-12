@@ -1,8 +1,8 @@
 import {configure, getStorybookUI} from '@storybook/react-native';
 import {Root} from 'native-base';
 import React, {Component} from 'react';
+import {AppRegistry} from 'react-native';
 import SplashScreen from 'react-native-smart-splash-screen';
-import {AppRegistry, Platform} from 'react-native';
 
 configure(() => require('./stories'));
 
@@ -25,7 +25,7 @@ class StorybookUIHMRRoot extends Component {
 	public render() {
 		return (
 			<Root>
-				<StorybookUIRoot/>
+				<StorybookUIRoot />
 			</Root>
 		);
 	}
