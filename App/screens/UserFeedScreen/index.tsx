@@ -9,8 +9,9 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
+import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc, likePostHoc} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse} from '../../types/gql';
+import {CurrentUser} from '../../utils';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 
@@ -28,6 +29,7 @@ interface IUserFeedScreenProps {
 	Posts: IAllPostsDataResponse;
 	User: IUserDataResponse;
 	createPost: any;
+	likePost: any;
 	addMedia: any;
 	startMediaPost: any;
 	startPostadd: any;
@@ -122,6 +124,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const res: IWallPostCardProp = {
+				id: post.id,
 				text: post.text,
 				location: 'Home',
 				smallAvatar: post.owner.avatar
@@ -130,12 +133,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				imageSource: media,
 				fullName: post.owner.username,
 				timestamp: new Date(post.createdAt),
-				numberOfLikes: 0,
+				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
 				numberOfComments: 0,
 				numberOfWalletCoins: 0,
 				// TODO: append all media to this with the index of the image
 				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
+				onLikeButtonClick: () => this.onLikeButtonClickHandler(post)
 			};
 			arty.push(res);
 		}
@@ -298,6 +302,36 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			startIndex: index,
 		});
 	}
+
+	private onLikeButtonClickHandler = async (post) => {
+		const {likePost} = this.props;
+		let currentUser = await CurrentUser();
+		let likedByMe = post.likes.find(like => like.username === currentUser.username);
+		if(!likedByMe){
+			let {error, data} = await likePost({
+				variables: {
+					postId: post.id,
+				}
+			});
+			if(error){
+			    console.log("can't like post", error);
+            } else {
+                let {likePost: {likes}} = data;
+                this.setState(prevState => {
+                    return {
+                        wallPosts: prevState.wallPosts.map(p => {
+                            if (p.id == post.id) {
+                                return {...p, numberOfLikes: likes.length}
+                            }
+                            return p;
+                        })
+                    };
+                });
+            }
+		} else {
+			// todo call "unlike" when resolver is ready
+		}
+	}
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -312,5 +346,6 @@ const userWrapper = userHoc(reduxWrapper);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
+const likePostWrapper = likePostHoc(addMediaWrapper);
 
-export default addMediaWrapper;
+export default likePostWrapper;

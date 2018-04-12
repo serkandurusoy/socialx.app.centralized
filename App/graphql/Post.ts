@@ -4,9 +4,13 @@ import {graphql, QueryProps} from 'react-apollo';
 const likePost = gql`
     mutation likePost($postId: ID!){
         likePost(postId: $postId){
-            id
+            id,
+            likes {
+			    userId,
+			    username
+			}
         }
     }
 `;
 
-export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost' })(comp);
+export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost'})(comp);

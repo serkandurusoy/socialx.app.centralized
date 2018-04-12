@@ -31,6 +31,7 @@ export interface IWallPostCardProp {
 	numberOfComments: number;
 	numberOfWalletCoins: number;
 	onImageClick: () => void;
+	onLikeButtonClick: () => void;
 }
 
 export interface IWallPostCardState {
@@ -74,7 +75,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfSuperLikes={this.props.numberOfSuperLikes}
 					numberOfComments={this.props.numberOfComments}
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
-					likeButtonPressed={this.likeButtonPressedHandler}
+					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
 					commentsButtonPressed={this.commentsButtonPressedHandler}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
@@ -238,10 +239,6 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	private reportProblemHandler = (data: IReportData) => {
 		this.toggleDeclineReportModal();
 		// console.log('Report a problem', data);
-	}
-
-	private likeButtonPressedHandler = () => {
-		alert('Like this post');
 	}
 
 	private superLikeButtonPressedHandler = () => {
