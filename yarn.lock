@@ -8948,6 +8948,12 @@ react-native-easy-grid@0.1.17:
   dependencies:
     lodash "^4.11.1"
 
+react-native-fast-image@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-4.0.0.tgz#54f4013c9e0a5e9e649fc00e50028c79c7eacbea"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-fetch-blob@^0.10.8:
   version "0.10.8"
   resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.8.tgz#4fc256abae0cb5f10e7c41f28c11b3ff330d72a9"
@@ -9058,16 +9064,16 @@ react-native-scrollable-mixin@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-native-scrollable-mixin/-/react-native-scrollable-mixin-1.0.1.tgz#34a32167b64248594154fd0d6a8b03f22740548e"
 
+react-native-smart-splash-screen@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/react-native-smart-splash-screen/-/react-native-smart-splash-screen-2.3.5.tgz#68a1e45bfd708678aa12e65f2ba997ac5c1292a0"
+
 react-native-snap-carousel@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.6.0.tgz#bbd4c988314500af4a695f787f592fdfcd5c3df1"
   dependencies:
     prop-types "^15.6.0"
     react-addons-shallow-compare "15.6.2"
-
-react-native-splash-screen@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.0.6.tgz#c0bbf2c8ae40a313c4c7044f55e569414ff68332"
 
 react-native-svg-charts@^4.2.0:
   version "4.2.0"

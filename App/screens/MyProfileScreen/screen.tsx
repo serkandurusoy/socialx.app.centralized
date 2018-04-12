@@ -100,16 +100,16 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 
 	private getTooltipItems = () => {
 		return [
-			{
-				label: 'Profile Analytics',
-				icon: Icons.iconProfileAnalytics,
-				actionHandler: this.goToProfileAnalyticsPage,
-			},
-			{
-				label: 'Wallet',
-				icon: Icons.iconWallet2,
-				actionHandler: this.goToWalletActivityPage,
-			},
+			// {
+			// 	label: 'Profile Analytics',
+			// 	icon: Icons.iconProfileAnalytics,
+			// 	actionHandler: this.goToProfileAnalyticsPage,
+			// },
+			// {
+			// 	label: 'Wallet',
+			// 	icon: Icons.iconWallet2,
+			// 	actionHandler: this.goToWalletActivityPage,
+			// },
 			{
 				label: 'Settings',
 				icon: Icons.iconSettingsGear,
