@@ -18,7 +18,8 @@
 // react-native-orientation
 #import "Orientation.h"
 
-#import "SplashScreen.h"
+// react-native-smart-splash-screen
+#import "RCTSplashScreen.h"
 
 @implementation AppDelegate
 
@@ -43,14 +44,14 @@
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+  
+  [RCTSplashScreen open:rootView withImageNamed:@"SplashIcon"]; // activate splashscreen, imagename from LaunchScreen.xib
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  
-  [SplashScreen show];
   
   return YES;
 }

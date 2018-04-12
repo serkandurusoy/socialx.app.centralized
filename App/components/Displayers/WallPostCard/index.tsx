@@ -98,7 +98,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	};
+	}
 
 	private shareButtonPressedHandler = () => {
 		return (
@@ -108,7 +108,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				resizeMode={FastImage.resizeMode.cover}
 			/>
 		);
-	};
+	}
 
 	private renderTaggedFriends = () => {
 		if (this.props.taggedFriends && this.props.taggedFriends.length > 0) {
@@ -132,7 +132,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			return ret;
 		}
 		return null;
-	};
+	}
 
 	private renderLocation = () => {
 		if (this.props.location) {
@@ -156,7 +156,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			];
 		}
 		return null;
-	};
+	}
 
 	private tooltipsReportPressedHandler = () => {
 		ModalManager.safeRunAfterModalClosed(() => {
@@ -164,7 +164,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				modalVisibleReportProblem: true,
 			});
 		});
-	};
+	}
 
 	private renderPostDescription = () => {
 		const {text} = this.props;
@@ -191,13 +191,13 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	};
+	}
 
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
-	};
+	}
 
 	private renderPostTitle = () => {
 		if (this.props.title) {
@@ -208,7 +208,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	};
+	}
 
 	private toggleDeclineReportModal = () => {
 		this.setState({
