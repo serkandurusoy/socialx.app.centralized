@@ -105,7 +105,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
-				navigation={this.props.navigation}
+				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 			/>
 		);
 	}
@@ -239,7 +239,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					for (let i = 0; i < ipfsHashes.length; i++) {
 						const ipfsData = ipfsHashes[i];
 						const resp = await addMedia({
-							variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
+							variables: {
+								hash: ipfsData.hash,
+								type: ipfsData.type,
+								size: parseInt(ipfsData.size, undefined),
+							},
 						});
 						mediaIds.push(resp.data.addMedia.id);
 					}
@@ -298,6 +302,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			photos,
 			startIndex: index,
 		});
+	}
+
+	private onCommentsButtonClickHandler = (wallPostData: IWallPostCardProp) => {
+		console.log('Go to comments screen for', wallPostData);
+		// TODO: comments should be passed as a nav param to CommentsScreen
+		this.props.navigation.navigate('CommentsStack');
 	}
 }
 

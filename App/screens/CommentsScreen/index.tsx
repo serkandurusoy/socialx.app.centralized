@@ -18,7 +18,6 @@ export interface IWallPostComment extends IWallPostCommentReply {
 }
 
 export interface IWallPostCommentsProps {
-	// comments: IWallPostComment[];
 	navigation: NavigationScreenProp<any>;
 }
 
@@ -97,7 +96,7 @@ const SAMPLE_POST_COMMENTS: IWallPostComment[] = [
 			avatarURL: getRandomImage(100, 200, 'people'),
 		},
 		timestamp: new Date('Apr 08 2018'),
-		numberOfLikes: 12,
+		numberOfLikes: 0,
 		replies: [],
 	},
 ];
@@ -108,6 +107,25 @@ export default class CommentsScreen extends Component<IWallPostCommentsProps> {
 	};
 
 	public render() {
-		return <CommentsScreenComponent comments={SAMPLE_POST_COMMENTS} />;
+		return (
+			<CommentsScreenComponent
+				comments={SAMPLE_POST_COMMENTS}
+				onCommentLike={this.onCommentLikeHandler}
+				onCommentReply={this.onCommentReplyHandler}
+				onCommentSend={this.onCommentSendHandler}
+			/>
+		);
+	}
+
+	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
+		this.props.navigation.navigate('RepliesScreen', {replies: comment.replies, startReply});
+	}
+
+	private onCommentLikeHandler = (comment: IWallPostComment) => {
+		// console.log('Comment was liked', comment.text);
+	}
+
+	private onCommentSendHandler = (commentText: string) => {
+		// console.log('onCommentSendHandler', commentText);
 	}
 }

@@ -28,10 +28,11 @@ const style: any = {
 		paddingVertical: Sizes.smartHorizontalScale(8),
 	},
 	likesContainer: {
+		position: 'absolute',
+		bottom: Sizes.smartHorizontalScale(-10),
 		width: '100%',
 		zIndex: 1,
 		elevation: 3,
-		marginTop: Sizes.smartHorizontalScale(-5),
 		alignItems: 'flex-end',
 	},
 	likesBorder: {

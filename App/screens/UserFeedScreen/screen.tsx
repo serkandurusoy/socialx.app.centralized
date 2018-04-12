@@ -1,6 +1,5 @@
 import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
 import {AvatarImage} from '../../components/Avatar';
 import {IWallPostCardProp, WallPostCard} from '../../components/Displayers';
 import style from './style';
@@ -14,7 +13,7 @@ interface IUserFeedScreenProps {
 	refreshData: () => void;
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
-	navigation: NavigationScreenProp<any>;
+	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -23,7 +22,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		return (
 			<View style={style.wallPostContainer}>
-				<WallPostCard {...data.item} navigation={props.navigation} />
+				<WallPostCard {...data.item} onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)} />
 			</View>
 		);
 	};
