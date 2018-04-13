@@ -97,6 +97,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		return (
 			<UserFeedScreenComponent
+				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
 				fullName={this.props.data.user.name}
@@ -137,6 +138,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				numberOfWalletCoins: 0,
 				// TODO: append all media to this with the index of the image
 				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
+				user: post.owner,
 			};
 			arty.push(res);
 		}

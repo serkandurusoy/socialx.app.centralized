@@ -7,6 +7,7 @@ import {OS_TYPES} from '../../../constants';
 import {ModalManager} from '../../../hoc/ManagedModal/manager';
 import {Colors, Sizes} from '../../../theme';
 import Icons from '../../../theme/Icons';
+import {IUserQuery} from '../../../types/gql';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -31,6 +32,8 @@ export interface IWallPostCardProp {
 	numberOfWalletCoins: number;
 	onImageClick: () => void;
 	onCommentsButtonClick: () => void;
+	canDelete: boolean;
+	user: IUserQuery;
 }
 
 export interface IWallPostCardState {
@@ -39,6 +42,10 @@ export interface IWallPostCardState {
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
+	public static defaultProps: Partial<IWallPostCardProp> = {
+		canDelete: false,
+	};
+
 	public state = {
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
@@ -216,18 +223,21 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private getTooltipItems = (): TooltipItem[] => {
-		return [
+		const ret = [
 			{
 				label: 'Report a Problem',
 				icon: Icons.iconReport,
 				actionHandler: this.tooltipsReportPressedHandler,
 			},
-			{
+		];
+		if (this.props.canDelete) {
+			ret.push({
 				label: 'Delete Post',
 				icon: Icons.iconDelete,
 				actionHandler: this.tooltipsDeletePressedHandler,
-			},
-		];
+			});
+		}
+		return ret;
 	}
 
 	private tooltipsDeletePressedHandler = () => {

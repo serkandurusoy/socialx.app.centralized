@@ -2,6 +2,7 @@ import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {AvatarImage} from '../../components/Avatar';
 import {IWallPostCardProp, WallPostCard} from '../../components/Displayers';
+import {IUserQuery} from '../../types/gql';
 import style from './style';
 
 interface IUserFeedScreenProps {
@@ -14,15 +15,22 @@ interface IUserFeedScreenProps {
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
 	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
+	currentUser: IUserQuery;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
 	const keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
+		const canDelete = props.currentUser.userId === data.item.user.userId;
 		return (
 			<View style={style.wallPostContainer}>
-				<WallPostCard {...data.item} onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)} />
+				{/* <WallPostCard {...data.item} onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)} /> */}
+				<WallPostCard
+					{...data.item}
+					canDelete={canDelete}
+					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
+				/>
 			</View>
 		);
 	};
