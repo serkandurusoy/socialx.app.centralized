@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
@@ -71,12 +71,16 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {Posts, data} = this.props;
 		if (data.loading || Posts.loading) {
-			// TODO: content Loading..
-			return <View />;
+			// TODO: inline load here aswell
+			return <View><Text>Fetching data..</Text></View>;
 		}
 		// TODO: make better
 		const avatarUri = data.user.avatar ? {uri: base.ipfs_URL + data.user.avatar.hash} : Images.user_avatar_placeholder;
 
+		if (this.state.wallPosts.length < 0) {
+			// TODO: inline load here
+			return <View><Text>Loading Posts..</Text></View>;
+		}
 		return (
 			<UserFeedScreenComponent
 				currentUser={data.user}
@@ -112,7 +116,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
-				fullName: post.owner.username,
+				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+				fullName: post.owner.name,
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: 0,
 				numberOfSuperLikes: 0,
@@ -276,6 +281,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			allWallPosts: this.getWallPosts(),
 			currentLoad: 0,
 		});
+		this.loadMorePostsHandler();
 	}
 
 	private onPhotoPressHandler = (index: number, photos: any) => {

@@ -50,6 +50,7 @@ export const getAllPosts = gql`
 			owner {
 				userId
 				username
+				name
 				avatar {
 					id
 					hash
