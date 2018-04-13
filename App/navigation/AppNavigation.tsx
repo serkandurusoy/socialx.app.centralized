@@ -63,6 +63,7 @@ const CommentsStackNavigator = StackNavigator(
 		RepliesScreen: {screen: RepliesScreen},
 	},
 	{
+		headerMode: 'screen',
 		navigationOptions: navOptionsDefault,
 	},
 );
@@ -89,9 +90,9 @@ const MainScreenTabNavigation = TabNavigator(
 const MainScreenWithModal = StackNavigator(
 	{
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
-		NewWallPostScreen: {screen: NewWallPostScreen},
-		PhotoScreen: {screen: PhotoScreen},
-		MediaViewerScreen: {screen: MediaViewerScreen},
+		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
+		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
+		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
 		CommentsStack: {screen: CommentsStackNavigator},
 	},
 	{
@@ -123,12 +124,9 @@ const PrimaryNav = StackNavigator(
 		MessagingScreen: {screen: MessagingScreen}, // TODO: later to be moved
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
-		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
-		CommentsStack: {screen: CommentsStackNavigator},
-		RepliesScreen: {screen: RepliesScreen},
 	},
 	{
 		headerMode: 'none',
