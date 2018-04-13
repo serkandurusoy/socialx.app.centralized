@@ -96,7 +96,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
 		const {Posts, data} = this.props;
-		if (!data.loading && !Posts.loading && data.user.avarar) {
+		if (!data.loading && !Posts.loading && data.user.avatar) {
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
 		return ret;
