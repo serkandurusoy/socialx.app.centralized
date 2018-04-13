@@ -306,14 +306,17 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private onLikeButtonClickHandler = async (postId: string) => {
 		const {likePost, removeLikePost} = this.props;
 		const {wallPosts} = this.state;
+
 		const post: any = wallPosts.find((p: IWallPostCardProp) => p.id === postId);
 		if (!post) {
 			return;
 		}
 
+		const likeQuery = { variables: { postId: post.id } };
+
 		const result = post.likedByMe
-			? await removeLikePost({ variables: { postId: post.id }})
-			: await likePost({ variables: { postId: post.id } });
+			? await removeLikePost(likeQuery)
+			: await likePost(likeQuery);
 
 		if (result.error) {
 			console.log(result.error);
