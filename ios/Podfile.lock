@@ -6,11 +6,15 @@ PODS:
     - AppCenter/Core
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
+  - FLAnimatedImage (1.0.12)
   - QBImagePickerController (3.4.0)
   - React (0.54.4):
     - React/Core (= 0.54.4)
-  - react-native-splash-screen (3.0.6):
+  - react-native-fast-image (4.0.0):
+    - FLAnimatedImage
     - React
+    - SDWebImage/Core
+    - SDWebImage/GIF
   - React/Core (0.54.4):
     - yoga (= 0.54.4.React)
   - React/fishhook (0.54.4)
@@ -43,13 +47,17 @@ PODS:
     - QBImagePickerController
     - RSKImageCropper
   - RSKImageCropper (2.0.0)
+  - SDWebImage/Core (4.3.3)
+  - SDWebImage/GIF (4.3.3):
+    - FLAnimatedImage (~> 1.0)
+    - SDWebImage/Core
   - yoga (0.54.4.React)
 
 DEPENDENCIES:
   - AppCenter/Analytics (~> 1.5.0)
   - AppCenter/Crashes (~> 1.5.0)
   - AppCenterReactNativeShared (~> 1.4.0)
-  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-fast-image (from `../node_modules/react-native-fast-image`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
   - React/RCTAnimation (from `../node_modules/react-native`)
@@ -67,8 +75,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   React:
     :path: ../node_modules/react-native
-  react-native-splash-screen:
-    :path: ../node_modules/react-native-splash-screen
+  react-native-fast-image:
+    :path: ../node_modules/react-native-fast-image
   RNImageCropPicker:
     :path: ../node_modules/react-native-image-crop-picker
   yoga:
@@ -77,13 +85,15 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
   AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: c237e42de9c70e5cac6eeb52b4cfd3a0910c1f00
-  react-native-splash-screen: 8e3f866dc79bfe533baeffd0a38c33f7a7eae7f8
+  react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
   RNImageCropPicker: a637beb8f4c76bf9fe8a89d404ad65a33c4215ac
   RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
+  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
   yoga: 55da126afc384965b96bff46652464373b330add
 
-PODFILE CHECKSUM: 5b5cf2ca37b423e7799b56f1cbc31493be725a4a
+PODFILE CHECKSUM: 3c02e50ce9cc35acebc4613a17fd87cf006a3813
 
 COCOAPODS: 1.4.0

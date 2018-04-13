@@ -134,7 +134,7 @@ export default class UserProfileScreenComponent extends Component<
 		for (let i = 0; i < this.props.recentPosts.length; i++) {
 			ret.push(
 				<View style={style.wallPostContainer} key={i}>
-					<WallPostCard {...this.props.recentPosts[i]} />
+					<WallPostCard {...this.props.recentPosts[i]} canDelete={false} />
 				</View>,
 			);
 		}

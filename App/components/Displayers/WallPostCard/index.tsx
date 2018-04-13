@@ -1,17 +1,17 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {findNodeHandle, Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {OS_TYPES} from '../../../constants';
 import {ModalManager} from '../../../hoc/ManagedModal/manager';
 import {Colors, Sizes} from '../../../theme';
 import Icons from '../../../theme/Icons';
+import {IUserQuery} from '../../../types/gql';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
-import {WallPostComments} from './WallPostComments';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 
@@ -31,6 +31,9 @@ export interface IWallPostCardProp {
 	numberOfComments: number;
 	numberOfWalletCoins: number;
 	onImageClick: () => void;
+	onCommentsButtonClick: () => void;
+	canDelete: boolean;
+	user: IUserQuery;
 }
 
 export interface IWallPostCardState {
@@ -39,6 +42,10 @@ export interface IWallPostCardState {
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
+	public static defaultProps: Partial<IWallPostCardProp> = {
+		canDelete: false,
+	};
+
 	public state = {
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
@@ -76,11 +83,10 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.likeButtonPressedHandler}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.commentsButtonPressedHandler}
+					commentsButtonPressed={this.props.onCommentsButtonClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 					shareButtonPressed={this.shareButtonPressedHandler}
 				/>
-				<WallPostComments />
 			</View>
 		);
 	}
@@ -98,7 +104,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	};
+	}
 
 	private shareButtonPressedHandler = () => {
 		return (
@@ -108,7 +114,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				resizeMode={FastImage.resizeMode.cover}
 			/>
 		);
-	};
+	}
 
 	private renderTaggedFriends = () => {
 		if (this.props.taggedFriends && this.props.taggedFriends.length > 0) {
@@ -132,7 +138,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			return ret;
 		}
 		return null;
-	};
+	}
 
 	private renderLocation = () => {
 		if (this.props.location) {
@@ -156,7 +162,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			];
 		}
 		return null;
-	};
+	}
 
 	private tooltipsReportPressedHandler = () => {
 		ModalManager.safeRunAfterModalClosed(() => {
@@ -164,7 +170,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				modalVisibleReportProblem: true,
 			});
 		});
-	};
+	}
 
 	private renderPostDescription = () => {
 		const {text} = this.props;
@@ -191,13 +197,13 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	};
+	}
 
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
-	};
+	}
 
 	private renderPostTitle = () => {
 		if (this.props.title) {
@@ -208,7 +214,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	};
+	}
 
 	private toggleDeclineReportModal = () => {
 		this.setState({
@@ -217,18 +223,21 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private getTooltipItems = (): TooltipItem[] => {
-		return [
+		const ret = [
 			{
 				label: 'Report a Problem',
 				icon: Icons.iconReport,
 				actionHandler: this.tooltipsReportPressedHandler,
 			},
-			{
+		];
+		if (this.props.canDelete) {
+			ret.push({
 				label: 'Delete Post',
 				icon: Icons.iconDelete,
 				actionHandler: this.tooltipsDeletePressedHandler,
-			},
-		];
+			});
+		}
+		return ret;
 	}
 
 	private tooltipsDeletePressedHandler = () => {
@@ -246,10 +255,6 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private superLikeButtonPressedHandler = () => {
 		alert('Super-Like this post');
-	}
-
-	private commentsButtonPressedHandler = () => {
-		alert('Show comments for this post');
 	}
 
 	private walletCoinsButtonPressedHandler = () => {

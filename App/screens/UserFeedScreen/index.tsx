@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
@@ -41,22 +41,6 @@ interface IUserFeedScreenState {
 	currentLoad: number;
 }
 
-const INITIAL_USER_POSTS: IWallPostCardProp[] = [
-	{
-		title: 'Post title here',
-		text: 'Sample existing post text',
-		location: 'Tower Bridge, London',
-		smallAvatar: 'https://placeimg.com/110/110/people',
-		fullName: 'Ionut Movila',
-		timestamp: new Date(),
-		numberOfLikes: 0,
-		numberOfSuperLikes: 0,
-		numberOfComments: 0,
-		numberOfWalletCoins: 0,
-		onImageClick: () => {},
-	},
-];
-
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'FEED',
@@ -80,23 +64,26 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (data.loading || Posts.loading) {
 			return;
 		}
-		if (allWallPosts.length === 0) {
-			this.setState({allWallPosts: this.getWallPosts()});
-			console.log(Posts.allPosts);
-		}
+		this.setState({allWallPosts: this.getWallPosts()});
+		this.loadMorePostsHandler();
 	}
 
 	public render() {
 		const {Posts, data} = this.props;
 		if (data.loading || Posts.loading) {
-			// TODO: content Loading..
-			return <View />;
+			// TODO: inline load here aswell
+			return <View><Text>Fetching data..</Text></View>;
 		}
 		// TODO: make better
 		const avatarUri = data.user.avatar ? {uri: base.ipfs_URL + data.user.avatar.hash} : Images.user_avatar_placeholder;
 
+		if (this.state.wallPosts.length < 0) {
+			// TODO: inline load here
+			return <View><Text>Loading Posts..</Text></View>;
+		}
 		return (
 			<UserFeedScreenComponent
+				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
 				fullName={this.props.data.user.name}
@@ -105,6 +92,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
+				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 			/>
 		);
 	}
@@ -128,7 +116,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
-				fullName: post.owner.username,
+				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+				fullName: post.owner.name,
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: 0,
 				numberOfSuperLikes: 0,
@@ -136,6 +125,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				numberOfWalletCoins: 0,
 				// TODO: append all media to this with the index of the image
 				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
+				user: post.owner,
 			};
 			arty.push(res);
 		}
@@ -173,8 +163,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (currentLoad === allWallPosts.length) {
 			return;
 		}
-
-		console.log(wallPosts);
 
 		const appendRate = allWallPosts.length % 2 === 0 ? 2 : 3;
 
@@ -238,7 +226,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					for (let i = 0; i < ipfsHashes.length; i++) {
 						const ipfsData = ipfsHashes[i];
 						const resp = await addMedia({
-							variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
+							variables: {
+								hash: ipfsData.hash,
+								type: ipfsData.type,
+								size: parseInt(ipfsData.size, undefined),
+							},
 						});
 						mediaIds.push(resp.data.addMedia.id);
 					}
@@ -297,6 +289,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			photos,
 			startIndex: index,
 		});
+	}
+
+	private onCommentsButtonClickHandler = (wallPostData: IWallPostCardProp) => {
+		console.log('Go to comments screen for', wallPostData);
+		// TODO: comments should be passed as a nav param to CommentsScreen
+		this.props.navigation.navigate('CommentsStack');
 	}
 }
 

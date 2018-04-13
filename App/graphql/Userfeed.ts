@@ -48,7 +48,9 @@ export const getAllPosts = gql`
 				size
 			}
 			owner {
+				userId
 				username
+				name
 				avatar {
 					id
 					hash
@@ -59,13 +61,10 @@ export const getAllPosts = gql`
 	}
 `;
 
-export const getAllPostsHoc = (comp: any) =>
-	graphql(getAllPosts, {name: 'Posts'})(comp);
+export const getAllPostsHoc = (comp: any) => graphql(getAllPosts, {name: 'Posts'})(comp);
 
-export const getUserPostsHoc = (comp: any) =>
-	graphql(getUserPosts, {name: 'User'})(comp);
+export const getUserPostsHoc = (comp: any) => graphql(getUserPosts, {name: 'User'})(comp);
 
-export const addMediaHoc = (comp: any) =>
-	graphql(addMediaMut, {name: 'addMedia'})(comp);
+export const addMediaHoc = (comp: any) => graphql(addMediaMut, {name: 'addMedia'})(comp);
 
 export const createPostHoc = (comp: any) => graphql(createPostMut, {name: 'createPost'})(comp);

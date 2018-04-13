@@ -140,14 +140,14 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							returnKeyType={TRKeyboardKeys.done}
 						/>
 					</View>
-					<View style={style.miningContainer}>
-						<SettingCheckbox
-							title={'Mining (Beta)'}
-							description={'Get rewarded for validating transactions within SocialX network'}
-							initialValue={this.props.miningEnabled}
-							valueUpdated={this.toggleMiningSetting}
-						/>
-					</View>
+					{/*<View style={style.miningContainer}>*/}
+						{/*<SettingCheckbox*/}
+							{/*title={'Mining (Beta)'}*/}
+							{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
+							{/*initialValue={this.props.miningEnabled}*/}
+							{/*valueUpdated={this.toggleMiningSetting}*/}
+						{/*/>*/}
+					{/*</View>*/}
 				</KeyboardAwareScrollView>
 				{this.renderSaveButton()}
 			</View>

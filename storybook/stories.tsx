@@ -23,3 +23,4 @@ import './stories/ContactsList.stories';
 import './stories/MessagingFilterSection.stories';
 import './stories/ModalReportProblem.stories';
 import './stories/ChartListDataRow.stories';
+import './stories/CommentCard.stories';
