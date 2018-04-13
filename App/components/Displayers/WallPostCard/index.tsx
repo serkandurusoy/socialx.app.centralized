@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {findNodeHandle, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {findNodeHandle, Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {OS_TYPES} from '../../../constants';
@@ -12,7 +12,6 @@ import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
-import {WallPostComments} from './WallPostComments';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 
@@ -32,6 +31,7 @@ export interface IWallPostCardProp {
 	numberOfComments: number;
 	numberOfWalletCoins: number;
 	onImageClick: () => void;
+	onCommentsButtonClick: () => void;
 	canDelete: boolean;
 	user: IUserQuery;
 }
@@ -83,11 +83,10 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.likeButtonPressedHandler}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.commentsButtonPressedHandler}
+					commentsButtonPressed={this.props.onCommentsButtonClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 					shareButtonPressed={this.shareButtonPressedHandler}
 				/>
-				<WallPostComments />
 			</View>
 		);
 	}
@@ -256,10 +255,6 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private superLikeButtonPressedHandler = () => {
 		alert('Super-Like this post');
-	}
-
-	private commentsButtonPressedHandler = () => {
-		alert('Show comments for this post');
 	}
 
 	private walletCoinsButtonPressedHandler = () => {

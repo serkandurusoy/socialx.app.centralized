@@ -14,6 +14,7 @@ interface IUserFeedScreenProps {
 	refreshData: () => void;
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
+	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
 	currentUser: IUserQuery;
 }
 
@@ -24,7 +25,12 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		const canDelete = props.currentUser.userId === data.item.user.userId;
 		return (
 			<View style={style.wallPostContainer}>
-				<WallPostCard {...data.item} canDelete={canDelete} />
+				{/* <WallPostCard {...data.item} onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)} /> */}
+				<WallPostCard
+					{...data.item}
+					canDelete={canDelete}
+					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
+				/>
 			</View>
 		);
 	};
