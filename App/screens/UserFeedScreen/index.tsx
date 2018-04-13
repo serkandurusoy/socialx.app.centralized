@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {Alert, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
@@ -9,8 +9,8 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc, likePostHoc} from '../../graphql';
-import {IAllPostsDataResponse, IPostsProps, IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, likePostHoc, userHoc} from '../../graphql';
+import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
@@ -20,6 +20,7 @@ import {addBlob} from '../../utils/ipfs';
 
 import base from '../../config/ipfs';
 
+import { IWalletActivityScreenComponentProps } from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
 interface IUserFeedScreenProps {
@@ -42,22 +43,6 @@ interface IUserFeedScreenState {
 	refreshing: boolean;
 	currentLoad: number;
 }
-
-const INITIAL_USER_POSTS: IWallPostCardProp[] = [
-	{
-		title: 'Post title here',
-		text: 'Sample existing post text',
-		location: 'Tower Bridge, London',
-		smallAvatar: 'https://placeimg.com/110/110/people',
-		fullName: 'Ionut Movila',
-		timestamp: new Date(),
-		numberOfLikes: 0,
-		numberOfSuperLikes: 0,
-		numberOfComments: 0,
-		numberOfWalletCoins: 0,
-		onImageClick: () => {},
-	},
-];
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
@@ -82,33 +67,37 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (data.loading || Posts.loading) {
 			return;
 		}
-		if (allWallPosts.length === 0) {
-			this.setState({allWallPosts: this.getWallPosts()});
-			console.log(Posts.allPosts);
-		}
+		this.setState({allWallPosts: this.getWallPosts()});
+		this.loadMorePostsHandler();
 	}
 
 	public render() {
 		const {Posts, data} = this.props;
-		if (data.loading || Posts.loading) {
-			// TODO: content Loading..
-			return <View />;
-		}
-		// TODO: make better
-		const avatarUri = data.user.avatar ? {uri: base.ipfs_URL + data.user.avatar.hash} : Images.user_avatar_placeholder;
+		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length < 0;
 
 		return (
 			<UserFeedScreenComponent
+				isLoading={isLoading}
+				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
-				fullName={this.props.data.user.name}
-				avatarImage={avatarUri}
+				avatarImage={this.getAvatarImage()}
 				wallPosts={this.state.wallPosts}
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
+				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 			/>
 		);
+	}
+
+	private getAvatarImage = () => {
+		let ret = Images.user_avatar_placeholder;
+		const {Posts, data} = this.props;
+		if (!data.loading && !Posts.loading && data.user.avarar) {
+			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
+		}
+		return ret;
 	}
 
 	private getWallPosts = () => {
@@ -120,7 +109,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		for (let i = 0; i < Posts.allPosts.length; i++) {
-			const post = Posts.allPosts[i];
+			const post: IPostsProps = Posts.allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const res: IWallPostCardProp = {
@@ -131,15 +120,19 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
-				fullName: post.owner.username,
+				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+				fullName: post.owner.name,
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
 				numberOfComments: 0,
 				numberOfWalletCoins: 0,
+				onCommentsButtonClick: () => Alert.alert('click'),
 				// TODO: append all media to this with the index of the image
 				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
-				onLikeButtonClick: () => this.onLikeButtonClickHandler(post)
+				onLikeButtonClick: () => this.onLikeButtonClickHandler(post),
+				canDelete: false,
+				owner: post.owner,
 			};
 			arty.push(res);
 		}
@@ -177,8 +170,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (currentLoad === allWallPosts.length) {
 			return;
 		}
-
-		console.log(wallPosts);
 
 		const appendRate = allWallPosts.length % 2 === 0 ? 2 : 3;
 
@@ -242,7 +233,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					for (let i = 0; i < ipfsHashes.length; i++) {
 						const ipfsData = ipfsHashes[i];
 						const resp = await addMedia({
-							variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
+							variables: {
+								hash: ipfsData.hash,
+								type: ipfsData.type,
+								size: parseInt(ipfsData.size, undefined),
+							},
 						});
 						mediaIds.push(resp.data.addMedia.id);
 					}
@@ -287,6 +282,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		this.setState({refreshing: true});
 		await Posts.refetch();
+		// TODO: @Jake: code below is never reached. Re-fetch fails?
 		this.setState({
 			refreshing: false,
 			wallPosts: [],
@@ -303,34 +299,34 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 
-	private onLikeButtonClickHandler = async (post) => {
+	private onLikeButtonClickHandler = async (post: IPostsProps) => {
 		const {likePost} = this.props;
-		let currentUser = await CurrentUser();
-		let likedByMe = post.likes.find(like => like.username === currentUser.username);
-		if(!likedByMe){
-			let {error, data} = await likePost({
-				variables: {
-					postId: post.id,
-				}
-			});
-			if(error){
-			    console.log("can't like post", error);
-            } else {
-                let {likePost: {likes}} = data;
-                this.setState(prevState => {
-                    return {
-                        wallPosts: prevState.wallPosts.map(p => {
-                            if (p.id == post.id) {
-                                return {...p, numberOfLikes: likes.length}
-                            }
-                            return p;
-                        })
-                    };
-                });
-            }
-		} else {
-			// todo call "unlike" when resolver is ready
+		const currentUser = await CurrentUser();
+		const likedByMe = post.likes.find((like: IUserQuery) => like.username === currentUser.username);
+		if (likedByMe) {
+			// TODO: add unlike handler
+			return;
 		}
+
+		const likeRes = await likePost({ variables: { postId: post.id } });
+		if (likeRes.error) {
+			console.log(likeRes.error);
+			return;
+		}
+
+		const {likePosts: {likes}} = likeRes.data;
+		// TODO: make better
+		this.setState((preveState: IUserFeedScreenState | any) => ({
+			wallPosts: preveState.wallPosts.map((p: IWallPostCardProp) => {
+				return p.id === post.id ? {...p, numberOfLikes: likes.length} : p;
+			}),
+		}));
+	}
+
+	private onCommentsButtonClickHandler = (wallPostData: IWallPostCardProp) => {
+		// console.log('Go to comments screen for', wallPostData);
+		// TODO: comments should be passed as a nav param to CommentsScreen
+		this.props.navigation.navigate('CommentsStack');
 	}
 }
 

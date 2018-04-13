@@ -1,6 +1,4 @@
-import {QueryProps} from './gql';
-
-export {QueryProps} from 'react-apollo';
+import {QueryProps} from 'react-apollo';
 
 export interface ICreateUserProps {
 	variables: {
@@ -28,6 +26,7 @@ export interface IPostsProps {
 	text: string;
 	Media?: IMediaProps[];
 	owner: IUserQuery;
+	likes: IUserQuery[];
 }
 
 export interface IUserQuery {

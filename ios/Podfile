@@ -30,9 +30,9 @@ target 'SocialxTypeActress' do
 
   platform :ios, '9.0'
 
-  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
-
   pod 'react-native-fast-image', :path => '../node_modules/react-native-fast-image'
+
+  pod 'react-native-spinkit', :path => '../node_modules/react-native-spinkit'
 
   target 'SocialxTypeActressTests' do
     inherit! :search_paths

@@ -23,3 +23,4 @@ export * from './TextGradient';
 export * from './TitleWithSubtitle';
 export * from './TransactionItem';
 export * from './WallPostCard';
+export * from './WallPostCard/CommentCard';

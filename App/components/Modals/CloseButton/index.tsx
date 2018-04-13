@@ -12,7 +12,7 @@ interface IModalCloseButtonProps {
 export const ModalCloseButton: React.SFC<IModalCloseButtonProps> = (props) => {
 	const closeModal = () => {
 		Keyboard.dismiss();
-		props.navigation.goBack();
+		props.navigation.goBack(null);
 	};
 
 	return (

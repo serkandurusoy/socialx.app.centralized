@@ -3,8 +3,9 @@ package socialx.network;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.react.rnspinkit.RNSpinkitPackage;
+import com.reactnativecomponent.splashscreen.RCTSplashScreenPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.horcrux.svg.SvgPackage;
 import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
 import com.brentvatne.react.ReactVideoPackage;
@@ -46,9 +47,10 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new RNSpinkitPackage(),
+                    new RCTSplashScreenPackage(),
                     new FastImageViewPackage(),
                     // new RNPushNotificationPackage(),
-                    new SplashScreenReactPackage(),
                     new AndroidKeyboardAdjustPackage(),
                     new SvgPackage(),
                     new ReactVideoPackage(),

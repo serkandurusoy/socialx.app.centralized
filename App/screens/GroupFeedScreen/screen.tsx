@@ -50,9 +50,10 @@ export default class GroupFeedScreenComponent extends Component<IGroupFeedScreen
 	private keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
 	private renderGroupPosts = (data: any) => {
+		const canDelete = false; // TODO: when data is hooked make it similar with UserFeedScreen/screen.tsx
 		return (
 			<View style={style.groupPostContainer}>
-				<WallPostCard {...data.item} />
+				<WallPostCard {...data.item} canDelete={canDelete} />
 			</View>
 		);
 	}

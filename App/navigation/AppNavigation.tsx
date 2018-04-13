@@ -4,6 +4,8 @@ import LaunchScreen from '../screens/LaunchScreen';
 
 import {TabBarBottom} from '../components/Displayers';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
+import CommentsScreen from '../screens/CommentsScreen';
+import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -55,6 +57,17 @@ const MyProfileStackNavigator = StackNavigator(
 	},
 );
 
+const CommentsStackNavigator = StackNavigator(
+	{
+		CommentsScreen: {screen: CommentsScreen},
+		RepliesScreen: {screen: RepliesScreen},
+	},
+	{
+		headerMode: 'screen',
+		navigationOptions: navOptionsDefault,
+	},
+);
+
 const MainScreenTabNavigation = TabNavigator(
 	{
 		UserFeedTab: getSingleScreenStack('UserFeedScreen', UserFeedScreen),
@@ -77,9 +90,10 @@ const MainScreenTabNavigation = TabNavigator(
 const MainScreenWithModal = StackNavigator(
 	{
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
-		NewWallPostScreen: {screen: NewWallPostScreen},
-		PhotoScreen: {screen: PhotoScreen},
-		MediaViewerScreen: {screen: MediaViewerScreen},
+		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
+		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
+		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
+		CommentsStack: {screen: CommentsStackNavigator},
 	},
 	{
 		mode: 'modal',
@@ -87,8 +101,7 @@ const MainScreenWithModal = StackNavigator(
 	},
 );
 
-// Manifest of possible screens
-const PrimaryNav = StackNavigator(
+const PreAuthNavigator = StackNavigator(
 	{
 		LaunchScreen: {screen: LaunchScreen},
 		LoginScreen: {screen: LoginScreen},
@@ -96,19 +109,28 @@ const PrimaryNav = StackNavigator(
 		ForgotPasswordScreen: {screen: ForgotPasswordScreen},
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
+	},
+	{
+		headerMode: 'screen',
+		navigationOptions: navOptionsDefault,
+	},
+);
+
+// Manifest of possible screens
+const PrimaryNav = StackNavigator(
+	{
+		PreAuthScreen: {screen: PreAuthNavigator},
 		MainScreen: {screen: MainScreenWithModal},
-		MessagingScreen: {screen: MessagingScreen},
+		MessagingScreen: {screen: MessagingScreen}, // TODO: later to be moved
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
-		MediaViewerScreen: {screen: MediaViewerScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
 	},
 	{
-		headerMode: 'screen',
-		initialRouteName: 'LaunchScreen',
-		navigationOptions: navOptionsDefault,
+		headerMode: 'none',
+		initialRouteName: 'PreAuthScreen',
 	},
 );
 

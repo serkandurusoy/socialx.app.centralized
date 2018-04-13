@@ -4,6 +4,7 @@ import {NavigationScreenProp} from 'react-navigation';
 import {UserAvatar} from '../../components/Avatar';
 import {GridPhotos, ProfileStatistics} from '../../components/Displayers';
 import {TooltipDots} from '../../components/Displayers/DotsWithTooltips';
+import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
 import {Metrics} from '../../theme';
 import Icons from '../../theme/Icons';
 import MediaViewerScreen from '../MediaViewerScreen';
@@ -12,7 +13,7 @@ import style from './style';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const GRID_PHOTOS_SCROLL_THRESHOLD = 150;
 
-interface IMyProfileScreenProps {
+interface IMyProfileScreenProps extends IWithLoaderProps {
 	numberOfPhotos: number;
 	numberOfLikes: number;
 	numberOfFollowers: number;
@@ -27,15 +28,18 @@ interface IMyProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
 }
 
-export default class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
+class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 	private scrollView: any;
 	private isScrolled = false;
 
 	public render() {
-		return (
+		return <View style={style.container}>{this.renderWithLoading()}</View>;
+	}
+
+	private renderWithLoading = () => {
+		return this.props.renderWithLoader(
 			<ScrollView
 				scrollEnabled={true}
-				style={style.container}
 				contentContainerStyle={style.scrollContainer}
 				showsVerticalScrollIndicator={false}
 				ref={(ref: any) => (this.scrollView = ref)}
@@ -57,7 +61,7 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 					/>
 				</View>
 				{this.renderUserPhotoGallery()}
-			</ScrollView>
+			</ScrollView>,
 		);
 	}
 
@@ -100,16 +104,16 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 
 	private getTooltipItems = () => {
 		return [
-			{
-				label: 'Profile Analytics',
-				icon: Icons.iconProfileAnalytics,
-				actionHandler: this.goToProfileAnalyticsPage,
-			},
-			{
-				label: 'Wallet',
-				icon: Icons.iconWallet2,
-				actionHandler: this.goToWalletActivityPage,
-			},
+			// {
+			// 	label: 'Profile Analytics',
+			// 	icon: Icons.iconProfileAnalytics,
+			// 	actionHandler: this.goToProfileAnalyticsPage,
+			// },
+			// {
+			// 	label: 'Wallet',
+			// 	icon: Icons.iconWallet2,
+			// 	actionHandler: this.goToWalletActivityPage,
+			// },
 			{
 				label: 'Settings',
 				icon: Icons.iconSettingsGear,
@@ -131,3 +135,5 @@ export default class MyProfileScreenComponent extends Component<IMyProfileScreen
 		this.props.navigation.navigate('SettingsScreen');
 	}
 }
+
+export default withInlineLoader(MyProfileScreenComponent);
