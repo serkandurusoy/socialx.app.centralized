@@ -13,4 +13,18 @@ const likePost = gql`
     }
 `;
 
+const removeLikePost = gql`
+    mutation removelikePost($postId: ID!){
+        removelikePost(postId: $postId){
+            id,
+            likes {
+			    userId,
+			    username
+			}
+        }
+    }
+`;
+
 export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost' })(comp);
+
+export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, { name: 'removeLikePost' })(comp);

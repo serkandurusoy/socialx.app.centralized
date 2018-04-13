@@ -34,6 +34,7 @@ export interface IWallPostCardProp {
 	onImageClick: () => void;
 	onLikeButtonClick: () => void;
 	onCommentsButtonClick: () => void;
+	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
 }

@@ -9,7 +9,8 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, likePostHoc, userHoc} from '../../graphql';
+import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, 
+	likePostHoc, removeLikePostHoc, userHoc} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';
 
@@ -31,6 +32,7 @@ interface IUserFeedScreenProps {
 	User: IUserDataResponse;
 	createPost: any;
 	likePost: any;
+	removeLikePost: any;
 	addMedia: any;
 	startMediaPost: any;
 	startPostadd: any;
@@ -112,6 +114,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const post: IPostsProps = Posts.allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
+			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
 			const res: IWallPostCardProp = {
 				id: post.id,
 				text: post.text,
@@ -130,7 +133,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onCommentsButtonClick: () => Alert.alert('click'),
 				// TODO: append all media to this with the index of the image
 				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
-				onLikeButtonClick: () => this.onLikeButtonClickHandler(post),
+				onLikeButtonClick: () => this.onLikeButtonClickHandler(post.id),
+				likedByMe,
 				canDelete: false,
 				owner: post.owner,
 			};
@@ -299,26 +303,28 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 
-	private onLikeButtonClickHandler = async (post: IPostsProps) => {
-		const {likePost} = this.props;
-		const currentUser = await CurrentUser();
-		const likedByMe = post.likes.find((like: IUserQuery) => like.username === currentUser.username);
-		if (likedByMe) {
-			// TODO: add unlike handler
+	private onLikeButtonClickHandler = async (postId: string) => {
+		const {likePost, removeLikePost} = this.props;
+		const {wallPosts} = this.state;
+		const post: any = wallPosts.find((p: IWallPostCardProp) => p.id === postId);
+		if (!post) {
 			return;
 		}
 
-		const likeRes = await likePost({ variables: { postId: post.id } });
-		if (likeRes.error) {
-			console.log(likeRes.error);
+		const result = post.likedByMe
+			? await removeLikePost({ variables: { postId: post.id }})
+			: await likePost({ variables: { postId: post.id } });
+
+		if (result.error) {
+			console.log(result.error);
 			return;
 		}
 
-		const {likePosts: {likes}} = likeRes.data;
+		const {likes} = result.data[post.likedByMe ? 'removelikePost' : 'likePost'];
 		// TODO: make better
 		this.setState((preveState: IUserFeedScreenState | any) => ({
 			wallPosts: preveState.wallPosts.map((p: IWallPostCardProp) => {
-				return p.id === post.id ? {...p, numberOfLikes: likes.length} : p;
+				return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
 			}),
 		}));
 	}
@@ -343,5 +349,6 @@ const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
 const likePostWrapper = likePostHoc(addMediaWrapper);
+const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
 
-export default likePostWrapper;
+export default removeLikePostWrapper;
