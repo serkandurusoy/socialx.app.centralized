@@ -141,7 +141,7 @@
     "preset": "jest-preset-typescript-react-native",
     "testMatch": [
       "**/__tests__/**/*.ts?(x)",
-      "**/App/**/*Test.ts?(x)"
+      "**/App/**/*.test.ts?(x)"
     ],
     "testPathIgnorePatterns": [
       "\\.snap$",
