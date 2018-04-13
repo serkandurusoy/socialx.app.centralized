@@ -13,4 +13,4 @@ const likePost = gql`
     }
 `;
 
-export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost'})(comp);
+export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost' })(comp);
