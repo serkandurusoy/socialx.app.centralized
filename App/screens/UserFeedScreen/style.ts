@@ -38,11 +38,6 @@ const style: any = {
 	wallPostContainer: {
 		paddingTop: Sizes.smartVerticalScale(25),
 	},
-	spinnerContainer: {
-		width: '100%',
-		paddingTop: Sizes.smartVerticalScale(20),
-		alignItems: 'center',
-	},
 };
 
 export default StyleSheet.create(style);

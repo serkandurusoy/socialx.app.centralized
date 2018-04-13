@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {View} from 'react-native';
+import {NavigationScreenProp} from 'react-navigation';
+import {ModalCloseButton} from '../../components/Modals/CloseButton';
 import {getRandomImage} from '../../utils';
 import CommentsScreenComponent from './screen';
 
@@ -102,9 +104,10 @@ const SAMPLE_POST_COMMENTS: IWallPostComment[] = [
 ];
 
 export default class CommentsScreen extends Component<IWallPostCommentsProps> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		header: null,
-	};
+	private static navigationOptions = (props: IWallPostCommentsProps) => ({
+		headerRight: <ModalCloseButton navigation={props.navigation} />,
+		headerLeft: <View />,
+	})
 
 	public render() {
 		return (

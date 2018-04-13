@@ -4,6 +4,7 @@ import {Colors, Fonts, Sizes} from '../../theme';
 const style: any = {
 	container: {
 		backgroundColor: Colors.white,
+		flex: 1,
 	},
 	scrollContainer: {
 		width: '100%',

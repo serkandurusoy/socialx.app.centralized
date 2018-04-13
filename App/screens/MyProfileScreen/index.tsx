@@ -74,8 +74,9 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 
-		const userAvatar = avatar ? base.ipfs_URL + avatar.hash :
-		'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+		const userAvatar = avatar
+			? base.ipfs_URL + avatar.hash
+			: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
 		this.setState({
 			numberOfPhotos: userImages,
@@ -92,13 +93,9 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 
 	public render() {
 		const {data} = this.props;
-		if (data.loading) {
-			// TODO: content load here
-			return <View />;
-		}
-
 		return (
 			<MyProfileScreenComponent
+				isLoading={data.loading}
 				totalNumberOfPhotos={GRID_MAX_RESULTS}
 				gridPageSize={GRID_PAGE_SIZE}
 				numberOfPhotos={this.state.numberOfPhotos}

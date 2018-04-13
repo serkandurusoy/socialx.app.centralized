@@ -78,7 +78,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
-				fullName={this.props.data.user.name}
 				avatarImage={this.getAvatarImage()}
 				wallPosts={this.state.wallPosts}
 				loadMorePosts={this.loadMorePostsHandler}
@@ -276,7 +275,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		this.setState({refreshing: true});
 		await Posts.refetch();
-		console.log('Refetch done'); // TODO: @Jake: this code is never reached. Re-fetch fails?
+		// TODO: @Jake: code below is never reached. Re-fetch fails?
 		this.setState({
 			refreshing: false,
 			wallPosts: [],
@@ -294,7 +293,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onCommentsButtonClickHandler = (wallPostData: IWallPostCardProp) => {
-		console.log('Go to comments screen for', wallPostData);
+		// console.log('Go to comments screen for', wallPostData);
 		// TODO: comments should be passed as a nav param to CommentsScreen
 		this.props.navigation.navigate('CommentsStack');
 	}
