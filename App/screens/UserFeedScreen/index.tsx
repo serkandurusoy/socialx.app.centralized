@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
@@ -70,24 +70,16 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	public render() {
 		const {Posts, data} = this.props;
-		if (data.loading || Posts.loading) {
-			// TODO: inline load here aswell
-			return <View><Text>Fetching data..</Text></View>;
-		}
-		// TODO: make better
-		const avatarUri = data.user.avatar ? {uri: base.ipfs_URL + data.user.avatar.hash} : Images.user_avatar_placeholder;
+		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length < 0;
 
-		if (this.state.wallPosts.length < 0) {
-			// TODO: inline load here
-			return <View><Text>Loading Posts..</Text></View>;
-		}
 		return (
 			<UserFeedScreenComponent
+				isLoading={isLoading}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
 				fullName={this.props.data.user.name}
-				avatarImage={avatarUri}
+				avatarImage={this.getAvatarImage()}
 				wallPosts={this.state.wallPosts}
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
@@ -95,6 +87,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 			/>
 		);
+	}
+
+	private getAvatarImage = () => {
+		let ret = Images.user_avatar_placeholder;
+		const {Posts, data} = this.props;
+		if (!data.loading && !Posts.loading && data.user.avarar) {
+			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
+		}
+		return ret;
 	}
 
 	private getWallPosts = () => {
@@ -275,6 +276,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		this.setState({refreshing: true});
 		await Posts.refetch();
+		console.log('Refetch done'); // TODO: @Jake: this code is never reached. Re-fetch fails?
 		this.setState({
 			refreshing: false,
 			wallPosts: [],
