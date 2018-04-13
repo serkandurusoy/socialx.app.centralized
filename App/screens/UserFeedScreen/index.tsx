@@ -41,22 +41,6 @@ interface IUserFeedScreenState {
 	currentLoad: number;
 }
 
-const INITIAL_USER_POSTS: IWallPostCardProp[] = [
-	{
-		title: 'Post title here',
-		text: 'Sample existing post text',
-		location: 'Tower Bridge, London',
-		smallAvatar: 'https://placeimg.com/110/110/people',
-		fullName: 'Ionut Movila',
-		timestamp: new Date(),
-		numberOfLikes: 0,
-		numberOfSuperLikes: 0,
-		numberOfComments: 0,
-		numberOfWalletCoins: 0,
-		onImageClick: () => {},
-	},
-];
-
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'FEED',
@@ -80,10 +64,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (data.loading || Posts.loading) {
 			return;
 		}
-		if (allWallPosts.length === 0) {
-			this.setState({allWallPosts: this.getWallPosts()});
-			console.log(Posts.allPosts);
-		}
+		this.setState({allWallPosts: this.getWallPosts()});
+		this.loadMorePostsHandler();
 	}
 
 	public render() {
@@ -175,8 +157,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (currentLoad === allWallPosts.length) {
 			return;
 		}
-
-		console.log(wallPosts);
 
 		const appendRate = allWallPosts.length % 2 === 0 ? 2 : 3;
 
@@ -295,7 +275,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			allWallPosts: this.getWallPosts(),
 			currentLoad: 0,
 		});
-		this.loadMorePostsHandler();
 	}
 
 	private onPhotoPressHandler = (index: number, photos: any) => {
