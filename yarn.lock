@@ -8905,9 +8905,9 @@ react-native-blur@^3.2.2:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-calendars@^1.17.7:
-  version "1.17.7"
-  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.17.7.tgz#91b76c6157d688de1b73559edadfcae6dd51b1a9"
+react-native-calendars@^1.18.2:
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.18.2.tgz#772106cc02559529e9032e7ea72431a442f8bcd9"
   dependencies:
     prop-types "^15.5.10"
     xdate "^0.8.0"

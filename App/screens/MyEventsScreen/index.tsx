@@ -7,6 +7,10 @@ export default class MyEventsScreen extends Component<any, any> {
 	};
 
 	public render() {
-		return <MyEventsScreenComponent />;
+		return <MyEventsScreenComponent onAddNewEvent={this.onAddNewEventHandler} />;
+	}
+
+	private onAddNewEventHandler = (date: string) => {
+		alert('TBD: add event for date ' + date);
 	}
 }
