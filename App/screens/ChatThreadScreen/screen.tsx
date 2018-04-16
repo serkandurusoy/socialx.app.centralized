@@ -43,10 +43,8 @@ const REQUEST_LOCATION_MESSAGE =
 	'In order to share your location with friends please allow the app' + ' to read your device location.';
 const LOCATION_ACCESS_DENIED = 'Location access was denied';
 
-export default class ChatThreadScreenComponent extends Component<
-	IChatThreadScreenComponentProps,
-	IChatThreadScreenComponentState
-> {
+export default class ChatThreadScreenComponent extends Component<IChatThreadScreenComponentProps,
+	IChatThreadScreenComponentState> {
 	public state = {
 		modalVisible: false,
 	};
@@ -118,7 +116,7 @@ export default class ChatThreadScreenComponent extends Component<
 		shadowStyles.push(currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH});
 		return (
 			<View style={style.messageContainer}>
-				<View style={{flex: 1}} />
+				<View style={{flex: 1}}/>
 				<View style={shadowStyles}>
 					<LinearGradient
 						start={{x: 0, y: 0.5}}
@@ -144,7 +142,7 @@ export default class ChatThreadScreenComponent extends Component<
 					{messageContent}
 					<Text style={style.friendMessageDate}>{messageDateWithFormat}</Text>
 				</View>
-				<View style={{flex: 1}} />
+				<View style={{flex: 1}}/>
 			</View>
 		);
 	}
@@ -159,7 +157,7 @@ export default class ChatThreadScreenComponent extends Component<
 				</Text>
 			);
 		} else if (currentMessage.imageURL) {
-			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'} />;
+			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'}/>;
 		} else if (currentMessage.geolocation) {
 			return (
 				<Text style={textStyle} selectable={true}>
@@ -176,7 +174,7 @@ export default class ChatThreadScreenComponent extends Component<
 	private renderSendButton = (props: any) => {
 		return (
 			<Send {...props} containerStyle={style.sendContainer}>
-				<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue} />
+				<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue}/>
 			</Send>
 		);
 	}
@@ -184,7 +182,7 @@ export default class ChatThreadScreenComponent extends Component<
 	private renderShareButton = () => {
 		return (
 			<TouchableOpacity style={style.shareButton} onPress={this.toggleShareOptionsModal}>
-				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora} />
+				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora}/>
 			</TouchableOpacity>
 		);
 	}
@@ -270,7 +268,7 @@ export default class ChatThreadScreenComponent extends Component<
 						this.giftedChat.scrollToBottom();
 					},
 					(error: PositionError) => {
-						Alert.alert(error.message);
+						Alert.alert('Position error', error.message);
 					},
 					{enableHighAccuracy: locationHighAccuracyEnabled, timeout: 20000},
 				);
