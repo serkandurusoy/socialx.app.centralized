@@ -120,6 +120,7 @@
     "@types/react-test-renderer": "^16.0.1",
     "@types/redux": "^3.6.0",
     "@types/uuid": "^3.4.3",
+    "@types/xdate": "^0.8.28",
     "@types/webpack-env": "^1.13.5",
     "babel-core": "^6.26.0",
     "babel-jest": "22.4.0",

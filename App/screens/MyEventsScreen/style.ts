@@ -28,8 +28,7 @@ const style: any = {
 	dayContainer: {
 		width: '100%',
 		alignItems: 'center',
-		// backgroundColor: Colors.alabaster,
-		backgroundColor: 'orange',
+		backgroundColor: Colors.alabaster,
 		height: Sizes.smartHorizontalScale(20),
 	},
 	dayHeader: {
@@ -48,6 +47,16 @@ const style: any = {
 		right: Sizes.smartHorizontalScale(10),
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	knobContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(15),
+	},
+	noEventsText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(15),
+		color: Colors.postText,
+		paddingHorizontal: Sizes.smartHorizontalScale(18),
+		paddingVertical: Sizes.smartHorizontalScale(10),
 	},
 };
 

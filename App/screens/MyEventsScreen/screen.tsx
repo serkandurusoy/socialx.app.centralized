@@ -1,18 +1,23 @@
+import isEqual from 'lodash/isEqual';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
+import XDate from 'XDate';
+import {EventListItem, IEventData} from '../../components/Displayers/EventListItem';
 import {Colors, Fonts, Sizes} from '../../theme/';
 import style from './style';
 
 interface IMyEventsScreenComponentProps {
-	onAddNewEvent: (date: string) => void;
+	events: IEventData[];
+	onAddNewEvent: (date: Date) => void;
 }
 
 interface IMyEventsScreenComponentState {
 	currentMonth: string;
-	currentDate: string;
+	currentDate: Date;
+	markedDates: any[];
 }
 
 interface IDayObject {
@@ -21,19 +26,6 @@ interface IDayObject {
 	year: number;
 	timestamp: number;
 	dateString: string;
-}
-
-interface IEventData {
-	title: string;
-	color: string;
-	startDate: Date;
-	endDate: Date;
-	allDay: boolean;
-	startTime?: Date;
-	endTime?: Date;
-	location?: string;
-	invitedFriends?: any[]; // TBD
-	description?: string;
 }
 
 // prettier-ignore
@@ -60,73 +52,23 @@ const CURRENT_MONTH_FORMAT = 'MMMM YYYY';
 const DAY_FORMAT = 'MMM D, YYYY';
 const AGENDA_ITEM_KEY_FORMAT = 'YYYY-MM-DD';
 
-const SAMPLE_EVENTS: IEventData[] = [
-	{
-		title: 'Business Meeting',
-		color: 'lime',
-		startDate: new Date(2018, 3, 13),
-		endDate: new Date(2018, 3, 14),
-		allDay: false,
-		startTime: new Date(2018, 3, 13, 10, 15),
-		endTime: new Date(2018, 3, 14, 15, 30),
-		location: 'Junior\'s Cafe',
-	},
-	{
-		title: 'Marius birthday',
-		color: 'magenta',
-		startDate: new Date(2018, 3, 11),
-		endDate: new Date(2018, 3, 11),
-		allDay: true,
-	},
-	{
-		title: '5FDP concert',
-		color: 'cyan',
-		startDate: new Date(2018, 3, 13),
-		endDate: new Date(2018, 3, 13),
-		allDay: false,
-		startTime: new Date(2018, 3, 13, 20, 45),
-		location: 'Central square',
-	},
-];
-
-const getAgendaItems = (events: IEventData[]) => {
-	const ret: any = {};
-	events.forEach((event) => {
-		const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
-		const dayEvents: IEventData[] = ret.hasOwnProperty(dateKey) ? ret[dateKey] : [];
-		dayEvents.push(event);
-		ret[dateKey] = dayEvents;
-	});
-	return ret;
-};
-
-const getMarkedDates = (events: IEventData[]) => {
-	const ret: any = {};
-	events.forEach((event) => {
-		const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
-		const markedDate = ret.hasOwnProperty(dateKey) ? ret[dateKey] : {dots: []};
-		markedDate.dots.push({color: event.color});
-		ret[dateKey] = markedDate;
-	});
-	return ret;
-};
-
-const AGENDA_ITEMS = getAgendaItems(SAMPLE_EVENTS);
-
-const MARKED_DATES = getMarkedDates(SAMPLE_EVENTS);
-
 export default class MyEventsScreenComponent extends Component<
 	IMyEventsScreenComponentProps,
 	IMyEventsScreenComponentState
 > {
-	public state = {
-		currentMonth: moment().format(CURRENT_MONTH_FORMAT),
-		currentDate: moment().format(DAY_FORMAT),
-	};
+	private initialSelectedDate = moment().format(AGENDA_ITEM_KEY_FORMAT);
 
-	private initialSelectedDate = new Date();
+	constructor(props: IMyEventsScreenComponentProps) {
+		super(props);
+		this.state = {
+			currentMonth: moment().format(CURRENT_MONTH_FORMAT),
+			currentDate: new Date(),
+			markedDates: this.getMarkedDates(props.events),
+		};
+	}
 
 	public render() {
+		const agendaItems = this.getAgendaItems(this.props.events, this.state.currentDate);
 		return (
 			<View style={style.container}>
 				<Text style={style.currentMonthTitle}>{this.state.currentMonth}</Text>
@@ -135,15 +77,16 @@ export default class MyEventsScreenComponent extends Component<
 					loadItemsForMonth={this.loadItemsForMonth}
 					renderItem={this.renderItem}
 					rowHasChanged={this.rowHasChanged}
-					items={AGENDA_ITEMS}
+					items={agendaItems}
 					renderDay={this.renderDayHandler}
 					theme={AGENDA_THEME} // agenda theme
 					firstDay={1}
 					style={style.agenda} // agenda container style
 					onDayPress={this.dayUpdatedHandler}
 					markingType={'multi-dot'}
-					markedDates={MARKED_DATES}
-					renderEmptyData={this.renderDayWithNoEvents}
+					markedDates={this.state.markedDates}
+					renderEmptyDate={this.renderEmptyDateHandler}
+					renderKnob={this.renderKnobHandler}
 				/>
 				<TouchableOpacity
 					style={style.addButtonContainer}
@@ -156,11 +99,12 @@ export default class MyEventsScreenComponent extends Component<
 	}
 
 	private renderDayHandler = (day: IDayObject) => {
-		// console.log('renderDayHandler', day);
 		if (day !== undefined) {
-			const dayString = moment(day.timestamp)
-				.format(DAY_FORMAT)
-				.toUpperCase();
+			const dayString =
+				this.getDayTextPrefix(day) +
+				moment(day.timestamp)
+					.format(DAY_FORMAT)
+					.toUpperCase();
 			return (
 				<View style={style.dayContainer}>
 					<Text style={style.dayHeader}>{dayString}</Text>
@@ -170,18 +114,28 @@ export default class MyEventsScreenComponent extends Component<
 		return null;
 	}
 
-	private renderItem = (item, firstItemInDay) => {
-		// console.log('renderItem', item, firstItemInDay);
+	private renderItem = (item: IEventData) => {
+		return <EventListItem {...item} />;
+	}
+
+	private renderEmptyDateHandler = (day: XDate) => {
 		return (
-			<View style={style.agendaItem}>
-				<Text>{item.title}</Text>
+			<View>
+				<Text style={style.noEventsText}>{'No events'}</Text>
 			</View>
 		);
 	}
 
-	private rowHasChanged = (r1, r2) => {
-		// console.log('rowHasChanged', r1, r2);
-		return true;
+	private renderKnobHandler = () => {
+		return (
+			<View style={style.knobContainer}>
+				<Icon name={'ios-arrow-down'} size={Sizes.smartHorizontalScale(20)} color={Colors.postText} />
+			</View>
+		);
+	}
+
+	private rowHasChanged = (firstItem: IEventData, secondItem: IEventData) => {
+		return !isEqual(firstItem, secondItem);
 	}
 
 	private loadItemsForMonth = (month: IDayObject) => {
@@ -191,17 +145,59 @@ export default class MyEventsScreenComponent extends Component<
 	private dayUpdatedHandler = (day: IDayObject) => {
 		this.setState({
 			currentMonth: moment(day.timestamp).format(CURRENT_MONTH_FORMAT),
-			currentDate: moment(day.timestamp)
-				.format(DAY_FORMAT)
-				.toUpperCase(),
+			currentDate: new Date(day.timestamp),
 		});
 	}
 
-	private renderDayWithNoEvents = () => {
-		return (
-			<View>
-				<Text>{`No events for ${this.state.currentDate}`}</Text>
-			</View>
-		);
+	private getDayTextPrefix = (day: IDayObject) => {
+		const today = moment()
+			.endOf('day')
+			.unix();
+		const tomorrow = moment()
+			.add(1, 'day')
+			.endOf('day')
+			.unix();
+		const yesterday = moment()
+			.add(-1, 'day')
+			.endOf('day')
+			.unix();
+		const currentDate = moment(day.timestamp)
+			.endOf('day')
+			.unix();
+		let ret = '';
+		if (currentDate === today) {
+			ret = 'TODAY, ';
+		} else if (currentDate === tomorrow) {
+			ret = 'TOMORROW, ';
+		} else if (currentDate === yesterday) {
+			ret = 'YESTERDAY, ';
+		}
+		return ret;
+	}
+
+	private getAgendaItems = (events: IEventData[], currentDate: Date) => {
+		const ret: any = {};
+		events.forEach((event) => {
+			const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
+			const dayEvents: IEventData[] = ret.hasOwnProperty(dateKey) ? ret[dateKey] : [];
+			dayEvents.push(event);
+			ret[dateKey] = dayEvents;
+		});
+		const currentDateWithFormat = moment(currentDate).format(AGENDA_ITEM_KEY_FORMAT);
+		if (!ret.hasOwnProperty(currentDateWithFormat)) {
+			ret[currentDateWithFormat] = [];
+		}
+		return ret;
+	}
+
+	private getMarkedDates = (events: IEventData[]) => {
+		const ret: any = {};
+		events.forEach((event) => {
+			const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
+			const markedDate = ret.hasOwnProperty(dateKey) ? ret[dateKey] : {dots: []};
+			markedDate.dots.push({color: event.color});
+			ret[dateKey] = markedDate;
+		});
+		return ret;
 	}
 }

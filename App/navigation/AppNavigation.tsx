@@ -132,8 +132,7 @@ const PrimaryNav = StackNavigator(
 	},
 	{
 		headerMode: 'none',
-		// initialRouteName: 'PreAuthScreen',
-		initialRouteName: 'MyEventsScreen',
+		initialRouteName: 'PreAuthScreen',
 	},
 );
 
