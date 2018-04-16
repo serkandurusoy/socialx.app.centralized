@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
-import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Keyboard, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {SearchFilterButton, SearchResultEntry} from '../../components';
+import {OS_TYPES} from '../../constants';
+import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Icons, Metrics} from '../../theme/';
 import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
 import style from './style';
 
-interface ISearchScreenComponentProps {
+interface ISearchScreenComponentProps extends IWithResizeOnKeyboardShowProps {
 	searchTerm: string;
 	searchResults: SearchResultPeople[] | SearchResultGroups[];
 	selectedFilter: SearchFilterValues;
@@ -14,42 +16,14 @@ interface ISearchScreenComponentProps {
 	createGroupHandler: () => void;
 }
 
-interface ISearchScreenComponentState {
-	paddingBottom: number;
-}
-
-export default class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISearchScreenComponentState> {
-	public state = {
-		paddingBottom: 0,
-	};
-
-	private keyboardDidShowListener: any;
-	private keyboardDidHideListener: any;
-
-	public componentDidMount() {
-		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
-		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
-	}
-
-	public componentWillUnmount() {
-		this.keyboardDidShowListener.remove();
-		this.keyboardDidHideListener.remove();
-	}
-
+class SearchScreenComponent extends Component<ISearchScreenComponentProps> {
 	public render() {
-		return <View style={[style.container, {paddingBottom: this.state.paddingBottom}]}>{this.conditionalRender()}</View>;
-	}
-
-	private keyboardDidShow = (event: any) => {
-		this.setState({
-			paddingBottom: event.endCoordinates.height - Metrics.tabBarBottomHeight,
-		});
-	}
-
-	private keyboardDidHide = () => {
-		this.setState({
-			paddingBottom: 0,
-		});
+		const containerStyles = [style.container];
+		if (Platform.OS === OS_TYPES.iOS) {
+			const marginBottom = this.props.marginBottom > 0 ? this.props.marginBottom - Metrics.tabBarBottomHeight : 0;
+			containerStyles.push({marginBottom});
+		}
+		return <View style={containerStyles}>{this.conditionalRender()}</View>;
 	}
 
 	private conditionalRender = () => {
@@ -129,11 +103,11 @@ export default class SearchScreenComponent extends Component<ISearchScreenCompon
 					selected={this.props.selectedFilter === SearchFilterValues.People}
 					onPress={() => this.props.setNewFilter(SearchFilterValues.People)}
 				/>
-				<SearchFilterButton
-					text={'Groups'}
-					selected={this.props.selectedFilter === SearchFilterValues.Groups}
-					onPress={() => this.props.setNewFilter(SearchFilterValues.Groups)}
-				/>
+				{/*<SearchFilterButton*/}
+				{/*text={'Groups'}*/}
+				{/*selected={this.props.selectedFilter === SearchFilterValues.Groups}*/}
+				{/*onPress={() => this.props.setNewFilter(SearchFilterValues.Groups)}*/}
+				{/*/>*/}
 			</View>
 		);
 	}
@@ -152,3 +126,5 @@ export default class SearchScreenComponent extends Component<ISearchScreenCompon
 		return null;
 	}
 }
+
+export default withResizeOnKeyboardShow(SearchScreenComponent);
