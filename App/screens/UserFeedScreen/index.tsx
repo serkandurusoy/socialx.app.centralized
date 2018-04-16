@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {Alert, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
@@ -9,8 +9,10 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, userHoc} from '../../graphql';
-import {IAllPostsDataResponse, IPostsProps, IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, 
+	likePostHoc, removeLikePostHoc, userHoc} from '../../graphql';
+import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
+import {CurrentUser} from '../../utils';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 
@@ -19,6 +21,7 @@ import {addBlob} from '../../utils/ipfs';
 
 import base from '../../config/ipfs';
 
+import { IWalletActivityScreenComponentProps } from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
 interface IUserFeedScreenProps {
@@ -28,6 +31,8 @@ interface IUserFeedScreenProps {
 	Posts: IAllPostsDataResponse;
 	User: IUserDataResponse;
 	createPost: any;
+	likePost: any;
+	removeLikePost: any;
 	addMedia: any;
 	startMediaPost: any;
 	startPostadd: any;
@@ -70,24 +75,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	public render() {
 		const {Posts, data} = this.props;
-		if (data.loading || Posts.loading) {
-			// TODO: inline load here aswell
-			return <View><Text>Fetching data..</Text></View>;
-		}
-		// TODO: make better
-		const avatarUri = data.user.avatar ? {uri: base.ipfs_URL + data.user.avatar.hash} : Images.user_avatar_placeholder;
+		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length < 0;
 
-		if (this.state.wallPosts.length < 0) {
-			// TODO: inline load here
-			return <View><Text>Loading Posts..</Text></View>;
-		}
 		return (
 			<UserFeedScreenComponent
+				isLoading={isLoading}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
-				fullName={this.props.data.user.name}
-				avatarImage={avatarUri}
+				avatarImage={this.getAvatarImage()}
 				wallPosts={this.state.wallPosts}
 				loadMorePosts={this.loadMorePostsHandler}
 				addWallPost={this.addWallPostHandler}
@@ -95,6 +91,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 			/>
 		);
+	}
+
+	private getAvatarImage = () => {
+		let ret = Images.user_avatar_placeholder;
+		const {Posts, data} = this.props;
+		if (!data.loading && !Posts.loading && data.user.avatar) {
+			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
+		}
+		return ret;
 	}
 
 	private getWallPosts = () => {
@@ -106,10 +111,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		for (let i = 0; i < Posts.allPosts.length; i++) {
-			const post = Posts.allPosts[i];
+			const post: IPostsProps = Posts.allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
+			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
 			const res: IWallPostCardProp = {
+				id: post.id,
 				text: post.text,
 				location: 'Home',
 				smallAvatar: post.owner.avatar
@@ -119,13 +126,17 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 				fullName: post.owner.name,
 				timestamp: new Date(post.createdAt),
-				numberOfLikes: 0,
+				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
 				numberOfComments: 0,
 				numberOfWalletCoins: 0,
+				onCommentsButtonClick: () => Alert.alert('click'),
 				// TODO: append all media to this with the index of the image
 				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
-				user: post.owner,
+				onLikeButtonClick: () => this.onLikeButtonClickHandler(post.id),
+				likedByMe,
+				canDelete: false,
+				owner: post.owner,
 			};
 			arty.push(res);
 		}
@@ -275,6 +286,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		this.setState({refreshing: true});
 		await Posts.refetch();
+		// TODO: @Jake: code below is never reached. Re-fetch fails?
 		this.setState({
 			refreshing: false,
 			wallPosts: [],
@@ -291,8 +303,37 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 
+	private onLikeButtonClickHandler = async (postId: string) => {
+		const {likePost, removeLikePost} = this.props;
+		const {wallPosts} = this.state;
+
+		const post: any = wallPosts.find((p: IWallPostCardProp) => p.id === postId);
+		if (!post) {
+			return;
+		}
+
+		const likeQuery = { variables: { postId: post.id } };
+
+		const result = post.likedByMe
+			? await removeLikePost(likeQuery)
+			: await likePost(likeQuery);
+
+		if (result.error) {
+			console.log(result.error);
+			return;
+		}
+
+		const {likes} = result.data[post.likedByMe ? 'removelikePost' : 'likePost'];
+		// TODO: make better
+		this.setState((preveState: IUserFeedScreenState | any) => ({
+			wallPosts: preveState.wallPosts.map((p: IWallPostCardProp) => {
+				return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
+			}),
+		}));
+	}
+
 	private onCommentsButtonClickHandler = (wallPostData: IWallPostCardProp) => {
-		console.log('Go to comments screen for', wallPostData);
+		// console.log('Go to comments screen for', wallPostData);
 		// TODO: comments should be passed as a nav param to CommentsScreen
 		this.props.navigation.navigate('CommentsStack');
 	}
@@ -310,5 +351,7 @@ const userWrapper = userHoc(reduxWrapper);
 const allPostsWrapper = getAllPostsHoc(userWrapper);
 const createPostWrapper = createPostHoc(allPostsWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
+const likePostWrapper = likePostHoc(addMediaWrapper);
+const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
 
-export default addMediaWrapper;
+export default removeLikePostWrapper;

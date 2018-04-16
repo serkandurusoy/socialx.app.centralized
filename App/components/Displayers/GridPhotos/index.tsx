@@ -63,11 +63,11 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 	private renderGridRow = (type: any, photoData: any) => {
 		// We can set a placeholder with defaultSource but it will be used only for the images on the first "page"
 		return (
-			<TouchableOpacity onPress={() => this.props.itemPressed(photoData.index)}>
+			<TouchableOpacity onPress={() => this.props.itemPressed ? this.props.itemPressed(photoData.index) : null}>
 				<Image
 					// defaultSource={icons.iconPostSuperLike}
 					style={{width: this.props.thumbSize, height: this.props.thumbSize}}
-					source={photoData.useLocal ? photoData.url : {uri: photoData.url}}
+					source={{uri: photoData.url}}
 					resizeMode={'cover'}
 				/>
 			</TouchableOpacity>

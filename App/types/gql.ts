@@ -1,6 +1,4 @@
-import {QueryProps} from './gql';
-
-export {GraphqlQueryControls} from 'react-apollo';
+import {QueryProps} from 'react-apollo';
 
 export interface ICreateUserProps {
 	variables: {
@@ -28,6 +26,7 @@ export interface IPostsProps {
 	text: string;
 	Media?: IMediaProps[];
 	owner: IUserQuery;
+	likes: IUserQuery[];
 }
 
 export interface IUserQuery {
@@ -56,8 +55,8 @@ interface IPostsData {
 	allPosts: IPostsProps[];
 }
 
-export type IUserDataResponse = GraphqlQueryControls & IUserData;
+export type IUserDataResponse = QueryProps & IUserData;
 
-export type IAllPostsDataResponse = GraphqlQueryControls & IPostsData;
+export type IAllPostsDataResponse = QueryProps & IPostsData;
 
 export type createUserFunc = (params: ICreateUserProps) => void;

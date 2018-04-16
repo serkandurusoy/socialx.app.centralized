@@ -15,6 +15,8 @@ PODS:
     - React
     - SDWebImage/Core
     - SDWebImage/GIF
+  - react-native-spinkit (1.0.2):
+    - React
   - React/Core (0.54.4):
     - yoga (= 0.54.4.React)
   - React/fishhook (0.54.4)
@@ -58,6 +60,7 @@ DEPENDENCIES:
   - AppCenter/Crashes (~> 1.5.0)
   - AppCenterReactNativeShared (~> 1.4.0)
   - react-native-fast-image (from `../node_modules/react-native-fast-image`)
+  - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
   - React/RCTAnimation (from `../node_modules/react-native`)
@@ -77,6 +80,8 @@ EXTERNAL SOURCES:
     :path: ../node_modules/react-native
   react-native-fast-image:
     :path: ../node_modules/react-native-fast-image
+  react-native-spinkit:
+    :path: ../node_modules/react-native-spinkit
   RNImageCropPicker:
     :path: ../node_modules/react-native-image-crop-picker
   yoga:
@@ -89,11 +94,12 @@ SPEC CHECKSUMS:
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: c237e42de9c70e5cac6eeb52b4cfd3a0910c1f00
   react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
+  react-native-spinkit: c9f5826e1a0bf0da889b3795278eb96ae15c1350
   RNImageCropPicker: a637beb8f4c76bf9fe8a89d404ad65a33c4215ac
   RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
   yoga: 55da126afc384965b96bff46652464373b330add
 
-PODFILE CHECKSUM: 3c02e50ce9cc35acebc4613a17fd87cf006a3813
+PODFILE CHECKSUM: 41531255a8833268fb463b11d52160f5e730f104
 
 COCOAPODS: 1.4.0
