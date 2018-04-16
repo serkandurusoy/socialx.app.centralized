@@ -9,7 +9,7 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, 
+import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc,
 	likePostHoc, removeLikePostHoc, userHoc} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';

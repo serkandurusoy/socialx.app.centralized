@@ -10,6 +10,7 @@ import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 import {ModalManager} from '../../hoc/ManagedModal/manager';
+import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {ConfirmSignin, CurrentUserInfo, Signin} from '../../utils';
 
 const PHONE_NUMBER = '+40721205279';
@@ -20,7 +21,7 @@ export interface ILoginScreenState {
 	showModalForSMSCode: boolean;
 }
 
-export interface ILoginScreenProps {
+export interface ILoginScreenProps extends IWithResizeOnKeyboardShowProps {
 	navigation: NavigationScreenProp<any>;
 	SigninLoader: () => void;
 	ConfirmLoader: () => void;
@@ -72,30 +73,34 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 						placeholder={'Password'}
 						placeholderColor={Colors.postText}
 						returnKeyType={TRKeyboardKeys.go}
-						onSubmitPressed={() => this.fireSignin()}
+						onSubmitPressed={this.fireSignin}
 						onChangeText={this.handlePasswordInputKeyPressed}
 						isPassword={true}
 						ref={(component) => (this.passwordInput = component)}
+						blurOnSubmit={true}
 					/>
 				</View>
 				<SXButton
 					label={'LOGIN'}
-					onPress={() => this.fireSignin()}
+					onPress={this.fireSignin}
 					disabled={!this.state.passwordValue || !this.state.usernameValue}
 					borderColor={Colors.transparent}
 				/>
-				<TouchableOpacity onPress={this.navigateToPasswordForgotScreen} style={style.forgotPassword}>
+				<TouchableOpacity
+					onPress={() => this.safeNavigateToScreen('ForgotPasswordScreen')}
+					style={style.forgotPassword}
+				>
 					<Text style={style.forgotPasswordText}>{'Forgot your password'}</Text>
 				</TouchableOpacity>
-				{/* <SXButton
-					label={'Or use unlock file'}
-					onPress={this.selectUnlockFileHandler}
-					borderColor={Colors.transparent}
-					disabled={true}
-				/> */}
+				{/*<SXButton*/}
+				{/*label={'Or use unlock file'}*/}
+				{/*onPress={() => this.safeNavigateToScreen('UploadKeyScreen')}*/}
+				{/*borderColor={Colors.transparent}*/}
+				{/*disabled={false}*/}
+				{/*/>*/}
 				<View style={style.noAccountContainer}>
 					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
-					<TouchableOpacity onPress={this.navigateToSignUpScreen}>
+					<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
 						<Text style={style.signUpText}>{'Sign up'}</Text>
 					</TouchableOpacity>
 				</View>
@@ -103,14 +108,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		);
 	}
 
-	private navigateToPasswordForgotScreen = () => {
+	private safeNavigateToScreen = (screenName: string) => {
 		Keyboard.dismiss();
-		this.props.navigation.navigate('ForgotPasswordScreen');
-	}
-
-	private navigateToSignUpScreen = () => {
-		Keyboard.dismiss();
-		this.props.navigation.navigate('SignUpScreen');
+		this.props.navigation.navigate(screenName);
 	}
 
 	private usernameSubmitPressedHandler = () => {
@@ -130,47 +130,48 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		});
 	}
 
-	private selectUnlockFileHandler = () => {
-		Keyboard.dismiss();
-		this.props.navigation.navigate('UploadKeyScreen');
-	}
-
-	private fireSignin = async () => {
+	private fireSignin = () => {
 		const {usernameValue, passwordValue} = this.state;
-		this.props.SigninLoader();
-		try {
-			const res = await Signin(usernameValue, passwordValue);
-			// saving..
-			await AsyncStorage.setItem('jwtToken', res.signInUserSession.idToken.jwtToken);
-			await AsyncStorage.setItem('refreshToken', res.signInUserSession.refreshToken.token);
-			await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
-			this.props.navigation.navigate('MainScreen');
-		} catch (ex) {
-			ModalManager.safeRunAfterModalClosed(() => {
-				// better alert here
-				Alert.alert('Wrong username/password');
-				if (this.usernameInput) {
-					this.usernameInput.focusInput();
-				}
-			});
-		}
-		this.props.HideLoader();
+		Keyboard.dismiss();
+		this.props.safeRunAfterKeyboardHide(async () => {
+			this.props.SigninLoader();
+			try {
+				const res = await Signin(usernameValue, passwordValue);
+				// // saving..
+				await AsyncStorage.setItem('jwtToken', res.signInUserSession.idToken.jwtToken);
+				await AsyncStorage.setItem('refreshToken', res.signInUserSession.refreshToken.token);
+				await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
+				this.safeNavigateToScreen('MainScreen');
+			} catch (ex) {
+				ModalManager.safeRunAfterModalClosed(() => {
+					// better alert here
+					Alert.alert('Wrong username/password');
+					if (this.usernameInput) {
+						this.usernameInput.focusInput();
+					}
+				});
+			}
+			this.props.HideLoader();
+		});
 	}
 
-	private smsCodeConfirmedHandler = async (code: string) => {
+	private smsCodeConfirmedHandler = (code: string) => {
 		const {usernameValue} = this.state;
-		this.props.SigninLoader();
-		try {
-			const res = await ConfirmSignin(usernameValue, code);
-			this.toggleVisibleModalSMS(false);
-			this.props.navigation.navigate('MainScreen');
-		} catch (ex) {
-			ModalManager.safeRunAfterModalClosed(() => {
-				// better alert here
-				Alert.alert('Wrong confirmation code'); // TODO: update here!
-			});
-		}
-		this.props.HideLoader();
+		Keyboard.dismiss();
+		this.props.safeRunAfterKeyboardHide(async () => {
+			this.props.SigninLoader();
+			try {
+				const res = await ConfirmSignin(usernameValue, code);
+				this.toggleVisibleModalSMS(false);
+				this.safeNavigateToScreen('MainScreen');
+			} catch (ex) {
+				ModalManager.safeRunAfterModalClosed(() => {
+					// better alert here
+					Alert.alert('Wrong confirmation code'); // TODO: update here!
+				});
+			}
+			this.props.HideLoader();
+		});
 	}
 
 	private smsCodeDeclinedHandler = () => {
@@ -190,5 +191,6 @@ const MapDispatchToProps = (dispatch: any) => ({
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(LoginScreen as any);
+const loginScreenWithResize = withResizeOnKeyboardShow(LoginScreen);
+const reduxWrapper = connect(null, MapDispatchToProps)(loginScreenWithResize as any);
 export default reduxWrapper;
