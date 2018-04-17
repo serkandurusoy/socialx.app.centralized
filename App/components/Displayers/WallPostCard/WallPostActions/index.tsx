@@ -6,6 +6,7 @@ import {IconButton} from '../../../Interaction';
 import style from './style';
 
 export interface IWallPostActions {
+	likedByMe: boolean;
 	numberOfLikes: number;
 	numberOfSuperLikes: number;
 	numberOfComments: number;
@@ -27,11 +28,20 @@ export class WallPostActions extends Component<IWallPostActions> {
 					label={this.props.numberOfWalletCoins + ' SOCX'}
 				/>
 				<View style={style.rightContainer}>
-					<IconButton
-						iconSource={Icons.iconPostLike}
-						onPress={this.props.likeButtonPressed}
-						label={this.props.numberOfLikes.toString()}
-					/>
+					{this.props.likedByMe ?
+						// TODO: create a proper liked icon
+						<IconButton
+							iconSource={Icons.iconTabBarNotificationsSelected}
+							onPress={this.props.likeButtonPressed}
+							label={this.props.numberOfLikes.toString()}
+						/> :
+						<IconButton
+							iconSource={Icons.iconPostLike}
+							onPress={this.props.likeButtonPressed}
+							label={this.props.numberOfLikes.toString()}
+						/>
+					}
+
 					<IconButton
 						iconSource={Icons.iconPostSuperLike}
 						onPress={this.props.superLikeButtonPressed}

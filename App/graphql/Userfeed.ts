@@ -45,7 +45,6 @@ export const getAllPosts = gql`
 			Media {
 				id
 				hash
-				size
 			}
 			owner {
 				userId
@@ -54,12 +53,10 @@ export const getAllPosts = gql`
 				avatar {
 					id
 					hash
-					size
 				}
 			}
 			likes {
 			    userId
-			    username
 			}
 		}
 	}

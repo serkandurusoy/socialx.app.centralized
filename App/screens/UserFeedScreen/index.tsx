@@ -9,8 +9,15 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc,
-	likePostHoc, removeLikePostHoc, userHoc} from '../../graphql';
+import {
+	addMediaHoc,
+	createPostHoc,
+	getAllPostsHoc,
+	getUserPostsHoc,
+	likePostHoc,
+	removeLikePostHoc,
+	userHoc,
+} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';
 
@@ -21,7 +28,7 @@ import {addBlob} from '../../utils/ipfs';
 
 import base from '../../config/ipfs';
 
-import { IWalletActivityScreenComponentProps } from '../WalletActivityScreen/screen';
+import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
 interface IUserFeedScreenProps {
@@ -58,24 +65,30 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		currentLoad: 0,
 	};
 
-	public shouldComponentUpdate(nextProp: IUserFeedScreenProps, nextState: IUserFeedScreenState) {
-		console.log('will update component');
-		return true;
-	}
-
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
-		const {data, Posts} = nextProps;
-		const {allWallPosts} = this.state;
-		if (data.loading || Posts.loading) {
+		if (nextProps.Posts.loading || nextProps.data.loading) {
 			return;
 		}
-		this.setState({allWallPosts: this.getWallPosts()});
-		this.loadMorePostsHandler();
+		if (this.state.wallPosts.length === 0) {
+			this.loadMorePostsHandler();
+		}
 	}
+
+	// public shouldComponentUpdate(nextProp: IUserFeedScreenProps, nextState: IUserFeedScreenState) {
+	// 	if (nextProp.Posts.loading || nextProp.data.loading) {
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
 	public render() {
 		const {Posts, data} = this.props;
-		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length < 0;
+		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length === 0;
+
+		if (!isLoading && Posts.allPosts.length < 0) {
+			// TODO: Handle no posts found.
+			return <View />;
+		}
 
 		return (
 			<UserFeedScreenComponent
@@ -161,32 +174,27 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private loadMorePostsHandler = () => {
-		const {wallPosts, allWallPosts, currentLoad} = this.state;
+		const {wallPosts, currentLoad} = this.state;
+		const Posts = this.getWallPosts();
 
-		if (allWallPosts.length < 0) {
+		if (Posts.length < 0) {
 			return;
 		}
 
-		if (wallPosts.length === allWallPosts.length) {
+		if (wallPosts.length === Posts.length) {
 			return;
 		}
 
-		if (currentLoad === allWallPosts.length) {
-			return;
-		}
-
-		const appendRate = allWallPosts.length % 2 === 0 ? 2 : 3;
-
-		const rest: IWallPostCardProp[] = [];
-		let currentLoadNew = currentLoad;
+		const appendRate = Posts.length % 2 === 0 ? 2 : 3;
+		const rest: any = [];
+		let currentLoadNew = wallPosts.length;
 
 		for (currentLoadNew; currentLoadNew < wallPosts.length + appendRate; currentLoadNew++) {
-			rest.push(allWallPosts[currentLoadNew]);
+			rest.push(Posts[currentLoadNew]);
 		}
 
 		this.setState({
-			wallPosts: this.state.wallPosts.concat(rest as any),
-			currentLoad: currentLoadNew,
+			wallPosts: this.state.wallPosts.concat(rest),
 		});
 	}
 
@@ -282,18 +290,22 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private refreshWallPosts = async () => {
-		const {Posts} = this.props;
+		const {data, Posts} = this.props;
 
 		this.setState({refreshing: true});
-		await Posts.refetch();
-		// TODO: @Jake: code below is never reached. Re-fetch fails?
-		this.setState({
-			refreshing: false,
-			wallPosts: [],
-			allWallPosts: this.getWallPosts(),
-			currentLoad: 0,
-		});
-		this.loadMorePostsHandler();
+		try {
+			await Posts.refetch();
+			// TODO: @Jake: code below is never reached. Re-fetch fails?
+			this.setState({
+				refreshing: false,
+				wallPosts: [],
+				currentLoad: 0,
+			});
+			this.loadMorePostsHandler();
+		} catch (Ex) {
+			this.setState({refreshing: false});
+			console.log('ex', Ex);
+		}
 	}
 
 	private onPhotoPressHandler = (index: number, photos: any) => {
@@ -312,11 +324,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return;
 		}
 
-		const likeQuery = { variables: { postId: post.id } };
+		const likeQuery = {variables: {postId: post.id}};
 
-		const result = post.likedByMe
-			? await removeLikePost(likeQuery)
-			: await likePost(likeQuery);
+		const result = post.likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 
 		if (result.error) {
 			console.log(result.error);

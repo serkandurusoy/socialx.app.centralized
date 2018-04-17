@@ -1,4 +1,4 @@
-import {QueryProps} from 'react-apollo';
+import {GraphqlQueryControls} from 'react-apollo';
 
 export interface ICreateUserProps {
 	variables: {
@@ -55,8 +55,8 @@ interface IPostsData {
 	allPosts: IPostsProps[];
 }
 
-export type IUserDataResponse = QueryProps & IUserData;
+export type IUserDataResponse = GraphqlQueryControls & IUserData;
 
-export type IAllPostsDataResponse = QueryProps & IPostsData;
+export type IAllPostsDataResponse = GraphqlQueryControls & IPostsData;
 
 export type createUserFunc = (params: ICreateUserProps) => void;

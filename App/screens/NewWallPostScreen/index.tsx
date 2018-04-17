@@ -101,6 +101,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					size={ButtonSizes.Small}
 					width={Sizes.smartHorizontalScale(100)}
 					onPress={this.sendPostHandler}
+					disabled={this.state.postText.length < 0 && this.state.mediaObjects.length < 0}
 				/>
 			</View>
 		);
