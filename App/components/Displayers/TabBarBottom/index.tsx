@@ -1,13 +1,15 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Image, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Image, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 
-import {NavigationScreenProp} from 'react-navigation';
+import {LayoutEvent, NavigationScreenProp} from 'react-navigation';
 import {Icons, Sizes} from '../../../theme';
 import style from './style';
 
 import RNFS from 'react-native-fs';
+import {connect} from 'react-redux';
+import {updateTabBarBottomHeight} from '../../../actions';
 
 interface TabMenuItem {
 	screenName?: string;
@@ -82,19 +84,25 @@ interface ITabBarBottomState {
 
 interface ITabBarBottomProps {
 	navigation: NavigationScreenProp<any>;
+	TabBarBottomHeight: (height: number) => void;
 }
 
-export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomState> {
+class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomState> {
 	public state: any = {
 		selectedTab: MENU_ITEMS[0].screenName,
 	};
 
 	public render() {
 		return (
-			<View style={style.container}>
+			<SafeAreaView style={style.container} onLayout={this.layoutHandler}>
 				{MENU_ITEMS.map((menuItem, index) => this.getMenuItemComponent(menuItem, index))}
-			</View>
+			</SafeAreaView>
 		);
+	}
+
+	private layoutHandler = (event: LayoutEvent) => {
+		const viewHeight = event.nativeEvent.layout.height;
+		this.props.TabBarBottomHeight(viewHeight);
 	}
 
 	private getMenuItemComponent = (menuItem: TabMenuItem, index: number) => {
@@ -185,3 +193,9 @@ export class TabBarBottom extends Component<ITabBarBottomProps, ITabBarBottomSta
 		this.props.navigation.navigate('PhotoScreen', {image});
 	}
 }
+
+const MapDispatchToProps = (dispatch: any) => ({
+	TabBarBottomHeight: (height: number) => dispatch(updateTabBarBottomHeight(height)),
+});
+
+export const TabBarBottom = connect(null, MapDispatchToProps)(TabBarBottomComponent as any);
