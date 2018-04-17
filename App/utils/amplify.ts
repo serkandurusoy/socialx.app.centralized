@@ -10,7 +10,7 @@ export interface ISignup {
 			avatarImage?: string;
 			userId: string;
 			name: string;
-		}
+		};
 	};
 }
 
@@ -19,7 +19,8 @@ export const ConfirmSignup = (username: string, code: string): Promise<any> => A
 export const resendSignup = (username: string): Promise<any> => Auth.resendSignUp(username);
 
 export const Signin = (username: string, password: string): Promise<any> => Auth.signIn(username, password);
-export const ConfirmSignin = (username: string, code: string): Promise<any> => Auth.confirmSignIn(username, code);
+export const ConfirmSignin = (username: string, code: string, mfaType: string | null): Promise<any> =>
+	Auth.confirmSignIn(username, code, mfaType);
 
 export const CurrentUser = (): Promise<any> => Auth.currentAuthenticatedUser();
 export const CurrentUserSession = (): Promise<any> => Auth.currentSession();

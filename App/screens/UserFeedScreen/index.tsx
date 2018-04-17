@@ -9,8 +9,15 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc,
-	likePostHoc, removeLikePostHoc, userHoc} from '../../graphql';
+import {
+	addMediaHoc,
+	createPostHoc,
+	getAllPostsHoc,
+	getUserPostsHoc,
+	likePostHoc,
+	removeLikePostHoc,
+	userHoc,
+} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';
 
@@ -21,7 +28,7 @@ import {addBlob} from '../../utils/ipfs';
 
 import base from '../../config/ipfs';
 
-import { IWalletActivityScreenComponentProps } from '../WalletActivityScreen/screen';
+import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
 interface IUserFeedScreenProps {
@@ -58,10 +65,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		currentLoad: 0,
 	};
 
-	public shouldComponentUpdate(nextProp: IUserFeedScreenProps, nextState: IUserFeedScreenState) {
-		console.log('will update component');
-		return true;
-	}
+	// public shouldComponentUpdate(nextProp: IUserFeedScreenProps, nextState: IUserFeedScreenState) {
+	// 	if (nextProp.Posts.loading || nextProp.data.loading) {
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
 		const {data, Posts} = nextProps;
@@ -282,18 +291,23 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private refreshWallPosts = async () => {
-		const {Posts} = this.props;
+		const {data, Posts} = this.props;
 
 		this.setState({refreshing: true});
-		await Posts.refetch();
-		// TODO: @Jake: code below is never reached. Re-fetch fails?
-		this.setState({
-			refreshing: false,
-			wallPosts: [],
-			allWallPosts: this.getWallPosts(),
-			currentLoad: 0,
-		});
-		this.loadMorePostsHandler();
+		try {
+			await Posts.refetch();
+			console.log('refetched');
+			// TODO: @Jake: code below is never reached. Re-fetch fails?
+			this.setState({
+				refreshing: false,
+				wallPosts: [],
+				allWallPosts: this.getWallPosts(),
+				currentLoad: 0,
+			});
+			this.loadMorePostsHandler();
+		} catch (Ex) {
+			console.log('ex', Ex);
+		}
 	}
 
 	private onPhotoPressHandler = (index: number, photos: any) => {
@@ -312,11 +326,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return;
 		}
 
-		const likeQuery = { variables: { postId: post.id } };
+		const likeQuery = {variables: {postId: post.id}};
 
-		const result = post.likedByMe
-			? await removeLikePost(likeQuery)
-			: await likePost(likeQuery);
+		const result = post.likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 
 		if (result.error) {
 			console.log(result.error);

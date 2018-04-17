@@ -1,16 +1,23 @@
 import React, {Component} from 'react';
-import {Platform, ScrollView, Text, View} from 'react-native';
+import {Alert, Platform, ScrollView, Text, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {connect} from 'react-redux';
 import {SXTextInput, TRKeyboardKeys} from '../../components/Inputs/TextInput';
 import {SXButton} from '../../components/Interaction/Button';
 import {OS_TYPES} from '../../constants';
 import {Colors} from '../../theme';
 import style from './style';
 
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {ModalManager} from '../../hoc/ManagedModal/manager';
+import {ForgotPasswordConfirm} from '../../utils';
+
 interface IResetPasswordScreenProps {
 	navigation: NavigationScreenProp<any>;
+	showLoader: (message: string) => void;
+	hideLoader: () => void;
 }
 
 interface IResetPasswordScreenState {
@@ -19,7 +26,7 @@ interface IResetPasswordScreenState {
 	confirmPassword: string;
 }
 
-export default class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPasswordScreenState> {
+class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPasswordScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'RESET PASSWORD',
 		headerRight: <View />,
@@ -121,10 +128,47 @@ export default class ResetPasswordScreen extends Component<IResetPasswordScreenP
 		}
 	}
 
-	private setNewPasswordHandler = () => {
-		// console.log('TODO: setNewPasswordHandler for resetCode, password, confirmPassword',
-		// 	this.state.resetCode, this.state.password, this.state.confirmPassword);
-		// later
-		// this.props.navigation.navigate('MainScreen');
+	private setNewPasswordHandler = async () => {
+		const {resetCode, password, confirmPassword} = this.state;
+		const {showLoader, hideLoader, navigation} = this.props;
+
+		const params = this.props.navigation.state.params;
+
+		showLoader('Restting your password..');
+		try {
+			if (password !== confirmPassword) {
+				ModalManager.safeRunAfterModalClosed(() => {
+					Alert.alert('You\'r passwords do\'nt match');
+				});
+				return;
+			}
+
+			if (!params.username) {
+				ModalManager.safeRunAfterModalClosed(() => {
+					Alert.alert('Something went wrong.');
+				});
+				this.props.navigation.navigate('MainScreen');
+				return;
+			}
+
+			const resetRes = await ForgotPasswordConfirm(params.username, resetCode, password);
+			ModalManager.safeRunAfterModalClosed(() => {
+				Alert.alert('You\'r password has been successfully reseted!');
+			});
+			this.props.navigation.navigate('MainScreen');
+		} catch (ex) {
+			ModalManager.safeRunAfterModalClosed(() => {
+				Alert.alert('Wrong reset code entered, please try again.');
+			});
+			console.log(ex);
+		}
+		hideLoader();
 	}
 }
+
+const MapDispatchToState = (dispatch: any) => ({
+	showLoader: (message: string) => dispatch(showActivityIndicator(message)),
+	hideLoader: () => dispatch(hideActivityIndicator()),
+});
+
+export default connect(null, MapDispatchToState)(ResetPasswordScreen as any);
