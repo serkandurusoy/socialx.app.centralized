@@ -15,6 +15,7 @@ import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import {RewardsScreen} from '../screens/RewardsScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
@@ -107,6 +108,7 @@ const PreAuthNavigator = StackNavigator(
 		LoginScreen: {screen: LoginScreen},
 		SignUpScreen: {screen: SignUpScreen},
 		ForgotPasswordScreen: {screen: ForgotPasswordScreen},
+		ResetPasswordScreen: {screen: ResetPasswordScreen},
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
 	},
