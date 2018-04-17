@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {connect} from 'react-redux';
 import {SearchFilterButton, SearchResultEntry} from '../../components';
-import {Icons, Metrics} from '../../theme/';
+import {Icons} from '../../theme/';
+import {IAppUIStateProps} from '../../types/appUI';
 import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
 import style from './style';
 
-interface ISearchScreenComponentProps {
+interface ISearchScreenComponentProps extends IAppUIStateProps {
 	searchTerm: string;
 	searchResults: SearchResultPeople[] | SearchResultGroups[];
 	selectedFilter: SearchFilterValues;
@@ -18,7 +20,7 @@ interface ISearchScreenComponentState {
 	paddingBottom: number;
 }
 
-export default class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISearchScreenComponentState> {
+class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISearchScreenComponentState> {
 	public state = {
 		paddingBottom: 0,
 	};
@@ -37,12 +39,12 @@ export default class SearchScreenComponent extends Component<ISearchScreenCompon
 	}
 
 	public render() {
-		return <View style={[style.container, {paddingBottom: this.state.paddingBottom}]}>{this.conditionalRender()}</View>;
+		return <View style={[style.container, {marginBottom: this.state.paddingBottom}]}>{this.conditionalRender()}</View>;
 	}
 
 	private keyboardDidShow = (event: any) => {
 		this.setState({
-			paddingBottom: event.endCoordinates.height - Metrics.tabBarBottomHeight,
+			paddingBottom: event.endCoordinates.height - this.props.tabBarBottomHeight,
 		});
 	}
 
@@ -152,3 +154,9 @@ export default class SearchScreenComponent extends Component<ISearchScreenCompon
 		return null;
 	}
 }
+
+const mapStateToProps: any = (state: any): IAppUIStateProps => ({
+	...state.appUI,
+});
+
+export default connect<any>(mapStateToProps)(SearchScreenComponent);

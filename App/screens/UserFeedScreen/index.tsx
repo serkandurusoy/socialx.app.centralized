@@ -9,8 +9,15 @@ import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {graphql} from 'react-apollo';
-import {addMediaHoc, createPostHoc, getAllPostsHoc, getUserPostsHoc, 
-	likePostHoc, removeLikePostHoc, userHoc} from '../../graphql';
+import {
+	addMediaHoc,
+	createPostHoc,
+	getAllPostsHoc,
+	getUserPostsHoc,
+	likePostHoc,
+	removeLikePostHoc,
+	userHoc,
+} from '../../graphql';
 import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';
 
@@ -21,7 +28,7 @@ import {addBlob} from '../../utils/ipfs';
 
 import base from '../../config/ipfs';
 
-import { IWalletActivityScreenComponentProps } from '../WalletActivityScreen/screen';
+import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
 interface IUserFeedScreenProps {
@@ -312,11 +319,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return;
 		}
 
-		const likeQuery = { variables: { postId: post.id } };
+		const likeQuery = {variables: {postId: post.id}};
 
-		const result = post.likedByMe
-			? await removeLikePost(likeQuery)
-			: await likePost(likeQuery);
+		const result = post.likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 
 		if (result.error) {
 			console.log(result.error);

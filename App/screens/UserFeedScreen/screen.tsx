@@ -22,7 +22,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 	const keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
-		const canDelete = props.currentUser.userId === data.item.user.userId;
+		const canDelete = props.currentUser.userId === data.item.owner.userId;
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard
