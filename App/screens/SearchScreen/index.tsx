@@ -8,8 +8,6 @@ import base from '../../config/ipfs';
 
 import {searchUsersHoc} from '../../graphql';
 
-import {Images} from '../../theme';
-
 export enum SearchFilterValues {
 	People = 'people',
 	Groups = 'groups',
@@ -152,7 +150,7 @@ interface ISearchScreenState {
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private static navigationOptions = (props: ISearchScreenProps) => ({
-		header: () => {
+		headerTitle: () => {
 			const params = props.navigation.state.params || {};
 			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
 		},
@@ -234,8 +232,9 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					kind: SearchResultKind.NotFriend,
 					fullName: current.name,
 					username: current.username,
-					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash :
-					'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+					avatarURL: current.avatar
+						? base.ipfs_URL + current.avatar.hash
+						: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				});
 			}
 			console.log(results);

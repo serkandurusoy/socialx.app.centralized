@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import {Image, Keyboard, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {connect} from 'react-redux';
 import {SearchFilterButton, SearchResultEntry} from '../../components';
-import {OS_TYPES} from '../../constants';
-import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
-import {Icons, Metrics} from '../../theme/';
+import {Icons} from '../../theme/';
+import {IAppUIStateProps} from '../../types/appUI';
 import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
 import style from './style';
 
-interface ISearchScreenComponentProps extends IWithResizeOnKeyboardShowProps {
+interface ISearchScreenComponentProps extends IAppUIStateProps {
 	searchTerm: string;
 	searchResults: SearchResultPeople[] | SearchResultGroups[];
 	selectedFilter: SearchFilterValues;
@@ -16,14 +16,42 @@ interface ISearchScreenComponentProps extends IWithResizeOnKeyboardShowProps {
 	createGroupHandler: () => void;
 }
 
-class SearchScreenComponent extends Component<ISearchScreenComponentProps> {
+interface ISearchScreenComponentState {
+	paddingBottom: number;
+}
+
+class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISearchScreenComponentState> {
+	public state = {
+		paddingBottom: 0,
+	};
+
+	private keyboardDidShowListener: any;
+	private keyboardDidHideListener: any;
+
+	public componentDidMount() {
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+	}
+
+	public componentWillUnmount() {
+		this.keyboardDidShowListener.remove();
+		this.keyboardDidHideListener.remove();
+	}
+
 	public render() {
-		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.iOS) {
-			const marginBottom = this.props.marginBottom > 0 ? this.props.marginBottom - Metrics.tabBarBottomHeight : 0;
-			containerStyles.push({marginBottom});
-		}
-		return <View style={containerStyles}>{this.conditionalRender()}</View>;
+		return <View style={[style.container, {marginBottom: this.state.paddingBottom}]}>{this.conditionalRender()}</View>;
+	}
+
+	private keyboardDidShow = (event: any) => {
+		this.setState({
+			paddingBottom: event.endCoordinates.height - this.props.tabBarBottomHeight,
+		});
+	}
+
+	private keyboardDidHide = () => {
+		this.setState({
+			paddingBottom: 0,
+		});
 	}
 
 	private conditionalRender = () => {
@@ -127,4 +155,8 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps> {
 	}
 }
 
-export default withResizeOnKeyboardShow(SearchScreenComponent);
+const mapStateToProps: any = (state: any): IAppUIStateProps => ({
+	...state.appUI,
+});
+
+export default connect<any>(mapStateToProps)(SearchScreenComponent);

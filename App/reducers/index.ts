@@ -1,5 +1,6 @@
 /// <reference types="@types/webpack-env" />
 import {combineReducers} from 'redux';
+import {AppUIReducers} from './AppUIReducers';
 import configureStore from './CreateStore';
 import {NavigationReducer, NavigationState} from './NavigationReducers';
 import {PopupsReducers} from './PopupsReducers';
@@ -8,6 +9,7 @@ import {PopupsReducers} from './PopupsReducers';
 export const reducers = combineReducers({
 	nav: NavigationReducer,
 	popups: PopupsReducers,
+	appUI: AppUIReducers,
 });
 
 export interface State {
