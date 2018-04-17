@@ -80,6 +80,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				{this.renderPostDescription()}
 				{this.renderWallPostImage()}
 				<WallPostActions
+					likedByMe={this.props.likedByMe}
 					numberOfLikes={this.props.numberOfLikes}
 					numberOfSuperLikes={this.props.numberOfSuperLikes}
 					numberOfComments={this.props.numberOfComments}

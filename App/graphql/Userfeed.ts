@@ -43,6 +43,7 @@ export const getAllPosts = gql`
 			createdAt
 			text
 			Media {
+				id
 				hash
 			}
 			owner {
@@ -50,6 +51,7 @@ export const getAllPosts = gql`
 				username
 				name
 				avatar {
+					id
 					hash
 				}
 			}
