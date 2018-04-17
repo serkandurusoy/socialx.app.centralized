@@ -84,7 +84,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				</View>
 				<Text style={style.orText}>{'or'}</Text> */}
 				<View style={style.avatarPickerContainer}>
-					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
+					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage}/>
 				</View>
 				{/* TODO: disable all inputfields on submit */}
 				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
@@ -170,7 +170,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					/>
 				</View>
 				<View style={[style.buttonContainer, style.registerButtonContainer]}>
-					<SXButton label={'REGISTER NOW!'} borderColor={Colors.transparent} onPress={this.startRegister} />
+					<SXButton label={'REGISTER NOW!'} borderColor={Colors.transparent} onPress={this.startRegister}/>
 				</View>
 			</KeyboardAwareScrollView>
 		);
@@ -276,7 +276,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			const res = await resendSignup(this.state.username);
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('Could not resend confirmation code');
+				Alert.alert('App error', 'Could not resend confirmation code');
 			});
 		}
 		this.props.HideLoader();
@@ -289,26 +289,26 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		// closing the modla when using alerts, issue MD-163
 		if (password !== confirmPassword) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Your passwords don\'t match');
+			Alert.alert('Validation error', 'Your passwords don\'t match');
 			return;
 		}
 
 		if (username.length < 4) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Enter a username bigger than 4 letters');
+			Alert.alert('Validation error', 'Enter a username bigger than 4 letters');
 			return;
 		}
 
 		if (name.length < 4) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Enter a name bigger than 4 letters');
+			Alert.alert('Validation error', 'Enter a name bigger than 4 letters');
 			return;
 		}
 
 		// try {
 		// 	const checkUser = await checkUsername({variables: {username}});
 		// 	if (checkUser.data.checkUsername.userId) {
-		// 		Alert.alert('This username is taken');
+		// 		Alert.alert('Validation error', 'This username is taken');
 		// 		return;
 		// 	}
 		// } catch (e) {
@@ -336,7 +336,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		} catch (ex) {
 			console.log(ex);
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(ex.message);
+				Alert.alert('Register failed', ex.message);
 			});
 			this.toggleVisibleModalSMS(false);
 		}

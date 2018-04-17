@@ -131,11 +131,11 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 					selected={this.props.selectedFilter === SearchFilterValues.People}
 					onPress={() => this.props.setNewFilter(SearchFilterValues.People)}
 				/>
-				<SearchFilterButton
-					text={'Groups'}
-					selected={this.props.selectedFilter === SearchFilterValues.Groups}
-					onPress={() => this.props.setNewFilter(SearchFilterValues.Groups)}
-				/>
+				{/*<SearchFilterButton*/}
+				{/*text={'Groups'}*/}
+				{/*selected={this.props.selectedFilter === SearchFilterValues.Groups}*/}
+				{/*onPress={() => this.props.setNewFilter(SearchFilterValues.Groups)}*/}
+				{/*/>*/}
 			</View>
 		);
 	}
