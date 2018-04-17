@@ -11,6 +11,7 @@ import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
 import MessagingScreen from '../screens/MessagingScreen';
+import MyEventsScreen from '../screens/MyEventsScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
@@ -129,6 +130,7 @@ const PrimaryNav = StackNavigator(
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
+		MyEventsScreen: {screen: MyEventsScreen}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'none',
