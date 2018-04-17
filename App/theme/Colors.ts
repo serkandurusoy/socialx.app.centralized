@@ -43,6 +43,7 @@ const SocialXColors = {
 	chatTextInputBorder: 'rgba(151,151,151,0.5)',
 	dustGray: '#979797',
 	gallery: '#efefef',
+	alabaster: '#F9F9F9',
 };
 
 export default SocialXColors;
