@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Dimensions, ScrollView, View} from 'react-native';
+import {Dimensions, ScrollView, Text, View} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationScreenProp} from 'react-navigation';
 import {UserAvatar} from '../../components/Avatar';
 import {GridPhotos, ProfileStatistics} from '../../components/Displayers';
 import {TooltipDots} from '../../components/Displayers/DotsWithTooltips';
 import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
-import {Metrics} from '../../theme';
+import {Colors, Metrics, Sizes} from '../../theme';
 import Icons from '../../theme/Icons';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';
@@ -66,6 +67,14 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 	}
 
 	private renderUserPhotoGallery = () => {
+		if (this.props.getAllPhotos.length === 0) {
+			return (
+				<View style={style.noPhotosContainer}>
+					<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+					<Text style={style.noPhotosText}>{'Your photo gallery is empty.'}</Text>
+				</View>
+			);
+		}
 		const gridPhotosStyles = [style.gridPhotosContainer];
 		if (this.props.totalNumberOfPhotos > this.props.gridPageSize) {
 			const recyclerHeight = SCREEN_HEIGHT - Metrics.navBarHeight;

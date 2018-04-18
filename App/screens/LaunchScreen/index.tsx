@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {AsyncStorage, Image, Text, View} from 'react-native';
+import SplashScreen from 'react-native-smart-splash-screen';
 import {NavigationScreenProp} from 'react-navigation';
 import {SXButton, SXGradientButton, TextGradient} from '../../components';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
-import { CurrentUser } from '../../utils/';
+import {CurrentUser} from '../../utils/';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -27,6 +28,11 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 				//
 			}
 		}
+		SplashScreen.close({
+			animationType: SplashScreen.animationType.fade,
+			duration: 1000,
+			delay: 100,
+		});
 	}
 
 	public render() {
