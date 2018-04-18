@@ -16,6 +16,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	showNewWallPostPage: () => void;
 	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
 	currentUser: IUserQuery;
+	noPosts: boolean;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -50,6 +51,13 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		);
 	};
 
+	// TODO: @ionut
+	const renderNoPosts = () => (
+		<View>
+			<Text>No Posts Found</Text>
+		</View>
+	);
+
 	return (
 		<View style={style.container}>
 			<View style={style.shareMessageContainer}>
@@ -60,7 +68,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					</View>
 				</TouchableWithoutFeedback>
 			</View>
-			{renderWithLoading()}
+			{!props.noPosts ? renderWithLoading() : renderNoPosts()}
 		</View>
 	);
 };

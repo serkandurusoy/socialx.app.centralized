@@ -237,7 +237,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 						: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				});
 			}
-			console.log(results);
 			return results;
 		} catch (ex) {
 			return results;

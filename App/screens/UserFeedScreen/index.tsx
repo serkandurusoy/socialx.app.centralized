@@ -85,13 +85,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const {Posts, data} = this.props;
 		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length === 0;
 
-		if (!isLoading && Posts.allPosts.length < 0) {
-			// TODO: Handle no posts found.
-			return <View />;
-		}
-
 		return (
 			<UserFeedScreenComponent
+				noPosts={!Posts.loading && Posts.allPosts.length === 0}
 				isLoading={isLoading}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
@@ -185,9 +181,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return;
 		}
 
-		const appendRate = Posts.length % 2 === 0 ? 2 : 3;
+		let appendRate = Posts.length % 2 === 0 ? 2 : 1;
 		const rest: any = [];
 		let currentLoadNew = wallPosts.length;
+
+		console.log('PostLen: ' + Posts.length.toString() + ', appendRate: ' + appendRate + ', currentLod: ', currentLoadNew);
+		if (Posts.length < 4) {
+			appendRate = Posts.length;
+			currentLoadNew = 0;
+		}
 
 		for (currentLoadNew; currentLoadNew < wallPosts.length + appendRate; currentLoadNew++) {
 			rest.push(Posts[currentLoadNew]);
@@ -206,6 +208,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const mediaIds: string[] = [];
 
 		let multiflag = false;
+
+		// start creating post loading
+		startPostadd();
 
 		data.mediaObjects.forEach((media: MediaObject) => {
 			blobfiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]});
@@ -238,9 +243,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					const parsed = JSON.parse(ipfsResp[0]);
 					ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
 				}
+
 				// add media file/s to appsync
-				// start creating post loading
-				startPostadd();
 				if (multiflag) {
 					for (let i = 0; i < ipfsHashes.length; i++) {
 						const ipfsData = ipfsHashes[i];
@@ -290,11 +294,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private refreshWallPosts = async () => {
-		const {data, Posts} = this.props;
-
 		this.setState({refreshing: true});
 		try {
-			await Posts.refetch();
+			const dDataRes = await this.props.data.refetch();
+			const pPRes = await this.props.Posts.refetch();
 			// TODO: @Jake: code below is never reached. Re-fetch fails?
 			this.setState({
 				refreshing: false,
