@@ -1,4 +1,5 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
+import {OS_TYPES} from '../../constants';
 import {Colors, Fonts, Sizes} from '../../theme/';
 
 const style: any = {
@@ -29,6 +30,7 @@ const style: any = {
 		width: '100%',
 		borderBottomWidth: 1,
 		borderBottomColor: Colors.dustWhite,
+		flexDirection: 'row',
 	},
 	textInputContainerFirst: {
 		borderTopWidth: 1,
@@ -36,6 +38,32 @@ const style: any = {
 	},
 	avatarPickerContainer: {
 		padding: Sizes.smartHorizontalScale(10),
+	},
+	phoneInputIconContainer: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: Sizes.smartHorizontalScale(40),
+	},
+	phoneNumberInput: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+		color: Colors.shuttleGray,
+		flex: 1,
+		maxHeight: '100%',
+		paddingVertical: Platform.OS === OS_TYPES.Android ? Sizes.smartHorizontalScale(10) : Sizes.smartHorizontalScale(16),
+	},
+	countryPickerContainer: {
+		maxHeight: '100%',
+		paddingLeft: Sizes.smartHorizontalScale(10),
+		alignItems: 'center',
+		flexDirection: 'row',
+	},
+	countryCode: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		paddingLeft: Sizes.smartHorizontalScale(10),
+		color: Colors.shuttleGray,
 	},
 };
 

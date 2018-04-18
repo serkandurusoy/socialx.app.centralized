@@ -8,6 +8,7 @@ export enum TKeyboardKeys {
 	default = 'default',
 	numeric = 'numeric',
 	emailAddress = 'email-address',
+	phonePad = 'phone-pad',
 }
 
 export enum TRKeyboardKeys {

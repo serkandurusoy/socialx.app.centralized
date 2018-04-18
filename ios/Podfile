@@ -34,6 +34,8 @@ target 'SocialxTypeActress' do
 
   pod 'react-native-spinkit', :path => '../node_modules/react-native-spinkit'
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'SocialxTypeActressTests' do
     inherit! :search_paths
     # Pods for testing
