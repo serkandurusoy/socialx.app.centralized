@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, Keyboard, Text, View} from 'react-native';
+import {Alert, Keyboard, Text, TextInput, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -7,7 +7,7 @@ import {AvatarPicker} from '../../components/Avatar';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
 import {SXButton} from '../../components/Interaction';
 import {ModalInputSMSCode} from '../../components/Modals';
-import {Colors, Images} from '../../theme';
+import {Colors, Images, Sizes} from '../../theme';
 import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
@@ -18,6 +18,15 @@ import {createUserFunc} from '../../types/gql';
 
 import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {addBlob} from '../../utils/ipfs';
+
+import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
+import DeviceInfo from 'react-native-device-info';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+interface ICountryData {
+	cca2: string;
+	callingCode: string;
+}
 
 export interface ISignUpScreenState {
 	email: string;
@@ -30,6 +39,8 @@ export interface ISignUpScreenState {
 	updatedAvatarImageBase64: string;
 	showModalForSMSCode: boolean;
 	smsCodeErrorMessage: string | null;
+	countryCCA2: string;
+	countryCallingCode: string;
 }
 
 export interface ISignUpScreenProps {
@@ -41,6 +52,7 @@ export interface ISignUpScreenProps {
 	createUser: any;
 	addMedia: any;
 	checkUsername: any;
+	countryCallingCode: string;
 }
 
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
@@ -48,20 +60,35 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		title: 'REGISTER',
 	};
 
-	public state = {
-		email: '',
-		name: '',
-		username: '',
-		phone: '',
-		password: '',
-		confirmPassword: '',
-		avatarImage: Images.user_avatar_placeholder,
-		updatedAvatarImageBase64: '',
-		showModalForSMSCode: false,
-		smsCodeErrorMessage: null,
-	};
-
 	private inputRefs: any = {};
+	private countryList: string[] = [];
+
+	constructor(props: ISignUpScreenProps) {
+		super(props);
+		const deviceCountry = DeviceInfo.getDeviceCountry();
+		const allCountries = getAllCountries();
+		let deviceCountryCallingCode = '';
+		allCountries.forEach((country: ICountryData) => {
+			this.countryList.push(country.cca2);
+			if (country.cca2 === deviceCountry) {
+				deviceCountryCallingCode = country.callingCode;
+			}
+		});
+		this.state = {
+			email: '',
+			name: '',
+			username: '',
+			phone: '',
+			password: '',
+			confirmPassword: '',
+			avatarImage: Images.user_avatar_placeholder,
+			updatedAvatarImageBase64: '',
+			showModalForSMSCode: false,
+			smsCodeErrorMessage: null,
+			countryCCA2: deviceCountry,
+			countryCallingCode: deviceCountryCallingCode,
+		};
+	}
 
 	public render() {
 		return (
@@ -77,14 +104,14 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					confirmHandler={this.smsCodeConfirmedHandler}
 					declineHandler={this.smsCodeDeclinedHandler}
 					resendHandler={this.smsCodeResendHandler}
-					phoneNumber={this.state.phone}
+					phoneNumber={this.getPhoneNumber()}
 				/>
 				{/* <View style={style.buttonContainer}>
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
 				</View>
 				<Text style={style.orText}>{'or'}</Text> */}
 				<View style={style.avatarPickerContainer}>
-					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage}/>
+					<AvatarPicker afterImagePick={this.updateAvatarImage} avatarImage={this.state.avatarImage} />
 				</View>
 				{/* TODO: disable all inputfields on submit */}
 				<View style={[style.textInputContainer, style.textInputContainerFirst]}>
@@ -128,16 +155,34 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					/>
 				</View>
 				<View style={style.textInputContainer}>
-					<SXTextInput
-						iconColor={Colors.iron}
-						icon={'phone'}
-						placeholder={'Phone number (with country code)'}
-						placeholderColor={Colors.postText}
-						borderColor={Colors.transparent}
+					<View style={style.phoneInputIconContainer}>
+						<Icon name={'phone'} size={Sizes.smartHorizontalScale(30)} color={Colors.iron} />
+					</View>
+					<View style={style.countryPickerContainer}>
+						<CountryPicker
+							countryList={this.countryList}
+							translation={'eng'}
+							cca2={this.state.countryCCA2}
+							onChange={this.updatedSelectedCountryHandler}
+							closeable={true}
+							filterable={true}
+							filterPlaceholder={'Search your country..'}
+						/>
+						<Text style={style.countryCode}>{`(+${this.state.countryCallingCode})`}</Text>
+					</View>
+					<TextInput
+						placeholder={'Phone number'}
+						placeholderTextColor={Colors.postText}
+						style={style.phoneNumberInput}
 						returnKeyType={TRKeyboardKeys.next}
-						onSubmitPressed={() => this.handleInputSubmitPressed('password')}
+						keyboardType={TKeyboardKeys.phonePad}
+						onSubmitEditing={() => this.handleInputSubmitPressed('password')}
 						onChangeText={(value: string) => this.handleInputChangeText(value, 'phone')}
 						ref={(ref: any) => this.updateInputRef(ref, 'phone')}
+						autoCorrect={false}
+						underlineColorAndroid={Colors.transparent}
+						autoCapitalize='none'
+						clearButtonMode='while-editing'
 					/>
 				</View>
 				<View style={style.textInputContainer}>
@@ -170,7 +215,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					/>
 				</View>
 				<View style={[style.buttonContainer, style.registerButtonContainer]}>
-					<SXButton label={'REGISTER NOW!'} borderColor={Colors.transparent} onPress={this.startRegister}/>
+					<SXButton label={'REGISTER NOW!'} borderColor={Colors.transparent} onPress={this.startRegister} />
 				</View>
 			</KeyboardAwareScrollView>
 		);
@@ -188,7 +233,11 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private handleInputSubmitPressed = (nextInputRef: string) => {
 		if (nextInputRef in this.inputRefs) {
-			this.inputRefs[nextInputRef].focusInput();
+			if (this.inputRefs[nextInputRef].hasOwnProperty('focusInput')) {
+				this.inputRefs[nextInputRef].focusInput();
+			} else {
+				this.inputRefs[nextInputRef].focus();
+			}
 		}
 	}
 
@@ -200,7 +249,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	}
 
 	private smsCodeConfirmedHandler = async (code: string) => {
-		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64} = this.state;
 		const {createUser, addMedia} = this.props;
 
 		let mediaId: string | undefined;
@@ -282,8 +331,12 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		this.props.HideLoader();
 	}
 
+	private getPhoneNumber = () => {
+		return '+' + this.state.countryCallingCode + this.state.phone;
+	}
+
 	private startRegister = async () => {
-		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64, phone} = this.state;
+		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64} = this.state;
 		const {createUser, addMedia, checkUsername} = this.props;
 
 		// closing the modla when using alerts, issue MD-163
@@ -324,7 +377,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				username,
 				password,
 				attributes: {
-					phone_number: phone,
+					phone_number: this.getPhoneNumber(),
 					email,
 				},
 			};
@@ -348,6 +401,13 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		this.setState({
 			updatedAvatarImageBase64: base64Photo,
 			avatarImage: {uri: base64Photo},
+		});
+	}
+
+	private updatedSelectedCountryHandler = (country: ICountryData) => {
+		this.setState({
+			countryCCA2: country.cca2,
+			countryCallingCode: country.callingCode,
 		});
 	}
 }
