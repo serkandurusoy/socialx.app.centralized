@@ -16,8 +16,7 @@ const metrics = {
 	// horizontalLineHeight: 1,
 	// screenWidth: width < height ? width : height,
 	// screenHeight: width < height ? height : width,
-	navBarHeight: Platform.OS === OS_TYPES.iOS ? 54 : 47,
-	tabBarBottomHeight: Sizes.smartVerticalScale(49),
+	navBarHeight: Platform.OS === OS_TYPES.iOS ? 54 : 47, // not very reliable should be done else!
 	// buttonRadius: 4,
 	// icons: {
 	// 	tiny: 15,

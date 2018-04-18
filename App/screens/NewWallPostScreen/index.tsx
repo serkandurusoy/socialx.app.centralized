@@ -101,6 +101,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					size={ButtonSizes.Small}
 					width={Sizes.smartHorizontalScale(100)}
 					onPress={this.sendPostHandler}
+					disabled={this.state.postText.length < 0 && this.state.mediaObjects.length < 0}
 				/>
 			</View>
 		);
@@ -204,6 +205,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			mediaObjects: this.state.mediaObjects,
 		};
 		this.props.navigation.state.params.postCreate(wallPostData);
+		// @ionut this doesnt hit, when the user creates a post
 		this.props.navigation.goBack();
 	}
 

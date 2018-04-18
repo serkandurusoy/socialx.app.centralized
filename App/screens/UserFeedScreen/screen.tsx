@@ -16,13 +16,14 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	showNewWallPostPage: () => void;
 	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
 	currentUser: IUserQuery;
+	noPosts: boolean;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
 	const keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
-		const canDelete = props.currentUser.userId === data.item.user.userId;
+		const canDelete = props.currentUser.userId === data.item.owner.userId;
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard
@@ -50,6 +51,13 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		);
 	};
 
+	// TODO: @ionut
+	const renderNoPosts = () => (
+		<View>
+			<Text>No Posts Found</Text>
+		</View>
+	);
+
 	return (
 		<View style={style.container}>
 			<View style={style.shareMessageContainer}>
@@ -60,7 +68,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					</View>
 				</TouchableWithoutFeedback>
 			</View>
-			{renderWithLoading()}
+			{!props.noPosts ? renderWithLoading() : renderNoPosts()}
 		</View>
 	);
 };

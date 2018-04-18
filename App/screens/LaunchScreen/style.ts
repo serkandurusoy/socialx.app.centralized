@@ -5,6 +5,7 @@ const style: any = {
 	container: {
 		flex: 1,
 		alignItems: 'center',
+		backgroundColor: Colors.white,
 	},
 	background: {
 		position: 'absolute',

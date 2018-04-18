@@ -16,3 +16,4 @@ declare module 'react-navigation-redux-helpers';
 declare module 'react-native-svg-charts';
 declare module 'react-native-gifted-chat';
 declare module 'react-native-android-keyboard-adjust';
+declare module 'react-native-smart-splash-screen';
