@@ -9192,13 +9192,20 @@ react-native-linear-gradient@^2.4.0:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-modal-datetime-picker@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-5.1.0.tgz#6e183531170881c2ff5b0742d132060f828e2b77"
+  dependencies:
+    prop-types "^15.6.1"
+    react-native-modal "^5.4.0"
+
 react-native-modal-dropdown@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/react-native-modal-dropdown/-/react-native-modal-dropdown-0.6.2.tgz#da6027b3546d2031fbce46242bffc95561e13599"
   dependencies:
     prop-types "^15.6.0"
 
-react-native-modal@~5.4.0:
+react-native-modal@^5.4.0, react-native-modal@~5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-5.4.0.tgz#95f70b5d68e08824951cd11038b9db2d6fdb9962"
   dependencies:
@@ -9271,6 +9278,10 @@ react-native-tab-view@^0.0.74:
 react-native-text-gradient@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/react-native-text-gradient/-/react-native-text-gradient-0.0.5.tgz#b4717d4ae2f5fd621760390f94eba6c0bd523652"
+
+react-native-textinput-effects@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-textinput-effects/-/react-native-textinput-effects-0.4.2.tgz#05336a8ed9e4992397fc5de714692d774eb91b07"
 
 react-native-typescript-transformer@^1.2.3:
   version "1.2.4"

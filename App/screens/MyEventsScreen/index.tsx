@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {NavigationScreenProp} from 'react-navigation';
 import {IEventData} from '../../components/Displayers/EventListItem';
 import MyEventsScreenComponent from './screen';
 
@@ -49,7 +50,11 @@ const SAMPLE_EVENTS: IEventData[] = [
 	},
 ];
 
-export default class MyEventsScreen extends Component {
+interface IMyEventsScreenProps {
+	navigation: NavigationScreenProp<any>;
+}
+
+export default class MyEventsScreen extends Component<IMyEventsScreenProps> {
 	private static navigationOptions = {
 		title: 'EVENTS',
 	};
@@ -59,6 +64,6 @@ export default class MyEventsScreen extends Component {
 	}
 
 	private onAddNewEventHandler = (date: Date) => {
-		alert('TBD: add event for date ' + date);
+		this.props.navigation.navigate('CreateEventScreen', {date});
 	}
 }
