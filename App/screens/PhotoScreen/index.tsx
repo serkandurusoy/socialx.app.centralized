@@ -225,7 +225,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 
 			// stop loading
 			stopLoading();
-			this.props.navigation.goBack();
+			this.props.navigation.goBack(null);
 		}
 	}
 }

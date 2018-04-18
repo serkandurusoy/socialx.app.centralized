@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {AsyncStorage, Image, Text, View} from 'react-native';
+import SplashScreen from 'react-native-smart-splash-screen';
 import {NavigationScreenProp} from 'react-navigation';
 import {SXButton, SXGradientButton, TextGradient} from '../../components';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
-import { CurrentUser } from '../../utils/';
+import {CurrentUser} from '../../utils/';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -27,14 +28,20 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 				//
 			}
 		}
+		SplashScreen.close({
+			animationType: SplashScreen.animationType.fade,
+			duration: 1000,
+			delay: 100,
+		});
 	}
 
 	public render() {
 		return (
 			<View style={style.container}>
-				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'} />
+				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'}/>
 				<View style={style.topPaddingContainer}>
-					<TextGradient text={'SocialX'} colors={[Colors.fuchsiaBlue, Colors.pink]} style={style.socialxGradient} />
+					<TextGradient text={'SocialX'} colors={[Colors.fuchsiaBlue, Colors.pink]}
+								  style={style.socialxGradient}/>
 					<Text style={style.description}>Social interaction with cryptocurrency rewards</Text>
 				</View>
 				<TextGradient
@@ -51,7 +58,11 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 						onPress={this.navigateToLoginScreen}
 					/>
 					<View style={style.signUpTopPadding}>
-						<SXButton label={'SIGN UP'} onPress={this.navigateToSignUpScreen} />
+						<SXButton
+							label={'SIGN UP'}
+							borderColor={Colors.transparent}
+							onPress={this.navigateToSignUpScreen}
+						/>
 					</View>
 				</View>
 			</View>
