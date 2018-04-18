@@ -1,30 +1,49 @@
 import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
 
-const likePost = gql`
-    mutation likePost($postId: ID!){
-        likePost(postId: $postId){
-            id,
-            likes {
-			    userId,
-			    username
-			}
+const commentMut = gql`
+    mutation comment($type: CommentType!, $targetUser: ID, $targetPost: ID, $text: String){
+        comment(type: $type, targetUser: $targetUser, targetPost: $targetPost, text: $text){
+            id
         }
     }
 `;
 
-const removeLikePost = gql`
-    mutation removelikePost($postId: ID!){
-        removelikePost(postId: $postId){
-            id,
-            likes {
-			    userId,
-			    username
-			}
-        }
+const getCommentsQ = gql`
+    query getComments($targetPost: ID, $targetUser: ID){
+        getComments(targetPost: $targetPost, targetUser: $targetUser)(
+            id
+            type
+            createdAt
+            likes{
+                userId
+            }
+            owner {
+                userId
+                avatar {
+                    id
+                    hash
+                }
+            }
+            comments {
+                id
+                type
+                createdAt
+                likes{
+                    userId
+                }
+                owner {
+                    userId
+                    avatar {
+                        id
+                        hash
+                    }
+                }
+            }
+        )
     }
 `;
 
-export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost' })(comp);
+export const commentHoc = (comp: any) => graphql(commentMut, { name: 'comment' })(comp);
 
-export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, { name: 'removeLikePost' })(comp);
+export const getCommentsHoc = (comp: any) => graphql(getCommentsQ, { name: 'Comments' })(comp);
