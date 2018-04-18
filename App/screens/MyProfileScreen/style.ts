@@ -52,6 +52,18 @@ const style: any = {
 	gridPhotosContainer: {
 		width: '100%',
 	},
+	noPhotosContainer: {
+		paddingTop: Sizes.smartVerticalScale(30),
+		alignItems: 'center',
+	},
+	noPhotosText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(16),
+		color: Colors.postText,
+		paddingTop: Sizes.smartVerticalScale(20),
+		textAlign: 'center',
+		paddingHorizontal: Sizes.smartHorizontalScale(20),
+	},
 };
 
 export default StyleSheet.create(style);

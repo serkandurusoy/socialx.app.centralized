@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Platform, StatusBar} from 'react-native';
-import SplashScreen from 'react-native-smart-splash-screen';
 import {Provider} from 'react-redux';
 
 // refactoring
@@ -17,11 +16,6 @@ export default class App extends Component<{}, {}> {
 		if (Platform.OS === OS_TYPES.Android) {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
-		SplashScreen.close({
-			animationType: SplashScreen.animationType.fade,
-			duration: 1000,
-			delay: 100,
-		});
 	}
 
 	public render() {
