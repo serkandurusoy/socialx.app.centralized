@@ -62,7 +62,7 @@ export const getAllPosts = gql`
 	}
 `;
 
-export const getAllPostsHoc = (comp: any) => graphql(getAllPosts, {name: 'Posts'})(comp);
+export const getAllPostsHoc = (comp: any) => graphql(getAllPosts, {name: 'Posts', options: { fetchPolicy: 'network-only' }})(comp);
 
 export const getUserPostsHoc = (comp: any) => graphql(getUserPosts, {name: 'User'})(comp);
 

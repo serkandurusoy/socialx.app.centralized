@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
+import {AsyncStorage, Image, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {SXButton, SXGradientButton, TextGradient} from '../../components';
 import {Colors, Images} from '../../theme';
 import style from './style';
+
+import { CurrentUser } from '../../utils/';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -13,6 +15,19 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	private static navigationOptions = {
 		header: null,
 	};
+
+	public async componentDidMount() {
+		if (AsyncStorage.getItem('jwtToken')) {
+			try {
+				const currentUser = await CurrentUser();
+				if (currentUser) {
+					this.props.navigation.navigate('MainScreen');
+				}
+			} catch (ex) {
+				//
+			}
+		}
+	}
 
 	public render() {
 		return (
