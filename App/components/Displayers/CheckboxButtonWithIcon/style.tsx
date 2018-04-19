@@ -7,7 +7,6 @@ const style: any = {
 		alignItems: 'center',
 		width: '100%',
 		paddingVertical: Sizes.smartVerticalScale(10),
-		marginTop: Sizes.smartVerticalScale(10),
 	},
 	buttonText: {
 		...Fonts.centuryGothic,

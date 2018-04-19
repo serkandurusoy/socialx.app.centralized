@@ -85,6 +85,9 @@ const style: any = {
 		marginRight: Sizes.smartHorizontalScale(10),
 		marginVertical: Sizes.smartHorizontalScale(10),
 	},
+	checkboxButtonContainer: {
+		marginTop: Sizes.smartVerticalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);

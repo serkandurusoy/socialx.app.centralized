@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AvatarImage} from '../../components/Avatar';
+import {CheckboxButtonWithIcon} from '../../components/Displayers/CheckboxButtonWithIcon';
 import {Colors, Icons} from '../../theme/';
-import {CheckboxButtonWithIcon} from './CheckboxButtonWithIcon';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 
@@ -87,7 +87,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 
 	private renderLocationSection = () => {
 		return (
-			<View>
+			<View style={style.checkboxButtonContainer}>
 				<CheckboxButtonWithIcon
 					iconSource={Icons.iconLocationPin}
 					selected={this.state.locationEnabled}
@@ -125,7 +125,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 
 	private renderTagFriendsSection = () => {
 		return (
-			<View>
+			<View style={style.checkboxButtonContainer}>
 				<CheckboxButtonWithIcon
 					iconSource={Icons.iconInviteFriends}
 					selected={this.state.tagFriends}
@@ -166,7 +166,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 
 	private renderDescriptionSection = () => {
 		return (
-			<View>
+			<View style={style.checkboxButtonContainer}>
 				<CheckboxButtonWithIcon
 					iconSource={Icons.iconAddDescription}
 					selected={this.state.textEnabled}

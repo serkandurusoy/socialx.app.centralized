@@ -20,6 +20,7 @@ import {IBlobData} from '../../lib/ipfs';
 import {addBlob} from '../../utils/ipfs';
 
 import {Images} from '../../theme';
+import {SEARCH_RESULTS_TAG_FRIENDS} from '../../utils';
 
 export interface FriendsSearchResult {
 	id: string;
@@ -56,45 +57,6 @@ interface IPhotoScreenState {
 	taggedFriendsInModal: FriendsSearchResult[];
 	taggedFriends: FriendsSearchResult[];
 }
-
-const SEARCH_RESULTS_TAG_FRIENDS: FriendsSearchResult[] = [
-	{
-		id: '0',
-		fullName: 'Ionut Movila',
-		location: 'Belgium',
-		avatarURL: 'https://placeimg.com/100/100/people',
-	},
-	{
-		id: '1',
-		fullName: 'Teresa Lamb',
-		location: 'Poland',
-		avatarURL: 'https://placeimg.com/101/101/people',
-	},
-	{
-		id: '2',
-		fullName: 'Terosa McCarthy',
-		location: 'Vietnam',
-		avatarURL: 'https://placeimg.com/102/102/people',
-	},
-	{
-		id: '3',
-		fullName: 'Terosa McCarthy',
-		location: 'Romania',
-		avatarURL: 'https://placeimg.com/103/103/people',
-	},
-	{
-		id: '4',
-		fullName: 'Gregory Bates',
-		location: 'Latvia',
-		avatarURL: 'https://placeimg.com/104/104/people',
-	},
-	{
-		id: '5',
-		fullName: 'Patrick Mullins',
-		location: 'Singapore',
-		avatarURL: 'https://placeimg.com/105/105/people',
-	},
-];
 
 class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	private static navigationOptions = (props: IPhotoScreenProps) => ({

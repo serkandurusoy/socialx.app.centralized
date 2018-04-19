@@ -7,7 +7,7 @@ import style from './style';
 export interface ICheckboxButtonWithIconProps {
 	selected: boolean;
 	onPress?: Func;
-	iconSource: number;
+	iconSource?: number;
 	text: string;
 }
 
@@ -16,7 +16,7 @@ export const CheckboxButtonWithIcon: React.SFC<ICheckboxButtonWithIconProps> = (
 		<View style={style.container}>
 			<CheckBox checked={props.selected} onPress={props.onPress} color={Colors.pink} style={style.checkbox} />
 			<Text style={style.buttonText}>{props.text}</Text>
-			<Image source={props.iconSource} style={style.iconStyle} resizeMode={'contain'} />
+			{props.iconSource ? <Image source={props.iconSource} style={style.iconStyle} resizeMode={'contain'} /> : null}
 		</View>
 	);
 };
