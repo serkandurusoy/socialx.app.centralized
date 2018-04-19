@@ -1,12 +1,15 @@
 import {StyleSheet} from 'react-native';
-import {Sizes} from '../../../../theme';
+import {Colors, Sizes} from '../../../../theme';
 
 const style: any = {
 	container: {
 		flexDirection: 'row',
-		paddingHorizontal: Sizes.smartHorizontalScale(15),
-		paddingVertical: Sizes.smartVerticalScale(10),
+		marginHorizontal: Sizes.smartHorizontalScale(15),
+		paddingVertical: Sizes.smartVerticalScale(5),
+		marginVertical: Sizes.smartVerticalScale(5),
 		justifyContent: 'space-between',
+		borderTopColor: Colors.geyser,
+		borderTopWidth: Sizes.smartHorizontalScale(0.5),
 	},
 	rightContainer: {
 		flexDirection: 'row',

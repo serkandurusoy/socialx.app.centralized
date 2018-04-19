@@ -89,7 +89,6 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
 					commentsButtonPressed={this.props.onCommentsButtonClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
-					shareButtonPressed={this.shareButtonPressedHandler}
 				/>
 			</View>
 		);
@@ -108,16 +107,6 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	}
-
-	private shareButtonPressedHandler = () => {
-		return (
-			<FastImage
-				source={{uri: this.props.imageSource}}
-				style={style.postImage}
-				resizeMode={FastImage.resizeMode.cover}
-			/>
-		);
 	}
 
 	private renderTaggedFriends = () => {

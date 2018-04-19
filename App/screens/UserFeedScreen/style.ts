@@ -19,7 +19,7 @@ const style: any = {
 		paddingVertical: Sizes.smartVerticalScale(16),
 		paddingHorizontal: Sizes.smartHorizontalScale(16),
 		borderBottomColor: Colors.geyser,
-		borderBottomWidth: Sizes.smartHorizontalScale(1),
+		borderBottomWidth: Sizes.smartHorizontalScale(8),
 	},
 	avatarImage: {
 		width: USER_AVATAR_SIZE,
@@ -37,6 +37,8 @@ const style: any = {
 	},
 	wallPostContainer: {
 		paddingTop: Sizes.smartVerticalScale(25),
+		borderBottomColor: Colors.geyser,
+		borderBottomWidth: Sizes.smartHorizontalScale(8),
 	},
 };
 
