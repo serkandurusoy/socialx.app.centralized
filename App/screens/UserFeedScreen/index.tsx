@@ -69,18 +69,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (nextProps.Posts.loading || nextProps.data.loading) {
 			return;
 		}
-		if (this.state.wallPosts.length === 0) {
-			/*
-			TODO: @Jake, found the problem here. After login to load posts this condition is hit.
-			The problem is that down the chain call in loadMorePostsHandler this.props is not yet in
-			sync with nextProps here. Maybe you have a better idea than my ugly timeout solution?
-			Also maybe worth checking the new method getDerivedStateFromProps.
-			I have tried to use it in other places as a replacement for componentWillReceiveProps
-			https://reactjs.org/docs/react-component.html#unsafe_componentwillreceiveprops
-			*/
-			setTimeout(() => {
-				this.loadMorePostsHandler();
-			}, 200);
+		if (this.state.wallPosts.length === 0 && nextProps.Posts.allPosts.length > 0) {
+			this.loadMorePostsHandler(nextProps);
 		}
 	}
 
@@ -121,16 +111,26 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		return ret;
 	}
 
-	private getWallPosts = () => {
+	private getWallPosts = (nextProps?: IUserFeedScreenProps) => {
 		const {data, Posts} = this.props;
 		const arty: any[] = [];
 
-		if (!Posts.allPosts) {
+		console.log(nextProps);
+
+		let allPosts = null;
+
+		if (nextProps && nextProps.Posts) {
+			allPosts = nextProps.Posts.allPosts;
+		} else {
+			allPosts = Posts.allPosts;
+		}
+
+		if (!allPosts || allPosts.length < 0) {
 			return arty;
 		}
 
-		for (let i = 0; i < Posts.allPosts.length; i++) {
-			const post: IPostsProps = Posts.allPosts[i];
+		for (let i = 0; i < allPosts.length; i++) {
+			const post: IPostsProps = allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
@@ -179,9 +179,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 
-	private loadMorePostsHandler = () => {
+	private loadMorePostsHandler = (nextProps?: IUserFeedScreenProps) => {
 		const {wallPosts, currentLoad} = this.state;
-		const Posts = this.getWallPosts();
+		const Posts = this.getWallPosts(nextProps);
 
 		if (Posts.length < 0) {
 			return;
