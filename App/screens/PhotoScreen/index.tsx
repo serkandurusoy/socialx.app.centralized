@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {findNodeHandle, View} from 'react-native';
+import {Alert, findNodeHandle, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
@@ -12,6 +12,8 @@ import {addMediaHoc, createPostHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+
+import {ModalManager} from '../../hoc/ManagedModal/manager';
 
 import base from '../../config/ipfs';
 import {IBlobData} from '../../lib/ipfs';
@@ -187,40 +189,46 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		if (this.photoScreen) {
 			// start adding media loading
 			startMediaPost();
+			try {
+				const wallPostDataInScreen = this.photoScreen.getWallPostData();
+				const localPhotoData: Partial<WallPostPhoto> = {
+					image: this.props.navigation.state.params.image,
+				};
+				if (wallPostDataInScreen.includeTaggedFriends && this.state.taggedFriends.length > 0) {
+					localPhotoData.taggedFriends = this.state.taggedFriends;
+				}
+				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
+				delete wallPostData.includeTaggedFriends;
 
-			const wallPostDataInScreen = this.photoScreen.getWallPostData();
-			const localPhotoData: Partial<WallPostPhoto> = {
-				image: this.props.navigation.state.params.image,
-			};
-			if (wallPostDataInScreen.includeTaggedFriends && this.state.taggedFriends.length > 0) {
-				localPhotoData.taggedFriends = this.state.taggedFriends;
-			}
-			const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
-			delete wallPostData.includeTaggedFriends;
+				const {title, text, location, taggedFriends, image} = wallPostData;
+				const {content, size, mime, path} = image;
 
-			const {title, text, location, taggedFriends, image} = wallPostData;
-			const {content, size, mime, path} = image;
+				const imageName = path.split('/')[path.split('/').length - 2];
 
-			const imageName = path.split('/')[path.split('/').length - 2];
+				// add image to ipfs
+				let ipfsResp = await addBlob([{filename: imageName, data: content, name: imageName.split('.')[0]}]);
+				ipfsResp = JSON.parse(ipfsResp.data);
+				// parse ipfs response
+				const {Size, Hash} = ipfsResp;
 
-			// add image to ipfs
-			let ipfsResp = await addBlob([{filename: imageName, data: content, name: imageName.split('.')[0]}]);
-			ipfsResp = JSON.parse(ipfsResp.data);
-			// parse ipfs response
-			const {Size, Hash} = ipfsResp;
+				// create media object on aws
+				const addResp = await addMedia({variables: {hash: Hash, size, Size, type: mime}});
 
-			// create media object on aws
-			const addResp = await addMedia({variables: {hash: Hash, size, Size, type: mime}});
+				const mediaId = addResp.data.addMedia.id;
 
-			const mediaId = addResp.data.addMedia.id;
-
-			// start adding post loading
-			startPostadd();
-			// create post
-			if (title) {
-				await createPost({variables: {text: title, Media: mediaId}});
-			} else {
-				await createPost({variables: {Media: mediaId}});
+				// start adding post loading
+				startPostadd();
+				// create post
+				if (title) {
+					await createPost({variables: {text: title, Media: mediaId}});
+				} else {
+					await createPost({variables: {Media: mediaId}});
+				}
+			} catch (ex) {
+				ModalManager.safeRunAfterModalClosed(() => {
+					Alert.alert('Something went wrong, try again');
+				});
+				console.log(ex);
 			}
 
 			// stop loading
