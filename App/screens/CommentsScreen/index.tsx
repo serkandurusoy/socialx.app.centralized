@@ -5,6 +5,9 @@ import {ModalCloseButton} from '../../components/Modals/CloseButton';
 import {getRandomImage} from '../../utils';
 import CommentsScreenComponent from './screen';
 
+import base from '../../config/ipfs';
+import {IComments} from '../../types/gql';
+
 export interface IWallPostCommentReply {
 	text: string;
 	user: {
@@ -110,9 +113,30 @@ export default class CommentsScreen extends Component<IWallPostCommentsProps> {
 	})
 
 	public render() {
+		const postComments: IWallPostComment[] = [] as IWallPostComment[];
+		const allComments: IComments[] = this.props.navigation.state.params.Comments;
+
+		for (let i = 0; i < allComments.length; i++) {
+			const currentComment = allComments[i];
+			const ownerAv = currentComment.owner.avatar ? base.ipfs_URL + currentComment.owner.avatar.hash :
+				'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+			postComments.push(
+				{
+					text: currentComment.text,
+					user: {
+						fullName: currentComment.owner.name,
+						avatarURL: ownerAv,
+					},
+					timestamp: new Date(currentComment.createdAt),
+					numberOfLikes: 0,
+					replies: []
+				},
+			);
+		}
+
 		return (
 			<CommentsScreenComponent
-				comments={SAMPLE_POST_COMMENTS}
+				comments={postComments}
 				onCommentLike={this.onCommentLikeHandler}
 				onCommentReply={this.onCommentReplyHandler}
 				onCommentSend={this.onCommentSendHandler}

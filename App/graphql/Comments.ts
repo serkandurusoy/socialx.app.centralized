@@ -10,12 +10,12 @@ const commentMut = gql`
 `;
 
 const getCommentsQ = gql`
-    query getComments($targetPost: ID, $targetUser: ID){
-        getComments(targetPost: $targetPost, targetUser: $targetUser)(
+    mutation getComments($targetPost: ID, $targetUser: ID) {
+        getComments (targetPost: $targetPost, targetUser: $targetUser) {
             id
             type
             createdAt
-            likes{
+            likes {
                 userId
             }
             owner {
@@ -40,10 +40,10 @@ const getCommentsQ = gql`
                     }
                 }
             }
-        )
+        }
     }
 `;
 
 export const commentHoc = (comp: any) => graphql(commentMut, { name: 'comment' })(comp);
 
-export const getCommentsHoc = (comp: any) => graphql(getCommentsQ, { name: 'Comments' })(comp);
+export const getCommentsHoc = (comp: any) => graphql(getCommentsQ, { name: 'getComments' })(comp);

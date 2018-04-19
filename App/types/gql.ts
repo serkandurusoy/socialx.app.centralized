@@ -1,5 +1,10 @@
 import {GraphqlQueryControls} from 'react-apollo';
 
+enum CommentType {
+	Post = 'Post',
+	Comment = 'Comment',
+}
+
 export interface ICreateUserProps {
 	variables: {
 		username: string;
@@ -20,6 +25,18 @@ interface IMediaProps {
 	size: number;
 }
 
+export interface IComments {
+	id: string;
+	owner: IUserQuery;
+	targetUser: string;
+	targetPost: string;
+	type: CommentType;
+	createdAt: string;
+	text: string;
+	likes: IUserQuery[];
+	comments: IComments[];
+}
+
 export interface IPostsProps {
 	id: string;
 	createdAt: string;
@@ -27,6 +44,7 @@ export interface IPostsProps {
 	Media?: IMediaProps[];
 	owner: IUserQuery;
 	likes: IUserQuery[];
+	comments: IComments[];
 }
 
 export interface IUserQuery {
@@ -53,6 +71,12 @@ interface IUserData {
 
 interface IPostsData {
 	allPosts: IPostsProps[];
+}
+
+export interface ICommentsResponse {
+	data: {
+		getComments: IComments[];
+	};
 }
 
 export type IUserDataResponse = GraphqlQueryControls & IUserData;
