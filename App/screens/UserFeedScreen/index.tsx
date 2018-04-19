@@ -70,7 +70,17 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return;
 		}
 		if (this.state.wallPosts.length === 0) {
-			this.loadMorePostsHandler();
+			/*
+			TODO: @Jake, found the problem here. After login to load posts this condition is hit.
+			The problem is that down the chain call in loadMorePostsHandler this.props is not yet in
+			sync with nextProps here. Maybe you have a better idea than my ugly timeout solution?
+			Also maybe worth checking the new method getDerivedStateFromProps.
+			I have tried to use it in other places as a replacement for componentWillReceiveProps
+			https://reactjs.org/docs/react-component.html#unsafe_componentwillreceiveprops
+			*/
+			setTimeout(() => {
+				this.loadMorePostsHandler();
+			}, 200);
 		}
 	}
 
