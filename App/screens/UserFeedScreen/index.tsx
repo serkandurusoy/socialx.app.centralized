@@ -291,6 +291,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// TODO: err handle
 			console.log(ex);
 		}
+		// just incase -
+		stopLoading();
 	}
 
 	private refreshWallPosts = async () => {
