@@ -15,7 +15,6 @@ export interface IWallPostActions {
 	superLikeButtonPressed: Func;
 	commentsButtonPressed: Func;
 	walletCoinsButtonPressed: Func;
-	shareButtonPressed: Func;
 }
 
 export class WallPostActions extends Component<IWallPostActions> {
@@ -28,19 +27,20 @@ export class WallPostActions extends Component<IWallPostActions> {
 					label={this.props.numberOfWalletCoins + ' SOCX'}
 				/>
 				<View style={style.rightContainer}>
-					{this.props.likedByMe ?
+					{this.props.likedByMe ? (
 						// TODO: create a proper liked icon
 						<IconButton
 							iconSource={Icons.iconTabBarNotificationsSelected}
 							onPress={this.props.likeButtonPressed}
 							label={this.props.numberOfLikes.toString()}
-						/> :
+						/>
+					) : (
 						<IconButton
 							iconSource={Icons.iconPostLike}
 							onPress={this.props.likeButtonPressed}
 							label={this.props.numberOfLikes.toString()}
 						/>
-					}
+					)}
 
 					<IconButton
 						iconSource={Icons.iconPostSuperLike}
@@ -52,7 +52,6 @@ export class WallPostActions extends Component<IWallPostActions> {
 						onPress={this.props.commentsButtonPressed}
 						label={this.props.numberOfComments.toString()}
 					/>
-					<IconButton iconSource={Icons.iconPostShare} onPress={this.props.shareButtonPressed} />
 				</View>
 			</View>
 		);
