@@ -117,13 +117,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		console.log(nextProps);
 
-		let allPosts = null;
-
-		if (nextProps && nextProps.Posts) {
-			allPosts = nextProps.Posts.allPosts;
-		} else {
-			allPosts = Posts.allPosts;
-		}
+		const allPosts = nextProps && nextProps.Posts ? nextProps.Posts.allPosts : Posts.allPosts;
 
 		if (!allPosts || allPosts.length < 0) {
 			return arty;
