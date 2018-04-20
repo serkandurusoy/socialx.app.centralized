@@ -50,9 +50,8 @@ const getSingleScreenStack = (routeName: string, screen: any) => {
 
 const EventsStackNavigator = StackNavigator(
 	{
-		CreateEventScreen: {screen: CreateEventScreen},
 		MyEventsScreen: {screen: MyEventsScreen},
-		// CreateEventScreen: {screen: CreateEventScreen},
+		CreateEventScreen: {screen: CreateEventScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,
@@ -142,12 +141,11 @@ const PrimaryNav = StackNavigator(
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
-		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
+		// EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'none',
-		// initialRouteName: 'PreAuthScreen',
-		initialRouteName: 'EventsStack',
+		initialRouteName: 'PreAuthScreen',
 	},
 );
 

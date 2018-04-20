@@ -54,16 +54,35 @@ interface IMyEventsScreenProps {
 	navigation: NavigationScreenProp<any>;
 }
 
-export default class MyEventsScreen extends Component<IMyEventsScreenProps> {
+interface IMyEventsScreenState {
+	eventsList: IEventData[];
+}
+
+export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyEventsScreenState> {
 	private static navigationOptions = {
 		title: 'EVENTS',
 	};
 
+	public state = {
+		eventsList: SAMPLE_EVENTS,
+	};
+
 	public render() {
-		return <MyEventsScreenComponent onAddNewEvent={this.onAddNewEventHandler} events={SAMPLE_EVENTS} />;
+		return <MyEventsScreenComponent onAddNewEvent={this.onAddNewEventHandler} events={this.state.eventsList} />;
 	}
 
 	private onAddNewEventHandler = (date: Date) => {
-		this.props.navigation.navigate('CreateEventScreen', {date});
+		const todayMidNight = new Date();
+		todayMidNight.setHours(0, 0, 0);
+		if (date < todayMidNight) {
+			date = new Date();
+		}
+		date.setHours(0, 0, 0);
+		this.props.navigation.navigate('CreateEventScreen', {date, createNewEvent: this.createNewEvent});
+	}
+
+	private createNewEvent = (eventData: IEventData) => {
+		// console.log('createNewEvent', eventData); // TODO: GQL call to create the event
+		this.setState({eventsList: [...this.state.eventsList, eventData]});
 	}
 }

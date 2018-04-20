@@ -23,6 +23,13 @@ enum PICKER_MODE {
 	END_TIME = 3,
 }
 
+enum PICKER_IOS_TITLE {
+	START_DATE = 'Pick a start date',
+	END_DATE = 'Pick an end date',
+	START_TIME = 'Pick a start time',
+	END_TIME = 'Pick an end time',
+}
+
 interface ICreateEventScreenComponentProps {
 	initialDate: Date;
 	showInviteFriendsModal: () => void;
@@ -44,6 +51,8 @@ interface ICreateEventScreenComponentState {
 	location: string;
 	description: string;
 	pickerInitDate: Date;
+	minimumDate: Date | undefined;
+	iosTitle: PICKER_IOS_TITLE;
 }
 
 const EVENT_COLORS = ['red', 'purple', 'lime', 'yellow', 'blue', 'cyan'];
@@ -56,7 +65,9 @@ export default class CreateEventScreenComponent extends Component<
 		title: '',
 		startDate: this.props.initialDate,
 		endDate: this.props.initialDate,
-		startTime: undefined,
+		startTime: moment(this.props.initialDate)
+			.add(1, 'hour')
+			.toDate(),
 		endTime: undefined,
 		datePickerVisible: false,
 		datePickerMode: PICKER_MODE.START_DATE,
@@ -68,6 +79,8 @@ export default class CreateEventScreenComponent extends Component<
 		location: '',
 		description: '',
 		pickerInitDate: new Date(),
+		minimumDate: undefined,
+		iosTitle: PICKER_IOS_TITLE.START_DATE,
 	};
 
 	public render() {
@@ -83,6 +96,8 @@ export default class CreateEventScreenComponent extends Component<
 					onConfirm={this.datePickedHandler}
 					onCancel={this.dismissDatePicker}
 					date={this.state.pickerInitDate}
+					minimumDate={this.state.minimumDate}
+					titleIOS={this.state.iosTitle}
 				/>
 				{this.renderAddTitleAndColor()}
 				{this.renderStartEndDateSection()}
@@ -101,18 +116,35 @@ export default class CreateEventScreenComponent extends Component<
 	}
 
 	public getEventData = (): IEventData => {
-		return {
+		const {startTime, endTime, startDate, endDate} = this.state;
+		startDate.setHours(0, 0, 0);
+		endDate.setHours(0, 0, 0);
+		let ret: IEventData = {
 			title: this.state.title,
 			color: this.state.selectedColor,
-			startDate: this.state.startDate,
-			endDate: this.state.endDate,
+			startDate,
+			endDate,
 			allDay: this.state.allDayEvent,
-			startTime: this.state.startTime,
-			endTime: this.state.endTime,
-			location: this.state.location,
-			description: this.state.description,
-			invitedFriends: this.props.invitedFriends,
 		};
+		if (!this.state.allDayEvent) {
+			if (startTime !== undefined) {
+				(startTime as Date).setFullYear(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+			}
+			if (endTime !== undefined) {
+				(endTime as Date).setFullYear(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+			}
+			ret = {...ret, startTime, endTime};
+		}
+		if (this.state.locationEnabled && this.state.location) {
+			ret = {...ret, location: this.state.location};
+		}
+		if (this.state.descriptionEnabled && this.state.description) {
+			ret = {...ret, description: this.state.description};
+		}
+		if (this.state.inviteFriendsEnabled && this.props.invitedFriends.length > 0) {
+			ret = {...ret, invitedFriends: this.props.invitedFriends};
+		}
+		return ret;
 	}
 
 	private renderAddTitleAndColor = () => {
@@ -309,6 +341,8 @@ export default class CreateEventScreenComponent extends Component<
 			datePickerMode: PICKER_MODE.START_DATE,
 			datePickerVisible: true,
 			pickerInitDate: this.state.startDate,
+			iosTitle: PICKER_IOS_TITLE.START_DATE,
+			minimumDate: new Date(),
 		});
 	}
 
@@ -317,27 +351,33 @@ export default class CreateEventScreenComponent extends Component<
 			datePickerMode: PICKER_MODE.END_DATE,
 			datePickerVisible: true,
 			pickerInitDate: this.state.endDate,
+			iosTitle: PICKER_IOS_TITLE.END_DATE,
+			minimumDate: this.state.startDate,
 		});
 	}
 
 	private showStartTimePicker = () => {
-		const {startDate} = this.state;
-		const initDate = moment(this.state.startTime)
-			.year(startDate.getFullYear())
-			.month(startDate.getMonth())
-			.date(startDate.getDate())
-			.toDate();
 		this.setState({
 			datePickerMode: PICKER_MODE.START_TIME,
 			datePickerVisible: true,
-			pickerInitDate: initDate,
+			pickerInitDate: this.state.startTime,
+			iosTitle: PICKER_IOS_TITLE.START_TIME,
+			minimumDate: undefined,
 		});
 	}
 
 	private showEndTimePicker = () => {
+		let initDate: Date | undefined = this.state.endTime;
+		if (!initDate) {
+			initDate = new Date();
+			initDate.setHours(0, 0, 0);
+		}
 		this.setState({
 			datePickerMode: PICKER_MODE.END_TIME,
 			datePickerVisible: true,
+			pickerInitDate: initDate as Date,
+			iosTitle: PICKER_IOS_TITLE.END_TIME,
+			minimumDate: undefined,
 		});
 	}
 
@@ -345,15 +385,48 @@ export default class CreateEventScreenComponent extends Component<
 		const updatedState: Partial<ICreateEventScreenComponentState> = {};
 		if (this.state.datePickerMode === PICKER_MODE.START_DATE) {
 			updatedState.startDate = date;
+			let endDate = this.state.endDate;
+			if (this.state.endDate < date) {
+				endDate = date;
+			}
+			// make sure endDate is after start date
+			updatedState.endDate = endDate;
+			if (this.state.endTime && this.state.startTime && this.state.endTime < this.state.startTime) {
+				this.syncEndTime(updatedState, date, endDate);
+			}
 		} else if (this.state.datePickerMode === PICKER_MODE.END_DATE) {
+			if (this.state.endTime && this.state.startTime && this.state.endTime < this.state.startTime) {
+				this.syncEndTime(updatedState, this.state.startDate, date);
+			}
 			updatedState.endDate = date;
 		} else if (this.state.datePickerMode === PICKER_MODE.START_TIME) {
+			if (this.state.endTime && this.state.endTime < date) {
+				this.syncEndTime(updatedState);
+			}
 			updatedState.startTime = date;
 		} else if (this.state.datePickerMode === PICKER_MODE.END_TIME) {
+			if (this.state.startTime && date < this.state.startTime) {
+				this.syncEndTime(updatedState);
+			}
 			updatedState.endTime = date;
 		}
 		this.setState(updatedState);
 		this.dismissDatePicker();
+	}
+
+	private syncEndTime = (
+		updatedState: Partial<ICreateEventScreenComponentState>,
+		startDate = this.state.startDate,
+		endDate = this.state.endDate,
+	) => {
+		// if endTime is after statTime make sure endDate is not the same as startDate
+		const startDateString = moment(startDate).format(DATE_FORMAT);
+		const endDateString = moment(endDate).format(DATE_FORMAT);
+		if (startDateString === endDateString) {
+			updatedState.endDate = moment(endDate)
+				.add(1, 'day')
+				.toDate();
+		}
 	}
 
 	private dismissDatePicker = () => {

@@ -75,7 +75,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					/>
 					{this.renderSendButton()}
 				</View>
-			</SafeAreaView>
+			</SafeAreaView>,
 		);
 	}
 

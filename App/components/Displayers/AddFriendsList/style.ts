@@ -8,6 +8,8 @@ const style: any = {
 		width: '100%',
 		flexDirection: 'row',
 		alignItems: 'center',
+		minHeight: FRIEND_AVATAR_SIZE,
+		marginVertical: Sizes.smartHorizontalScale(10),
 	},
 	taggedFriendsScroll: {
 		flex: 1,
@@ -22,7 +24,6 @@ const style: any = {
 		height: FRIEND_AVATAR_SIZE,
 		borderRadius: FRIEND_AVATAR_SIZE / 2,
 		marginRight: Sizes.smartHorizontalScale(10),
-		marginVertical: Sizes.smartHorizontalScale(10),
 	},
 };
 
