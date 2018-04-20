@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
+import {Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {CommentCard} from '../../components/Displayers/WallPostCard/CommentCard';
@@ -10,14 +10,13 @@ import {Colors, Sizes} from '../../theme';
 import {IWallPostComment} from './index';
 import style from './style';
 
-interface ICommentsScreenComponentProps {
+interface ICommentsScreenComponentProps extends IWithLoaderProps {
 	marginBottom: number;
 	comments: IWallPostComment[];
 	onCommentLike: (comment: IWallPostComment) => void;
 	onCommentReply: (comment: IWallPostComment, startReply: boolean) => void;
 	onCommentSend: (commentText: string) => void;
-
-	renderWithLoader: any;
+	noComments: boolean;
 }
 
 interface ICommentsScreenComponentState {
@@ -59,6 +58,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					ref={(ref: ScrollView) => (this.scrollRef = ref)}
 					onLayout={() => this.scrollRef.scrollToEnd()}
 				>
+					{this.renderNoComments()}
 					{this.renderComments()}
 				</ScrollView>
 				<View style={style.inputContainer}>
@@ -75,7 +75,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					/>
 					{this.renderSendButton()}
 				</View>
-			</SafeAreaView>
+			</SafeAreaView>,
 		);
 	}
 
@@ -104,6 +104,18 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			);
 		});
 		return ret;
+	}
+
+	private renderNoComments = () => {
+		if (this.props.noComments) {
+			return (
+				<View style={style.noCommentsContainer}>
+					<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+					<Text style={style.noCommentsText}>{'Be the first to comment here'}</Text>
+				</View>
+			);
+		}
+		return null;
 	}
 
 	private sendCommentHandler = () => {
