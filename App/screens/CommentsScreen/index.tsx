@@ -65,19 +65,11 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	public render() {
 		const {allComments, noComments} = this.state;
 
-		if (noComments) {
-			// TODO: add a NO_COMMENTS view here
-			return (
-				<View>
-					<Text>No Comments yet ;)</Text>
-				</View>
-			);
-		}
-
 		return (
 			<CommentsScreenComponent
 				isLoading={allComments.length < 0}
 				comments={allComments}
+				noComments={noComments}
 				onCommentLike={this.onCommentLikeHandler}
 				onCommentReply={this.onCommentReplyHandler}
 				onCommentSend={this.onCommentSendHandler}
@@ -130,7 +122,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		const getResp: ICommentsResponse = await getComments(qVar);
 
-		if (getResp.data.getComments.length < 0) {
+		if (getResp.data.getComments.length <= 0) {
 			this.setState({noComments: true});
 			return;
 		}
@@ -159,6 +151,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		}
 
 		this.setState({
+			noComments: resComments.length === 0,
 			allComments: resComments.sort((a: any, b: any) => {
 				if (a.likes.length > 0 || b.likes.length > 0) {
 					a = a.likes.length;

@@ -9,10 +9,9 @@ import style from './style';
 
 export interface ICommentCardProps {
 	comment: IWallPostComment | IWallPostCommentReply;
-	likedByMe: boolean;
 	onCommentLike: () => void;
 	onCommentReply: (startReply: boolean) => void;
-	isReply: boolean;
+	isReply?: boolean;
 }
 
 export const CommentCard: React.SFC<ICommentCardProps> = (props) => {

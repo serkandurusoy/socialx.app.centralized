@@ -10,31 +10,17 @@ const style: any = {
 	commentsList: {
 		flex: 1,
 	},
-	inputContainer: {
-		paddingHorizontal: Sizes.smartHorizontalScale(10),
-		paddingVertical: Sizes.smartVerticalScale(5),
-		borderTopColor: Colors.silverSand,
-		borderTopWidth: 1,
-		maxHeight: Sizes.smartVerticalScale(110),
-		justifyContent: 'flex-end',
+	noCommentsContainer: {
+		paddingTop: Sizes.smartVerticalScale(30),
+		alignItems: 'center',
 	},
-	textInput: {
+	noCommentsText: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(16),
-		color: Colors.postFullName,
-		backgroundColor: Colors.dustWhite,
-		borderRadius: Sizes.smartHorizontalScale(15),
-		borderColor: Colors.silverSand,
-		borderWidth: 1,
-		paddingRight: Sizes.smartHorizontalScale(50),
-		paddingLeft: Sizes.smartHorizontalScale(10),
-		paddingVertical: Sizes.smartHorizontalScale(10),
-	},
-	sendButton: {
-		position: 'absolute',
-		right: Sizes.smartHorizontalScale(10),
-		bottom: Sizes.smartHorizontalScale(8),
-		paddingHorizontal: Sizes.smartHorizontalScale(5),
+		color: Colors.postText,
+		paddingTop: Sizes.smartVerticalScale(20),
+		textAlign: 'center',
+		paddingHorizontal: Sizes.smartHorizontalScale(20),
 	},
 };
 
