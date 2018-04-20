@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AvatarImage} from '../../components/Avatar';
+import {AddFriendsList} from '../../components/Displayers/AddFriendsList';
 import {CheckboxButtonWithIcon} from '../../components/Displayers/CheckboxButtonWithIcon';
+import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
 import {Colors, Icons} from '../../theme/';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 
-interface IPhotoScreenComponentProps {
+interface IPhotoScreenComponentProps extends IWithLoaderProps {
 	avatarURL: string;
 	localPhotoURL: string;
 	showTagFriendsModal: () => void;
@@ -23,7 +25,7 @@ interface IPhotoScreenComponentState {
 	text: string;
 }
 
-export default class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoScreenComponentState> {
+class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoScreenComponentState> {
 	public state = {
 		locationEnabled: false,
 		tagFriends: false,
@@ -50,7 +52,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 	}
 
 	public render() {
-		return (
+		return this.props.renderWithLoader(
 			<KeyboardAwareScrollView
 				style={style.scrollView}
 				alwaysBounceVertical={true}
@@ -81,7 +83,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 					{this.renderTagFriendsSection()}
 					{this.renderDescriptionSection()}
 				</View>
-			</KeyboardAwareScrollView>
+			</KeyboardAwareScrollView>,
 		);
 	}
 
@@ -151,14 +153,7 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 				);
 			}
 			return (
-				<View style={style.tagFriendsContainer}>
-					<ScrollView alwaysBounceHorizontal={false} horizontal={true} style={style.taggedFriendsScroll}>
-						{taggedFriendsForRender}
-					</ScrollView>
-					<TouchableOpacity onPress={this.props.showTagFriendsModal} style={style.tagFriendsButton}>
-						<Image source={Icons.tagFriendSmall} />
-					</TouchableOpacity>
-				</View>
+				<AddFriendsList taggedFriends={this.props.taggedFriends} showTagFriendsModal={this.props.showTagFriendsModal} />
 			);
 		}
 		return null;
@@ -226,3 +221,5 @@ export default class PhotoScreenComponent extends Component<IPhotoScreenComponen
 		this.setState(newState);
 	}
 }
+
+export default withInlineLoader(PhotoScreenComponent, true);

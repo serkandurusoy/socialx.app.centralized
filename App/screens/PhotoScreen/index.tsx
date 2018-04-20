@@ -3,11 +3,10 @@ import {Alert, findNodeHandle, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
-import {ModalCloseButton, ModalTagFriends} from '../../components/Modals';
+import {ModalCloseButton} from '../../components/Modals';
 import PhotoScreenComponent from './screen';
 import {SendPostButton} from './SendPostButton';
 
-import {graphql} from 'react-apollo';
 import {addMediaHoc, createPostHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
 
@@ -16,11 +15,9 @@ import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 import {ModalManager} from '../../hoc/ManagedModal/manager';
 
 import base from '../../config/ipfs';
-import {IBlobData} from '../../lib/ipfs';
 import {addBlob} from '../../utils/ipfs';
 
-import {Images} from '../../theme';
-import {SEARCH_RESULTS_TAG_FRIENDS} from '../../utils';
+import {IModalForAddFriendsProps, withModalForAddFriends} from '../../hoc/WithModalForAddFriends';
 
 export interface FriendsSearchResult {
 	id: string;
@@ -38,7 +35,7 @@ export interface WallPostPhoto {
 	includeTaggedFriends: boolean;
 }
 
-interface IPhotoScreenProps {
+interface IPhotoScreenProps extends IModalForAddFriendsProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
 	addMedia: any;
@@ -51,98 +48,32 @@ interface IPhotoScreenProps {
 
 interface IPhotoScreenState {
 	avatarURL: string;
-	showTagFriendsModal: boolean;
-	blurViewRef: any;
-	friendsSearchResults: FriendsSearchResult[];
-	taggedFriendsInModal: FriendsSearchResult[];
-	taggedFriends: FriendsSearchResult[];
 }
 
 class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
-	private static navigationOptions = (props: IPhotoScreenProps) => ({
-		title: 'ADD PHOTO',
-		headerLeft: <ModalCloseButton navigation={props.navigation} />,
-		headerRight: <SendPostButton navParams={props.navigation.state.params} />,
-	})
-
 	public state = {
 		avatarURL: 'https://placeimg.com/120/120/people',
-		showTagFriendsModal: false,
-		blurViewRef: null,
-		friendsSearchResults: [],
-		taggedFriendsInModal: [],
-		taggedFriends: [],
 	};
 
 	private photoScreen: PhotoScreenComponent | null = null;
 
 	public componentDidMount() {
-		const blurViewHandle = findNodeHandle(this.photoScreen);
-		this.setState({blurViewRef: blurViewHandle});
 		this.props.navigation.setParams({onSendPress: this.sendPostHandler});
 	}
 
 	public render() {
 		const {data} = this.props;
-		if (data.loading) {
-			// TODO: content load
-			return <View />;
-		}
 		const placeHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 		return (
-			<View style={{flex: 1}}>
-				<ModalTagFriends
-					visible={this.state.showTagFriendsModal}
-					doneHandler={this.handleTagFriendsEditFinished}
-					cancelHandler={this.closeTagFriendsModal}
-					blurViewRef={this.state.blurViewRef}
-					onSearchUpdated={this.friendsSearchUpdatedHandler}
-					searchResults={this.state.friendsSearchResults}
-					selectTagUserInModal={this.tagFriendHandler}
-					selectedUsers={this.state.taggedFriendsInModal}
-				/>
-				<PhotoScreenComponent
-					showTagFriendsModal={this.showTagFriendsModal}
-					avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : placeHolder}
-					localPhotoURL={this.props.navigation.state.params.image.path}
-					taggedFriends={this.state.taggedFriends}
-					ref={(ref) => (this.photoScreen = ref)}
-				/>
-			</View>
+			<PhotoScreenComponent
+				isLoading={data.loading}
+				showTagFriendsModal={this.props.showAddFriendsModal}
+				avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : placeHolder}
+				localPhotoURL={this.props.navigation.state.params.image.path}
+				taggedFriends={this.props.addedFriends}
+				ref={(ref) => (this.photoScreen = ref)}
+			/>
 		);
-	}
-
-	private handleTagFriendsEditFinished = () => {
-		this.setState({
-			taggedFriends: this.state.taggedFriendsInModal,
-			showTagFriendsModal: false,
-		});
-	}
-
-	private showTagFriendsModal = () => {
-		this.setState({
-			taggedFriendsInModal: this.state.taggedFriends,
-			showTagFriendsModal: true,
-		});
-	}
-
-	private closeTagFriendsModal = () => {
-		this.setState({
-			showTagFriendsModal: false,
-		});
-	}
-
-	private tagFriendHandler = (friend: FriendsSearchResult) => {
-		this.setState({taggedFriendsInModal: this.state.taggedFriendsInModal.concat([friend])});
-	}
-
-	private friendsSearchUpdatedHandler = (term: string) => {
-		// TODO: make real search here
-		let friendsSearchResults: FriendsSearchResult[] = [];
-		if (term.length > 3 && term.length < 8) {
-			friendsSearchResults = SEARCH_RESULTS_TAG_FRIENDS;
-		}
-		this.setState({friendsSearchResults});
 	}
 
 	private sendPostHandler = async () => {
@@ -152,12 +83,12 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 			// start adding media loading
 			startMediaPost();
 			try {
-				const wallPostDataInScreen = this.photoScreen.getWallPostData();
+				const wallPostDataInScreen = this.photoScreen.getOriginalRef().getWallPostData();
 				const localPhotoData: Partial<WallPostPhoto> = {
 					image: this.props.navigation.state.params.image,
 				};
-				if (wallPostDataInScreen.includeTaggedFriends && this.state.taggedFriends.length > 0) {
-					localPhotoData.taggedFriends = this.state.taggedFriends;
+				if (wallPostDataInScreen.includeTaggedFriends && this.props.addedFriends.length > 0) {
+					localPhotoData.taggedFriends = this.props.addedFriends;
 				}
 				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
 				delete wallPostData.includeTaggedFriends;
@@ -200,13 +131,21 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	}
 }
 
+const navigationOptions = (props: IPhotoScreenProps) => ({
+	title: 'ADD PHOTO',
+	headerLeft: <ModalCloseButton navigation={props.navigation} />,
+	headerRight: <SendPostButton navParams={props.navigation.state.params} />,
+});
+
+const withAddFriends = withModalForAddFriends(PhotoScreen as any, navigationOptions as any);
+
 const MapDispatchToProps = (dispatch: any) => ({
 	startMediaPost: () => dispatch(showActivityIndicator('Decentralizing your media', 'Please wait..')),
 	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(PhotoScreen as any);
+const reduxWrapper = connect(null, MapDispatchToProps)(withAddFriends as any);
 
 const addMediaWrapper = addMediaHoc(reduxWrapper);
 const createPostWrapper = createPostHoc(addMediaWrapper);
