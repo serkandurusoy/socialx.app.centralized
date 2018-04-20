@@ -1,30 +1,67 @@
 import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
 
-const likePost = gql`
-    mutation likePost($postId: ID!){
-        likePost(postId: $postId){
-            id,
-            likes {
-			    userId,
-			    username
-			}
+const commentMut = gql`
+    mutation comment($targetUser: ID, $targetPost: ID, $text: String!) {
+        comment(targetUser: $targetUser, targetPost: $targetPost, text: $text) {
+            id
         }
     }
 `;
 
-const removeLikePost = gql`
-    mutation removelikePost($postId: ID!){
-        removelikePost(postId: $postId){
-            id,
+const getCommentsQ = gql`
+    mutation getComments($targetPost: ID, $targetUser: ID) {
+        getComments (targetPost: $targetPost, targetUser: $targetUser) {
+            id
+            createdAt
+            text
             likes {
-			    userId,
-			    username
-			}
+                userId
+            }
+            owner {
+                userId
+                avatar {
+                    id
+                    hash
+                }
+            }
+            comments {
+                id
+                createdAt
+                likes {
+                    userId
+                }
+                owner {
+                    userId
+                    avatar {
+                        id
+                        hash
+                    }
+                }
+            }
         }
     }
 `;
 
-export const likePostHoc = (comp: any) => graphql(likePost, { name: 'likePost' })(comp);
+const likeCommentMut = gql`
+    mutation likeComment($commentId: ID!) {
+        likeComment(commentId: $commentId) {
+            id
+        }
+    }
+`;
 
-export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, { name: 'removeLikePost' })(comp);
+const removeCommentLikeMut = gql`
+    mutation removeCommentLike($commentId: ID!) {
+        removeCommentLike(commentId: $commentId) {
+            id
+        }
+    }
+`;
+
+export const commentHoc = (comp: any) => graphql(commentMut, { name: 'comment' })(comp);
+
+export const getCommentsHoc = (comp: any) => graphql(getCommentsQ, { name: 'getComments' })(comp);
+
+export const likeCommentHoc = (comp: any) => graphql(likeCommentMut, { name: 'likeComment' })(comp);
+export const removeCommentLikeHoc = (comp: any) => graphql(removeCommentLikeMut, { name: 'removeCommentLike'})(comp);

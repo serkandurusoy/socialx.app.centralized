@@ -4,6 +4,7 @@ import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {CommentCard} from '../../components/Displayers/WallPostCard/CommentCard';
 import {OS_TYPES} from '../../constants';
+import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
 import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
 import {Colors, Sizes} from '../../theme';
 import {IWallPostComment} from './index';
@@ -15,6 +16,8 @@ interface ICommentsScreenComponentProps {
 	onCommentLike: (comment: IWallPostComment) => void;
 	onCommentReply: (comment: IWallPostComment, startReply: boolean) => void;
 	onCommentSend: (commentText: string) => void;
+
+	renderWithLoader: any;
 }
 
 interface ICommentsScreenComponentState {
@@ -48,7 +51,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 		if (Platform.OS === OS_TYPES.iOS) {
 			containerStyles.push({marginBottom: this.props.marginBottom});
 		}
-		return (
+		return this.props.renderWithLoader(
 			<SafeAreaView style={containerStyles}>
 				<ScrollView
 					style={style.commentsList}
@@ -93,6 +96,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			ret.push(
 				<CommentCard
 					key={index}
+					likedByMe={comment.likedByMe}
 					comment={comment}
 					onCommentLike={() => this.props.onCommentLike(comment)}
 					onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
@@ -120,4 +124,6 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 	}
 }
 
-export default withResizeOnKeyboardShow(CommentsScreenComponent);
+const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent);
+
+export default withResizeOnKeyboardShow(inlineLoaderWrapper);

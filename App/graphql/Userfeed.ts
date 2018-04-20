@@ -56,13 +56,17 @@ export const getAllPosts = gql`
 				}
 			}
 			likes {
-			    userId
+				userId
+			}
+			comments {
+				id
 			}
 		}
 	}
 `;
 
-export const getAllPostsHoc = (comp: any) => graphql(getAllPosts, {name: 'Posts', options: { fetchPolicy: 'network-only' }})(comp);
+export const getAllPostsHoc = (comp: any) =>
+	graphql(getAllPosts, {name: 'Posts', options: {fetchPolicy: 'network-only'}})(comp);
 
 export const getUserPostsHoc = (comp: any) => graphql(getUserPosts, {name: 'User'})(comp);
 

@@ -18,7 +18,7 @@ import {
 	removeLikePostHoc,
 	userHoc,
 } from '../../graphql';
-import {IAllPostsDataResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
+import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
 import {CurrentUser} from '../../utils';
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
@@ -34,9 +34,9 @@ import {IMediaRec} from './types';
 interface IUserFeedScreenProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
-	// TODO: create interface
 	Posts: IAllPostsDataResponse;
 	User: IUserDataResponse;
+	// TODO: create interface
 	createPost: any;
 	likePost: any;
 	removeLikePost: any;
@@ -69,8 +69,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		if (nextProps.Posts.loading || nextProps.data.loading) {
 			return;
 		}
-		if (this.state.wallPosts.length === 0) {
-			this.loadMorePostsHandler();
+		if (this.state.wallPosts.length === 0 && nextProps.Posts.allPosts.length > 0) {
+			this.loadMorePostsHandler(nextProps);
 		}
 	}
 
@@ -111,19 +111,22 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		return ret;
 	}
 
-	private getWallPosts = () => {
+	private getWallPosts = async (nextProps?: IUserFeedScreenProps) => {
 		const {data, Posts} = this.props;
-		const arty: any[] = [];
+		const dataSpine: any[] = [];
 
-		if (!Posts.allPosts) {
-			return arty;
+		const allPosts = nextProps && nextProps.Posts ? nextProps.Posts.allPosts : Posts.allPosts;
+
+		if (!allPosts || allPosts.length < 0) {
+			return dataSpine;
 		}
 
-		for (let i = 0; i < Posts.allPosts.length; i++) {
-			const post: IPostsProps = Posts.allPosts[i];
+		for (let i = 0; i < allPosts.length; i++) {
+			const post: IPostsProps = allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
+
 			const res: IWallPostCardProp = {
 				id: post.id,
 				text: post.text,
@@ -137,7 +140,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				timestamp: new Date(post.createdAt),
 				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
-				numberOfComments: 0,
+				numberOfComments: post.comments.length,
 				numberOfWalletCoins: 0,
 				onCommentsButtonClick: () => Alert.alert('click'),
 				// TODO: append all media to this with the index of the image
@@ -147,11 +150,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				canDelete: false,
 				owner: post.owner,
 			};
-			arty.push(res);
+			dataSpine.push(res);
 		}
 
 		// sort posts by time desc (most recent)
-		return arty.sort((a, b) => {
+		return dataSpine.sort((a, b) => {
 			a = a.timestamp;
 			b = b.timestamp;
 			return a > b ? -1 : a < b ? 1 : 0;
@@ -169,9 +172,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 
-	private loadMorePostsHandler = () => {
-		const {wallPosts, currentLoad} = this.state;
-		const Posts = this.getWallPosts();
+	private loadMorePostsHandler = async (nextProps?: IUserFeedScreenProps) => {
+		const {wallPosts} = this.state;
+		const Posts = await this.getWallPosts(nextProps);
 
 		if (Posts.length < 0) {
 			return;
@@ -185,7 +188,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const rest: any = [];
 		let currentLoadNew = wallPosts.length;
 
-		console.log('PostLen: ' + Posts.length.toString() + ', appendRate: ' + appendRate + ', currentLod: ', currentLoadNew);
 		if (Posts.length < 4) {
 			appendRate = Posts.length;
 			currentLoadNew = 0;
@@ -291,14 +293,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// TODO: err handle
 			console.log(ex);
 		}
+		// just incase -
+		stopLoading();
 	}
 
 	private refreshWallPosts = async () => {
 		this.setState({refreshing: true});
 		try {
-			const dDataRes = await this.props.data.refetch();
-			const pPRes = await this.props.Posts.refetch();
-			// TODO: @Jake: code below is never reached. Re-fetch fails?
+			await this.props.data.refetch();
+			await this.props.Posts.refetch();
 			this.setState({
 				refreshing: false,
 				wallPosts: [],
@@ -345,10 +348,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}));
 	}
 
-	private onCommentsButtonClickHandler = (wallPostData: IWallPostCardProp) => {
-		// console.log('Go to comments screen for', wallPostData);
-		// TODO: comments should be passed as a nav param to CommentsScreen
-		this.props.navigation.navigate('CommentsStack');
+	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
+		this.props.navigation.navigate('CommentsStack', { postId: wallPostData.id, userId: this.props.data.user.userId });
 	}
 }
 
