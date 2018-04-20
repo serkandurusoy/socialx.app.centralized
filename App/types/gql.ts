@@ -1,6 +1,6 @@
 import {GraphqlQueryControls} from 'react-apollo';
 
-enum CommentType {
+export enum CommentType {
 	Post = 'Post',
 	Comment = 'Comment',
 }

@@ -13,7 +13,6 @@ import {
 	addMediaHoc,
 	createPostHoc,
 	getAllPostsHoc,
-	getCommentsHoc,
 	getUserPostsHoc,
 	likePostHoc,
 	removeLikePostHoc,
@@ -45,7 +44,6 @@ interface IUserFeedScreenProps {
 	startMediaPost: any;
 	startPostadd: any;
 	stopLoading: any;
-	getComments: any;
 }
 
 interface IUserFeedScreenState {
@@ -351,16 +349,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
-		const {getComments} = this.props;
-
-		const qVar = {
-			variables: {
-				targetPost: wallPostData.id,
-			},
-		};
-		// TODO: add a loader
-		const commentsRes: ICommentsResponse = await getComments(qVar);
-		this.props.navigation.navigate('CommentsStack', { Comments: commentsRes.data.getComments });
+		this.props.navigation.navigate('CommentsStack', { postId: wallPostData.id, userId: this.props.data.user.userId });
 	}
 }
 
@@ -378,6 +367,5 @@ const createPostWrapper = createPostHoc(allPostsWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
 const likePostWrapper = likePostHoc(addMediaWrapper);
 const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
-const getCommentsWrapper = getCommentsHoc(removeLikePostWrapper);
 
-export default getCommentsWrapper;
+export default removeLikePostWrapper;

@@ -9,6 +9,7 @@ import style from './style';
 
 export interface ICommentCardProps {
 	comment: IWallPostComment | IWallPostCommentReply;
+	likedByMe: boolean;
 	onCommentLike: () => void;
 	onCommentReply: (startReply: boolean) => void;
 	isReply: boolean;
@@ -62,7 +63,11 @@ export const CommentCard: React.SFC<ICommentCardProps> = (props) => {
 			return (
 				<View style={style.likesContainer}>
 					<View style={style.likesBorder}>
-						<Icon name={'md-thumbs-up'} size={Sizes.smartHorizontalScale(15)} color={Colors.pink} />
+						<Icon
+							name={'md-thumbs-up'}
+							size={Sizes.smartHorizontalScale(15)}
+							color={comment.likedByMe ? Colors.pink : Colors.fuchsiaBlue}
+						/>
 						<Text style={style.numberOfLikes}>{comment.numberOfLikes}</Text>
 					</View>
 				</View>
@@ -96,7 +101,7 @@ export const CommentCard: React.SFC<ICommentCardProps> = (props) => {
 				<View style={style.actionsContainer}>
 					<Text style={style.timestamp}>{commentTimestamp}</Text>
 					<TouchableOpacity onPress={props.onCommentLike}>
-						<Text style={style.actionButtonText}>{'Like'}</Text>
+						<Text style={style.actionButtonText}>{comment.likedByMe ? 'Unlike' : 'Like'}</Text>
 					</TouchableOpacity>
 					{renderReplyButton()}
 				</View>
