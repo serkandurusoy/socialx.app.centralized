@@ -48,6 +48,8 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					{this.renderNoComments()}
 					{this.renderComments()}
 				</ScrollView>
+				{/* Resolvation from Feature/Create-Event
+				<CommentTextInput onCommentSend={this.props.onCommentSend} placeholder={'Write a comment...'} /> */}
 				<View style={style.inputContainer}>
 					<TextInput
 						ref={(ref: TextInput) => (this.textInput = ref)}
