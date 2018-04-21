@@ -231,9 +231,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 				// add files to ipfs
 				let ipfsResp = await addBlob(blobfiles);
-				console.log(ipfsResp);
-				stopLoading();
-				return;
 				ipfsResp = ipfsResp.data.split('\n');
 				// parse all media files from ipfs
 				if (ipfsResp.length > 2) {
