@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Dimensions, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -157,11 +158,23 @@ export default class MediaViewerScreenComponent extends Component<
 
 	private renderItemPortrait = (itemData: {item: IPhotoData; index: number}) => {
 		const carouselImageStyles = [style.carouselImage, {width: this.portraitWidth}];
-		return <Image source={{uri: itemData.item.url}} style={carouselImageStyles} resizeMode={'contain'} />;
+		return (
+			<FastImage
+				source={{uri: itemData.item.url}}
+				style={carouselImageStyles}
+				resizeMode={FastImage.resizeMode.contain}
+			/>
+		);
 	}
 
 	private renderItemLandscape = (itemData: {item: IPhotoData; index: number}) => {
 		const carouselImageStyles = [style.carouselImage, {width: this.landscapeWidth}];
-		return <Image source={{uri: itemData.item.url}} style={carouselImageStyles} resizeMode={'contain'} />;
+		return (
+			<FastImage
+				source={{uri: itemData.item.url}}
+				style={carouselImageStyles}
+				resizeMode={FastImage.resizeMode.contain}
+			/>
+		);
 	}
 }
