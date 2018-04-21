@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import {Icons} from '../../../../theme';
 import {IconButton} from '../../../Interaction';
@@ -21,11 +21,14 @@ export class WallPostActions extends Component<IWallPostActions> {
 	public render() {
 		return (
 			<View style={style.container}>
-				<IconButton
+				{/* Text component for the container alignment, causes padding issues if empty */}
+				<Text />
+				{/* TODO: add when implmented: Socx Wallet / Post Total Rewards
+				 <IconButton
 					iconSource={Icons.iconPostWalletCoins}
 					onPress={this.props.walletCoinsButtonPressed}
 					label={this.props.numberOfWalletCoins + ' SOCX'}
-				/>
+				/> */}
 				<View style={style.rightContainer}>
 					{this.props.likedByMe ? (
 						// TODO: create a proper liked icon
@@ -42,11 +45,12 @@ export class WallPostActions extends Component<IWallPostActions> {
 						/>
 					)}
 
-					<IconButton
+					{/* TODO: add when implemented: SuperLikes
+					 <IconButton
 						iconSource={Icons.iconPostSuperLike}
 						onPress={this.props.superLikeButtonPressed}
 						label={this.props.numberOfSuperLikes.toString()}
-					/>
+					/> */}
 					<IconButton
 						iconSource={Icons.iconPostComments}
 						onPress={this.props.commentsButtonPressed}
