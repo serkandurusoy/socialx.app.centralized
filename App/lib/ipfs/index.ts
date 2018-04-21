@@ -30,6 +30,7 @@ export default class Ipfslib {
 	}
 
 	public addBlob = (data: any) => {
+		console.log('ipfs api post', this.apiUrl('/add'));
 		return RNFetchBlob.fetch('POST', this.apiUrl('/add'), {'Content-Type': 'multipart/form-data'}, data);
 	}
 
