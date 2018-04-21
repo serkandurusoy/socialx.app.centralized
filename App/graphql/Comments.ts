@@ -20,6 +20,7 @@ const getCommentsQ = gql`
             }
             owner {
                 userId
+                name
                 avatar {
                     id
                     hash

@@ -56,16 +56,30 @@ export default class MyEventsScreenComponent extends Component<
 	IMyEventsScreenComponentProps,
 	IMyEventsScreenComponentState
 > {
-	private initialSelectedDate = moment().format(AGENDA_ITEM_KEY_FORMAT);
-
-	constructor(props: IMyEventsScreenComponentProps) {
-		super(props);
-		this.state = {
-			currentMonth: moment().format(CURRENT_MONTH_FORMAT),
-			currentDate: new Date(),
-			markedDates: this.getMarkedDates(props.events),
+	public static getDerivedStateFromProps(nextProps: Readonly<IMyEventsScreenComponentProps>) {
+		return {
+			markedDates: MyEventsScreenComponent.getMarkedDates(nextProps.events),
 		};
 	}
+
+	private static getMarkedDates(events: IEventData[]) {
+		const ret: any = {};
+		events.forEach((event) => {
+			const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
+			const markedDate = ret.hasOwnProperty(dateKey) ? ret[dateKey] : {dots: []};
+			markedDate.dots.push({color: event.color});
+			ret[dateKey] = markedDate;
+		});
+		return ret;
+	}
+
+	public state = {
+		currentMonth: moment().format(CURRENT_MONTH_FORMAT),
+		currentDate: new Date(),
+		markedDates: MyEventsScreenComponent.getMarkedDates(this.props.events),
+	};
+
+	private initialSelectedDate = moment().format(AGENDA_ITEM_KEY_FORMAT);
 
 	public render() {
 		const agendaItems = this.getAgendaItems(this.props.events, this.state.currentDate);
@@ -187,17 +201,6 @@ export default class MyEventsScreenComponent extends Component<
 		if (!ret.hasOwnProperty(currentDateWithFormat)) {
 			ret[currentDateWithFormat] = [];
 		}
-		return ret;
-	}
-
-	private getMarkedDates = (events: IEventData[]) => {
-		const ret: any = {};
-		events.forEach((event) => {
-			const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
-			const markedDate = ret.hasOwnProperty(dateKey) ? ret[dateKey] : {dots: []};
-			markedDate.dots.push({color: event.color});
-			ret[dateKey] = markedDate;
-		});
 		return ret;
 	}
 }

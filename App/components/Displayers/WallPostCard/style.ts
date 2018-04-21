@@ -44,13 +44,12 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postFullName,
 		paddingTop: Sizes.smartHorizontalScale(14),
-		paddingBottom: Sizes.smartHorizontalScale(4),
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
 	},
 	postTextContainer: {
 		flexDirection: 'row',
+		paddingTop: Sizes.smartHorizontalScale(4),
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
-		paddingBottom: Sizes.smartVerticalScale(4),
 	},
 	postText: {
 		...Fonts.centuryGothic,
@@ -61,6 +60,7 @@ const style: any = {
 	postImage: {
 		width: '100%',
 		height: Sizes.smartVerticalScale(254),
+		marginTop: Sizes.smartVerticalScale(4),
 	},
 	locationPin: {
 		height: Sizes.smartHorizontalScale(14),

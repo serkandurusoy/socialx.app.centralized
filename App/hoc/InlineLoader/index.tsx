@@ -29,9 +29,10 @@ interface IInlineLoaderProps {
 
 export interface IWithLoaderProps extends IInlineLoaderProps {
 	renderWithLoader: (node: any) => any;
+	isLoading: boolean;
 }
 
-export const withInlineLoader = (BaseComponent: React.ComponentType<any>) => {
+export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderProps>, useRef = false) => {
 	return class extends React.Component<IInlineLoaderProps> {
 		private static defaultProps: Partial<IInlineLoaderProps> = {
 			animatedStyle: style.animatedView,
@@ -44,8 +45,18 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<any>) => {
 			fadeAnimation: new Animated.Value(0), // Initial value for opacity: 0
 		};
 
+		private originalRef: any = null;
+
 		public render() {
-			return <BaseComponent {...this.props} renderWithLoader={this.renderWithLoaderHandler} />;
+			const updatedProps: any = {...this.props, renderWithLoader: this.renderWithLoaderHandler};
+			if (useRef) {
+				updatedProps.ref = (ref) => (this.originalRef = ref);
+			}
+			return <BaseComponent {...updatedProps} />;
+		}
+
+		public getOriginalRef = () => {
+			return this.originalRef;
 		}
 
 		private renderWithLoaderHandler = (WrappedComponent: React.ComponentType) => {

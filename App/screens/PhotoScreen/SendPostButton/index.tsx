@@ -13,7 +13,7 @@ export interface ISendPostButtonProps {
 export const SendPostButton: React.SFC<ISendPostButtonProps> = (props) => {
 	return (
 		<TouchableOpacity style={style.container} onPress={props.navParams ? props.navParams.onSendPress : null}>
-			<Icon name={'md-done-all'} size={Sizes.smartHorizontalScale(25)} color={Colors.white} />
+			<Icon name={'md-checkmark'} size={Sizes.smartHorizontalScale(25)} color={Colors.white} />
 		</TouchableOpacity>
 	);
 };

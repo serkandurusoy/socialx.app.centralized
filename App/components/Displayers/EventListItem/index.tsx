@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import {StyleProp, Text, View, ViewStyle} from 'react-native';
+import {FriendsSearchResult} from '../../../screens/PhotoScreen';
 import style from './style';
 
 export interface IEventData {
@@ -12,7 +13,7 @@ export interface IEventData {
 	startTime?: Date;
 	endTime?: Date;
 	location?: string;
-	invitedFriends?: any[]; // TBD
+	invitedFriends?: FriendsSearchResult[];
 	description?: string;
 }
 
