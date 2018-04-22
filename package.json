@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@hawkrives/react-native-alphabetlistview": "^1.0.0",
+    "@types/socket.io": "^1.4.33",
     "amazon-cognito-identity-js": "^2.0.1",
     "apollo-cache-inmemory": "^1.1.11",
     "apollo-client": "^2.2.7",
@@ -97,6 +98,7 @@
     "redux-axios-middleware": "^4.0.0",
     "redux-persist": "^5.9.1",
     "redux-thunk": "^2.2.0",
+    "socket.io-client": "^2.1.0",
     "typesafe-actions": "^1.1.2",
     "uuid": "^3.2.1"
   },
@@ -144,7 +146,9 @@
     "typescript": "^2.7.2"
   },
   "jest": {
-    "modulePaths": ["<rootDir>"],
+    "modulePaths": [
+      "<rootDir>"
+    ],
     "preset": "jest-preset-typescript-react-native",
     "testMatch": [
       "**/__tests__/**/*.ts?(x)",
