@@ -48,22 +48,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					{this.renderNoComments()}
 					{this.renderComments()}
 				</ScrollView>
-				{/* Resolvation from Feature/Create-Event
-				<CommentTextInput onCommentSend={this.props.onCommentSend} placeholder={'Write a comment...'} /> */}
-				<View style={style.inputContainer}>
-					<TextInput
-						ref={(ref: TextInput) => (this.textInput = ref)}
-						onChangeText={this.commentTextChangedHandler}
-						style={style.textInput}
-						placeholder={'Write a comment...'}
-						autoFocus={true}
-						multiline={true}
-						autoCorrect={false}
-						underlineColorAndroid={Colors.transparent}
-						autoCapitalize='none'
-					/>
-					{this.renderSendButton()}
-				</View>
+				<CommentTextInput onCommentSend={this.props.onCommentSend} placeholder={'Write a comment...'} />
 			</SafeAreaView>,
 		);
 	}

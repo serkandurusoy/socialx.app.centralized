@@ -13,6 +13,8 @@ import {CommentType, IComments, ICommentsResponse, IUserQuery} from '../../types
 
 import {hideActivityIndicator, showActivityIndicator} from '../../actions';
 
+const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+
 export interface IWallPostCommentReply {
 	id: string;
 	text: string;
@@ -78,7 +80,8 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	}
 
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
-		this.props.navigation.navigate('RepliesScreen', {replies: comment.replies, startReply});
+		const {userId} = this.props.navigation.state.params;
+		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
 	}
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
@@ -134,7 +137,32 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 			const currentComment = comments[i];
 			const ownerAv = currentComment.owner.avatar
 				? base.ipfs_URL + currentComment.owner.avatar.hash
-				: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+				: imagePlaceHolder;
+			const allReplies: IWallPostComment[] = [];
+
+			if (currentComment.comments.length > 0) {
+				for (let y = 0; y < currentComment.comments.length; y++) {
+					const currentReply = currentComment.comments[y];
+					const replyOwnerAv = currentReply.owner.avatar
+						? base.ipfs_URL + currentReply.owner.avatar.hash
+						: imagePlaceHolder;
+
+					allReplies.push({
+						id: currentReply.id,
+						text: currentReply.text,
+						user: {
+							fullName: currentReply.owner.name,
+							avatarURL: replyOwnerAv,
+						},
+						timestamp: new Date(currentReply.createdAt),
+						numberOfLikes: currentReply.likes.length,
+						likes: currentReply.likes,
+						replies: [],
+						likedByMe: currentReply.likes.find((x) => x.userId === userId) ? true : false,
+					});
+				}
+			}
+
 			resComments.push({
 				id: currentComment.id,
 				text: currentComment.text,
@@ -145,7 +173,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				timestamp: new Date(currentComment.createdAt),
 				numberOfLikes: currentComment.likes.length,
 				likes: currentComment.likes,
-				replies: [],
+				replies: allReplies,
 				likedByMe: currentComment.likes.find((x) => x.userId === userId) ? true : false,
 			});
 		}
@@ -153,9 +181,9 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		this.setState({
 			noComments: resComments.length === 0,
 			allComments: resComments.sort((a: any, b: any) => {
-				if (a.likes.length > 0 || b.likes.length > 0) {
-					a = a.likes.length;
-					b = b.likes.length;
+				if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
+					a = a.numberOfLikes;
+					b = b.numberOfLikes;
 					return a > b ? -1 : a < b ? 1 : 0;
 				}
 				a = a.timestamp;

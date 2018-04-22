@@ -2,16 +2,16 @@ import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
 
 const commentMut = gql`
-    mutation comment($targetUser: ID, $targetPost: ID, $text: String!) {
-        comment(targetUser: $targetUser, targetPost: $targetPost, text: $text) {
+    mutation comment($targetComment: ID, $targetPost: ID, $text: String!) {
+        comment(targetComment: $targetComment, targetPost: $targetPost, text: $text) {
             id
         }
     }
 `;
 
 const getCommentsQ = gql`
-    mutation getComments($targetPost: ID, $targetUser: ID) {
-        getComments (targetPost: $targetPost, targetUser: $targetUser) {
+    mutation getComments($targetPost: ID, $targetComment: ID) {
+        getComments (targetPost: $targetPost, targetComment: $targetComment) {
             id
             createdAt
             text
@@ -29,11 +29,13 @@ const getCommentsQ = gql`
             comments {
                 id
                 createdAt
+                text
                 likes {
                     userId
                 }
                 owner {
                     userId
+                    name
                     avatar {
                         id
                         hash
