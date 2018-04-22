@@ -19,6 +19,7 @@ interface IForgotPasswordScreenProps {
 
 interface IForgotPasswordScreenState {
 	username: string;
+	requested: boolean;
 }
 
 class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgotPasswordScreenState> {
@@ -29,6 +30,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 
 	public state = {
 		username: '',
+		requested: false,
 	};
 
 	public render() {
@@ -51,7 +53,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 					/>
 				</View>
 				<SXButton
-					disabled={this.state.username.length === 0}
+					disabled={this.state.username.length === 0 || this.state.requested}
 					label={'Send reset code'}
 					autoWidth={true}
 					borderColor={Colors.transparent}
@@ -74,6 +76,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 		showLoader('Requesting Password Code..');
 		try {
 			const forgotRes = await ForgotPassword(username);
+			this.setState({requested: true});
 			this.props.navigation.navigate('ResetPasswordScreen', {username});
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
