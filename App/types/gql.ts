@@ -28,7 +28,7 @@ interface IMediaProps {
 export interface IComments {
 	id: string;
 	owner: IUserQuery;
-	targetUser: string;
+	targetComment: string;
 	targetPost: string;
 	type: CommentType;
 	createdAt: string;
