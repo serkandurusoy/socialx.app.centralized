@@ -3,13 +3,22 @@ import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from '
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationStackScreenOptions} from 'react-navigation';
+import {connect, Dispatch} from 'react-redux';
 import {AvatarName, AvatarPicker} from '../../components/Avatar';
 import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
-import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
+import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
+
+import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+
+import {IBlobData} from '../../lib/ipfs';
+import {addBlob} from '../../utils/ipfs';
+
+import base from '../../config/ipfs';
+const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
@@ -31,8 +40,10 @@ interface ISettingsScreenProps {
 	saveChanges: (data: SettingsData) => void;
 	data: IUserDataResponse;
 	// todo
-	createUser: any;
+	updateUserData: any;
 	addMedia: any;
+	editingDataLoader: () => void;
+	hideLoader: () => void;
 }
 
 interface IISettingsScreenState {
@@ -72,7 +83,38 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 	private updatedAvatarImageBase64: string | null = null;
 	private miningEnabled: boolean = this.props.miningEnabled;
 
+	public componentWillReceiveProps(nextProp: ISettingsScreenProps) {
+		const {data} = nextProp;
+		if (data.loading) {
+			return;
+		}
+
+		const avatarImage = data.user.avatar ? `${base.ipfs_URL}${data.user.avatar.hash}` : imagePlaceHolder;
+		console.log(`AvatarImage: ${avatarImage}`);
+
+		this.setState({
+			avatarImage: {url: avatarImage},
+			aboutText: data.user.bio,
+			firstName: data.user.name.split(' ')[0],
+			lastName: data.user.name.split(' ')[1],
+			email: data.user.email,
+		});
+
+	}
+
 	public render() {
+		const {data} = this.props;
+		if (data.loading) {
+			// TODO: Add loader here...
+			return (
+				<View>
+					<Text>
+						Loading...
+					</Text>
+				</View>
+			);
+		}
+
 		return (
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView
@@ -196,7 +238,33 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		}
 	}
 
-	private saveChanges = () => {
+	private handleImageChange = async (image?: string) => {
+		const {addMedia} = this.props;
+		try {
+			if (!image) {
+				return;
+			}
+			// NOTE: Uppload image to IPFS
+			let ipfsRes = await addBlob([{fileName: 'ProfileImage.jpeg', data: image, name: 'ProfileImage' }]);
+			ipfsRes = JSON.parse(ipfsRes.data);
+
+			// NOTE: Add Midea file on AppSync
+			const qVar = {varabiles : {
+				hash: ipfsRes.hash,
+				type: ipfsRes.type,
+				size: parseInt(ipfsRes.size, undefined),
+			}};
+
+			const addRes = await addMedia(qVar);
+			return addRes.data.addMedia.id;
+
+		} catch (e) {
+			//
+		}
+	}
+
+	private saveChanges = async () => {
+		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
 		const saveData: SettingsData = {
 			updatedAvatarImageBase64: this.updatedAvatarImageBase64,
 			aboutText: this.state.aboutText,
@@ -205,12 +273,38 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			email: this.state.email,
 			miningEnabled: this.miningEnabled,
 		};
-		this.props.saveChanges(saveData);
+		// this.props.saveChanges(saveData);
+
+		editingDataLoader();
+
+		try {
+			const mVar = {varables: {
+				name: `${saveData.firstName} ${saveData.lastName}`,
+				email: saveData.email,
+				bio: saveData.aboutText,
+				avatar: await this.handleImageChange(),
+			}};
+
+			await updateUserData(mVar);
+			await data.refetch();
+
+		} catch (e) {
+			//
+		}
+
+		hideLoader();
 	}
 }
 
-const userDataWrapper = userHoc(SettingsScreen);
+const MapDispatchToProp = (dispatch: any) => ({
+	editingDataLoader: () => dispatch(showActivityIndicator('Saving Your Data...')),
+	hideLoader: () => dispatch(hideActivityIndicator()),
+});
+
+const reduxWrapper = connect(null, MapDispatchToProp)(SettingsScreen as any);
+const userDataWrapper = userHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(userDataWrapper);
-const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
+// const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
+const updateUserWrapper = updateUserDataHoc(addMediaWrapper);
 
 export default updateUserWrapper;
