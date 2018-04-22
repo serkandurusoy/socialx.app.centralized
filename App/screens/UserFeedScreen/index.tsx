@@ -12,6 +12,7 @@ import {graphql} from 'react-apollo';
 import {
 	addMediaHoc,
 	createPostHoc,
+	deleteOwnPostHoc,
 	getAllPostsHoc,
 	getUserPostsHoc,
 	likePostHoc,
@@ -43,7 +44,9 @@ interface IUserFeedScreenProps {
 	addMedia: any;
 	startMediaPost: any;
 	startPostadd: any;
+	deletingPostLoad: any;
 	stopLoading: any;
+	deletePost: any;
 }
 
 interface IUserFeedScreenState {
@@ -149,6 +152,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				likedByMe,
 				canDelete: false,
 				owner: post.owner,
+				onDeleteClick: this.onPostDeleteClickHandler,
 			};
 			dataSpine.push(res);
 		}
@@ -348,6 +352,20 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}));
 	}
 
+	private onPostDeleteClickHandler = async (postId: string) => {
+		const {deletingPostLoad, deletePost, stopLoading} = this.props;
+
+		deletingPostLoad();
+		try {
+			const mVar = {variables: {postId}};
+			await deletePost(mVar);
+			await this.refreshWallPosts();
+		} catch (ex) {
+			// user doesnt own the post, thus cant delete, or server issues
+		}
+		stopLoading();
+	}
+
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
 		this.props.navigation.navigate('CommentsStack', { postId: wallPostData.id, userId: this.props.data.user.userId });
 	}
@@ -355,6 +373,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 const MapDispatchToProps = (dispatch: any) => ({
 	startMediaPost: () => dispatch(showActivityIndicator('Decentralizing your media', 'Please wait..')),
+	deletingPostLoad: () => dispatch(showActivityIndicator('Removing your post..')),
 	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
@@ -367,5 +386,6 @@ const createPostWrapper = createPostHoc(allPostsWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
 const likePostWrapper = likePostHoc(addMediaWrapper);
 const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
+const deletePostWrapper = deleteOwnPostHoc(removeLikePostWrapper);
 
-export default removeLikePostWrapper;
+export default deletePostWrapper;

@@ -34,6 +34,7 @@ export interface IWallPostCardProp {
 	onImageClick: () => void;
 	onLikeButtonClick: () => void;
 	onCommentsButtonClick: () => void;
+	onDeleteClick: (postId: string) => void;
 	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
@@ -234,6 +235,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private tooltipsDeletePressedHandler = () => {
+		this.props.onDeleteClick(this.props.id);
 		// console.log('Delete this post');
 	}
 
