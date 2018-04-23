@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import {StyleProp, Text, View, ViewStyle} from 'react-native';
+import {StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
 import {FriendsSearchResult} from '../../../screens/PhotoScreen';
 import style from './style';
 
@@ -17,7 +17,11 @@ export interface IEventData {
 	description?: string;
 }
 
-export const EventListItem: React.SFC<IEventData> = (props) => {
+export interface IEventListItemProps extends IEventData {
+	navigateToEventDetailPage: () => void;
+}
+
+export const EventListItem: React.SFC<IEventListItemProps> = (props) => {
 	const getTitleWithLocation = () => {
 		let ret = props.title;
 		if (props.location) {
@@ -53,7 +57,9 @@ export const EventListItem: React.SFC<IEventData> = (props) => {
 		<View style={style.container}>
 			<View style={[style.eventDotColor, {backgroundColor: props.color}]} />
 			<View style={style.rightContainer}>
-				<Text style={style.title}>{getTitleWithLocation()}</Text>
+				<TouchableOpacity onPress={props.navigateToEventDetailPage}>
+					<Text style={style.title}>{getTitleWithLocation()}</Text>
+				</TouchableOpacity>
 				<Text style={style.spanning}>{getEventSpanningText()}</Text>
 			</View>
 		</View>

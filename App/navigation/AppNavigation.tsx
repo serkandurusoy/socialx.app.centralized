@@ -7,6 +7,7 @@ import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
 import CreateEventScreen from '../screens/CreateEventScreen';
+import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -50,8 +51,10 @@ const getSingleScreenStack = (routeName: string, screen: any) => {
 
 const EventsStackNavigator = StackNavigator(
 	{
+		EventDetailScreen: {screen: EventDetailScreen},
 		MyEventsScreen: {screen: MyEventsScreen},
 		CreateEventScreen: {screen: CreateEventScreen},
+		// EventDetailScreen: {screen: EventDetailScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,
@@ -145,7 +148,8 @@ const PrimaryNav = StackNavigator(
 	},
 	{
 		headerMode: 'none',
-		initialRouteName: 'PreAuthScreen',
+		// initialRouteName: 'PreAuthScreen',
+		initialRouteName: 'EventsStack',
 	},
 );
 

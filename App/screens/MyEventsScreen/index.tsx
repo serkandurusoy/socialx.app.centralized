@@ -68,7 +68,13 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 	};
 
 	public render() {
-		return <MyEventsScreenComponent onAddNewEvent={this.onAddNewEventHandler} events={this.state.eventsList} />;
+		return (
+			<MyEventsScreenComponent
+				onAddNewEvent={this.onAddNewEventHandler}
+				events={this.state.eventsList}
+				openEventDetailPage={this.openEventDetailPageHandler}
+			/>
+		);
 	}
 
 	private onAddNewEventHandler = (date: Date) => {
@@ -84,5 +90,13 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 	private createNewEvent = (eventData: IEventData) => {
 		// console.log('createNewEvent', eventData); // TODO: GQL call to create the event
 		this.setState({eventsList: [...this.state.eventsList, eventData]});
+	}
+
+	private openEventDetailPageHandler = (eventData: IEventData) => {
+		this.props.navigation.navigate('EventDetailScreen', {eventData, onEventDelete: this.onEventDeleteHandler});
+	}
+
+	private onEventDeleteHandler = (eventData: IEventData) => {
+		// console.log('onEventDeleteHandler', eventData.title); // TODO: GQL call to delete the event
 	}
 }
