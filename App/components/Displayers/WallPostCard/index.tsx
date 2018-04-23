@@ -48,6 +48,7 @@ export interface IWallPostCardState {
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public static defaultProps: Partial<IWallPostCardProp> = {
 		canDelete: false,
+		title: 'Sample post title to be replace later',
 	};
 
 	public state = {

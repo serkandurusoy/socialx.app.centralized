@@ -58,6 +58,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'SETTINGS',
+		headerRight: <View />,
 	};
 
 	public state = {
@@ -141,12 +142,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 						/>
 					</View>
 					{/*<View style={style.miningContainer}>*/}
-						{/*<SettingCheckbox*/}
-							{/*title={'Mining (Beta)'}*/}
-							{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
-							{/*initialValue={this.props.miningEnabled}*/}
-							{/*valueUpdated={this.toggleMiningSetting}*/}
-						{/*/>*/}
+					{/*<SettingCheckbox*/}
+					{/*title={'Mining (Beta)'}*/}
+					{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
+					{/*initialValue={this.props.miningEnabled}*/}
+					{/*valueUpdated={this.toggleMiningSetting}*/}
+					{/*/>*/}
 					{/*</View>*/}
 				</KeyboardAwareScrollView>
 				{this.renderSaveButton()}
