@@ -1,10 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../../theme';
 
-const INPUT_FONT_SIZE = Sizes.smartHorizontalScale(16);
-const INPUT_VERTICAL_PADDING = Sizes.smartHorizontalScale(10);
+const INPUT_MIN_HEIGHT = Sizes.smartHorizontalScale(35);
 const INPUT_CONTAINER_VERTICAL_PADDING = Sizes.smartVerticalScale(5);
-const TOTAL_INPUT_HEIGHT = 2 * INPUT_VERTICAL_PADDING + INPUT_FONT_SIZE + 2 * INPUT_CONTAINER_VERTICAL_PADDING;
+const TOTAL_INPUT_HEIGHT = INPUT_MIN_HEIGHT + 2 * INPUT_CONTAINER_VERTICAL_PADDING;
 
 const style: any = {
 	inputContainer: {
@@ -16,7 +15,7 @@ const style: any = {
 	},
 	textInput: {
 		...Fonts.centuryGothic,
-		fontSize: INPUT_FONT_SIZE,
+		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
 		backgroundColor: Colors.dustWhite,
 		borderRadius: Sizes.smartHorizontalScale(15),
@@ -24,7 +23,8 @@ const style: any = {
 		borderWidth: 1,
 		paddingRight: Sizes.smartHorizontalScale(50),
 		paddingLeft: Sizes.smartHorizontalScale(10),
-		paddingVertical: INPUT_VERTICAL_PADDING,
+		minHeight: INPUT_MIN_HEIGHT,
+		paddingVertical: 0, // we need this for Android
 	},
 	sendButtonContainer: {
 		height: TOTAL_INPUT_HEIGHT,

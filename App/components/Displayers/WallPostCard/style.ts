@@ -11,6 +11,7 @@ const style: any = {
 	topContainer: {
 		flexDirection: 'row',
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		paddingBottom: Sizes.smartHorizontalScale(14),
 	},
 	smallAvatarImage: {
 		// flex: 1,
@@ -37,18 +38,18 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(12),
 		lineHeight: Sizes.smartHorizontalScale(14),
 		color: Colors.postText,
-		paddingTop: Sizes.smartVerticalScale(6),
+		paddingTop: Sizes.smartVerticalScale(3),
 	},
 	postTitle: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postFullName,
-		paddingTop: Sizes.smartHorizontalScale(14),
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		paddingBottom: Sizes.smartHorizontalScale(6),
 	},
 	postTextContainer: {
 		flexDirection: 'row',
-		paddingTop: Sizes.smartHorizontalScale(4),
+		paddingBottom: Sizes.smartHorizontalScale(4),
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
 	},
 	postText: {
@@ -60,7 +61,6 @@ const style: any = {
 	postImage: {
 		width: '100%',
 		height: Sizes.smartVerticalScale(254),
-		marginTop: Sizes.smartVerticalScale(4),
 	},
 	locationPin: {
 		height: Sizes.smartHorizontalScale(14),
