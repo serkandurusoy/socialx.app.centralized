@@ -38,9 +38,10 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	public render() {
 		return (
 			<View style={style.container}>
-				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'} />
+				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'}/>
 				<View style={style.topPaddingContainer}>
-					<TextGradient text={'SocialX'} colors={[Colors.fuchsiaBlue, Colors.pink]} style={style.socialxGradient} />
+					<TextGradient text={'SocialX'} colors={[Colors.fuchsiaBlue, Colors.pink]}
+								  style={style.socialxGradient}/>
 					<Text style={style.description}>Social interaction with cryptocurrency rewards</Text>
 				</View>
 				<TextGradient
@@ -57,7 +58,8 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 						onPress={this.navigateToLoginScreen}
 					/>
 					<View style={style.signUpTopPadding}>
-						<SXButton label={'SIGN UP'} borderColor={Colors.transparent} onPress={this.navigateToSignUpScreen} />
+						<SXButton label={'SIGN UP'} borderColor={Colors.transparent}
+								  onPress={this.navigateToSignUpScreen}/>
 					</View>
 				</View>
 			</View>
@@ -65,7 +67,8 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
-		this.props.navigation.navigate('LoginScreen');
+		throw new Error('This is a test javascript crash!');
+		// this.props.navigation.navigate('LoginScreen');
 	}
 
 	private navigateToSignUpScreen = () => {
