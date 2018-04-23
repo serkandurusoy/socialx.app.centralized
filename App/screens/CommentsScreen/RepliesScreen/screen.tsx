@@ -11,6 +11,7 @@ interface IRepliesScreenComponentProps {
 	replies: IWallPostCommentReply[];
 	marginBottom: number;
 	onSendReply: (replyText: string) => void;
+	onReplyDelete: (replyData: IWallPostCommentReply) => void;
 	onReplyLike: (replyData: IWallPostCommentReply) => void;
 	startReply: boolean;
 }
@@ -60,6 +61,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 					onCommentLike={() => this.props.onReplyLike(reply)}
 					onCommentReply={() => Function()}
 					isReply={true}
+					onCommentDelete={() => this.props.onReplyDelete(reply)}
 				/>,
 			);
 		});
