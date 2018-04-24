@@ -59,7 +59,7 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 	public render() {
 		const totalAmountWithFormat = numeral(this.props.totalAmount).format('0.000a');
 		return (
-			<View style={style.container}>
+			<ScrollView style={style.scrollView} contentContainerStyle={style.scrollContent}>
 				<Text style={style.titleText}>{'Overview status'}</Text>
 				<PieChartComponent data={this.props.pieChartData} selectedSection={this.state.selectedPieChartSection} />
 				{this.renderChartList()}
@@ -85,14 +85,14 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 							<FlatList
 								showsHorizontalScrollIndicator={false}
 								ref={(ref: FlatList) => (this.scrollRef = ref)}
-								onLayout={() => this.scrollRef.scrollToEnd()}
+								onLayout={this.scrollToEndOfTheList}
 								horizontal={true}
 								data={this.props.dailySeries}
 								renderItem={this.renderBarChartDailyItem}
 								initialScrollIndex={this.props.dailySeries.length - 1}
 								getItemLayout={this.getDailyChartItemLayout}
-								initialNumToRender={1}
-								windowSize={10}
+								initialNumToRender={10}
+								windowSize={30}
 								keyExtractor={(item: IDailyBarChartData, index: number) => index.toString()}
 							/>
 						</View>
@@ -116,8 +116,14 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 						borderColor={Colors.transparent}
 					/>
 				</View>
-			</View>
+			</ScrollView>
 		);
+	}
+
+	private scrollToEndOfTheList = () => {
+		setTimeout(() => {
+			this.scrollRef.scrollToEnd();
+		}, 100); // this should not cause problems, it just does an animation!
 	}
 
 	private getMaxSeriesValue = (series: IDailyBarChartData[] | IMonthlyBarChartData[]) => {
