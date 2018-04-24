@@ -7,6 +7,7 @@ import {Icons} from '../../theme';
 import style from './style';
 
 const DATE_FORMAT = 'D MMM, YYYY';
+const TIME_FORMAT = 'hh:mm A';
 
 export interface IEventDetailScreenComponentProps {
 	eventData: IEventData;
@@ -16,11 +17,18 @@ export interface IEventDetailScreenComponentProps {
 export default class EventDetailScreenComponent extends Component<IEventDetailScreenComponentProps, any> {
 	public render() {
 		const titleStyles = [style.titleColorContainer];
-		titleStyles.push({backgroundColor: this.props.eventData.color});
-		const startDateTime = moment(this.props.eventData.startDate).format(DATE_FORMAT); // TODO: add startTime
-		const endDateTime = moment(this.props.eventData.endDate).format(DATE_FORMAT); // TODO: add endTime
-		const locationText = this.props.eventData.location ? this.props.eventData.location : '---';
-		const descriptionText = this.props.eventData.description ? this.props.eventData.description : '---';
+		const eventData = this.props.eventData;
+		titleStyles.push({backgroundColor: eventData.color});
+		let startDateTime = moment(eventData.startDate).format(DATE_FORMAT);
+		if (eventData.startTime) {
+			startDateTime += ' at ' + moment(eventData.startTime).format(TIME_FORMAT);
+		}
+		let endDateTime = moment(eventData.endDate).format(DATE_FORMAT);
+		if (eventData.endTime) {
+			endDateTime += ' at ' + moment(eventData.endTime).format(TIME_FORMAT);
+		}
+		const locationText = eventData.location ? eventData.location : 'Not set';
+		const descriptionText = eventData.description ? eventData.description : 'Event has no description';
 		return (
 			<ScrollView style={style.container} alwaysBounceVertical={false}>
 				<View style={titleStyles}>
@@ -33,10 +41,8 @@ export default class EventDetailScreenComponent extends Component<IEventDetailSc
 						</TouchableOpacity>
 					</View>
 					<View style={style.titleContainer}>
-						<Text style={style.title}>{this.props.eventData.title}</Text>
-						{this.props.eventData.location ? (
-							<Text style={style.title}>{' at ' + this.props.eventData.location}</Text>
-						) : null}
+						<Text style={style.title}>{eventData.title}</Text>
+						{eventData.location ? <Text style={style.title}>{' at ' + eventData.location}</Text> : null}
 					</View>
 				</View>
 				<View style={style.sectionContainer}>
@@ -68,7 +74,7 @@ export default class EventDetailScreenComponent extends Component<IEventDetailSc
 					<View style={{flex: 1}}>
 						<View style={style.sidePushContainer}>
 							<Text style={style.sectionItemLabel}>{'Friends'}</Text>
-							<Text style={style.sectionItemText}>{'Friends content goes here'}</Text>
+							{this.renderInvitedFriends(eventData)}
 						</View>
 					</View>
 				</View>
@@ -85,7 +91,33 @@ export default class EventDetailScreenComponent extends Component<IEventDetailSc
 		);
 	}
 
+	private renderInvitedFriends = (eventData: IEventData) => {
+		if (eventData.invitedFriends && eventData.invitedFriends.length > 0) {
+			return (
+				<View style={{flex: 1}}>
+					<ScrollView
+						alwaysBounceHorizontal={false}
+						showsHorizontalScrollIndicator={false}
+						horizontal={true}
+						contentContainerStyle={style.invitedFriendsScrollContainer}
+						style={style.invitedFriendsScroll}
+					>
+						{eventData.invitedFriends.map((invitedFriend) => (
+							<Image
+								key={invitedFriend.id}
+								source={{uri: invitedFriend.avatarURL}}
+								resizeMode={'cover'}
+								style={style.invitedFriendIcon}
+							/>
+						))}
+					</ScrollView>
+				</View>
+			);
+		}
+		return <Text style={style.sectionItemText}>{'No friends invited'}</Text>;
+	}
+
 	private showAdvancedMenuHandler = () => {
-		alert('showAdvancedMenu');
+		alert('TODO: what content goes here?');
 	}
 }

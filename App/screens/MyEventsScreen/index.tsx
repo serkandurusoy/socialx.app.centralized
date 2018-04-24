@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
 import {IEventData} from '../../components/Displayers/EventListItem';
+import {IEventDetailScreenNavParams} from '../EventDetailScreen';
 import MyEventsScreenComponent from './screen';
 
 const SAMPLE_EVENTS: IEventData[] = [
@@ -93,7 +94,11 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 	}
 
 	private openEventDetailPageHandler = (eventData: IEventData) => {
-		this.props.navigation.navigate('EventDetailScreen', {eventData, onEventDelete: this.onEventDeleteHandler});
+		const navParams: IEventDetailScreenNavParams = {
+			eventData,
+			onEventDelete: this.onEventDeleteHandler,
+		};
+		this.props.navigation.navigate('EventDetailScreen', navParams);
 	}
 
 	private onEventDeleteHandler = (eventData: IEventData) => {

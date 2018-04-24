@@ -4,25 +4,13 @@ import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigati
 import {IEventData} from '../../components/Displayers/EventListItem';
 import EventDetailScreenComponent from './screen';
 
-const SAMPLE_EVENT_DATA: IEventData = {
-	title: 'Business Meeting',
-	color: 'purple',
-	startDate: new Date(2018, 3, 15),
-	endDate: new Date(2018, 3, 15),
-	allDay: false,
-	// startTime: new Date(2018, 3, 15, 9, 5),
-	// endTime: new Date(2018, 3, 15, 20, 13),
-	location: 'Junior\'s Cafe',
-	description:
-		'If I can make to this event I will meet with 10 old friends from college. ' +
-		'We will have couple beers and exchange visit cards.',
-};
+export interface IEventDetailScreenNavParams {
+	eventData: IEventData;
+	onEventDelete: (eventData: IEventData) => void;
+}
 
-export interface IEventDetailScreenNavScreenProps {
-	params: {
-		eventData: IEventData;
-		onEventDelete: (eventData: IEventData) => void;
-	};
+interface IEventDetailScreenNavScreenProps {
+	params: IEventDetailScreenNavParams;
 }
 
 export interface IEventDetailScreenProps {
@@ -39,8 +27,7 @@ export default class EventDetailScreen extends Component<IEventDetailScreenProps
 		return (
 			<EventDetailScreenComponent
 				onEventDelete={this.onEventDeleteHandler}
-				// eventData={this.props.navigation.state.params.eventData}
-				eventData={SAMPLE_EVENT_DATA}
+				eventData={this.props.navigation.state.params.eventData}
 			/>
 		);
 	}

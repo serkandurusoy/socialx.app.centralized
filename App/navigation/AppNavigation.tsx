@@ -51,10 +51,9 @@ const getSingleScreenStack = (routeName: string, screen: any) => {
 
 const EventsStackNavigator = StackNavigator(
 	{
-		EventDetailScreen: {screen: EventDetailScreen},
 		MyEventsScreen: {screen: MyEventsScreen},
 		CreateEventScreen: {screen: CreateEventScreen},
-		// EventDetailScreen: {screen: EventDetailScreen},
+		EventDetailScreen: {screen: EventDetailScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,
@@ -148,8 +147,7 @@ const PrimaryNav = StackNavigator(
 	},
 	{
 		headerMode: 'none',
-		// initialRouteName: 'PreAuthScreen',
-		initialRouteName: 'EventsStack',
+		initialRouteName: 'PreAuthScreen',
 	},
 );
 

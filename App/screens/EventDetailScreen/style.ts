@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../theme/';
 
 const SECTION_ICON_MARGIN_RIGHT = Sizes.smartHorizontalScale(35);
+const FRIEND_AVATAR_SIZE = Sizes.smartHorizontalScale(22);
 
 const style: any = {
 	container: {
@@ -30,7 +31,7 @@ const style: any = {
 		flexDirection: 'row',
 	},
 	topButton: {
-		fontSize: Sizes.smartHorizontalScale(30),
+		fontSize: Sizes.smartHorizontalScale(27),
 		color: Colors.white,
 		padding: Sizes.smartHorizontalScale(5),
 	},
@@ -80,6 +81,19 @@ const style: any = {
 		lineHeight: Sizes.smartHorizontalScale(24),
 		color: Colors.postFullName,
 		paddingTop: Sizes.smartVerticalScale(16),
+	},
+	invitedFriendsScroll: {
+		borderRadius: Sizes.smartHorizontalScale(30),
+	},
+	invitedFriendsScrollContainer: {
+		justifyContent: 'flex-end',
+		minWidth: '100%',
+	},
+	invitedFriendIcon: {
+		width: FRIEND_AVATAR_SIZE,
+		height: FRIEND_AVATAR_SIZE,
+		borderRadius: FRIEND_AVATAR_SIZE / 2,
+		marginRight: Sizes.smartHorizontalScale(10),
 	},
 };
 
