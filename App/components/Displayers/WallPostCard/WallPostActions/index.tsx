@@ -19,6 +19,7 @@ export interface IWallPostActions {
 
 export class WallPostActions extends Component<IWallPostActions> {
 	public render() {
+		const likeIconSource = this.props.likedByMe ? Icons.iconTabBarNotificationsSelected : Icons.iconPostLike;
 		return (
 			<View style={style.container}>
 				{/* Text component for the container alignment, causes padding issues if empty */}
@@ -30,20 +31,12 @@ export class WallPostActions extends Component<IWallPostActions> {
 					label={this.props.numberOfWalletCoins + ' SOCX'}
 				/> */}
 				<View style={style.rightContainer}>
-					{this.props.likedByMe ? (
-						// TODO: create a proper liked icon
-						<IconButton
-							iconSource={Icons.iconTabBarNotificationsSelected}
-							onPress={this.props.likeButtonPressed}
-							label={this.props.numberOfLikes.toString()}
-						/>
-					) : (
-						<IconButton
-							iconSource={Icons.iconPostLike}
-							onPress={this.props.likeButtonPressed}
-							label={this.props.numberOfLikes.toString()}
-						/>
-					)}
+					<IconButton
+						iconSource={likeIconSource}
+						onPress={this.props.likeButtonPressed}
+						changeWithAnimation={true}
+						label={this.props.numberOfLikes.toString()}
+					/>
 
 					{/* TODO: add when implemented: SuperLikes
 					 <IconButton
