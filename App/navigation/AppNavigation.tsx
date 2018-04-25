@@ -12,6 +12,7 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
+import MediaLicenseScreen from '../screens/MediaLicenseScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
 import MessagingScreen from '../screens/MessagingScreen';
 import MyEventsScreen from '../screens/MyEventsScreen';
@@ -50,6 +51,15 @@ const getSingleScreenStack = (routeName: string, screen: any) => {
 		navigationOptions: navOptionsDefault,
 	});
 };
+
+const MediaLicenseStackNavigator = StackNavigator(
+	{
+		MediaLicenseScreen: {screen: MediaLicenseScreen},
+	},
+	{
+		navigationOptions: navOptionsDefault,
+	},
+);
 
 const EventsStackNavigator = StackNavigator(
 	{
@@ -157,10 +167,12 @@ const PrimaryNav = StackNavigator(
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
+		MediaLicenseStack: {screen: MediaLicenseStackNavigator}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'none',
-		initialRouteName: 'PreAuthScreen',
+		// initialRouteName: 'PreAuthScreen',
+		initialRouteName: 'MediaLicenseStack',
 	},
 );
 
