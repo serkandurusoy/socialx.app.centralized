@@ -1,16 +1,25 @@
 import React, {Component} from 'react';
-import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
+import {
+	AsyncStorage,
+	ImageRequireSource,
+	ImageURISource,
+	Text,
+	TouchableOpacity,
+	View,
+	ViewAsyncStroage,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {AvatarName, AvatarPicker} from '../../components/Avatar';
 import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
-import { LogoutButton } from '../../components/Displayers/LogoutButton';
+import {SXButton} from '../../components/Interaction/Button';
 import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
+
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
@@ -34,6 +43,7 @@ interface ISettingsScreenProps {
 	// todo
 	createUser: any;
 	addMedia: any;
+	navigation: NavigationScreenProp<any>;
 }
 
 interface IISettingsScreenState {
@@ -143,9 +153,11 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 						/>
 					</View>
 					<View>
-						<LogoutButton style={style.toggleContainer}
-							text={'Log Out'}
-							onPress={() => this.performLogout('test')}
+						<SXButton
+							label={'Sign Out'}
+							autoWidth={true}
+							borderColor={Colors.transparent}
+							onPress={this.performSignOut}
 						/>
 					</View>
 					{/*<View style={style.miningContainer}>*/}
@@ -162,10 +174,18 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		);
 	}
 
-	private performLogout = (stateItemKey: string) => {
-		const updatedState = {};
-		updatedState[stateItemKey] = !this.state[stateItemKey];
-		this.setState(updatedState);
+	private async performSignOut() {
+		if (AsyncStorage.getItem('jwtToken')) {
+			console.log(`AsyncStorage jwtToken is true`);
+			try {
+				// Clears out
+				await AsyncStorage.clear();
+				// TODO: This Navigation call for some reason doesn't yet take us back to the Main Screen after signout
+				this.props.navigation.navigate('MainScreen');
+			} catch (ex) {
+				//
+			}
+		}
 	}
 
 	private getFullName = () => {
