@@ -8,6 +8,7 @@ import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../..
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
+import { LogoutButton } from '../../components/Displayers/LogoutButton';
 import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
 
@@ -141,6 +142,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							returnKeyType={TRKeyboardKeys.done}
 						/>
 					</View>
+					<View>
+						<LogoutButton style={style.toggleContainer}
+							text={'Log Out'}
+							onPress={() => this.performLogout('test')}
+						/>
+					</View>
 					{/*<View style={style.miningContainer}>*/}
 					{/*<SettingCheckbox*/}
 					{/*title={'Mining (Beta)'}*/}
@@ -153,6 +160,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				{this.renderSaveButton()}
 			</View>
 		);
+	}
+
+	private performLogout = (stateItemKey: string) => {
+		const updatedState = {};
+		updatedState[stateItemKey] = !this.state[stateItemKey];
+		this.setState(updatedState);
 	}
 
 	private getFullName = () => {
