@@ -59,7 +59,6 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 					<View style={style.actionsContainer}>
 						<Text style={style.timestamp}>{commentTimestamp}</Text>
 						<TouchableOpacity onPress={this.onCommentLikeHandler} disabled={this.state.touchDisabled}>
-							{/* TODO: add disabled prop*/}
 							<AnimatedText ref={(ref: any) => (this.animatedText = ref)} style={style.actionButtonText}>
 								{this.state.likedByMe ? 'Unlike' : 'Like'}
 							</AnimatedText>
