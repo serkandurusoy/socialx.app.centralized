@@ -175,14 +175,16 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 	}
 
 	private async performSignOut() {
-		console.log(`AsyncStorage jwtToken is true`);
-		try {
-			// Clears out
-			await AsyncStorage.clear();
-			// TODO: This Navigation call for some reason doesn't yet take us back to the Main Screen after signout
-			this.props.navigation.navigate('MainScreen');
-		} catch (ex) {
-			//
+		if (AsyncStorage.getItem('jwtToken')) {
+			console.log(`AsyncStorage jwtToken is true`);
+			try {
+				// Clears out
+				await AsyncStorage.clear();
+				// TODO: This Navigation call for some reason doesn't yet take us back to the Main Screen after signout
+				this.props.navigation.navigate('MainScreen');
+			} catch (ex) {
+				//
+			}
 		}
 	}
 
