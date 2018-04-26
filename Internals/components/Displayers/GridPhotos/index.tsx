@@ -15,8 +15,12 @@ export interface IGridPhotosProps {
 	loadMorePhotos: () => IMediaProps[];
 	itemPressed?: (i: number) => void;
 	pageSize?: number;
-	thumbSize?: number;
+	thumbWidth?: number;
+	thumbHeight?: number;
 	onScroll?: (rawEvent: any, offsetX: number, offsetY: number) => void;
+	renderGridItem?: (photoData: any) => any;
+	showsVerticalScrollIndicator?: boolean;
+	bounces?: boolean;
 }
 
 export interface IGridPhotosState {
@@ -25,8 +29,11 @@ export interface IGridPhotosState {
 
 export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 	public static defaultProps: Partial<IGridPhotosProps> = {
-		thumbSize: Sizes.getThumbSize(),
+		thumbWidth: Sizes.getThumbSize(),
+		thumbHeight: Sizes.getThumbSize(),
 		pageSize: 20,
+		showsVerticalScrollIndicator: true,
+		bounces: true,
 	};
 
 	private girdProvider = new LayoutProvider(
@@ -34,8 +41,8 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 			return 0; // use different values if we need to render object with different types
 		},
 		(type: any, dim: any) => {
-			dim.width = this.props.thumbSize;
-			dim.height = this.props.thumbSize;
+			dim.width = this.props.thumbWidth;
+			dim.height = this.props.thumbHeight;
 		},
 	);
 
@@ -58,29 +65,32 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 				style={style.recyclerGrid}
 				layoutProvider={this.girdProvider}
 				useWindowScroll={true}
-				showsVerticalScrollIndicator={true}
+				showsVerticalScrollIndicator={this.props.showsVerticalScrollIndicator}
 				dataProvider={this.state.dataProvider}
 				rowRenderer={this.renderGridRow}
 				onEndReached={this.loadMorePhotos}
 				onScroll={this.props.onScroll}
+				bounces={this.props.bounces}
 			/>
 		);
 	}
 
-	private renderGridRow = (type: any, mediaData: IExtendedMediaProps) => {
-		// We can set a placeholder with defaultSource but it will be used only for the images on the first "page"
-		let mediaURL = base.ipfs_URL;
-		mediaURL += mediaData.optimizedHash ? mediaData.optimizedHash : mediaData.hash;
-		return (
-			<TouchableOpacity onPress={() => (this.props.itemPressed ? this.props.itemPressed(mediaData.index) : null)}>
-				<MediaObjectViewer
-					uri={mediaURL}
-					style={{width: this.props.thumbSize, height: this.props.thumbSize}}
-					extension={mediaData.type}
-					thumbOnly={true}
-				/>
-			</TouchableOpacity>
-		);
+	private renderGridRow = (type: any, photoData: any) => {
+		if (!this.props.renderGridItem) {
+			// We can set a placeholder with defaultSource but it will be used only for the images on the first "page"
+			return (
+				<TouchableOpacity onPress={() => (this.props.itemPressed ? this.props.itemPressed(mediaData.index) : null)}>
+					<MediaObjectViewer
+						uri={mediaURL}
+						style={{width: this.props.thumbWidth, height: this.props.thumbHeight}}
+						extension={mediaData.type}
+						thumbOnly={true}
+					/>
+				</TouchableOpacity>
+			);
+		} else {
+			return this.props.renderGridItem(photoData);
+		}
 	}
 
 	private loadInitialPhotos = () => {

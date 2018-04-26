@@ -1,8 +1,14 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from '../../theme/';
+import {SIMILAR_MEDIA_CONTAINER_PADDING} from '../../theme/Sizes';
 
 const SCREEN_HORIZONTAL_PADDING = Sizes.smartHorizontalScale(20);
+export const THUMB_WIDTH = Sizes.getMediaLicenseThumbSize().size;
+export const THUMB_HEIGHT = Math.round(THUMB_WIDTH * 0.78);
+export const THUMBS_IN_A_ROW = Sizes.getMediaLicenseThumbSize().thumbsInARow;
+const ITEM_VERTICAL_PADDING = Sizes.smartVerticalScale(8);
 
+const ITEM_HORIZONTAL_PADDING = Sizes.smartHorizontalScale(8);
 const style: any = {
 	scrollView: {
 		flex: 1,
@@ -109,7 +115,7 @@ const style: any = {
 		backgroundColor: Colors.postFullName,
 		marginLeft: Sizes.smartHorizontalScale(10),
 		width: Sizes.smartHorizontalScale(40),
-		textAlign: 'center',
+		alignItems: 'center',
 		borderRadius: Sizes.smartHorizontalScale(32),
 	},
 	mediaExtension: {
@@ -145,6 +151,37 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(12),
 		color: Colors.postHour,
 		padding: Sizes.smartHorizontalScale(5),
+	},
+	similarText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(13),
+		paddingVertical: Sizes.smartVerticalScale(16),
+		paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+	},
+	gridContainer: {
+		width: '100%',
+		paddingHorizontal: SIMILAR_MEDIA_CONTAINER_PADDING,
+	},
+	gridItemContainer: {
+		width: THUMB_WIDTH,
+		height: THUMB_HEIGHT,
+		paddingVertical: ITEM_VERTICAL_PADDING,
+		paddingHorizontal: ITEM_HORIZONTAL_PADDING,
+	},
+	similarImageTouch: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: Colors.dustWhite,
+	},
+	similarImage: {
+		width: '100%',
+		height: '100%',
+	},
+	similarLikeIcon: {
+		position: 'absolute',
+		bottom: ITEM_VERTICAL_PADDING,
+		right: ITEM_HORIZONTAL_PADDING,
+		padding: Sizes.smartHorizontalScale(7),
 	},
 };
 

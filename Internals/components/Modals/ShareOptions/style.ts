@@ -6,7 +6,6 @@ const style: any = {
 		flex: 1,
 		margin: 0,
 		bottom: 0,
-		position: 'relative',
 	},
 	boxContainer: {
 		justifyContent: 'space-around',

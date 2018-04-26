@@ -1,16 +1,22 @@
 import findIndex from 'lodash/findIndex';
 import {CheckBox} from 'native-base';
 import React, {Component} from 'react';
-import {Image, ImagePropertiesSourceOptions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Image, ImagePropertiesSourceOptions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {GridPhotos} from '../../components/Displayers/GridPhotos';
 import {SXButton} from '../../components/Interaction/Button';
 import {Colors, Icons} from '../../theme/';
 import {IMediaLicenseData, IMediaSize} from './index';
-import style from './style';
+import style, {THUMB_HEIGHT, THUMB_WIDTH, THUMBS_IN_A_ROW} from './style';
 
 interface IMediaLicenseScreenComponentProps extends IMediaLicenseData {
 	onMediaLike: () => void;
 	onNavigateToFAQScreen: () => void;
+	onDownload: () => void;
+	loadMoreSimilarMedia: () => IMediaLicenseData[];
+	numberOfSimilarMedia: number;
+	onSimilarMediaLike: (item: IMediaLicenseData) => void;
+	onSimilarMediaSelect: (item: IMediaLicenseData) => void;
 }
 
 interface IMediaLicenseScreenComponentState {
@@ -25,13 +31,19 @@ export default class MediaLicenseScreenComponent extends Component<
 		selectedItems: [],
 	};
 
+	// private scrollView: ScrollView = undefined;
+
 	public render() {
 		const {title, type, mediaPreviewURI, likedByMe, imageID, owner, webSizes, printSizes} = this.props;
 		const composedTitle = type.name + ' - ' + title;
-		// TODO: get better icons here, same size!
-		const likeIconSource = likedByMe ? Icons.iconTabBarNotificationsSelected : Icons.iconPostLike;
+		const likeIconSource = likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
 		return (
-			<ScrollView style={style.scrollView}>
+			<ScrollView
+				style={style.scrollView}
+				showsVerticalScrollIndicator={false}
+				bounces={false}
+				// ref={(ref) => (this.scrollView = ref)}
+			>
 				<View style={style.paddingContainer}>
 					<Text style={style.mediaTitle}>{composedTitle}</Text>
 					<Image source={{uri: mediaPreviewURI}} resizeMode={'cover'} style={style.mediaPreviewImage} />
@@ -39,7 +51,7 @@ export default class MediaLicenseScreenComponent extends Component<
 						<TouchableOpacity onPress={this.props.onMediaLike}>
 							<Image source={likeIconSource} />
 						</TouchableOpacity>
-						{this.renderActionButton('Download Preview', Icons.mediaDownload, this.mediaDownloadHandler)}
+						{this.renderActionButton('Download Preview', Icons.mediaDownload, this.mediaDownloadPreviewHandler)}
 						{this.renderActionButton('Share', Icons.mediaShare, this.mediaShareHandler)}
 					</View>
 				</View>
@@ -67,7 +79,7 @@ export default class MediaLicenseScreenComponent extends Component<
 					{this.renderListSectionHeader('Web or Print Use (300dpi)')}
 					{printSizes.map((mediaElement, index) => this.renderListItemWithSelectButton(mediaElement, index))}
 					<View style={style.downloadContainer}>
-						<SXButton label={'DOWNLOAD'} />
+						<SXButton label={'DOWNLOAD'} onPress={this.props.onDownload} />
 					</View>
 					<View style={style.faqContainer}>
 						<TouchableOpacity onPress={this.props.onNavigateToFAQScreen}>
@@ -75,7 +87,52 @@ export default class MediaLicenseScreenComponent extends Component<
 						</TouchableOpacity>
 					</View>
 				</View>
+				{this.renderSimilarMedia()}
 			</ScrollView>
+		);
+	}
+
+	public getSelectedItems = () => {
+		return this.state.selectedItems;
+	}
+
+	private getGridPhotosHeight = () => {
+		const screenHeight = Dimensions.get('window').height;
+		const numberOfRows = Math.ceil(this.props.numberOfSimilarMedia / THUMBS_IN_A_ROW);
+		const maxHeight = numberOfRows * THUMB_HEIGHT;
+		return Math.min(maxHeight, screenHeight);
+	}
+
+	private renderSimilarMedia = () => {
+		return (
+			<View>
+				<Text style={style.similarText}>{'Similar images'}</Text>
+				<View style={[{height: this.getGridPhotosHeight()}, style.gridContainer]}>
+					<GridPhotos
+						thumbWidth={THUMB_WIDTH}
+						thumbHeight={THUMB_HEIGHT}
+						showsVerticalScrollIndicator={false}
+						bounces={false}
+						// onScroll={this.scrollUpdatedHandler}
+						loadMorePhotos={this.props.loadMoreSimilarMedia}
+						renderGridItem={this.renderGridItemHandler}
+					/>
+				</View>
+			</View>
+		);
+	}
+
+	private renderGridItemHandler = (item: IMediaLicenseData) => {
+		const likeIconSource = item.likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
+		return (
+			<View style={style.gridItemContainer}>
+				<TouchableOpacity onPress={() => this.props.onSimilarMediaSelect(item)} style={style.similarImageTouch}>
+					<Image source={{uri: item.mediaPreviewURI}} style={style.similarImage} resizeMode={'cover'} />
+				</TouchableOpacity>
+				<TouchableOpacity style={style.similarLikeIcon} onPress={() => this.props.onSimilarMediaLike(item)}>
+					<Image source={likeIconSource} />
+				</TouchableOpacity>
+			</View>
 		);
 	}
 
@@ -138,8 +195,8 @@ export default class MediaLicenseScreenComponent extends Component<
 		return findIndex(this.state.selectedItems, (mElement: IMediaSize) => mElement.id === mediaElement.id);
 	}
 
-	private mediaDownloadHandler = () => {
-		alert('mediaDownloadHandler');
+	private mediaDownloadPreviewHandler = () => {
+		alert('mediaDownloadPreviewHandler');
 	}
 
 	private mediaShareHandler = () => {

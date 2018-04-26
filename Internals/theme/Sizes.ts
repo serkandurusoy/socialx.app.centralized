@@ -17,7 +17,7 @@ const thresholdHeight = 736;
 // For smart scale if we set ratio to 1 it will be the same as "non-smart" scale.
 // Inspired by https://blog.solutotlv.com/size-matters/
 
-export const Sizes = {
+const Sizes = {
 	horizontalScale: (size: number) => width / guidelineBaseWidth * size,
 	verticalScale: (size: number) => height / guidelineBaseHeight * size,
 	smartHorizontalScale: (size: number, ratio: number = 0.2) => {
@@ -32,16 +32,39 @@ export const Sizes = {
 		}
 		return size * (1 + (height / guidelineBaseHeight - 1) * ratio);
 	},
-	getThumbSize: () => {
-		const baseThumbSize = guidelineBaseWidth / 3; // 3 thumbs in a row for iPhone 4.7"
+	getThumbSize: (minThumbsInARow = 3) => {
+		// 3 thumbs in a row for iPhone 4.7"
+		const baseThumbSize = guidelineBaseWidth / minThumbsInARow;
 		let ret;
 		if (width > thresholdWidth) {
 			const scaledThumbSize = Sizes.smartHorizontalScale(baseThumbSize);
 			const numberOfThumbsPerRow = Math.round(width / scaledThumbSize);
 			ret = width / numberOfThumbsPerRow;
 		} else {
-			ret = width / 3;
+			ret = width / minThumbsInARow;
 		}
 		return Math.floor(ret);
 	},
+	getMediaLicenseThumbSize: (minThumbsInARow = 2) => {
+		const adjustedBaseWidth = guidelineBaseWidth - 2 * SIMILAR_MEDIA_CONTAINER_PADDING;
+		const adjustedScreenWidth = width - 2 * SIMILAR_MEDIA_CONTAINER_PADDING;
+		const baseThumbSize = adjustedBaseWidth / minThumbsInARow;
+		let thumbsInARow = minThumbsInARow;
+		let ret;
+		if (adjustedScreenWidth > thresholdWidth) {
+			const scaledThumbSize = Sizes.smartHorizontalScale(baseThumbSize);
+			thumbsInARow = Math.round(adjustedScreenWidth / scaledThumbSize);
+			ret = adjustedScreenWidth / thumbsInARow;
+		} else {
+			ret = adjustedScreenWidth / minThumbsInARow;
+		}
+		return {
+			size: Math.floor(ret),
+			thumbsInARow,
+		};
+	},
 };
+
+export const SIMILAR_MEDIA_CONTAINER_PADDING = Sizes.smartHorizontalScale(12);
+
+export default Sizes;

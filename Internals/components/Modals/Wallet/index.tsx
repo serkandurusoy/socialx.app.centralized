@@ -1,5 +1,6 @@
 import {OS_TYPES} from 'consts';
 import {withManagedTransitions} from 'hoc/ManagedModal';
+import numeral from 'numeral';
 import React, {Component} from 'react';
 import {Image, Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
@@ -33,29 +34,28 @@ const IN_ANIMATION_DURATION = 300;
 const OUT_ANIMATION_NAME = 'bounceOut';
 const OUT_ANIMATION_DURATION = 300;
 
-interface IModalWalletProps {
+const SOCX_WALLET_AMOUNT_FORMAT = '0,0';
+
+interface IModalWalletProps extends IManagedModal, IWithResizeOnKeyboardShowProps {
 	visible: boolean;
 	blurViewRef: any;
-	socXWallet: any;
-	addHandler: () => void;
-	onCloseButtonHandler: () => void;
-	onDismiss: () => void;
-	onModalHide: () => void;
+	onCloseButton: () => void;
+	socXInWallet: number; // TODO: proper format here!
+	sendSocXAmount: number;
+	destinationUser: IUserQuery;
 }
 
 class ModalWalletComponent extends Component<IModalWalletProps, any> {
 	public state = {
-		postText: '',
-		socXInWallet: '53,680',
-		sendSocXAmount: '0',
-		destinationToSend: '',
-		FeeGas: '14000',
-		selected: false,
+		feeGas: '14000',
+		sent: false,
 	};
 
 	private animatedButton: any = null;
 
 	public render() {
+		const myCoinsWithFormat = numeral(this.props.socXInWallet).format(SOCX_WALLET_AMOUNT_FORMAT);
+		const amountToSendWithFormat = numeral(this.props.sendSocXAmount).format(SOCX_WALLET_AMOUNT_FORMAT);
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -67,34 +67,33 @@ class ModalWalletComponent extends Component<IModalWalletProps, any> {
 				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
 				<View style={this.getResizableStyles()}>
 					<View style={style.boxContainer}>
-						<TouchableOpacity style={style.closeModalButtonContainer} onPress={this.props.onCloseButtonHandler}>
-							<Image source={Icons.iconModalClose} style={style.closeModalButton} />
+						<TouchableOpacity style={style.closeModalButtonContainer} onPress={this.props.onCloseButton}>
+							<Image source={Icons.iconModalClose} />
 						</TouchableOpacity>
 						<View style={style.topContainer}>
 							<View style={style.socialXIconContainer}>
 								<Image source={Icons.socxCoinIcon} style={style.socialXIcon} />
 							</View>
 							<Text style={style.topText}>
-								{this.state.socXInWallet}
+								{myCoinsWithFormat}
 								{PAGE_TEXTS.title}
 							</Text>
 						</View>
 
 						<WalletInputField
-							value={this.state.sendSocXAmount}
-							keyboardType={TKeyboardKeys.numeric}
+							disabled={true}
+							value={amountToSendWithFormat}
 							label={PAGE_TEXTS.sendField.label}
 							rightLabel={PAGE_TEXTS.sendField.rightLabel}
-							updateTextInput={this.updateSentText}
 						/>
 						<WalletInputField
-							value={this.state.destinationToSend}
+							disabled={true}
+							value={this.props.destinationUser.userId}
 							label={PAGE_TEXTS.destoField.label}
 							rightLabel={PAGE_TEXTS.destoField.rightLabel}
-							updateTextInput={this.updateDestinationText}
 						/>
 						<WalletInputField
-							value={this.state.FeeGas}
+							value={this.state.feeGas}
 							keyboardType={TKeyboardKeys.numeric}
 							label={PAGE_TEXTS.feesGas.label}
 							rightLabel={PAGE_TEXTS.feesGas.rightLabel}
@@ -108,12 +107,12 @@ class ModalWalletComponent extends Component<IModalWalletProps, any> {
 	}
 
 	private onButtonHandler() {
-		if (!this.state.selected) {
-			this.setState({selected: true});
+		if (!this.state.sent) {
+			this.setState({sent: true});
 		}
 	}
 
-	private renderIsSelected = () => {
+	private renderIsSent = () => {
 		return (
 			<Animatable.View
 				animation={IN_ANIMATION_NAME}
@@ -121,7 +120,7 @@ class ModalWalletComponent extends Component<IModalWalletProps, any> {
 				iterationCount={1}
 				duration={IN_ANIMATION_DURATION}
 			>
-				<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isSendSelected} />
+				<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isSent} />
 			</Animatable.View>
 		);
 	}
@@ -146,7 +145,7 @@ class ModalWalletComponent extends Component<IModalWalletProps, any> {
 	}
 
 	private conditionalRendering = () => {
-		return this.state.selected ? this.renderIsSelected() : this.renderSend();
+		return this.state.sent ? this.renderIsSent() : this.renderSend();
 	}
 
 	private getResizableStyles = () => {
@@ -157,17 +156,9 @@ class ModalWalletComponent extends Component<IModalWalletProps, any> {
 		return ret;
 	}
 
-	private updateSentText = (text: string) => {
-		this.setState({sendSocXAmount: text});
-	}
-
-	private updateDestinationText = (text: string) => {
-		this.setState({destinationToSend: text});
-	}
-
 	private updateFeeText = (text: string) => {
-		this.setState({FeeGas: text});
+		this.setState({feeGas: text});
 	}
 }
 
-export const ModalWallet = withManagedTransitions(ModalWalletComponent);
+export const ModalWallet = withManagedTransitions(withResizeOnKeyboardShow(ModalWalletComponent));
