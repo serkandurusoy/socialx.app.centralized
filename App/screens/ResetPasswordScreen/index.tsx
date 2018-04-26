@@ -10,7 +10,7 @@ import {OS_TYPES} from '../../constants';
 import {Colors} from '../../theme';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from '../../actions';
 import {ModalManager} from '../../hoc/ManagedModal/manager';
 import {ForgotPasswordConfirm} from '../../utils';
 
@@ -147,7 +147,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 				ModalManager.safeRunAfterModalClosed(() => {
 					Alert.alert('Something went wrong.');
 				});
-				this.props.navigation.navigate('MainScreen');
+				resetNavigationToRoute('MainScreen', this.props.navigation);
 				return;
 			}
 
@@ -155,7 +155,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 			ModalManager.safeRunAfterModalClosed(() => {
 				Alert.alert('You\'r password has been successfully reseted!');
 			});
-			this.props.navigation.navigate('MainScreen');
+			resetNavigationToRoute('MainScreen', this.props.navigation);
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
 				Alert.alert('Wrong reset code entered, please try again.');

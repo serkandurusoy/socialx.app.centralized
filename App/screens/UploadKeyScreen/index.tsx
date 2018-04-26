@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {resetNavigationToRoute} from '../../actions';
 import {SXButton} from '../../components/Interaction';
 import {Colors, Images} from '../../theme';
 import style from './style';
@@ -33,6 +34,6 @@ export default class UploadKeyScreen extends Component<IUploadKeyScreenProps, an
 	}
 
 	private navigateToMainScreen = () => {
-		this.props.navigation.navigate('MainScreen');
+		resetNavigationToRoute('MainScreen', this.props.navigation);
 	}
 }

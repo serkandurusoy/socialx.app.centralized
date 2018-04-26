@@ -16,10 +16,10 @@ import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../..
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
+import {resetNavigationToRoute} from '../../actions';
 import {SXButton} from '../../components/Interaction/Button';
 import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
-
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
@@ -174,17 +174,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		);
 	}
 
-	private async performSignOut() {
-		if (AsyncStorage.getItem('jwtToken')) {
-			console.log(`AsyncStorage jwtToken is true`);
-			try {
-				// Clears out
-				await AsyncStorage.clear();
-				// TODO: This Navigation call for some reason doesn't yet take us back to the Main Screen after signout
-				this.props.navigation.navigate('MainScreen');
-			} catch (ex) {
-				//
-			}
+	private performSignOut = async () => {
+		try {
+			await AsyncStorage.clear();
+			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
+		} catch (ex) {
+			//
 		}
 	}
 

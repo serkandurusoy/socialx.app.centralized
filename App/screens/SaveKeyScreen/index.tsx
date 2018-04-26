@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {resetNavigationToRoute} from '../../actions';
 import {SXButton} from '../../components/Interaction';
 import {ModalConfirmation} from '../../components/Modals';
 import {Colors, Images} from '../../theme';
@@ -58,6 +59,6 @@ export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveK
 	}
 
 	private confirmKeySaved = () => {
-		this.props.navigation.navigate('MainScreen');
+		resetNavigationToRoute('MainScreen', this.props.navigation);
 	}
 }
