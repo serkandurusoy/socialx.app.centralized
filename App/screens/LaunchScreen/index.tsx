@@ -6,6 +6,7 @@ import {SXButton, SXGradientButton, TextGradient} from '../../components';
 import {Colors, Images} from '../../theme';
 import style from './style';
 
+import {resetNavigationToRoute} from '../../actions';
 import {CurrentUser} from '../../utils/';
 
 export interface ILaunchScreenProps {
@@ -17,21 +18,23 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 		header: null,
 	};
 
-	public async componentDidMount() {
-		if (AsyncStorage.getItem('jwtToken')) {
-			try {
-				const currentUser = await CurrentUser();
-				if (currentUser) {
-					this.props.navigation.navigate('MainScreen');
+	public componentDidMount() {
+		AsyncStorage.getItem('jwtToken', async (error: Error, result: string) => {
+			if (!error && result !== null) {
+				try {
+					const currentUser = await CurrentUser();
+					if (currentUser) {
+						resetNavigationToRoute('MainScreen', this.props.navigation);
+					}
+				} catch (ex) {
+					//
 				}
-			} catch (ex) {
-				//
 			}
-		}
-		SplashScreen.close({
-			animationType: SplashScreen.animationType.fade,
-			duration: 1000,
-			delay: 100,
+			SplashScreen.close({
+				animationType: SplashScreen.animationType.fade,
+				duration: 1000,
+				delay: 100,
+			});
 		});
 	}
 

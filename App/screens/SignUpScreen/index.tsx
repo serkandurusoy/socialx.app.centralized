@@ -10,7 +10,7 @@ import {ModalInputSMSCode} from '../../components/Modals';
 import {Colors, Images, Sizes} from '../../theme';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from '../../actions';
 import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from '../../utils';
 
 import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from '../../graphql';
@@ -302,7 +302,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
-			this.props.navigation.navigate('MainScreen');
+			resetNavigationToRoute('MainScreen', this.props.navigation);
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			console.log(ex);

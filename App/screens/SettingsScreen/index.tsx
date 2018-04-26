@@ -16,10 +16,10 @@ import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../..
 import {Colors, Images, Sizes} from '../../theme/';
 import style from './style';
 
+import {resetNavigationToRoute} from '../../actions';
 import {SXButton} from '../../components/Interaction/Button';
 import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
 import {IUserDataResponse} from '../../types/gql';
-
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
@@ -174,10 +174,10 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		);
 	}
 
-	private async performSignOut() {
+	private performSignOut = async () => {
 		try {
 			await AsyncStorage.clear();
-			this.props.navigation.navigate('MainScreen');
+			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
 		} catch (ex) {
 			//
 		}
