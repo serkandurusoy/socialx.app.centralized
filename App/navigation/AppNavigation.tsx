@@ -12,6 +12,7 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
+import MediaLicenseFAQScreen from '../screens/MediaLicenseFAQScreen';
 import MediaLicenseScreen from '../screens/MediaLicenseScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
 import MessagingScreen from '../screens/MessagingScreen';
@@ -55,6 +56,7 @@ const getSingleScreenStack = (routeName: string, screen: any) => {
 const MediaLicenseStackNavigator = StackNavigator(
 	{
 		MediaLicenseScreen: {screen: MediaLicenseScreen},
+		MediaLicenseFAQScreen: {screen: MediaLicenseFAQScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,

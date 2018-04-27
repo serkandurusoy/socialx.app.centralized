@@ -1,11 +1,12 @@
 import findIndex from 'lodash/findIndex';
 import sortBy from 'lodash/sortBy';
 import {CheckBox} from 'native-base';
-import React, {Component} from 'react';
+import React, {Component, ReactText} from 'react';
 import {Dimensions, Image, ImagePropertiesSourceOptions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
-import {GridPhotos} from '../../components/Displayers/GridPhotos';
+import {DataProvider} from 'recyclerlistview';
+import {NewGridPhotos} from '../../components/Displayers/NewGridPhotos';
 import {SXButton} from '../../components/Interaction/Button';
 import {Colors, Icons} from '../../theme/';
 import {IMediaLicenseData, IMediaSize, MediaResolutionSection} from './index';
@@ -15,39 +16,61 @@ interface IMediaLicenseScreenComponentProps extends IMediaLicenseData {
 	onMediaLike: () => void;
 	onNavigateToFAQScreen: () => void;
 	onDownload: () => void;
-	loadMoreSimilarMedia: () => IMediaLicenseData[];
+	onLoadMoreSimilarMedia: () => void;
 	numberOfSimilarMedia: number;
 	onSimilarMediaLike: (item: IMediaLicenseData) => void;
 	onSimilarMediaSelect: (item: IMediaLicenseData) => void;
 	onShowPreviewFullScreen: () => void;
 	onNavigateToUserProfileScreen: () => void;
 	onNavigateToPhotoIDScreen: () => void;
+	similarMedia: IMediaLicenseData[];
+	likeToggleCounter: number;
 }
 
 interface IMediaLicenseScreenComponentState {
 	selectedItems: IMediaSize[];
 	visibleSections: MediaResolutionSection[];
+	similarMediaDataProvider: DataProvider;
+	likeToggleCounter: number;
 }
 
 export default class MediaLicenseScreenComponent extends Component<
 	IMediaLicenseScreenComponentProps,
 	IMediaLicenseScreenComponentState
 > {
-	public state = {
-		selectedItems: [],
-		visibleSections: [],
-	};
+	public static getDerivedStateFromProps(
+		nextProps: Readonly<IMediaLicenseScreenComponentProps>,
+		prevState: Readonly<IMediaLicenseScreenComponentState>,
+	) {
+		let ret: Partial<IMediaLicenseScreenComponentState> | null = null;
+		if (nextProps.likeToggleCounter !== prevState.likeToggleCounter) {
+			ret = {};
+			ret.likeToggleCounter = nextProps.likeToggleCounter;
+		}
+		if (nextProps.similarMedia.length > prevState.similarMediaDataProvider.getSize()) {
+			ret = ret || {};
+			ret.similarMediaDataProvider = prevState.similarMediaDataProvider.cloneWithRows(nextProps.similarMedia);
+		}
+		return ret;
+	}
 
-	// private scrollView: ScrollView = undefined;
+	private dataProvider = new DataProvider((row1: IMediaLicenseData, row2: IMediaLicenseData) => {
+		return row1.imageID !== row2.imageID || row1.likedByMe !== row2.likedByMe;
+	});
+
+	constructor(props: IMediaLicenseScreenComponentProps) {
+		super(props);
+		this.state = {
+			selectedItems: [],
+			visibleSections: [],
+			similarMediaDataProvider: this.dataProvider.cloneWithRows(props.similarMedia),
+			likeToggleCounter: props.likeToggleCounter,
+		};
+	}
 
 	public render() {
 		return (
-			<ScrollView
-				style={style.scrollView}
-				showsVerticalScrollIndicator={false}
-				bounces={false}
-				// ref={(ref) => (this.scrollView = ref)}
-			>
+			<ScrollView style={style.scrollView} showsVerticalScrollIndicator={false} bounces={false}>
 				{this.renderMediaPreviewAndActions()}
 				{this.renderMediaDescriptionSection()}
 				{this.renderResolutionsSection()}
@@ -174,22 +197,24 @@ export default class MediaLicenseScreenComponent extends Component<
 		return (
 			<View>
 				<Text style={style.similarText}>{'Similar images'}</Text>
-				<View style={[{height: this.getGridPhotosHeight()}, style.gridContainer]}>
-					<GridPhotos
+				<View style={[{height: this.getNewGridPhotosHeight()}, style.gridContainer]}>
+					<NewGridPhotos
 						thumbWidth={THUMB_WIDTH}
 						thumbHeight={THUMB_HEIGHT}
 						showsVerticalScrollIndicator={false}
-						bounces={false}
+						// bounces={false}
 						// onScroll={this.scrollUpdatedHandler}
-						loadMorePhotos={this.props.loadMoreSimilarMedia}
 						renderGridItem={this.renderGridItemHandler}
+						onLoadMore={this.props.onLoadMoreSimilarMedia}
+						dataProvider={this.state.similarMediaDataProvider}
+						extendedState={{likeCounter: this.state.likeToggleCounter}}
 					/>
 				</View>
 			</View>
 		);
 	}
 
-	private renderGridItemHandler = (item: IMediaLicenseData) => {
+	private renderGridItemHandler = (type: ReactText, item: IMediaLicenseData) => {
 		const likeIconSource = item.likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
 		return (
 			<View style={style.gridItemContainer}>
@@ -281,7 +306,7 @@ export default class MediaLicenseScreenComponent extends Component<
 		return findIndex(this.state.visibleSections, mediaResSection);
 	}
 
-	private getGridPhotosHeight = () => {
+	private getNewGridPhotosHeight = () => {
 		const screenHeight = Dimensions.get('window').height;
 		const numberOfRows = Math.ceil(this.props.numberOfSimilarMedia / THUMBS_IN_A_ROW);
 		const maxHeight = numberOfRows * THUMB_HEIGHT;
