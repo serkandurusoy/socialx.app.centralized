@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Platform, StatusBar} from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
 
 // refactoring
 import SplashScreen from 'react-native-smart-splash-screen';
+import {getAvailableAnimations} from './config/animations';
 import {OS_TYPES} from './constants';
 import RootContainer, {AppsyncClient, Rehydrated} from './containers/RootContainer';
 import createStore from './reducers';
@@ -17,6 +19,7 @@ export default class App extends Component<{}, {}> {
 		if (Platform.OS === OS_TYPES.Android) {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
+		Animatable.initializeRegistryWithDefinitions(getAvailableAnimations());
 		// enable this only when adding sample screens to root navigator!
 		// SplashScreen.close({
 		// 	animationType: SplashScreen.animationType.fade,
