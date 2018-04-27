@@ -29,6 +29,8 @@ build/
 .gradle
 local.properties
 *.iml
+replay_*.log
+hs_err_*.log
 
 # node.js
 #
