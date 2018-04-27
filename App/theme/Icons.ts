@@ -45,4 +45,10 @@ export default {
 	iconProfileAnalytics: require('../../assets/icons/profile_analytics.png'),
 	iconSettingsGear: require('../../assets/icons/settings_gear.png'),
 	iconWallet2: require('../../assets/icons/wallet2.png'),
+	analyticsTotalProfileViews: require('../../assets/icons/analytics_total_profile_views.png'),
+	analyticsTotalRewardEarnings: require('../../assets/icons/analytics_total_reward_earnings.png'),
+	analyticsFriendsCount: require('../../assets/icons/analytics_friends_count.png'),
+	analyticsPhotos: require('../../assets/icons/analytics_photos.png'),
+	analyticsVideos: require('../../assets/icons/analytics_videos.png'),
+	analyticsComments: require('../../assets/icons/analytics_comments.png'),
 };
