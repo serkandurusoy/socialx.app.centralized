@@ -54,6 +54,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				startReply={this.props.navigation.state.params.startReply}
 				onReplyLike={this.onReplyLikeHandler}
 				onSendReply={this.onSendReplyHandler}
+				onReplyDelete={this.onReplyDeleteHandler}
 			/>
 		);
 	}
@@ -73,6 +74,10 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		} catch (ex) {
 			console.log(ex);
 		}
+	}
+
+	private onReplyDeleteHandler = (reply: IWallPostCommentReply) => {
+		// console.log('TODO: onReplyDeleteHandler', reply.id);
 	}
 
 	private onSendReplyHandler = async (replyText: string) => {
@@ -110,8 +115,8 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			for (let i = 0; i < comments.length; i++) {
 				const currentComment = comments[i];
 				const commentOwnerAv = currentComment.owner.avatar
-				? base.ipfs_URL + currentComment.owner.avatar.hash
-				: imagePlaceHolder;
+					? base.ipfs_URL + currentComment.owner.avatar.hash
+					: imagePlaceHolder;
 
 				resComments.push({
 					id: currentComment.id,
@@ -119,6 +124,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 					user: {
 						fullName: currentComment.owner.name,
 						avatarURL: commentOwnerAv,
+						id: currentComment.owner.userId,
 					},
 					timestamp: new Date(currentComment.createdAt),
 					likes: currentComment.likes,

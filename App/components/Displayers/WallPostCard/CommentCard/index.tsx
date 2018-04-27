@@ -1,12 +1,22 @@
 import moment from 'moment';
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Clipboard, Text, TouchableOpacity, View} from 'react-native';
+import ModalDropdown from 'react-native-modal-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedText} from '../../../../config/animations';
 import {IWallPostComment, IWallPostCommentReply} from '../../../../screens/CommentsScreen';
 import {Colors, Sizes} from '../../../../theme';
 import {AvatarImage} from '../../../Avatar/Image';
-import style from './style';
+import style, {DROPDOWN_ITEM_HEIGHT} from './style';
+
+enum COMMENT_ADVANCED_ACTIONS {
+	DELETE = 'Delete',
+	COPY = 'Copy',
+	CANCEL = 'Cancel',
+}
+
+const COMMENT_OPTIONS = [COMMENT_ADVANCED_ACTIONS.COPY, COMMENT_ADVANCED_ACTIONS.CANCEL];
+const COMMENT_OPTIONS_WITH_DELETE = [COMMENT_ADVANCED_ACTIONS.DELETE, ...COMMENT_OPTIONS];
 
 const PULSATE_PERIOD = 700;
 
@@ -14,6 +24,7 @@ export interface ICommentCardProps {
 	comment: IWallPostComment | IWallPostCommentReply;
 	onCommentLike: () => void;
 	onCommentReply: (startReply: boolean) => void;
+	onCommentDelete: () => void;
 	isReply?: boolean;
 }
 

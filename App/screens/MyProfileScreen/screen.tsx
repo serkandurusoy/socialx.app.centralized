@@ -113,11 +113,11 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 
 	private getTooltipItems = () => {
 		return [
-			// {
-			// 	label: 'Profile Analytics',
-			// 	icon: Icons.iconProfileAnalytics,
-			// 	actionHandler: this.goToProfileAnalyticsPage,
-			// },
+			{
+				label: 'Profile Analytics',
+				icon: Icons.iconProfileAnalytics,
+				actionHandler: this.goToProfileAnalyticsPage,
+			},
 			// {
 			// 	label: 'Wallet',
 			// 	icon: Icons.iconWallet2,
@@ -132,8 +132,7 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 	}
 
 	private goToProfileAnalyticsPage = () => {
-		// TODO: page not yet implemented
-		// console.log('goToProfileAnalyticsPage');
+		this.props.navigation.navigate('ProfileAnalyticsScreen');
 	}
 
 	private goToWalletActivityPage = () => {

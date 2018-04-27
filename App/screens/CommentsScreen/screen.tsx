@@ -14,6 +14,7 @@ interface ICommentsScreenComponentProps extends IWithLoaderProps {
 	marginBottom: number;
 	comments: IWallPostComment[];
 	onCommentLike: (comment: IWallPostComment) => void;
+	onCommentDelete: (comment: IWallPostComment) => void;
 	onCommentReply: (comment: IWallPostComment, startReply: boolean) => void;
 	onCommentSend: (commentText: string) => void;
 	noComments: boolean;
@@ -62,6 +63,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					comment={comment}
 					onCommentLike={() => this.props.onCommentLike(comment)}
 					onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
+					onCommentDelete={() => this.props.onCommentDelete(comment)}
 				/>,
 			);
 		});

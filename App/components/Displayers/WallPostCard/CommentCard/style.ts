@@ -3,6 +3,7 @@ import {Colors, Fonts, Sizes} from '../../../../theme';
 
 const AVATAR_SIZE = Sizes.smartHorizontalScale(50);
 const REPLY_AVATAR_SIZE = Sizes.smartHorizontalScale(30);
+export const DROPDOWN_ITEM_HEIGHT = Sizes.smartHorizontalScale(35);
 
 const style: any = {
 	container: {
@@ -112,6 +113,18 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
 		paddingVertical: Sizes.smartHorizontalScale(5),
+	},
+	dropDownStyle: {
+		borderWidth: Sizes.smartHorizontalScale(1),
+		borderRadius: Sizes.smartHorizontalScale(5),
+		backgroundColor: Colors.iron,
+	},
+	commentOption: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(15),
+		color: Colors.postFullName,
+		lineHeight: DROPDOWN_ITEM_HEIGHT,
+		paddingHorizontal: Sizes.smartHorizontalScale(15),
 	},
 };
 
