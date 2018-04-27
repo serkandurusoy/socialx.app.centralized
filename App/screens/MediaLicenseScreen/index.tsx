@@ -6,6 +6,21 @@ import {MediaSizes, MediaTypeImage, MediaTypes, MediaTypeVideo} from '../../type
 import {IUserQuery} from '../../types/gql';
 import MediaLicenseScreenComponent from './screen';
 
+export interface MediaResolutionSection {
+	title: string;
+	order: number;
+}
+
+const MEDIA_RESOLUTION_WEB: MediaResolutionSection = {
+	title: 'Web Use (72dpi)',
+	order: 0,
+};
+
+const MEDIA_RESOLUTION_PRINT: MediaResolutionSection = {
+	title: 'Web or Print Use (300dpi)',
+	order: 1,
+};
+
 export interface IMediaSize {
 	id: string | number;
 	mediaSize: MediaSizes;
@@ -13,11 +28,7 @@ export interface IMediaSize {
 	width: number;
 	height: number;
 	price: number;
-}
-
-interface ISimilarMedia {
-	mediaThumbURI: string;
-	likedByMe: boolean;
+	section: MediaResolutionSection;
 }
 
 export interface IMediaLicenseData {
@@ -27,8 +38,7 @@ export interface IMediaLicenseData {
 	likedByMe: boolean;
 	imageID: string;
 	owner: Partial<IUserQuery>;
-	webSizes: IMediaSize[];
-	printSizes: IMediaSize[];
+	sizes: IMediaSize[];
 }
 
 const MEDIA_LICENSE_DATA: IMediaLicenseData = {
@@ -42,25 +52,7 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 		userId: 'ae351f3gjk58',
 		name: 'Marcel Füssinger',
 	},
-	webSizes: [
-		{
-			id: 1,
-			mediaSize: MediaSizes.Small,
-			extension: 'jpg',
-			width: 450,
-			height: 300,
-			price: 1,
-		},
-		{
-			id: 2,
-			mediaSize: MediaSizes.Medium,
-			extension: 'jpg',
-			width: 848,
-			height: 565,
-			price: 2,
-		},
-	],
-	printSizes: [
+	sizes: [
 		{
 			id: 3,
 			mediaSize: MediaSizes.MediumLarge,
@@ -68,6 +60,7 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 			width: 1678,
 			height: 1119,
 			price: 3,
+			section: MEDIA_RESOLUTION_PRINT,
 		},
 		{
 			id: 4,
@@ -76,6 +69,7 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 			width: 2508,
 			height: 1672,
 			price: 4,
+			section: MEDIA_RESOLUTION_PRINT,
 		},
 		{
 			id: 5,
@@ -84,6 +78,7 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 			width: 3831,
 			height: 2554,
 			price: 5,
+			section: MEDIA_RESOLUTION_PRINT,
 		},
 		{
 			id: 6,
@@ -92,6 +87,7 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 			width: 6000,
 			height: 4000,
 			price: 6,
+			section: MEDIA_RESOLUTION_PRINT,
 		},
 		{
 			id: 7,
@@ -100,6 +96,25 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 			width: 7500,
 			height: 5000,
 			price: 10,
+			section: MEDIA_RESOLUTION_PRINT,
+		},
+		{
+			id: 1,
+			mediaSize: MediaSizes.Small,
+			extension: 'jpg',
+			width: 450,
+			height: 300,
+			price: 1,
+			section: MEDIA_RESOLUTION_WEB,
+		},
+		{
+			id: 2,
+			mediaSize: MediaSizes.Medium,
+			extension: 'jpg',
+			width: 848,
+			height: 565,
+			price: 2,
+			section: MEDIA_RESOLUTION_WEB,
 		},
 	],
 };
@@ -180,6 +195,9 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 					numberOfSimilarMedia={TOTAL_SIMILAR_PHOTOS}
 					onSimilarMediaLike={this.onSimilarMediaLikeHandler}
 					onSimilarMediaSelect={this.onSimilarMediaSelectHandler}
+					onShowPreviewFullScreen={this.onShowPreviewFullScreenHandler}
+					onNavigateToUserProfileScreen={this.onNavigateToUserProfileScreenHandler}
+					onNavigateToPhotoIDScreen={this.onNavigateToPhotoIDScreenHandler}
 				/>
 			</View>
 		);
@@ -224,5 +242,20 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 		this.setState({
 			modalVisible: !this.state.modalVisible,
 		});
+	}
+
+	private onShowPreviewFullScreenHandler = () => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			photos: [{url: this.state.mediaPreviewURI}],
+			startIndex: 0,
+		});
+	}
+
+	private onNavigateToUserProfileScreenHandler = () => {
+		this.props.navigation.navigate('UserProfileScreen');
+	}
+
+	private onNavigateToPhotoIDScreenHandler = () => {
+		alert('Decide later what screen will this link');
 	}
 }

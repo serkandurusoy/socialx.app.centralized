@@ -129,10 +129,12 @@ const MainScreenTabNavigation = TabNavigator(
 
 const MainScreenWithModal = StackNavigator(
 	{
+		MediaLicenseStack: {screen: MediaLicenseStackNavigator}, // TODO: later to be moved!
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
 		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
 		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
 		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
+		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 		CommentsStack: {screen: CommentsStackNavigator},
 	},
 	{
@@ -164,15 +166,12 @@ const PrimaryNav = StackNavigator(
 		PreAuthScreen: {screen: PreAuthNavigator},
 		MainScreen: {screen: MainScreenWithModal},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
-		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
-		MediaLicenseStack: {screen: MediaLicenseStackNavigator}, // TODO: later to be moved!
 	},
 	{
 		headerMode: 'none',
-		// initialRouteName: 'PreAuthScreen',
-		initialRouteName: 'MediaLicenseStack',
+		initialRouteName: 'PreAuthScreen',
 	},
 );
 

@@ -1,12 +1,14 @@
 import findIndex from 'lodash/findIndex';
+import sortBy from 'lodash/sortBy';
 import {CheckBox} from 'native-base';
 import React, {Component} from 'react';
 import {Dimensions, Image, ImagePropertiesSourceOptions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import {GridPhotos} from '../../components/Displayers/GridPhotos';
 import {SXButton} from '../../components/Interaction/Button';
 import {Colors, Icons} from '../../theme/';
-import {IMediaLicenseData, IMediaSize} from './index';
+import {IMediaLicenseData, IMediaSize, MediaResolutionSection} from './index';
 import style, {THUMB_HEIGHT, THUMB_WIDTH, THUMBS_IN_A_ROW} from './style';
 
 interface IMediaLicenseScreenComponentProps extends IMediaLicenseData {
@@ -17,10 +19,14 @@ interface IMediaLicenseScreenComponentProps extends IMediaLicenseData {
 	numberOfSimilarMedia: number;
 	onSimilarMediaLike: (item: IMediaLicenseData) => void;
 	onSimilarMediaSelect: (item: IMediaLicenseData) => void;
+	onShowPreviewFullScreen: () => void;
+	onNavigateToUserProfileScreen: () => void;
+	onNavigateToPhotoIDScreen: () => void;
 }
 
 interface IMediaLicenseScreenComponentState {
 	selectedItems: IMediaSize[];
+	visibleSections: MediaResolutionSection[];
 }
 
 export default class MediaLicenseScreenComponent extends Component<
@@ -29,14 +35,12 @@ export default class MediaLicenseScreenComponent extends Component<
 > {
 	public state = {
 		selectedItems: [],
+		visibleSections: [],
 	};
 
 	// private scrollView: ScrollView = undefined;
 
 	public render() {
-		const {title, type, mediaPreviewURI, likedByMe, imageID, owner, webSizes, printSizes} = this.props;
-		const composedTitle = type.name + ' - ' + title;
-		const likeIconSource = likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
 		return (
 			<ScrollView
 				style={style.scrollView}
@@ -44,49 +48,10 @@ export default class MediaLicenseScreenComponent extends Component<
 				bounces={false}
 				// ref={(ref) => (this.scrollView = ref)}
 			>
-				<View style={style.paddingContainer}>
-					<Text style={style.mediaTitle}>{composedTitle}</Text>
-					<Image source={{uri: mediaPreviewURI}} resizeMode={'cover'} style={style.mediaPreviewImage} />
-					<View style={style.actionButtonsContainer}>
-						<TouchableOpacity onPress={this.props.onMediaLike}>
-							<Image source={likeIconSource} />
-						</TouchableOpacity>
-						{this.renderActionButton('Download Preview', Icons.mediaDownload, this.mediaDownloadPreviewHandler)}
-						{this.renderActionButton('Share', Icons.mediaShare, this.mediaShareHandler)}
-					</View>
-				</View>
-				<View style={[style.paddingContainer, style.descriptionContainer]}>
-					<Text style={style.mediaDescriptionText}>
-						{type.name + ' ID: '}
-						<Text style={style.mediaDescriptionValue}>{imageID}</Text>
-					</Text>
-					<Text style={style.mediaDescriptionText}>{'Media Type: ' + type.category}</Text>
-					<Text style={style.mediaDescriptionText}>
-						{'Copyright: '}
-						<Text style={style.mediaDescriptionValue}>{owner.name}</Text>
-					</Text>
-				</View>
-				<View style={style.listContainer}>
-					<View style={style.listHeader}>
-						<Text style={style.listHeaderText}>{'Resolution'}</Text>
-						<Text style={style.listHeaderText}>{'SOCX'}</Text>
-					</View>
-					{this.renderListSectionHeader('Web Use (72dpi)')}
-					{webSizes.map((mediaElement, index) => {
-						const isLast = index === webSizes.length - 1;
-						return this.renderListItemWithSelectButton(mediaElement, index, !isLast);
-					})}
-					{this.renderListSectionHeader('Web or Print Use (300dpi)')}
-					{printSizes.map((mediaElement, index) => this.renderListItemWithSelectButton(mediaElement, index))}
-					<View style={style.downloadContainer}>
-						<SXButton label={'DOWNLOAD'} onPress={this.props.onDownload} />
-					</View>
-					<View style={style.faqContainer}>
-						<TouchableOpacity onPress={this.props.onNavigateToFAQScreen}>
-							<Text style={style.faqText}>{'FAQ'}</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
+				{this.renderMediaPreviewAndActions()}
+				{this.renderMediaDescriptionSection()}
+				{this.renderResolutionsSection()}
+				{this.renderBottomButtonsSection()}
 				{this.renderSimilarMedia()}
 			</ScrollView>
 		);
@@ -96,11 +61,113 @@ export default class MediaLicenseScreenComponent extends Component<
 		return this.state.selectedItems;
 	}
 
-	private getGridPhotosHeight = () => {
-		const screenHeight = Dimensions.get('window').height;
-		const numberOfRows = Math.ceil(this.props.numberOfSimilarMedia / THUMBS_IN_A_ROW);
-		const maxHeight = numberOfRows * THUMB_HEIGHT;
-		return Math.min(maxHeight, screenHeight);
+	private renderMediaPreviewAndActions = () => {
+		const {title, type, mediaPreviewURI, likedByMe} = this.props;
+		const composedTitle = type.name + ' - ' + title;
+		const likeIconSource = likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
+
+		return (
+			<View style={style.paddingContainer}>
+				<Text style={style.mediaTitle}>{composedTitle}</Text>
+				<TouchableOpacity onPress={this.props.onShowPreviewFullScreen}>
+					<Image source={{uri: mediaPreviewURI}} resizeMode={'cover'} style={style.mediaPreviewImage} />
+				</TouchableOpacity>
+				<View style={style.actionButtonsContainer}>
+					<TouchableOpacity onPress={this.props.onMediaLike}>
+						<Image source={likeIconSource} />
+					</TouchableOpacity>
+					{this.renderActionButton('Download Preview', Icons.mediaDownload, this.mediaDownloadPreviewHandler)}
+					{this.renderActionButton('Share', Icons.mediaShare, this.mediaShareHandler)}
+				</View>
+			</View>
+		);
+	}
+
+	private renderMediaDescriptionSection = () => {
+		const {type, imageID, owner} = this.props;
+
+		return (
+			<View style={[style.paddingContainer, style.descriptionContainer]}>
+				<View style={style.mediaDescription}>
+					<Text style={style.mediaDescriptionText}>{type.name + ' ID: '}</Text>
+					<TouchableOpacity onPress={this.props.onNavigateToPhotoIDScreen}>
+						<Text style={style.mediaDescriptionValue}>{imageID}</Text>
+					</TouchableOpacity>
+				</View>
+				<Text style={style.mediaDescriptionText}>{'Media Type: ' + type.category}</Text>
+				<View style={style.mediaDescription}>
+					<Text style={style.mediaDescriptionText}>{'Copyright: '}</Text>
+					<TouchableOpacity onPress={this.props.onNavigateToUserProfileScreen}>
+						<Text style={style.mediaDescriptionValue}>{owner.name}</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		);
+	}
+
+	private renderResolutionsSection = () => {
+		const {sizes} = this.props;
+
+		const orderedSizes = sortBy(sizes, 'section.order');
+		let currentSection: MediaResolutionSection | null = null;
+
+		const splitSizes: IMediaSize[][] = [];
+		let sectionData: IMediaSize[] = [];
+
+		orderedSizes.forEach((size) => {
+			if (currentSection !== size.section) {
+				if (sectionData.length > 0) {
+					splitSizes.push([...sectionData]);
+				}
+				currentSection = size.section;
+				sectionData = [];
+			}
+			sectionData.push(size);
+		});
+		if (sectionData.length > 0) {
+			splitSizes.push([...sectionData]);
+		}
+
+		return (
+			<View style={style.listContainer}>
+				<View style={style.listHeader}>
+					<Text style={style.listHeaderText}>{'Resolution'}</Text>
+					<Text style={style.listHeaderText}>{'SOCX'}</Text>
+				</View>
+				{splitSizes.map((sectionSizes, index) => {
+					return this.renderListSection(sectionSizes, index);
+				})}
+			</View>
+		);
+	}
+
+	private renderResolutionSectionItems = (sectionData: IMediaSize[]) => {
+		if (this.resolutionSectionIsActive(sectionData[0].section) > -1) {
+			return (
+				<Animatable.View animation={'fadeIn'} easing='ease-out' iterationCount={1} duration={1000}>
+					{sectionData.map((mediaElement, index) => {
+						const isLast = index === sectionData.length - 1;
+						return this.renderListItemWithSelectButton(mediaElement, index, isLast);
+					})}
+				</Animatable.View>
+			);
+		}
+		return null;
+	}
+
+	private renderBottomButtonsSection = () => {
+		return (
+			<View style={style.bottomButtonsContainer}>
+				<View style={style.downloadContainer}>
+					<SXButton label={'DOWNLOAD'} onPress={this.props.onDownload} />
+				</View>
+				<View style={style.faqContainer}>
+					<TouchableOpacity onPress={this.props.onNavigateToFAQScreen}>
+						<Text style={style.faqText}>{'FAQ'}</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		);
 	}
 
 	private renderSimilarMedia = () => {
@@ -145,21 +212,31 @@ export default class MediaLicenseScreenComponent extends Component<
 		);
 	}
 
-	private renderListSectionHeader = (title: string) => {
+	private renderListSection = (mediaSizes: IMediaSize[], sectionIndex: number) => {
+		const title = mediaSizes[0].section.title;
 		return (
-			<LinearGradient
-				start={{x: 0, y: 0.5}}
-				end={{x: 1, y: 0.5}}
-				colors={[Colors.fuchsiaBlue, Colors.pink]}
-				style={style.listSectionHeaderGradient}
-			>
-				<Text style={style.listSectionHeaderText}>{title}</Text>
-			</LinearGradient>
+			<View key={sectionIndex}>
+				<TouchableOpacity onPress={() => this.toggleResolutionSection(mediaSizes[0].section)}>
+					<LinearGradient
+						start={{x: 0, y: 0.5}}
+						end={{x: 1, y: 0.5}}
+						colors={[Colors.fuchsiaBlue, Colors.pink]}
+						style={style.listSectionHeaderGradient}
+					>
+						<Text style={style.listSectionHeaderText}>{title}</Text>
+					</LinearGradient>
+				</TouchableOpacity>
+				{this.renderResolutionSectionItems(mediaSizes)}
+			</View>
 		);
 	}
 
-	private renderListItemWithSelectButton = (mediaElement: IMediaSize, index: number, bottomBorder = true) => {
-		const itemContainerStyles = [style.listItemContainer, bottomBorder ? style.listItemBorder : null];
+	private renderListItemWithSelectButton = (mediaElement: IMediaSize, index: number, isLast = false) => {
+		const itemContainerStyles = [
+			style.listItemContainer,
+			!isLast ? style.listItemBorder : null,
+			index > 0 ? style.listItemTopPadding : null,
+		];
 		const itemSelected = this.mediaElementIsSelected(mediaElement) > -1;
 		const resolutionText = mediaElement.width + ' x ' + mediaElement.height + ' px';
 		return (
@@ -178,6 +255,37 @@ export default class MediaLicenseScreenComponent extends Component<
 				<Text style={style.mediaPrice}>{mediaElement.price}</Text>
 			</View>
 		);
+	}
+
+	private toggleResolutionSection = (mediaResSection: MediaResolutionSection) => {
+		const visibleSections = [...this.state.visibleSections];
+		const updatedState: Partial<IMediaLicenseScreenComponentState> = {};
+		const foundIndex = this.resolutionSectionIsActive(mediaResSection);
+		if (foundIndex > -1) {
+			visibleSections.splice(foundIndex, 1);
+			const updatedSelectedItems: IMediaSize[] = [];
+			this.state.selectedItems.forEach((selectedItem: IMediaSize) => {
+				if (selectedItem.section !== mediaResSection) {
+					updatedSelectedItems.push(selectedItem);
+				}
+			});
+			updatedState.selectedItems = updatedSelectedItems;
+		} else {
+			visibleSections.push(mediaResSection);
+		}
+		updatedState.visibleSections = visibleSections;
+		this.setState(updatedState);
+	}
+
+	private resolutionSectionIsActive = (mediaResSection: MediaResolutionSection) => {
+		return findIndex(this.state.visibleSections, mediaResSection);
+	}
+
+	private getGridPhotosHeight = () => {
+		const screenHeight = Dimensions.get('window').height;
+		const numberOfRows = Math.ceil(this.props.numberOfSimilarMedia / THUMBS_IN_A_ROW);
+		const maxHeight = numberOfRows * THUMB_HEIGHT;
+		return Math.min(maxHeight, screenHeight);
 	}
 
 	private mediaItemSelectedHandler = (mediaElement: IMediaSize) => {

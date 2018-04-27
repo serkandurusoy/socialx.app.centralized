@@ -55,20 +55,28 @@ const style: any = {
 	descriptionContainer: {
 		paddingVertical: Sizes.smartVerticalScale(6),
 	},
+	mediaDescription: {
+		flexDirection: 'row',
+	},
 	mediaDescriptionText: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(12),
-		lineHeight: Sizes.smartHorizontalScale(15),
 		color: Colors.postFullName,
-		paddingVertical: Sizes.smartVerticalScale(4),
+		paddingVertical: Sizes.smartVerticalScale(5),
 	},
 	mediaDescriptionValue: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(12),
 		color: Colors.postHour,
+		paddingVertical: Sizes.smartVerticalScale(5),
 	},
-	listContainer: {
+	bottomButtonsContainer: {
 		paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
 		borderBottomWidth: Sizes.smartHorizontalScale(2),
 		borderBottomColor: Colors.postText,
+	},
+	listContainer: {
+		paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
 	},
 	listHeader: {
 		flexDirection: 'row',
@@ -85,6 +93,7 @@ const style: any = {
 	listSectionHeaderGradient: {
 		width: '100%',
 		borderRadius: Sizes.smartHorizontalScale(6),
+		marginVertical: Sizes.smartVerticalScale(10),
 	},
 	listSectionHeaderText: {
 		...Fonts.centuryGothic,
@@ -95,11 +104,14 @@ const style: any = {
 	},
 	listItemContainer: {
 		flexDirection: 'row',
-		paddingVertical: Sizes.smartVerticalScale(10),
+	},
+	listItemTopPadding: {
+		paddingTop: Sizes.smartVerticalScale(10),
 	},
 	listItemBorder: {
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 		borderBottomColor: Colors.dustWhite,
+		paddingBottom: Sizes.smartVerticalScale(10),
 	},
 	listItemCheckbox: {
 		left: 0,
