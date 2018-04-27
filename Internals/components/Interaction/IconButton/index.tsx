@@ -1,4 +1,4 @@
-import {AnimatedImage} from 'configurations/animations';
+import {AnimatedImage} from 'configuration/animations';
 import React, {Component} from 'react';
 import {Image, Text, TouchableOpacity} from 'react-native';
 import style from './style';

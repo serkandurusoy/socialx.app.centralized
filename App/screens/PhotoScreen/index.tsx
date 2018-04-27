@@ -14,7 +14,7 @@ import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 import {ModalManager} from 'hoc/ManagedModal/manager';
 
-import {ipfsConfig as base} from 'configurations';
+import {ipfsConfig as base} from 'configuration';
 import {addBlob} from 'utilities/ipfs';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';

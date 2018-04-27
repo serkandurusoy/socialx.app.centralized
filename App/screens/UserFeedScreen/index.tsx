@@ -28,7 +28,7 @@ import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {IBlobData} from 'ipfslib';
 import {addBlob} from 'utilities/ipfs';
 
-import {ipfsConfig as base} from 'configurations';
+import {ipfsConfig as base} from 'configuration';
 
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';

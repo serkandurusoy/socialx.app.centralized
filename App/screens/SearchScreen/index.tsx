@@ -4,7 +4,7 @@ import {findNodeHandle, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import SearchScreenComponent from './screen';
 
-import {ipfsConfig as base} from 'configurations';
+import {ipfsConfig as base} from 'configuration';
 
 import {searchUsersHoc} from 'backend/graphql';
 

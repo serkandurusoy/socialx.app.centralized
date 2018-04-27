@@ -5,7 +5,7 @@ import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
 
 // refactoring
-import {getAvailableAnimations} from 'configurations/animations';
+import {getAvailableAnimations} from 'configuration/animations';
 import {OS_TYPES} from 'consts';
 import SplashScreen from 'react-native-smart-splash-screen';
 import {Colors} from 'theme';

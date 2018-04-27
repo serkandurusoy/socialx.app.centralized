@@ -1,4 +1,4 @@
-import {AnimatedText} from 'configurations/animations';
+import {AnimatedText} from 'configuration/animations';
 import moment from 'moment';
 import React from 'react';
 import {Clipboard, Text, TouchableOpacity, View} from 'react-native';

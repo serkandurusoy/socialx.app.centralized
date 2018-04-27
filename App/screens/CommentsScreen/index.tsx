@@ -8,7 +8,7 @@ import CommentsScreenComponent from './screen';
 
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
 
-import {ipfsConfig as base} from 'configurations';
+import {ipfsConfig as base} from 'configuration';
 import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';

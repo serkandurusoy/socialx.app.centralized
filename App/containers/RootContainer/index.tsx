@@ -11,7 +11,7 @@ const mapDispatchToProps = (dispatch: any): Props => ({
 export default connect(null, mapDispatchToProps)(RootContainer);
 
 // appsync config
-import {appsyncConfig} from 'configurations';
+import {appsyncConfig} from 'configuration';
 
 import AWSAppSyncClient from 'aws-appsync';
 import {AUTH_TYPE} from 'aws-appsync/lib/link/auth-link';

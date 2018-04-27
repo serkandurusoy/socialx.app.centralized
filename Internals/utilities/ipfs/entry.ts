@@ -1,4 +1,4 @@
-import {ipfsConfig as config} from 'configurations';
+import {ipfsConfig as config} from 'configuration';
 import ipfsAPI from 'ipfslib';
 
 const ipfs = new ipfsAPI({

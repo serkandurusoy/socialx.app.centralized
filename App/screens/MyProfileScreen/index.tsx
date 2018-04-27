@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
 
-import {ipfsConfig as base} from 'configurations';
+import {ipfsConfig as base} from 'configuration';
 
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {IUserDataResponse} from 'types';
