@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {SFC} from 'react';
 import {Image, ScrollView, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {AnalyticItem, IProfileAnalyticsItem} from './AnalyticItem';
@@ -9,14 +9,14 @@ export interface IProfileAnalyticsScreenComponentProps {
 	navigation: NavigationScreenProp<any>;
 }
 
-export default class ProfileAnalyticsScreenComponent extends Component<IProfileAnalyticsScreenComponentProps, any> {
-	public render() {
-		return (
-			<ScrollView style={style.container} alwaysBounceVertical={false}>
-				{this.props.analyticsData.map((analyticItem: IProfileAnalyticsItem, index: number) => (
-					<AnalyticItem {...analyticItem} navigation={this.props.navigation} key={index} />
-				))}
-			</ScrollView>
-		);
-	}
-}
+const ProfileAnalyticsScreenComponent: SFC<IProfileAnalyticsScreenComponentProps> = (
+	props: IProfileAnalyticsScreenComponentProps,
+) => (
+	<ScrollView style={style.container} alwaysBounceVertical={false}>
+		{props.analyticsData.map((analyticItem: IProfileAnalyticsItem, index: number) => (
+			<AnalyticItem {...analyticItem} navigation={props.navigation} key={index} />
+		))}
+	</ScrollView>
+);
+
+export default ProfileAnalyticsScreenComponent;
