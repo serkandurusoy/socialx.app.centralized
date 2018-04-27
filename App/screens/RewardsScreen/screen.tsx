@@ -1,3 +1,5 @@
+import {ButtonSizes, SXButton} from 'components/Interaction';
+import {MessagingTabButton} from 'components/Messaging';
 import moment from 'moment';
 import numeral from 'numeral';
 import React, {Component} from 'react';
@@ -12,9 +14,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import {ButtonSizes, SXButton} from '../../components/Interaction';
-import {MessagingTabButton} from '../../components/Messaging';
-import {Colors, colorWithAlpha} from '../../theme';
+import {Colors, colorWithAlpha} from 'theme';
 import {ChartListDataRow} from './Components/ChartListDataRow';
 import {PieChartComponent} from './Components/PieChart';
 import {ChartListDataItem, IDailyBarChartData, IMonthlyBarChartData, PieChartSections} from './index';

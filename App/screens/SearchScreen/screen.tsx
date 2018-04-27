@@ -1,9 +1,9 @@
+import {SearchFilterButton, SearchResultEntry} from 'components';
 import React, {Component} from 'react';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {connect} from 'react-redux';
-import {SearchFilterButton, SearchResultEntry} from '../../components';
-import {Icons} from '../../theme/';
-import {IAppUIStateProps} from '../../types/appUI';
+import {Icons} from 'theme/';
+import {IAppUIStateProps} from 'types';
 import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
 import style from './style';
 

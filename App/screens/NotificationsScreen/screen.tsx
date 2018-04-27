@@ -1,8 +1,8 @@
+import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
+import {FriendRequest, GroupRequest} from 'components/Displayers';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
-import {ActivityRecentCommentCard, ActivitySuperLikedCard} from '../../components/Activity';
-import {FriendRequest, GroupRequest} from '../../components/Displayers';
-import Icons from '../../theme/Icons';
+import {Icons} from 'theme/Icons';
 import {NOTIFICATION_TYPES} from './index';
 import style from './style';
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Image, ImagePropertiesSourceOptions, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {Icons} from '../../theme/';
+import {Icons} from 'theme/';
 import {IProfileAnalyticsItem} from './AnalyticItem';
 import ProfileAnalyticsScreenComponent from './screen';
 

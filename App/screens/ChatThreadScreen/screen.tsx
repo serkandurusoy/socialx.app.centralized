@@ -1,3 +1,6 @@
+import {ModalShareOptions} from 'components/Modals';
+import {OS_TYPES} from 'consts';
+import {ModalManager} from 'hoc/ManagedModal/manager';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Alert, findNodeHandle, Image, PermissionsAndroid, Platform, Text, TouchableOpacity, View} from 'react-native';
@@ -6,13 +9,10 @@ import {GiftedChat, Send} from 'react-native-gifted-chat';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Colors, Sizes} from 'theme';
+import {isStringPureEmoji} from 'utilities';
+import {requestResourcePermission} from 'utilities/permissions';
 import uuidv4 from 'uuid/v4';
-import {ModalShareOptions} from '../../components/Modals';
-import {OS_TYPES} from '../../constants';
-import {ModalManager} from '../../hoc/ManagedModal/manager';
-import {Colors, Sizes} from '../../theme';
-import {isStringPureEmoji} from '../../utils';
-import {requestResourcePermission} from '../../utils/permissions';
 import {MessageData} from './index';
 import style from './style';
 
@@ -43,8 +43,10 @@ const REQUEST_LOCATION_MESSAGE =
 	'In order to share your location with friends please allow the app' + ' to read your device location.';
 const LOCATION_ACCESS_DENIED = 'Location access was denied';
 
-export default class ChatThreadScreenComponent extends Component<IChatThreadScreenComponentProps,
-	IChatThreadScreenComponentState> {
+export default class ChatThreadScreenComponent extends Component<
+	IChatThreadScreenComponentProps,
+	IChatThreadScreenComponentState
+> {
 	public state = {
 		modalVisible: false,
 	};
@@ -116,7 +118,7 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 		shadowStyles.push(currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH});
 		return (
 			<View style={style.messageContainer}>
-				<View style={{flex: 1}}/>
+				<View style={{flex: 1}} />
 				<View style={shadowStyles}>
 					<LinearGradient
 						start={{x: 0, y: 0.5}}
@@ -142,7 +144,7 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 					{messageContent}
 					<Text style={style.friendMessageDate}>{messageDateWithFormat}</Text>
 				</View>
-				<View style={{flex: 1}}/>
+				<View style={{flex: 1}} />
 			</View>
 		);
 	}
@@ -157,7 +159,7 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 				</Text>
 			);
 		} else if (currentMessage.imageURL) {
-			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'}/>;
+			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'} />;
 		} else if (currentMessage.geolocation) {
 			return (
 				<Text style={textStyle} selectable={true}>
@@ -174,7 +176,7 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 	private renderSendButton = (props: any) => {
 		return (
 			<Send {...props} containerStyle={style.sendContainer}>
-				<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue}/>
+				<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue} />
 			</Send>
 		);
 	}
@@ -182,7 +184,7 @@ export default class ChatThreadScreenComponent extends Component<IChatThreadScre
 	private renderShareButton = () => {
 		return (
 			<TouchableOpacity style={style.shareButton} onPress={this.toggleShareOptionsModal}>
-				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora}/>
+				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora} />
 			</TouchableOpacity>
 		);
 	}

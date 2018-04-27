@@ -1,8 +1,8 @@
+import {AccountCurrencyData, SocialXAccountCurrencyItem, SocialXAccountTitleCard} from 'components/Displayers';
+import {SXButton} from 'components/Interaction';
 import React, {Component} from 'react';
 import {ScrollView, Text, View} from 'react-native';
-import {AccountCurrencyData, SocialXAccountCurrencyItem, SocialXAccountTitleCard} from '../../components/Displayers';
-import {SXButton} from '../../components/Interaction';
-import {Colors} from '../../theme/';
+import {Colors} from 'theme/';
 import style from './style';
 
 export interface ISocialXAccountScreenComponentProps {

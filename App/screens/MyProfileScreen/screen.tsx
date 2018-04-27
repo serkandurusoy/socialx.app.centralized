@@ -1,13 +1,13 @@
+import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationScreenProp} from 'react-navigation';
-import {UserAvatar} from '../../components/Avatar';
-import {GridPhotos, ProfileStatistics} from '../../components/Displayers';
-import {TooltipDots} from '../../components/Displayers/DotsWithTooltips';
-import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
-import {Colors, Metrics, Sizes} from '../../theme';
-import Icons from '../../theme/Icons';
+import {Colors, Metrics, Sizes} from 'theme';
+import {Icons} from 'theme/Icons';
+import {UserAvatar} from 'components/Avatar';
+import {GridPhotos, ProfileStatistics} from 'components/Displayers';
+import {TooltipDots} from 'components/Displayers/DotsWithTooltips';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';
 
@@ -64,7 +64,7 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 				{this.renderUserPhotoGallery()}
 			</ScrollView>,
 		);
-	}
+	};
 
 	private renderUserPhotoGallery = () => {
 		if (this.props.getAllPhotos.length === 0) {
@@ -91,7 +91,7 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 				/>
 			</View>
 		);
-	}
+	};
 
 	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
 		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.isScrolled) {
@@ -102,14 +102,14 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
 			this.isScrolled = false;
 		}
-	}
+	};
 
 	private onPhotoPressHandler = (index: number) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			photos: this.props.getAllPhotos,
 			startIndex: index,
 		});
-	}
+	};
 
 	private getTooltipItems = () => {
 		return [
@@ -129,19 +129,19 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 				actionHandler: this.goToSettingsPage,
 			},
 		];
-	}
+	};
 
 	private goToProfileAnalyticsPage = () => {
 		this.props.navigation.navigate('ProfileAnalyticsScreen');
-	}
+	};
 
 	private goToWalletActivityPage = () => {
 		this.props.navigation.navigate('WalletActivityScreen');
-	}
+	};
 
 	private goToSettingsPage = () => {
 		this.props.navigation.navigate('SettingsScreen');
-	}
+	};
 }
 
 export default withInlineLoader(MyProfileScreenComponent);

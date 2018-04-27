@@ -1,6 +1,6 @@
+import {OS_TYPES} from 'consts';
 import {Platform, StyleSheet} from 'react-native';
-import {OS_TYPES} from '../../constants';
-import {Colors} from '../../theme/index';
+import {Colors} from 'theme/index';
 
 export default StyleSheet.create({
 	header: {

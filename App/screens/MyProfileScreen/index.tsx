@@ -3,12 +3,12 @@ import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
 
-import base from '../../config/ipfs';
+import {ipfsConfig as base} from 'configurations';
 
-import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
-import {IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
+import {IUserDataResponse} from 'types';
 
-import {Images} from '../../theme';
+import {Images} from 'theme';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
@@ -122,7 +122,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private preloadAllImages = () => {
 		const {data} = this.props;
@@ -154,7 +154,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 		return ret;
-	}
+	};
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

@@ -11,14 +11,14 @@ const mapDispatchToProps = (dispatch: any): Props => ({
 export default connect(null, mapDispatchToProps)(RootContainer);
 
 // appsync config
-import appsyncConfig from '../../config/appsync';
+import {appsyncConfig} from 'configurations';
 
 import AWSAppSyncClient from 'aws-appsync';
-import { AUTH_TYPE } from 'aws-appsync/lib/link/auth-link';
+import {AUTH_TYPE} from 'aws-appsync/lib/link/auth-link';
 
-export { Rehydrated } from 'aws-appsync-react';
+export {Rehydrated} from 'aws-appsync-react';
 
-import { CurrentUserSession } from '../../utils/';
+import {CurrentUserSession} from 'utilities';
 
 export const AppsyncClient = new AWSAppSyncClient({
 	url: appsyncConfig.graphqlEndpoint,

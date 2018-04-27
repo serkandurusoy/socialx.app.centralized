@@ -1,9 +1,9 @@
+import {CommentCard} from 'components/Displayers/WallPostCard/CommentCard';
+import {CommentTextInput} from 'components/Inputs/CommentTextInput';
+import {OS_TYPES} from 'consts';
+import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
 import {Platform, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
-import {CommentCard} from '../../../components/Displayers/WallPostCard/CommentCard';
-import {CommentTextInput} from '../../../components/Inputs/CommentTextInput';
-import {OS_TYPES} from '../../../constants';
-import {withResizeOnKeyboardShow} from '../../../hoc/ResizeOnKeyboardShow';
 import {IWallPostCommentReply} from '../index';
 import style from './style';
 

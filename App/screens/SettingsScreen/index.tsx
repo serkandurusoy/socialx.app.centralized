@@ -1,15 +1,15 @@
+import {AvatarName, AvatarPicker} from 'components/Avatar';
+import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
 import React, {Component} from 'react';
 import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {AvatarName, AvatarPicker} from '../../components/Avatar';
-import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
-import {Colors, Images, Sizes} from '../../theme/';
+import {Colors, Images, Sizes} from 'theme/';
 import style from './style';
 
-import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
-import {IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
+import {IUserDataResponse} from 'types';
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
