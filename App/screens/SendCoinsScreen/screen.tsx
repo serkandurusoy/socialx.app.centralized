@@ -1,11 +1,11 @@
+import {SendCoinsHeader} from 'components/Displayers';
+import {TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
+import {SXButton} from 'components/Interaction';
+import {CoinSymbol} from 'consts';
 import React from 'react';
 import {ScrollView, Text, TextInput, View} from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import {SendCoinsHeader} from '../../components/Displayers';
-import {TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
-import {SXButton} from '../../components/Interaction';
-import {CoinSymbol} from '../../constants';
-import {Colors} from '../../theme';
+import {Colors} from 'theme';
 import style from './style';
 
 interface ISendCoinsScreenComponentProps {

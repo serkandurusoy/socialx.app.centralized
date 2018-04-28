@@ -1,8 +1,8 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {ModalConfirmation} from '../../App/components/Modals';
-import {Colors} from '../../App/theme';
+import {ModalConfirmation} from 'components/Modals';
+import {Colors} from 'theme';
 import CenterView from '../CenterView';
 
 const containerStyle = {

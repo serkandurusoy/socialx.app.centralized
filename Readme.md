@@ -3,7 +3,7 @@
 ## Prerequisite
 Assuming the development is done on a macOS machine, you will need to have the following installed:
 
-1. Install npm 5+, node 8+, watchman 4.9+ and yarn 1.5+ (you can use [HomeBrew](https://brew.sh) to install them)
+1. Install npm 5+, node 8+, watchman 4.9+, lerna 2.9+ and yarn 1.5+ (you can use [HomeBrew](https://brew.sh) to install them)
 
 2. Using node or yarn do a global install for [React native CLI](https://www.npmjs.com/package/react-native-cli)
 
@@ -26,11 +26,12 @@ under section "Building Projects with Native Code". You can choose from there yo
 ## Running the app:
 
 1. Make sure you first run `yarn install`. We use yarn instead of npm and only maintain yarn.lock. If is required you have yarn 1.5+ installed.
-2. Before running you must start the bundler: `yarn start` with optional parameter `--reset-cache`.
-3. Running Android project on USB connected device: `react-native run-android`. Not tested but should be the same to run on local emulator.
+2. Bootstrap all internal packages with `lerna bootstrap`.
+3. Before running you must start the bundler: `yarn start` with optional parameter `--reset-cache`.
+4. Running Android project on USB connected device: `react-native run-android`. Not tested but should be the same to run on local emulator.
 Make sure your device is recognized by the PC/Mac and it should have developer mode and usb debugging enabled.
  Use command `adb devices` to list all USB connected devices and emulators.
-4. Running iOS project (requires macOS 10.12.4 or newer and XCode 9+):
+5. Running iOS project (requires macOS 10.12.4 or newer and XCode 9+):
 - you need to have installed cocoapods as a global dependency `sudo gem install cocoapods`. This will take some time, don't worry :)
 - before running make sure you go to iOS folder (`cd ios`) and run `pod install`. This step must be repeated each time 
 you do a 'reinstall' of dependencies using `yarn install` after deleting `node_modules` folder.

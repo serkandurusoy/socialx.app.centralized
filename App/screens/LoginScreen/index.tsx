@@ -1,17 +1,17 @@
+import {ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
 import React, {Component} from 'react';
 import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components';
-import {Colors} from '../../theme/';
+import {Colors} from 'theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-import {ModalManager} from '../../hoc/ManagedModal/manager';
-import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
-import {ConfirmSignin, CurrentUserInfo, Signin} from '../../utils';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {ModalManager} from 'hoc/ManagedModal/manager';
+import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
+import {ConfirmSignin, CurrentUserInfo, Signin} from 'utilities';
 
 const PHONE_NUMBER = '+40721205279';
 

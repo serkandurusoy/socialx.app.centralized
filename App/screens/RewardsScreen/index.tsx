@@ -1,5 +1,6 @@
 import moment from 'moment';
 import React, {Component} from 'react';
+import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {RewardsScreenComponent} from './screen';
 
@@ -92,6 +93,7 @@ interface IRewardsScreenState {
 export class RewardsScreen extends Component<RewardsScreenProps, IRewardsScreenState> {
 	private static navigationOptions = {
 		title: 'REWARDS',
+		headerRight: <View />,
 	};
 
 	constructor(props: RewardsScreenProps) {

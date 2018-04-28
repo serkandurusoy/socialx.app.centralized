@@ -3,7 +3,7 @@ import {StatusBar, View} from 'react-native';
 
 import Amplify from 'aws-amplify';
 
-import {awsconfig} from '../../config';
+import {awsconfig} from 'configuration';
 import ReduxNavigation from '../../navigation/ReduxNavigation';
 
 // Styles
@@ -23,7 +23,7 @@ export class RootContainer extends Component<Props> {
 	public render() {
 		return (
 			<View style={styles.applicationView}>
-				<StatusBar barStyle='light-content' />
+				<StatusBar barStyle="light-content" />
 				<ReduxNavigation />
 			</View>
 		);

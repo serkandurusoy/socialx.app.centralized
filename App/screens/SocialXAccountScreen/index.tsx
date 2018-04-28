@@ -1,7 +1,7 @@
+import {AccountCurrencyData} from 'components/Displayers';
+import {CoinSymbol} from 'consts/';
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {AccountCurrencyData} from '../../components/Displayers';
-import {CoinSymbol} from '../../constants/';
 import SocialXAccountScreenComponent from './screen';
 
 const MY_DIGITAL_COINS: AccountCurrencyData[] = [

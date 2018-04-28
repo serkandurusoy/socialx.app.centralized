@@ -1,6 +1,6 @@
+import {ContactsList, IContactListItem, MessagingFilterSection, MessagingFilterValues} from 'components';
 import React, {Component} from 'react';
 import {View} from 'react-native';
-import {ContactsList, IContactListItem, MessagingFilterSection, MessagingFilterValues} from '../../components';
 import style from './contacts.screen.style';
 
 interface IContactsScreenTabProps {

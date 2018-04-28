@@ -1,15 +1,15 @@
+import {AvatarName, AvatarPicker} from 'components/Avatar';
+import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
 import React, {Component} from 'react';
 import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {AvatarName, AvatarPicker} from '../../components/Avatar';
-import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
-import {Colors, Images, Sizes} from '../../theme/';
+import {Colors, Images, Sizes} from 'theme/';
 import style from './style';
 
-import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
-import {IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
+import {IUserDataResponse} from 'types';
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
@@ -58,6 +58,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'SETTINGS',
+		headerRight: <View />,
 	};
 
 	public state = {
@@ -141,12 +142,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 						/>
 					</View>
 					{/*<View style={style.miningContainer}>*/}
-						{/*<SettingCheckbox*/}
-							{/*title={'Mining (Beta)'}*/}
-							{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
-							{/*initialValue={this.props.miningEnabled}*/}
-							{/*valueUpdated={this.toggleMiningSetting}*/}
-						{/*/>*/}
+					{/*<SettingCheckbox*/}
+					{/*title={'Mining (Beta)'}*/}
+					{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
+					{/*initialValue={this.props.miningEnabled}*/}
+					{/*valueUpdated={this.toggleMiningSetting}*/}
+					{/*/>*/}
 					{/*</View>*/}
 				</KeyboardAwareScrollView>
 				{this.renderSaveButton()}

@@ -1,4 +1,4 @@
-import {Colors} from '../../App/theme/';
+import {Colors} from 'theme';
 
 export default {
 	main: {

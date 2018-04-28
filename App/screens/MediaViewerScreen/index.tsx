@@ -1,9 +1,9 @@
+import {ModalCloseButton} from 'components';
+import {DeviceOrientations} from 'consts';
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {ModalCloseButton} from '../../components';
-import {DeviceOrientations} from '../../constants';
 import MediaViewerScreenComponent from './screen';
 
 export interface IPhotoData {

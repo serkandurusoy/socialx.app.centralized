@@ -1,17 +1,17 @@
+import {ModalCloseButton} from 'components/Modals/CloseButton';
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {ModalCloseButton} from '../../components/Modals/CloseButton';
-import {getRandomImage} from '../../utils';
+import {getRandomImage} from 'utilities';
 import CommentsScreenComponent from './screen';
 
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from '../../graphql';
+import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
 
-import base from '../../config/ipfs';
-import {CommentType, IComments, ICommentsResponse, IUserQuery} from '../../types/gql';
+import {ipfsConfig as base} from 'configuration';
+import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
@@ -21,6 +21,7 @@ export interface IWallPostCommentReply {
 	user: {
 		fullName: string;
 		avatarURL?: string;
+		id: string;
 	};
 	timestamp: Date;
 	numberOfLikes: number;
@@ -75,6 +76,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				onCommentLike={this.onCommentLikeHandler}
 				onCommentReply={this.onCommentReplyHandler}
 				onCommentSend={this.onCommentSendHandler}
+				onCommentDelete={this.onCommentDeleteHandler}
 			/>
 		);
 	}
@@ -97,6 +99,10 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		} catch (ex) {
 			console.log(ex);
 		}
+	}
+
+	private onCommentDeleteHandler = (comment: IWallPostComment) => {
+		// console.log('TODO: delete comment with ID', comment.id);
 	}
 
 	private onCommentSendHandler = async (commentText: string) => {
@@ -135,9 +141,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		for (let i = 0; i < comments.length; i++) {
 			const currentComment = comments[i];
-			const ownerAv = currentComment.owner.avatar
-				? base.ipfs_URL + currentComment.owner.avatar.hash
-				: imagePlaceHolder;
+			const ownerAv = currentComment.owner.avatar ? base.ipfs_URL + currentComment.owner.avatar.hash : imagePlaceHolder;
 			const allReplies: IWallPostComment[] = [];
 
 			if (currentComment.comments.length > 0) {
@@ -153,6 +157,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 						user: {
 							fullName: currentReply.owner.name,
 							avatarURL: replyOwnerAv,
+							id: currentReply.owner.userId,
 						},
 						timestamp: new Date(currentReply.createdAt),
 						numberOfLikes: currentReply.likes.length,
@@ -169,6 +174,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				user: {
 					fullName: currentComment.owner.name,
 					avatarURL: ownerAv,
+					id: currentComment.owner.userId,
 				},
 				timestamp: new Date(currentComment.createdAt),
 				numberOfLikes: currentComment.likes.length,
