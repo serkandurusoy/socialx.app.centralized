@@ -8,6 +8,7 @@ import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
 import CreateEventScreen from '../screens/CreateEventScreen';
+import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -53,6 +54,7 @@ const EventsStackNavigator = StackNavigator(
 	{
 		MyEventsScreen: {screen: MyEventsScreen},
 		CreateEventScreen: {screen: CreateEventScreen},
+		EventDetailScreen: {screen: EventDetailScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,
