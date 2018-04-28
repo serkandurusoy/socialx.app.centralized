@@ -1,6 +1,8 @@
 import {IEventData} from 'components/Displayers/EventListItem';
 import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
+import {IEventDetailScreenNavParams} from '../EventDetailScreen';
+
 import MyEventsScreenComponent from './screen';
 
 const SAMPLE_EVENTS: IEventData[] = [
@@ -68,7 +70,13 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 	};
 
 	public render() {
-		return <MyEventsScreenComponent onAddNewEvent={this.onAddNewEventHandler} events={this.state.eventsList} />;
+		return (
+			<MyEventsScreenComponent
+				onAddNewEvent={this.onAddNewEventHandler}
+				events={this.state.eventsList}
+				openEventDetailPage={this.openEventDetailPageHandler}
+			/>
+		);
 	}
 
 	private onAddNewEventHandler = (date: Date) => {
@@ -84,5 +92,17 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 	private createNewEvent = (eventData: IEventData) => {
 		// console.log('createNewEvent', eventData); // TODO: GQL call to create the event
 		this.setState({eventsList: [...this.state.eventsList, eventData]});
+	}
+
+	private openEventDetailPageHandler = (eventData: IEventData) => {
+		const navParams: IEventDetailScreenNavParams = {
+			eventData,
+			onEventDelete: this.onEventDeleteHandler,
+		};
+		this.props.navigation.navigate('EventDetailScreen', navParams);
+	}
+
+	private onEventDeleteHandler = (eventData: IEventData) => {
+		// console.log('onEventDeleteHandler', eventData.title); // TODO: GQL call to delete the event
 	}
 }

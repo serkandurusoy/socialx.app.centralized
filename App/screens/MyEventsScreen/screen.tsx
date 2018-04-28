@@ -12,6 +12,7 @@ import style from './style';
 interface IMyEventsScreenComponentProps {
 	events: IEventData[];
 	onAddNewEvent: (date: Date) => void;
+	openEventDetailPage: (data: IEventData) => void;
 }
 
 interface IMyEventsScreenComponentState {
@@ -129,7 +130,7 @@ export default class MyEventsScreenComponent extends Component<
 	}
 
 	private renderItem = (item: IEventData) => {
-		return <EventListItem {...item} />;
+		return <EventListItem {...item} navigateToEventDetailPage={() => this.props.openEventDetailPage(item)} />;
 	}
 
 	private renderEmptyDateHandler = (day: XDate) => {
