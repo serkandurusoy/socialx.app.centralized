@@ -1,12 +1,12 @@
+import {EventListItem, IEventData} from 'components/Displayers/EventListItem';
 import isEqual from 'lodash/isEqual';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Colors, Fonts, Sizes} from 'theme/';
 import XDate from 'XDate';
-import {EventListItem, IEventData} from '../../components/Displayers/EventListItem';
-import {Colors, Fonts, Sizes} from '../../theme/';
 import style from './style';
 
 interface IMyEventsScreenComponentProps {

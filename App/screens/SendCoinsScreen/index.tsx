@@ -1,6 +1,6 @@
+import {CoinSymbol} from 'consts';
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
-import {CoinSymbol} from '../../constants';
 import SendCoinsScreenComponent from './screen';
 
 export default class SendCoinsScreen extends Component {

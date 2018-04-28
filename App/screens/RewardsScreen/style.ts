@@ -1,15 +1,18 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme';
+import {Colors, Fonts, Sizes} from 'theme';
 
 export const DAY_CHART_ITEM_WIDTH = Math.round(Sizes.smartHorizontalScale(30));
 
 const style: any = {
-	container: {
+	scrollView: {
 		flex: 1,
 		width: '100%',
-		backgroundColor: Colors.white,
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
 		paddingVertical: Sizes.smartVerticalScale(8),
+		backgroundColor: Colors.white,
+	},
+	scrollContent: {
+		minHeight: '100%',
 	},
 	titleText: {
 		...Fonts.centuryGothic,
@@ -53,6 +56,8 @@ const style: any = {
 	fullWidth: {
 		width: '50%',
 		flex: 1,
+		minHeight: Sizes.smartVerticalScale(75),
+		maxHeight: Sizes.smartVerticalScale(150),
 	},
 	animatedViewport: {
 		flex: 1,

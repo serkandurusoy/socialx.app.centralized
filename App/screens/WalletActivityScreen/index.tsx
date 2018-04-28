@@ -1,7 +1,7 @@
+import {TransactionData, TransactionType, TrendOptions} from 'components/Displayers';
+import {CoinSymbol} from 'consts/';
 import React, {Component} from 'react';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {TransactionData, TransactionType, TrendOptions} from '../../components/Displayers';
-import {CoinSymbol} from '../../constants/';
 import WalletActivityScreenComponent from './screen';
 
 let ONE_PAGE_TRANSACTIONS: TransactionData[] = [

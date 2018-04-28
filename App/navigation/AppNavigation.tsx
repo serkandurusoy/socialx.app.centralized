@@ -2,7 +2,8 @@ import React from 'react';
 import {StackNavigator, TabNavigator} from 'react-navigation';
 import LaunchScreen from '../screens/LaunchScreen';
 
-import {TabBarBottom} from '../components/Displayers';
+import {TabBarBottom} from 'components/Displayers';
+import {ApplicationStyles, Colors} from 'theme';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
@@ -18,6 +19,7 @@ import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import PhotoScreen from '../screens/PhotoScreen';
+import ProfileAnalyticsScreen from '../screens/ProfileAnalyticsScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import {RewardsScreen} from '../screens/RewardsScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
@@ -30,7 +32,6 @@ import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
-import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
 
 const navOptionsDefault = {
@@ -66,6 +67,8 @@ const MyProfileStackNavigator = StackNavigator(
 		SettingsScreen: {screen: SettingsScreen},
 		WalletActivityScreen: {screen: WalletActivityScreen},
 		SocialXAccountScreen: {screen: SocialXAccountScreen},
+		ProfileAnalyticsScreen: {screen: ProfileAnalyticsScreen},
+		RewardsScreen: {screen: RewardsScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,
@@ -142,7 +145,6 @@ const PrimaryNav = StackNavigator(
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
-		RewardsScreen: {screen: RewardsScreen}, // TODO: later to be moved!
 		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
 	},
 	{

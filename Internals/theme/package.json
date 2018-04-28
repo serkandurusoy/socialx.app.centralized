@@ -1,0 +1,8 @@
+{
+  "name": "theme",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "Jake",
+  "license": "MIT",
+  "private": true
+}

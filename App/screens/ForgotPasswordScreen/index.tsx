@@ -1,15 +1,15 @@
+import {SXTextInput, TRKeyboardKeys} from 'components/Inputs/TextInput';
+import {SXButton} from 'components/Interaction/Button';
 import React, {Component} from 'react';
 import {Alert, Platform, ScrollView, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
-import {SXTextInput, TRKeyboardKeys} from '../../components/Inputs/TextInput';
-import {SXButton} from '../../components/Interaction/Button';
-import {Colors} from '../../theme';
+import {Colors} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
-import {ModalManager} from '../../hoc/ManagedModal/manager';
-import {ForgotPassword} from '../../utils';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {ModalManager} from 'hoc/ManagedModal/manager';
+import {ForgotPassword} from 'utilities';
 
 interface IForgotPasswordScreenProps {
 	navigation: NavigationScreenProp<any>;

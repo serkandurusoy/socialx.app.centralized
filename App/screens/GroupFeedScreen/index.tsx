@@ -1,9 +1,9 @@
+import {IWallPostCardProp, TitleWithSubtitle} from 'components/Displayers';
+import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
 import {Platform} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IWallPostCardProp, TitleWithSubtitle} from '../../components/Displayers';
-import {OS_TYPES} from '../../constants';
-import {Colors, Images} from '../../theme';
+import {Colors, Images} from 'theme';
 import {NewWallPostData} from '../NewWallPostScreen';
 import GroupFeedScreenComponent from './screen';
 
@@ -54,7 +54,7 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 		headerTitle: <TitleWithSubtitle title={'TESTGROUP'} subtitle={'Some subtitle example text'} />,
 		headerStyle: {
 			backgroundColor: Colors.pink,
-			height: Platform.OS === OS_TYPES.iOS ? 52 : 54,
+			height: Platform.OS === OS_TYPES.IOS ? 52 : 54,
 		},
 	};
 

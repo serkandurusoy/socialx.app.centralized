@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {Colors, colorWithAlpha} from '../../../../theme';
+import {Colors, colorWithAlpha} from 'theme';
 import style from './style';
 
 export interface IChartListDataRowProps {
