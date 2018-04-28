@@ -1,9 +1,9 @@
+import {AvatarImage} from 'components/Avatar';
+import {IWallPostCardProp, WallPostCard} from 'components/Displayers';
+import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {AvatarImage} from '../../components/Avatar';
-import {IWallPostCardProp, WallPostCard} from '../../components/Displayers';
-import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
-import {IUserQuery} from '../../types/gql';
+import {IUserQuery} from 'types';
 import style from './style';
 
 interface IUserFeedScreenProps extends IWithLoaderProps {
@@ -73,4 +73,4 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 	);
 };
 
-export default withInlineLoader(UserFeedScreen);
+export default withInlineLoader(UserFeedScreen as any);

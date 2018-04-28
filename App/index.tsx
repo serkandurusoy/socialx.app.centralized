@@ -5,12 +5,12 @@ import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
 
 // refactoring
+import {getAvailableAnimations} from 'configuration/animations';
+import {OS_TYPES} from 'consts';
 import SplashScreen from 'react-native-smart-splash-screen';
-import {getAvailableAnimations} from './config/animations';
-import {OS_TYPES} from './constants';
+import {Colors} from 'theme';
 import RootContainer, {AppsyncClient, Rehydrated} from './containers/RootContainer';
 import createStore from './reducers';
-import {Colors} from './theme';
 
 const store = createStore();
 

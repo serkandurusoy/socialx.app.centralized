@@ -1,17 +1,17 @@
+import {ModalCloseButton} from 'components/Modals/CloseButton';
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {ModalCloseButton} from '../../components/Modals/CloseButton';
-import {getRandomImage} from '../../utils';
+import {getRandomImage} from 'utilities';
 import CommentsScreenComponent from './screen';
 
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from '../../graphql';
+import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
 
-import base from '../../config/ipfs';
-import {CommentType, IComments, ICommentsResponse, IUserQuery} from '../../types/gql';
+import {ipfsConfig as base} from 'configuration';
+import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 

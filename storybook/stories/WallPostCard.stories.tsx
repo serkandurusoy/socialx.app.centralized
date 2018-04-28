@@ -1,8 +1,8 @@
 import {date, number, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {WallPostCard} from '../../App/components/Displayers';
-import {Colors} from '../../App/theme/';
+import {WallPostCard} from 'components/Displayers';
+import {Colors} from 'theme/';
 import CenterView from '../CenterView';
 
 const containerStyle = {

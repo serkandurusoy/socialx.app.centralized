@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import {Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
+import {AvatarImage} from 'components/Avatar';
+import {SXTextInput} from 'components/Inputs';
+import {ButtonSizes, SXButton} from 'components/Interaction';
+import {ModalCloseButton} from 'components/Modals';
 import {ActionSheet} from 'native-base';
 import RNFS from 'react-native-fs';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
 import {NavigationScreenProp} from 'react-navigation';
-import {AvatarImage} from '../../components/Avatar';
-import {SXTextInput} from '../../components/Inputs';
-import {ButtonSizes, SXButton} from '../../components/Interaction';
-import {ModalCloseButton} from '../../components/Modals';
-import {Colors, Icons, Sizes} from '../../theme';
+import {Colors, Icons, Sizes} from 'theme';
 import style from './style';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';

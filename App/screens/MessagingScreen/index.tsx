@@ -1,8 +1,8 @@
+import {IContactListItem} from 'components/Displayers';
+import {MessagingFilterValues} from 'components/Messaging';
 import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
 import {DUMMY_CONTACTS_LIST} from '../../../storybook/stories/ContactsList.stories';
-import {IContactListItem} from '../../components/Displayers';
-import {MessagingFilterValues} from '../../components/Messaging';
 import MessagingComponent from './screen';
 
 export enum MessagingTabValues {

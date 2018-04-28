@@ -1,12 +1,12 @@
+import {CommentCard} from 'components/Displayers/WallPostCard/CommentCard';
+import {CommentTextInput} from 'components/Inputs/CommentTextInput';
+import {OS_TYPES} from 'consts';
+import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
+import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
 import {Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {CommentCard} from '../../components/Displayers/WallPostCard/CommentCard';
-import {CommentTextInput} from '../../components/Inputs/CommentTextInput';
-import {OS_TYPES} from '../../constants';
-import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
-import {withResizeOnKeyboardShow} from '../../hoc/ResizeOnKeyboardShow';
-import {Colors, Sizes} from '../../theme';
+import {Colors, Sizes} from 'theme';
 import {IWallPostComment} from './index';
 import style from './style';
 
@@ -35,7 +35,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 
 	public render() {
 		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			containerStyles.push({marginBottom: this.props.marginBottom});
 		}
 		return this.props.renderWithLoader(

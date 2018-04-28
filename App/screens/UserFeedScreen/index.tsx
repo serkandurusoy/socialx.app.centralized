@@ -2,13 +2,12 @@ import React, {Component} from 'react';
 import {Alert, View} from 'react-native';
 import {connect} from 'react-redux';
 
+import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IWallPostCardProp} from '../../components/Displayers';
-import {Images} from '../../theme';
+import {Images} from 'theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
-import {graphql} from 'react-apollo';
 import {
 	addMediaHoc,
 	createPostHoc,
@@ -18,16 +17,18 @@ import {
 	likePostHoc,
 	removeLikePostHoc,
 	userHoc,
-} from '../../graphql';
-import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
-import {CurrentUser} from '../../utils';
+} from 'backend/graphql';
+import {graphql} from 'react-apollo';
+import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from 'types';
+import {CurrentUser} from 'utilities';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import {IBlobData} from '../../lib/ipfs';
-import {addBlob} from '../../utils/ipfs';
+// import {IBlobData} from '../../lib/ipfs';
+import {IBlobData} from 'ipfslib';
+import {addBlob} from 'utilities/ipfs';
 
-import base from '../../config/ipfs';
+import {ipfsConfig as base} from 'configuration';
 
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
@@ -367,7 +368,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
-		this.props.navigation.navigate('CommentsStack', { postId: wallPostData.id, userId: this.props.data.user.userId });
+		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
 	}
 }
 

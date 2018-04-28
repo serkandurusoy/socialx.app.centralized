@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme';
+import {Colors, Fonts, Sizes} from 'theme';
 
 export const DAY_CHART_ITEM_WIDTH = Math.round(Sizes.smartHorizontalScale(30));
 

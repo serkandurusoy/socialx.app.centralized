@@ -1,6 +1,6 @@
+import {MessagingChatListEntry} from 'components';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, TouchableWithoutFeedback, View} from 'react-native';
-import {MessagingChatListEntry} from '../../components';
 import style from './chat.screen.style';
 import {IChatListEntry} from './index';
 

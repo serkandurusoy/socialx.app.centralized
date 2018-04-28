@@ -2,7 +2,8 @@ import React from 'react';
 import {StackNavigator, TabNavigator} from 'react-navigation';
 import LaunchScreen from '../screens/LaunchScreen';
 
-import {TabBarBottom} from '../components/Displayers';
+import {TabBarBottom} from 'components/Displayers';
+import {ApplicationStyles, Colors} from 'theme';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
@@ -30,7 +31,6 @@ import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
-import {ApplicationStyles, Colors} from '../theme';
 import styles from './styles/NavigationStyles';
 
 const navOptionsDefault = {

@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme';
+import {Colors, Fonts, Sizes} from 'theme';
 
 const USER_AVATAR_SIZE = Sizes.smartHorizontalScale(40);
 

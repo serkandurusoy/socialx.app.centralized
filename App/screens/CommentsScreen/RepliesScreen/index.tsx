@@ -4,14 +4,14 @@ import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigati
 import {connect} from 'react-redux';
 import RepliesScreenComponent from './screen';
 
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from '../../../graphql';
+import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
 
-import {IComments, ICommentsResponse} from '../../../types/gql';
+import {IComments, ICommentsResponse} from 'types';
 import {IWallPostCommentReply} from '../index';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import base from '../../../config/ipfs';
+import {ipfsConfig as base} from 'configuration';
 
 const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 

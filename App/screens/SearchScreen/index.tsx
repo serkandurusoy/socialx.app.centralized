@@ -1,12 +1,12 @@
+import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
 import React, {Component} from 'react';
 import {findNodeHandle, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from '../../components';
 import SearchScreenComponent from './screen';
 
-import base from '../../config/ipfs';
+import {ipfsConfig as base} from 'configuration';
 
-import {searchUsersHoc} from '../../graphql';
+import {searchUsersHoc} from 'backend/graphql';
 
 export enum SearchFilterValues {
 	People = 'people',

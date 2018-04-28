@@ -3,21 +3,21 @@ import {Alert, findNodeHandle, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
-import {ModalCloseButton} from '../../components/Modals';
+import {ModalCloseButton} from 'components/Modals';
 import PhotoScreenComponent from './screen';
 import {SendPostButton} from './SendPostButton';
 
-import {addMediaHoc, createPostHoc, userHoc} from '../../graphql';
-import {IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createPostHoc, userHoc} from 'backend/graphql';
+import {IUserDataResponse} from 'types';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import {ModalManager} from '../../hoc/ManagedModal/manager';
+import {ModalManager} from 'hoc/ManagedModal/manager';
 
-import base from '../../config/ipfs';
-import {addBlob} from '../../utils/ipfs';
+import {ipfsConfig as base} from 'configuration';
+import {addBlob} from 'utilities/ipfs';
 
-import {IModalForAddFriendsProps, withModalForAddFriends} from '../../hoc/WithModalForAddFriends';
+import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 
 export interface FriendsSearchResult {
 	id: string;

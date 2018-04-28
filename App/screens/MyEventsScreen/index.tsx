@@ -1,6 +1,6 @@
+import {IEventData} from 'components/Displayers/EventListItem';
 import React, {Component} from 'react';
 import {NavigationScreenProp} from 'react-navigation';
-import {IEventData} from '../../components/Displayers/EventListItem';
 import MyEventsScreenComponent from './screen';
 
 const SAMPLE_EVENTS: IEventData[] = [

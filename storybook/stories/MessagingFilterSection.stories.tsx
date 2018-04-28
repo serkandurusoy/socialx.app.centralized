@@ -1,8 +1,8 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {MessagingFilterSection, MessagingFilterValues} from '../../App/components/Messaging';
-import {Colors} from '../../App/theme';
+import {MessagingFilterSection, MessagingFilterValues} from 'components/Messaging';
+import {Colors} from 'theme';
 import CenterView from '../CenterView';
 
 const containerStyle = {
