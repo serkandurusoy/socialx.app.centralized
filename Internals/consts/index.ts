@@ -13,10 +13,13 @@ export enum DeviceOrientations {
 	Upsidedown = 'PORTRAITUPSIDEDOWN',
 }
 
-export enum OS_TYPES {
-	iOS = 'ios',
-	Android = 'android',
-}
+export const AndroidType = 'android';
+export const IosType = 'ios';
+
+export const OS_TYPES = {
+	IOS: 'ios',
+	Android: 'android',
+};
 
 export enum CoinSymbol {
 	// here the values are in sync with CoinIcons & CoinFullName keys

@@ -1,4 +1,4 @@
-import {OS_TYPES} from 'constants';
+import {OS_TYPES} from 'consts';
 import {Permission, PermissionsAndroid, Platform} from 'react-native';
 
 export async function requestResourcePermission(

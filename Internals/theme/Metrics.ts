@@ -1,4 +1,4 @@
-import {OS_TYPES} from 'consts';
+import {IosType} from 'consts';
 
 import {Dimensions, Platform} from 'react-native';
 import {Sizes} from './Sizes';
@@ -17,7 +17,7 @@ export const Metrics = {
 	// horizontalLineHeight: 1,
 	// screenWidth: width < height ? width : height,
 	// screenHeight: width < height ? height : width,
-	navBarHeight: Platform.OS === OS_TYPES.iOS ? 54 : 47, // not very reliable should be done else!
+	navBarHeight: Platform.OS === IosType ? 54 : 47, // not very reliable should be done else!
 	// buttonRadius: 4,
 	// icons: {
 	// 	tiny: 15,

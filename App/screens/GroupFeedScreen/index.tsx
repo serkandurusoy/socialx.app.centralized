@@ -54,7 +54,7 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 		headerTitle: <TitleWithSubtitle title={'TESTGROUP'} subtitle={'Some subtitle example text'} />,
 		headerStyle: {
 			backgroundColor: Colors.pink,
-			height: Platform.OS === OS_TYPES.iOS ? 52 : 54,
+			height: Platform.OS === OS_TYPES.IOS ? 52 : 54,
 		},
 	};
 

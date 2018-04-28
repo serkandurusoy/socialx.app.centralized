@@ -33,7 +33,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 
 	public render() {
 		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			containerStyles.push({marginBottom: this.props.marginBottom});
 		}
 		return (

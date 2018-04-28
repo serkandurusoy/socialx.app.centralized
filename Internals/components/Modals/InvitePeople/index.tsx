@@ -80,7 +80,7 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 
 	private getResizableStyles = () => {
 		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;

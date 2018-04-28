@@ -32,7 +32,7 @@ interface IModalInvitePeopleProps {
 
 const ModalShareOptionsSFC: React.SFC<IModalInvitePeopleProps> = (props) => {
 	const renderOSBlurView = () => {
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableWithoutFeedback onPress={props.closeHandler}>
 					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
@@ -42,7 +42,7 @@ const ModalShareOptionsSFC: React.SFC<IModalInvitePeopleProps> = (props) => {
 		return null;
 	};
 
-	const backDropOpacity = Platform.OS === OS_TYPES.iOS ? 0 : 0.7;
+	const backDropOpacity = Platform.OS === OS_TYPES.IOS ? 0 : 0.7;
 
 	return (
 		<Modal

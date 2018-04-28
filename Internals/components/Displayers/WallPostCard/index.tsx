@@ -175,7 +175,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			const hasMore =
 				text.length > DESCRIPTION_TEXT_LENGTH_SHORT &&
 				!this.state.fullDescriptionVisible &&
-				Platform.OS === OS_TYPES.iOS;
+				Platform.OS === OS_TYPES.IOS;
 			const textToRender = hasMore ? text.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT) + '...' : text;
 			const showMoreButton = hasMore ? (
 				<TouchableOpacity onPress={this.toggleShowFullDescription}>

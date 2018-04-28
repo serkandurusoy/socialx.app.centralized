@@ -29,7 +29,7 @@ export const withManagedTransitions = (CustomModal: any) => {
 		}
 
 		private onDismiss = () => {
-			if (Platform.OS === OS_TYPES.iOS) {
+			if (Platform.OS === OS_TYPES.IOS) {
 				this.runAfterDismiss();
 			}
 		}

@@ -45,7 +45,7 @@ class ModalReportProblemComponent extends Component<
 	};
 
 	public render() {
-		const backDropOpacity = Platform.OS === OS_TYPES.iOS ? 0 : 0.7;
+		const backDropOpacity = Platform.OS === OS_TYPES.IOS ? 0 : 0.7;
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -106,7 +106,7 @@ class ModalReportProblemComponent extends Component<
 	}
 
 	private renderOSBlurView = () => {
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableWithoutFeedback onPress={this.props.declineHandler}>
 					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
@@ -124,7 +124,7 @@ class ModalReportProblemComponent extends Component<
 
 	private getResizableStyles = () => {
 		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;

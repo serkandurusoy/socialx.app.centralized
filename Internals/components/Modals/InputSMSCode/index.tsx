@@ -86,7 +86,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 
 	private getModalStyles = () => {
 		const ret = [style.container];
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
 		return ret;

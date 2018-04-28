@@ -248,7 +248,7 @@ export default class ChatThreadScreenComponent extends Component<
 		// TODO: 1. check why location high accuracy does not work on Android?
 		// 2. handle the case when device location is turned off,
 		// see https://github.com/webyonet/react-native-android-location-services-dialog-box
-		const locationHighAccuracyEnabled = Platform.OS === OS_TYPES.iOS;
+		const locationHighAccuracyEnabled = Platform.OS === OS_TYPES.IOS;
 		requestResourcePermission(
 			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
 			REQUEST_LOCATION_TITLE,

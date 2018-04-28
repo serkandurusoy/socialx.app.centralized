@@ -84,7 +84,7 @@ export default class MediaViewerScreenComponent extends Component<
 
 	private getIOSCarouselProps = () => {
 		const ret: any = {};
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			ret.windowSize = 1;
 			ret.initialNumToRender = 1;
 		} else {
@@ -123,7 +123,7 @@ export default class MediaViewerScreenComponent extends Component<
 	}
 
 	private exitFullScreenMode = () => {
-		const timeoutBeforeAllowAgainAllOrientation = Platform.OS === OS_TYPES.iOS ? 100 : 5000;
+		const timeoutBeforeAllowAgainAllOrientation = Platform.OS === OS_TYPES.IOS ? 100 : 5000;
 		Orientation.lockToPortrait();
 		setTimeout(() => {
 			Orientation.unlockAllOrientations();

@@ -32,7 +32,7 @@ const style: any = {
 		marginRight: Sizes.smartHorizontalScale(10),
 	},
 	switch: {
-		transform: [Platform.OS === OS_TYPES.iOS ? {scale: 0.7} : {scale: 1}],
+		transform: [Platform.OS === OS_TYPES.IOS ? {scale: 0.7} : {scale: 1}],
 	},
 };
 
