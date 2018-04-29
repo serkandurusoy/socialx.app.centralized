@@ -194,7 +194,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				retImage.width,
 				retImage.height,
 				'JPEG',
-				70,
+				50,
 			);
 			const content = await RNFS.readFile(retImage.path, 'base64');
 			const contentOptimized = await RNFS.readFile(optimized.path, 'base64');

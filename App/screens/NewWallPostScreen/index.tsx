@@ -156,7 +156,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		const {mediaObjects} = this.state;
 		const mediaMimeType = image.mime;
 		try {
-			const optimized = await ImageResizer.createResizedImage(image.path, image.width, image.height, 'JPEG', 70);
+			const optimized = await ImageResizer.createResizedImage(image.path, image.width, image.height, 'JPEG', 50);
 
 			const imagecontent = await RNFS.readFile(image.path, 'base64');
 			const imageoptimizedContent = await RNFS.readFile(optimized.path, 'base64');
