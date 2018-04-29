@@ -49,7 +49,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 			ret.text = this.state.text;
 		}
 		return ret;
-	};
+	}
 
 	public render() {
 		return this.props.renderWithLoader(
@@ -99,7 +99,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 				{this.renderAddLocation()}
 			</View>
 		);
-	};
+	}
 
 	private renderAddLocation = () => {
 		if (this.state.locationEnabled) {

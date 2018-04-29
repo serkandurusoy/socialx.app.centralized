@@ -2,6 +2,7 @@ import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Image, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
 
 import {LayoutEvent, NavigationScreenProp} from 'react-navigation';
 import {Icons, Sizes} from 'theme';
@@ -187,10 +188,22 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	}
 
 	private useSelectedPhoto = async (retImage: PickerImage) => {
-		const content = await RNFS.readFile(retImage.path, 'base64');
-		const type = retImage.path.split('.')[1];
-		const image: any = {...retImage, content, type};
-		this.props.navigation.navigate('PhotoScreen', {image});
+		try {
+			const optimized = await ImageResizer.createResizedImage(
+				retImage.path,
+				retImage.width,
+				retImage.height,
+				'JPEG',
+				70,
+			);
+			const content = await RNFS.readFile(retImage.path, 'base64');
+			const contentOptimized = await RNFS.readFile(optimized.path, 'base64');
+			const type = retImage.path.split('.')[1];
+			const image: any = {...retImage, content, type, contentOptimized};
+			this.props.navigation.navigate('PhotoScreen', {image});
+		} catch (ex) {
+			//
+		}
 	}
 }
 

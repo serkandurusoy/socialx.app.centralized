@@ -128,7 +128,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		for (let i = 0; i < allPosts.length; i++) {
 			const post: IPostsProps = allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
-			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
+			const media = post.Media
+				? post.Media.length > 0 ? base.ipfs_URL + post.Media[0].optimizedHash : undefined
+				: undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
 
 			const res: IWallPostCardProp = {
@@ -225,6 +227,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					variables: {
 						hash: currentIpfsData.hash,
 						type: currentIpfsData.type,
+						optimizedHash: currentIpfsData.optimizedHash,
 						size: parseInt(currentIpfsData.size, undefined),
 					},
 				});
@@ -237,14 +240,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						Media: mediaIds,
 					},
 				});
-
-				// stop loading
-				stopLoading();
-				// refresh the wall posts to append the new post
-				this.refreshWallPosts();
 			}
+			// refresh the wall posts to append the new post
+			this.refreshWallPosts();
 		} catch (ex) {
 			//
+			console.log('ex from create', ex);
 		}
 
 		stopLoading();

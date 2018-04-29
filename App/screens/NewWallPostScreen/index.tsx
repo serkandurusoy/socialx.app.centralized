@@ -8,6 +8,7 @@ import {ModalCloseButton} from 'components/Modals';
 import {ActionSheet} from 'native-base';
 import RNFS from 'react-native-fs';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
 import Video from 'react-native-video';
 import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Icons, Sizes} from 'theme';
@@ -31,6 +32,7 @@ export interface MediaObject {
 	size: number;
 	name: string;
 	content: any;
+	contentOptimized: any;
 }
 
 export interface NewWallPostData {
@@ -154,21 +156,25 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		const {mediaObjects} = this.state;
 		const mediaMimeType = image.mime;
 		try {
+			const optimized = await ImageResizer.createResizedImage(image.path, image.width, image.height, 'JPEG', 70);
+
 			const imagecontent = await RNFS.readFile(image.path, 'base64');
+			const imageoptimizedContent = await RNFS.readFile(optimized.path, 'base64');
+
 			const localImagePath: MediaObject = {
 				path: (image as PickerImage).path,
 				type: mediaMimeType.startsWith(MediaTypes.Video) ? MediaTypes.Video : MediaTypes.Image,
 				size: image.size,
 				name: image.path.split('/')[image.path.split('/').length - 1],
 				content: imagecontent,
+				contentOptimized: imageoptimizedContent,
 			};
 
 			this.setState({
 				mediaObjects: mediaObjects.concat([localImagePath]),
 			});
 		} catch (ex) {
-			// TODO: handle err
-			// console.log(ex);
+			console.log(ex);
 		}
 	}
 
