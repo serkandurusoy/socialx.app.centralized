@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme/';
+import {Colors, Fonts, Sizes} from 'theme/';
 
 const ADD_BUTTON_SIZE = Sizes.smartHorizontalScale(50);
 

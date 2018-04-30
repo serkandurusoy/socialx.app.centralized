@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import {PieChart} from 'react-native-svg-charts';
-import {Colors} from '../../../../theme/';
+import {Colors} from 'theme/';
 import {ChartListDataItem, PieChartSections} from '../../index';
 import style from './style';
 

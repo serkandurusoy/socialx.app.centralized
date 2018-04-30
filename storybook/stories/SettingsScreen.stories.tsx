@@ -1,7 +1,7 @@
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
+import {Images} from 'theme';
 import SettingsScreen, {SettingsData} from '../../App/screens/SettingsScreen';
-import {Images} from '../../App/theme';
 
 const saveHandler = (data: SettingsData) => {
 	alert('saveHandler');

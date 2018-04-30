@@ -1,8 +1,8 @@
+import {IEventData} from 'components/Displayers/EventListItem';
+import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {IEventData} from '../../components/Displayers/EventListItem';
-import {IModalForAddFriendsProps, withModalForAddFriends} from '../../hoc/WithModalForAddFriends';
 import {SendPostButton} from '../PhotoScreen/SendPostButton';
 import CreateEventScreenComponent from './screen';
 

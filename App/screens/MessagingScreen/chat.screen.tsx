@@ -1,6 +1,6 @@
+import {MessagingChatListEntry} from 'components';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, TouchableWithoutFeedback, View} from 'react-native';
-import {MessagingChatListEntry} from '../../components';
 import style from './chat.screen.style';
 import {IChatListEntry} from './index';
 
@@ -10,6 +10,7 @@ interface IChatScreenTabProps {
 	refreshData: () => void;
 	loadMoreChatEntries: () => void;
 	hasMore: boolean;
+	onChatItemPress: (item: IChatListEntry) => void;
 }
 
 export default class ChatScreenTab extends Component<IChatScreenTabProps, any> {
@@ -31,7 +32,7 @@ export default class ChatScreenTab extends Component<IChatScreenTabProps, any> {
 	}
 
 	private renderUserWithLastMessage = (data: {item: IChatListEntry; index: number}) => {
-		return <MessagingChatListEntry {...data.item} />;
+		return <MessagingChatListEntry {...data.item} onPress={() => this.props.onChatItemPress(data.item)} />;
 	}
 
 	private renderFooterWhenLoading = () => {

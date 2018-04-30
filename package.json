@@ -1,8 +1,11 @@
 {
   "name": "socialxtypeactress",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "private": true,
   "author": "Jake",
+  "workspaces": [
+    "Internals/*"
+  ],
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
@@ -20,6 +23,7 @@
     "lint": "tslint --project . -e '**/*.js' -t verbose | snazzy",
     "lintdiff": "git diff --name-only --cached --relative | grep '\\.tsx?$' | xargs tslint | snazzy",
     "fixcode": "tslint --project . -e '**/*.js' --fix",
+    "fixdiff": "git diff --name-only --cached --relative | grep '\\.tsx?$' | xargs tslint -v --fix -p . ",
     "pretty": "git diff --name-only HEAD | grep '.*\\.ts.*' | xargs node_modules/.bin/prettier --write --config .prettierrc",
     "prettyWin": "where /r .\\App *.ts *.tsx | xargswin -I{} \"npm run prettier {}\"",
     "prettier": "node_modules/.bin/prettier --write --config .prettierrc",
@@ -29,6 +33,7 @@
   },
   "dependencies": {
     "@hawkrives/react-native-alphabetlistview": "^1.0.0",
+    "@types/socket.io": "^1.4.33",
     "amazon-cognito-identity-js": "^2.0.1",
     "apollo-cache-inmemory": "^1.1.11",
     "apollo-client": "^2.2.7",
@@ -97,6 +102,7 @@
     "redux-axios-middleware": "^4.0.0",
     "redux-persist": "^5.9.1",
     "redux-thunk": "^2.2.0",
+    "socket.io-client": "^2.1.0",
     "typesafe-actions": "^1.1.2",
     "uuid": "^3.2.1"
   },
@@ -123,6 +129,7 @@
     "@types/react-redux": "^5.0.15",
     "@types/react-test-renderer": "^16.0.1",
     "@types/redux": "^3.6.0",
+    "@types/socket.io-client": "^1.4.32",
     "@types/uuid": "^3.4.3",
     "@types/webpack-env": "^1.13.5",
     "@types/xdate": "^0.8.28",
@@ -132,6 +139,7 @@
     "babel-preset-react-native": "^4.0.0",
     "jest": "^22.4.0",
     "jest-preset-typescript-react-native": "^1.2.0",
+    "lerna": "^2.9.0",
     "prettier": "^1.10.2",
     "prop-types": "^15.6.0",
     "react-addons-test-utils": "^15.6.2",
@@ -144,7 +152,9 @@
     "typescript": "^2.7.2"
   },
   "jest": {
-    "modulePaths": ["<rootDir>"],
+    "modulePaths": [
+      "<rootDir>"
+    ],
     "preset": "jest-preset-typescript-react-native",
     "testMatch": [
       "**/__tests__/**/*.ts?(x)",
@@ -167,7 +177,7 @@
   },
   "rnpm": {
     "assets": [
-      "./assets/fonts"
+      "./Internals/theme/assets/fonts"
     ]
   }
 }

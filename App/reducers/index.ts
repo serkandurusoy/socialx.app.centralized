@@ -18,14 +18,14 @@ export interface State {
 
 export default () => {
 	// tslint:disable-next-line:prefer-const
-	let store = configureStore(reducers);
+	let reduxStage = configureStore(reducers);
 
 	if (module.hot) {
 		module.hot.accept(() => {
 			const nextRootReducer = require('./').reducers;
-			store.replaceReducer(nextRootReducer);
+			reduxStage.store.replaceReducer(nextRootReducer);
 		});
 	}
 
-	return store;
+	return reduxStage;
 };

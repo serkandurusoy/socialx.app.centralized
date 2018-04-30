@@ -1,6 +1,6 @@
+import {MyWalletInfo, TransactionData, TransactionItem, TrendOptions} from 'components/Displayers';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, NativeScrollEvent, Text, View} from 'react-native';
-import {MyWalletInfo, TransactionData, TransactionItem, TrendOptions} from '../../components/Displayers';
 import style from './style';
 
 export interface IWalletActivityScreenComponentProps {

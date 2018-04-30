@@ -1,9 +1,9 @@
+import {CommentCard} from 'components/Displayers/WallPostCard/CommentCard';
+import {CommentTextInput} from 'components/Inputs/CommentTextInput';
+import {OS_TYPES} from 'consts';
+import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
 import {Platform, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
-import {CommentCard} from '../../../components/Displayers/WallPostCard/CommentCard';
-import {CommentTextInput} from '../../../components/Inputs/CommentTextInput';
-import {OS_TYPES} from '../../../constants';
-import {withResizeOnKeyboardShow} from '../../../hoc/ResizeOnKeyboardShow';
 import {IWallPostCommentReply} from '../index';
 import style from './style';
 
@@ -11,6 +11,7 @@ interface IRepliesScreenComponentProps {
 	replies: IWallPostCommentReply[];
 	marginBottom: number;
 	onSendReply: (replyText: string) => void;
+	onReplyDelete: (replyData: IWallPostCommentReply) => void;
 	onReplyLike: (replyData: IWallPostCommentReply) => void;
 	startReply: boolean;
 }
@@ -32,7 +33,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 
 	public render() {
 		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			containerStyles.push({marginBottom: this.props.marginBottom});
 		}
 		return (
@@ -60,6 +61,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 					onCommentLike={() => this.props.onReplyLike(reply)}
 					onCommentReply={() => Function()}
 					isReply={true}
+					onCommentDelete={() => this.props.onReplyDelete(reply)}
 				/>,
 			);
 		});

@@ -1,23 +1,23 @@
+import {AvatarName, AvatarPicker} from 'components/Avatar';
+import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
 import React, {Component} from 'react';
 import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {connect, Dispatch} from 'react-redux';
-import {AvatarName, AvatarPicker} from '../../components/Avatar';
-import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
-import {Colors, Images, Sizes} from '../../theme/';
+import {Colors, Images, Sizes} from 'theme';
 import style from './style';
 
-import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from '../../graphql';
-import {IUserDataResponse} from '../../types/gql';
+import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
+import {IUserDataResponse} from 'types/gql';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import {IBlobData} from '../../lib/ipfs';
-import {addBlob} from '../../utils/ipfs';
+import {IBlobData} from 'ipfslib';
+import {addBlob} from 'utilities/ipfs';
 
-import base from '../../config/ipfs';
+import {ipfsConfig as base} from 'configuration/ipfs';
 const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
 export interface SettingsData {
@@ -69,6 +69,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'SETTINGS',
+		headerRight: <View />,
 	};
 
 	public state = {
@@ -183,12 +184,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 						/>
 					</View>
 					{/*<View style={style.miningContainer}>*/}
-						{/*<SettingCheckbox*/}
-							{/*title={'Mining (Beta)'}*/}
-							{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
-							{/*initialValue={this.props.miningEnabled}*/}
-							{/*valueUpdated={this.toggleMiningSetting}*/}
-						{/*/>*/}
+					{/*<SettingCheckbox*/}
+					{/*title={'Mining (Beta)'}*/}
+					{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
+					{/*initialValue={this.props.miningEnabled}*/}
+					{/*valueUpdated={this.toggleMiningSetting}*/}
+					{/*/>*/}
 					{/*</View>*/}
 				</KeyboardAwareScrollView>
 				{this.renderSaveButton()}
