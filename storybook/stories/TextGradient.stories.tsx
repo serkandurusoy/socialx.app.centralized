@@ -1,8 +1,8 @@
 import {text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
+import {TextGradient} from 'components/Displayers';
 import React from 'react';
 import {Colors, Fonts, Sizes} from 'theme';
-import {TextGradient} from 'components/Displayers';
 import CenterView from '../CenterView';
 
 const containerStyle = {

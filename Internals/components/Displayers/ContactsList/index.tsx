@@ -54,16 +54,6 @@ export class ContactsList extends React.Component<IContactsListProps> {
 		sideLetterLineHeight: ALPHABET_ITEM_FONT_SIZE,
 	};
 
-	private contactsListSorted = this.props.listData.sort((item1: IContactListItem, item2: IContactListItem) => {
-		let ret = 0;
-		if (item1.name < item2.name) {
-			ret = -1;
-		} else if (item1.name > item2.name) {
-			ret = 1;
-		}
-		return ret;
-	});
-
 	public render() {
 		return (
 			<AlphabetListView
@@ -80,9 +70,22 @@ export class ContactsList extends React.Component<IContactsListProps> {
 		);
 	}
 
+	private sortContactsList = () => {
+		// TODO: we can skip this if list comes sorted by name from server side!
+		return this.props.listData.sort((item1: IContactListItem, item2: IContactListItem) => {
+			let ret = 0;
+			if (item1.name < item2.name) {
+				ret = -1;
+			} else if (item1.name > item2.name) {
+				ret = 1;
+			}
+			return ret;
+		});
+	}
+
 	private getFormattedData = () => {
 		const ret: any = {};
-		this.contactsListSorted.forEach((contact: IContactListItem) => {
+		this.sortContactsList().forEach((contact: IContactListItem) => {
 			const nameInitial = contact.name.substr(0, 1).toUpperCase() + '.' + this.state.sideLetterLineHeight;
 			if (!ret.hasOwnProperty(nameInitial)) {
 				ret[nameInitial] = [];
@@ -94,7 +97,7 @@ export class ContactsList extends React.Component<IContactsListProps> {
 
 	private getNumberOfUniqueLetters = () => {
 		const letterSet = new Set();
-		this.contactsListSorted.forEach((contact: IContactListItem) => {
+		this.sortContactsList().forEach((contact: IContactListItem) => {
 			const nameInitial = contact.name.substr(0, 1).toUpperCase();
 			letterSet.add(nameInitial);
 		});

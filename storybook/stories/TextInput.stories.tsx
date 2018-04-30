@@ -1,7 +1,7 @@
 import {boolean, color, number, select, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
-import React from 'react';
 import {InputSizes, SXTextInput} from 'components/Inputs';
+import React from 'react';
 import {Colors} from 'theme';
 import CenterView from '../CenterView';
 

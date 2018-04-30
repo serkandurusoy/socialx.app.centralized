@@ -51,4 +51,5 @@ export const Icons = {
 	analyticsPhotos: require('./assets/icons/analytics_photos.png'),
 	analyticsVideos: require('./assets/icons/analytics_videos.png'),
 	analyticsComments: require('./assets/icons/analytics_comments.png'),
+	messagingIcon: require('./assets/icons/messaging_icon.png'),
 };

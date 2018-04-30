@@ -1,8 +1,8 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
+import {ActivityRecentCommentCard, ActivityRecentCommentCardPosts} from 'components/Activity';
 import React from 'react';
 import {Colors} from 'theme';
-import {ActivityRecentCommentCard, ActivityRecentCommentCardPosts} from 'components/Activity';
 import CenterView from '../CenterView';
 
 const containerStyle = {
