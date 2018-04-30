@@ -86,9 +86,20 @@ const CommentsStackNavigator = StackNavigator(
 	},
 );
 
+const UserFeedStackNavigator = StackNavigator(
+	{
+		UserFeedScreen: {screen: UserFeedScreen},
+		MessagingScreen: {screen: MessagingScreen},
+		ChatThreadScreen: {screen: ChatThreadScreen},
+	},
+	{
+		navigationOptions: navOptionsDefault,
+	},
+);
+
 const MainScreenTabNavigation = TabNavigator(
 	{
-		UserFeedTab: getSingleScreenStack('UserFeedScreen', UserFeedScreen),
+		UserFeedTab: UserFeedStackNavigator,
 		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
 		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
 		MyProfileTab: {screen: MyProfileStackNavigator},
@@ -140,11 +151,9 @@ const PrimaryNav = StackNavigator(
 	{
 		PreAuthScreen: {screen: PreAuthNavigator},
 		MainScreen: {screen: MainScreenWithModal},
-		MessagingScreen: {screen: MessagingScreen}, // TODO: later to be moved
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
-		ChatThreadScreen: {screen: ChatThreadScreen}, // TODO: later to be moved!
 		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
 	},
 	{
