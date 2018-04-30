@@ -82,11 +82,11 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				<View style={style.inputContainer}>
 					<SXTextInput
 						value={this.state.postText}
-						numberOfLines={3}
 						borderColor={Colors.dustWhite}
 						placeholder={'Type a message'}
 						autoFocus={true}
 						onChangeText={this.updatePostText}
+						multiline={true}
 					/>
 				</View>
 				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler}>

@@ -49,6 +49,7 @@ export interface ISXTextInputProps {
 	autoFocus?: boolean;
 	size?: InputSizes;
 	borderWidth?: number;
+	multiline?: boolean;
 }
 
 export interface ISXTextInputState {
@@ -77,6 +78,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		autoFocus: false,
 		size: InputSizes.Normal,
 		borderWidth: Sizes.smartHorizontalScale(2),
+		multiline: false,
 	};
 
 	public state = {
@@ -87,6 +89,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	public inputComponent: any;
 
 	public render() {
+		const isMultiline = this.props.numberOfLines > 1 || this.props.multiline;
 		const inputContainerStyles = [
 			style.inputContainer,
 			{
@@ -94,12 +97,16 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 				borderWidth: this.props.borderWidth,
 			},
 		];
+		const textInputStyles = [style.textInput, style['textInput' + this.props.size]];
+		if (isMultiline) {
+			textInputStyles.push(style.multilineTextInput);
+		}
 		return (
 			<View style={this.getContainerStyles()}>
 				<View style={inputContainerStyles}>
 					{this.renderInputIcon()}
-					{/* allowFontScaling={false} => does not exist */}
 					<TextInput
+						allowFontScaling={false}
 						autoFocus={this.props.autoFocus}
 						value={this.state.textValue}
 						onChangeText={this.textChangedHandler}
@@ -111,7 +118,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 						editable={!this.props.disabled}
 						secureTextEntry={this.props.isPassword}
 						keyboardType={this.props.keyboardType}
-						style={[style.textInput, style['textInput' + this.props.size]]}
+						style={textInputStyles}
 						placeholder={this.props.placeholder}
 						placeholderTextColor={this.props.placeholderColor}
 						autoCorrect={false}
@@ -120,7 +127,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 						clearButtonMode='while-editing' // only works on iOS
 						blurOnSubmit={this.props.blurOnSubmit}
 						numberOfLines={this.props.numberOfLines}
-						multiline={this.props.numberOfLines > 1}
+						multiline={isMultiline}
 					/>
 				</View>
 				{this.renderCancelButton()}

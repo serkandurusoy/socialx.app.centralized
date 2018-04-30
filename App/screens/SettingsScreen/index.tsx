@@ -80,6 +80,8 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 					style={style.keyboardView}
 					contentContainerStyle={style.container}
 					alwaysBounceVertical={false}
+					enableOnAndroid={true}
+					keyboardShouldPersistTaps={'handled'}
 				>
 					<View style={style.pickerContainer}>
 						<AvatarPicker
@@ -99,7 +101,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							value={this.state.aboutText}
 							placeholder={'About you text'}
 							borderColor={Colors.dustWhite}
-							numberOfLines={3}
+							multiline={true}
 							onChangeText={(value: string) => this.handleInputChangeText(value, 'aboutText')}
 						/>
 					</View>

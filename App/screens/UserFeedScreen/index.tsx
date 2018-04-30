@@ -67,6 +67,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				iconSource={Icons.messagingIcon}
 			/>
 		),
+		headerLeft: <View />,
 	})
 
 	private static launchMessagingScreen(props: any) {
