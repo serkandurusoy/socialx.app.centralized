@@ -71,11 +71,10 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 			}
 			return null;
 		},
-		headerRight: <ScreenHeaderButton iconName={'md-call'} onPress={() => ChatThreadScreen.sampleMethod(props)} />,
-		headerLeft: <View />,
+		headerRight: <ScreenHeaderButton iconName={'md-call'} onPress={() => ChatThreadScreen.runMakeCallHandler(props)} />,
 	})
 
-	private static sampleMethod(props: any) {
+	private static runMakeCallHandler(props: any) {
 		const params = props.navigation.state.params || {};
 		if (params.makeCallHandler) {
 			params.makeCallHandler();
@@ -90,10 +89,6 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 
 	public componentWillMount() {
 		this.props.navigation.setParams({
-			user: {
-				fullName: 'Michael Perry',
-				avatarURL: 'https://placeimg.com/119/119/any',
-			},
 			makeCallHandler: this.makeCallHandler,
 		});
 	}

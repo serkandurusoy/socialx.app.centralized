@@ -10,8 +10,11 @@ export enum MessagingFilterValues {
 	Group = 'group',
 }
 
-export interface IMessagingFilterSectionProps {
+interface IMessagingFilterSectionProps {
 	onSelectionChange: (value: MessagingFilterValues) => void;
+}
+
+interface IMessagingFilterSectionState {
 	selectedOption: MessagingFilterValues;
 }
 
@@ -33,15 +36,26 @@ const FILTER_BUTTONS_DATA = [
 	},
 ];
 
-export const MessagingFilterSection: React.SFC<IMessagingFilterSectionProps> = (props) => {
-	const renderFilterButtons = () => {
+export class MessagingFilterSection extends React.Component<
+	IMessagingFilterSectionProps,
+	IMessagingFilterSectionState
+> {
+	public state = {
+		selectedOption: MessagingFilterValues.Contacts,
+	};
+
+	public render() {
+		return <View style={style.container}>{this.renderFilterButtons()}</View>;
+	}
+
+	private renderFilterButtons = () => {
 		const ret: any = [];
 		FILTER_BUTTONS_DATA.forEach((buttonData, index) => {
-			const isButtonInactive = buttonData.value !== props.selectedOption;
+			const isButtonInactive = buttonData.value !== this.state.selectedOption;
 			const textStyles = [style.buttonLabel, isButtonInactive ? style.buttonLabelInactive : {}];
 			ret.push(
 				<View style={style.buttonContainer} key={index}>
-					<TouchableOpacity style={style.button} onPress={() => props.onSelectionChange(buttonData.value)}>
+					<TouchableOpacity style={style.button} onPress={() => this.onNewFilterSelectedHandler(buttonData.value)}>
 						<Image source={buttonData.icon} resizeMode={'contain'} style={style.buttonIcon} />
 						<Text style={textStyles}>{buttonData.label}</Text>
 					</TouchableOpacity>
@@ -49,11 +63,12 @@ export const MessagingFilterSection: React.SFC<IMessagingFilterSectionProps> = (
 			);
 		});
 		return ret;
-	};
+	}
 
-	return <View style={style.container}>{renderFilterButtons()}</View>;
-};
-
-MessagingFilterSection.defaultProps = {
-	selectedOption: MessagingFilterValues.Contacts,
-};
+	private onNewFilterSelectedHandler = (filterValue: MessagingFilterValues) => {
+		this.setState({
+			selectedOption: filterValue,
+		});
+		this.props.onSelectionChange(filterValue);
+	}
+}
