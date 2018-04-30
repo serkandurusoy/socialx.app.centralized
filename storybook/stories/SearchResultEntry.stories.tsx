@@ -1,10 +1,10 @@
 import {boolean, select, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
+import {SearchResultEntry} from 'components/Search';
 import invert from 'lodash/invert';
 import React from 'react';
-import {SearchResultEntry} from '../../App/components/Search';
+import {Colors} from 'theme';
 import {SearchResultKind} from '../../App/screens/SearchScreen';
-import {Colors} from '../../App/theme';
 import CenterView from '../CenterView';
 
 const containerStyle = {

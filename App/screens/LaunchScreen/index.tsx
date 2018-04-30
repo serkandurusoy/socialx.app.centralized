@@ -1,13 +1,13 @@
+import {SXButton, SXGradientButton, TextGradient} from 'components';
 import React, {Component} from 'react';
 import {AsyncStorage, Image, Text, View} from 'react-native';
 import SplashScreen from 'react-native-smart-splash-screen';
 import {NavigationScreenProp} from 'react-navigation';
-import {SXButton, SXGradientButton, TextGradient} from '../../components';
-import {Colors, Images} from '../../theme';
+import {Colors, Images} from 'theme';
 import style from './style';
 
-import {resetNavigationToRoute} from '../../actions';
-import {CurrentUser} from '../../utils/';
+import {resetNavigationToRoute} from 'backend/actions';
+import {CurrentUser} from 'utilities';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;

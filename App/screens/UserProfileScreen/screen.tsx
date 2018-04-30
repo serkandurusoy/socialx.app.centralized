@@ -1,8 +1,8 @@
+import {UserAvatar} from 'components/Avatar';
+import {GridPhotos, IWallPostCardProp, ProfileStatistics, WallPostCard} from 'components/Displayers';
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
-import {UserAvatar} from '../../components/Avatar';
-import {GridPhotos, IWallPostCardProp, ProfileStatistics, WallPostCard} from '../../components/Displayers';
-import {Metrics} from '../../theme';
+import {Metrics} from 'theme';
 import style from './style';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;

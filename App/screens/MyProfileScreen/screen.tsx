@@ -1,13 +1,13 @@
+import {UserAvatar} from 'components/Avatar';
+import {GridPhotos, ProfileStatistics} from 'components/Displayers';
+import {TooltipDots} from 'components/Displayers/DotsWithTooltips';
+import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationScreenProp} from 'react-navigation';
-import {UserAvatar} from '../../components/Avatar';
-import {GridPhotos, ProfileStatistics} from '../../components/Displayers';
-import {TooltipDots} from '../../components/Displayers/DotsWithTooltips';
-import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
-import {Colors, Metrics, Sizes} from '../../theme';
-import Icons from '../../theme/Icons';
+import {Colors, Metrics, Sizes} from 'theme';
+import {Icons} from 'theme/Icons';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';
 
@@ -113,11 +113,11 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 
 	private getTooltipItems = () => {
 		return [
-			// {
-			// 	label: 'Profile Analytics',
-			// 	icon: Icons.iconProfileAnalytics,
-			// 	actionHandler: this.goToProfileAnalyticsPage,
-			// },
+			{
+				label: 'Profile Analytics',
+				icon: Icons.iconProfileAnalytics,
+				actionHandler: this.goToProfileAnalyticsPage,
+			},
 			// {
 			// 	label: 'Wallet',
 			// 	icon: Icons.iconWallet2,
@@ -132,8 +132,7 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 	}
 
 	private goToProfileAnalyticsPage = () => {
-		// TODO: page not yet implemented
-		// console.log('goToProfileAnalyticsPage');
+		this.props.navigation.navigate('ProfileAnalyticsScreen');
 	}
 
 	private goToWalletActivityPage = () => {

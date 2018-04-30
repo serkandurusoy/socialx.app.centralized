@@ -1,8 +1,8 @@
 import {number, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
+import {GridPhotos} from 'components/Displayers';
 import React from 'react';
-import {GridPhotos} from '../../App/components/Displayers';
-import {Colors, Sizes} from '../../App/theme';
+import {Colors, Sizes} from 'theme';
 import CenterView from '../CenterView';
 
 const containerStyle = {

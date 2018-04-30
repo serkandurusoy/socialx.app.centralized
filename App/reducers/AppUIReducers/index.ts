@@ -1,4 +1,4 @@
-import {IAppUIAction, IAppUIStateProps, UPDATE_TAB_BAR_BOTTOM_HEIGHT} from '../../types/appUI';
+import {IAppUIAction, IAppUIStateProps, UPDATE_TAB_BAR_BOTTOM_HEIGHT} from 'types';
 
 const initialState: IAppUIStateProps = {
 	tabBarBottomHeight: 0,

@@ -1,11 +1,11 @@
+import {AvatarImage} from 'components/Avatar';
+import {AddFriendsList} from 'components/Displayers/AddFriendsList';
+import {CheckboxButtonWithIcon} from 'components/Displayers/CheckboxButtonWithIcon';
+import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {AvatarImage} from '../../components/Avatar';
-import {AddFriendsList} from '../../components/Displayers/AddFriendsList';
-import {CheckboxButtonWithIcon} from '../../components/Displayers/CheckboxButtonWithIcon';
-import {IWithLoaderProps, withInlineLoader} from '../../hoc/InlineLoader';
-import {Colors, Icons} from '../../theme/';
+import {Colors, Icons} from 'theme/';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 

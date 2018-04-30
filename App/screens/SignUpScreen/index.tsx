@@ -1,23 +1,23 @@
+import {AvatarPicker} from 'components/Avatar';
+import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
+import {SXButton} from 'components/Interaction';
+import {ModalInputSMSCode} from 'components/Modals';
 import React, {Component} from 'react';
 import {Alert, Keyboard, Text, TextInput, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
-import {AvatarPicker} from '../../components/Avatar';
-import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
-import {SXButton} from '../../components/Interaction';
-import {ModalInputSMSCode} from '../../components/Modals';
-import {Colors, Images, Sizes} from '../../theme';
+import {Colors, Images, Sizes} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from '../../actions';
-import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from '../../utils';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from 'utilities';
 
-import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from '../../graphql';
-import {createUserFunc} from '../../types/gql';
+import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from 'backend/graphql';
+import {createUserFunc} from 'types';
 
-import {ModalManager} from '../../hoc/ManagedModal/manager';
-import {addBlob} from '../../utils/ipfs';
+import {ModalManager} from 'hoc/ManagedModal/manager';
+import {addBlob} from 'utilities/ipfs';
 
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
 import DeviceInfo from 'react-native-device-info';

@@ -1,3 +1,6 @@
+import {AddFriendsList} from 'components/Displayers/AddFriendsList';
+import {CheckboxButtonWithIcon} from 'components/Displayers/CheckboxButtonWithIcon';
+import {IEventData} from 'components/Displayers/EventListItem';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
@@ -6,10 +9,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Hoshi, Sae} from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import {AddFriendsList} from '../../components/Displayers/AddFriendsList';
-import {CheckboxButtonWithIcon} from '../../components/Displayers/CheckboxButtonWithIcon';
-import {IEventData} from '../../components/Displayers/EventListItem';
-import {Colors, Icons, Sizes} from '../../theme';
+import {Colors, Icons, Sizes} from 'theme';
 import {FriendsSearchResult} from '../PhotoScreen';
 import style, {COLOR_BUTTON_HEIGHT} from './style';
 

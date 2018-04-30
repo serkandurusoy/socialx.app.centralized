@@ -1,11 +1,11 @@
+import {DeviceOrientations, OS_TYPES} from 'consts';
 import React, {Component} from 'react';
 import {Dimensions, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {DeviceOrientations, OS_TYPES} from '../../constants';
-import {Colors, Sizes} from '../../theme';
+import {Colors, Sizes} from 'theme';
 import {IPhotoData} from './index';
 import style from './style';
 
@@ -84,7 +84,7 @@ export default class MediaViewerScreenComponent extends Component<
 
 	private getIOSCarouselProps = () => {
 		const ret: any = {};
-		if (Platform.OS === OS_TYPES.iOS) {
+		if (Platform.OS === OS_TYPES.IOS) {
 			ret.windowSize = 1;
 			ret.initialNumToRender = 1;
 		} else {
@@ -123,7 +123,7 @@ export default class MediaViewerScreenComponent extends Component<
 	}
 
 	private exitFullScreenMode = () => {
-		const timeoutBeforeAllowAgainAllOrientation = Platform.OS === OS_TYPES.iOS ? 100 : 5000;
+		const timeoutBeforeAllowAgainAllOrientation = Platform.OS === OS_TYPES.IOS ? 100 : 5000;
 		Orientation.lockToPortrait();
 		setTimeout(() => {
 			Orientation.unlockAllOrientations();

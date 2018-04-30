@@ -1,10 +1,10 @@
+import {IWallPostCardProp} from 'components/Displayers';
+import {ToggleIconButton} from 'components/Interaction';
 import get from 'lodash/get';
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {IWallPostCardProp} from '../../components/Displayers';
-import {ToggleIconButton} from '../../components/Interaction';
-import {Icons} from '../../theme/';
+import {Icons} from 'theme/';
 import UserProfileScreenComponent from './screen';
 
 const GRID_PAGE_SIZE = 20;

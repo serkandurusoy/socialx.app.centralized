@@ -1,18 +1,18 @@
+import {SXTextInput, TRKeyboardKeys} from 'components/Inputs/TextInput';
+import {SXButton} from 'components/Interaction/Button';
+import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
 import {Alert, Platform, ScrollView, Text, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
-import {SXTextInput, TRKeyboardKeys} from '../../components/Inputs/TextInput';
-import {SXButton} from '../../components/Interaction/Button';
-import {OS_TYPES} from '../../constants';
-import {Colors} from '../../theme';
+import {Colors} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from '../../actions';
-import {ModalManager} from '../../hoc/ManagedModal/manager';
-import {ForgotPasswordConfirm} from '../../utils';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {ModalManager} from 'hoc/ManagedModal/manager';
+import {ForgotPasswordConfirm} from 'utilities';
 
 interface IResetPasswordScreenProps {
 	navigation: NavigationScreenProp<any>;

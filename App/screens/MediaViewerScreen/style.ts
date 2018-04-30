@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme';
+import {Colors, Fonts, Sizes} from 'theme';
 
 const style: any = {
 	carouselContainer: {

@@ -3,7 +3,7 @@ import {StatusBar, View} from 'react-native';
 
 import Amplify from 'aws-amplify';
 
-import {awsconfig} from '../../config';
+import {awsconfig} from 'configuration';
 import ReduxNavigation from '../../navigation/ReduxNavigation';
 
 // Styles

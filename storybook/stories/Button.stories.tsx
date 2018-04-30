@@ -1,9 +1,9 @@
 import {boolean, color, number, select, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 
+import {ButtonSizes, SXButton} from 'components/Interaction';
 import React from 'react';
-import {ButtonSizes, SXButton} from '../../App/components/Interaction';
-import {Colors} from '../../App/theme';
+import {Colors} from 'theme';
 import CenterView from '../CenterView';
 
 storiesOf('Button', module)

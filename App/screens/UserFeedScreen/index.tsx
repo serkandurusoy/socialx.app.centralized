@@ -2,13 +2,12 @@ import React, {Component} from 'react';
 import {Alert, View} from 'react-native';
 import {connect} from 'react-redux';
 
+import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IWallPostCardProp} from '../../components/Displayers';
-import {Images} from '../../theme';
+import {Icons, Images} from 'theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
-import {graphql} from 'react-apollo';
 import {
 	addMediaHoc,
 	createPostHoc,
@@ -18,17 +17,20 @@ import {
 	likePostHoc,
 	removeLikePostHoc,
 	userHoc,
-} from '../../graphql';
-import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from '../../types/gql';
-import {CurrentUser} from '../../utils';
+} from 'backend/graphql';
+import {graphql} from 'react-apollo';
+import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from 'types';
+import {CurrentUser} from 'utilities';
 
-import {hideActivityIndicator, showActivityIndicator} from '../../actions';
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import {IBlobData} from '../../lib/ipfs';
-import {addBlob} from '../../utils/ipfs';
+// import {IBlobData} from '../../lib/ipfs';
+import {IBlobData} from 'ipfslib';
+import {addBlob} from 'utilities/ipfs';
 
-import base from '../../config/ipfs';
+import {ipfsConfig as base} from 'configuration';
 
+import {ScreenHeaderButton} from 'components/Interaction/ScreenHeaderButton';
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
@@ -57,9 +59,22 @@ interface IUserFeedScreenState {
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
+	private static navigationOptions = (props: IUserFeedScreenProps) => ({
 		title: 'FEED',
-	};
+		headerRight: (
+			<ScreenHeaderButton
+				onPress={() => UserFeedScreen.launchMessagingScreen(props)}
+				iconSource={Icons.messagingIcon}
+			/>
+		),
+	})
+
+	private static launchMessagingScreen(props: any) {
+		const params = props.navigation.state.params || {};
+		if (params.messagingScreenHandler) {
+			params.messagingScreenHandler();
+		}
+	}
 
 	public state = {
 		allWallPosts: [],
@@ -67,6 +82,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		refreshing: false,
 		currentLoad: 0,
 	};
+
+	public componentWillMount() {
+		this.props.navigation.setParams({
+			messagingScreenHandler: this.navigateToMessagingScreen,
+		});
+	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
 		if (nextProps.Posts.loading || nextProps.data.loading) {
@@ -367,7 +388,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
-		this.props.navigation.navigate('CommentsStack', { postId: wallPostData.id, userId: this.props.data.user.userId });
+		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
+	}
+
+	private navigateToMessagingScreen = () => {
+		this.props.navigation.navigate('MessagingScreen');
 	}
 }
 

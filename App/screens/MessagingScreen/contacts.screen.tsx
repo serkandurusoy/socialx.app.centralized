@@ -1,6 +1,6 @@
+import {ContactsList, IContactListItem, MessagingFilterSection, MessagingFilterValues} from 'components';
 import React, {Component} from 'react';
 import {View} from 'react-native';
-import {ContactsList, IContactListItem, MessagingFilterSection, MessagingFilterValues} from '../../components';
 import style from './contacts.screen.style';
 
 interface IContactsScreenTabProps {
@@ -9,16 +9,13 @@ interface IContactsScreenTabProps {
 	contactsList: IContactListItem[];
 }
 
-export default class ContactsScreenTab extends Component<IContactsScreenTabProps, any> {
-	public render() {
-		return (
-			<View style={style.container}>
-				<MessagingFilterSection
-					onSelectionChange={this.props.filterUpdatedHandler}
-					selectedOption={MessagingFilterValues.Contacts}
-				/>
-				<ContactsList listData={this.props.contactsList} onContactSelect={this.props.onContactSelect} />
-			</View>
-		);
-	}
-}
+const ContactsScreenTab: React.SFC<IContactsScreenTabProps> = (props) => {
+	return (
+		<View style={style.container}>
+			<MessagingFilterSection onSelectionChange={props.filterUpdatedHandler} />
+			<ContactsList listData={props.contactsList} onContactSelect={props.onContactSelect} />
+		</View>
+	);
+};
+
+export default ContactsScreenTab;
