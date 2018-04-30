@@ -2,8 +2,9 @@ import {AvatarPicker} from 'components/Avatar';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
 import {SXButton} from 'components/Interaction';
 import {ModalInputSMSCode} from 'components/Modals';
+import {CheckBox} from 'native-base';
 import React, {Component} from 'react';
-import {Alert, Keyboard, Text, TextInput, View} from 'react-native';
+import {Alert, Keyboard, Platform, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -41,6 +42,7 @@ export interface ISignUpScreenState {
 	smsCodeErrorMessage: string | null;
 	countryCCA2: string;
 	countryCallingCode: string;
+	termsAccepted: boolean;
 }
 
 export interface ISignUpScreenProps {
@@ -58,6 +60,7 @@ export interface ISignUpScreenProps {
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'REGISTER',
+		headerRight: <View />,
 	};
 
 	private inputRefs: any = {};
@@ -87,6 +90,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			smsCodeErrorMessage: null,
 			countryCCA2: deviceCountry,
 			countryCallingCode: deviceCountryCallingCode,
+			termsAccepted: false,
 		};
 	}
 
@@ -97,6 +101,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
 				keyboardShouldPersistTaps={'handled'}
+				enableOnAndroid={true}
 			>
 				<ModalInputSMSCode
 					errorMessage={this.state.smsCodeErrorMessage}
@@ -215,10 +220,37 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					/>
 				</View>
 				<View style={[style.buttonContainer, style.registerButtonContainer]}>
-					<SXButton label={'REGISTER NOW!'} borderColor={Colors.transparent} onPress={this.startRegister} />
+					<SXButton
+						label={'REGISTER NOW!'}
+						borderColor={Colors.transparent}
+						onPress={this.startRegister}
+						disabled={!this.state.termsAccepted}
+					/>
+				</View>
+				<View style={style.termContainer}>
+					<Text style={style.acceptText}>{'Accept our'}</Text>
+					<TouchableOpacity onPress={this.showTermsAndConditionsHandler}>
+						<Text style={style.acceptTextLink}>{'Terms and Conditions'}</Text>
+					</TouchableOpacity>
+					<CheckBox
+						checked={this.state.termsAccepted}
+						onPress={this.termsAcceptedUpdatedHandler}
+						color={Colors.pink}
+						style={style.acceptCheckbox}
+					/>
 				</View>
 			</KeyboardAwareScrollView>
 		);
+	}
+
+	private showTermsAndConditionsHandler = () => {
+		this.props.navigation.navigate('TermsAndConditionsScreen');
+	}
+
+	private termsAcceptedUpdatedHandler = () => {
+		this.setState({
+			termsAccepted: !this.state.termsAccepted,
+		});
 	}
 
 	private updateInputRef = (inputRef: SXTextInput, fieldName: string) => {
