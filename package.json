@@ -8,10 +8,13 @@
   ],
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "postinstall": "rn-nodeify --install stream,process,util --hack --y",
     "test": "jest",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean --force",
     "clean:android": "cd android/ && ./gradlew clean && cd .. && react-native run-android",
     "newclear": "rm -rf $TMPDIR/react-* && watchman watch-del-all && rm -rf ios/build && rm -rf node_modules/ && npm cache clean --force && npm i",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "test:watch": "jest --watch",
     "android:build": "cd android && ./gradlew clean && ./gradlew assembleRelease",
     "android:install": "cd android && ./gradlew assembleRelease && ./gradlew installRelease",
@@ -61,9 +64,10 @@
     "native-base": "^2.3.9",
     "npm": "^5.8.0",
     "numeral": "^2.0.6",
-    "react": "16.3.0-alpha.1",
+    "process": "^0.11.0",
+    "react": "16.3.1",
     "react-apollo": "^2.0.4",
-    "react-native": "^0.54.4",
+    "react-native": "0.55.3",
     "react-native-android-keyboard-adjust": "^1.1.1",
     "react-native-animatable": "^1.2.4",
     "react-native-blur": "^3.2.2",
@@ -72,7 +76,7 @@
     "react-native-country-picker-modal": "^0.5.1",
     "react-native-device-info": "^0.21.5",
     "react-native-drawer": "^2.5.0",
-    "react-native-fast-image": "^4.0.0",
+    "react-native-fast-image": "4.0.0",
     "react-native-fetch-blob": "^0.10.8",
     "react-native-fs": "^2.9.11",
     "react-native-gifted-chat": "^0.4.3",
@@ -90,6 +94,7 @@
     "react-native-spinkit": "^1.1.1",
     "react-native-svg": "^6.3.1",
     "react-native-svg-charts": "^4.2.0",
+    "react-native-tcp": "https://github.com/Shadyzpop/react-native-tcp",
     "react-native-text-gradient": "0.0.5",
     "react-native-textinput-effects": "^0.4.2",
     "react-native-vector-icons": "^4.5.0",
@@ -98,13 +103,16 @@
     "react-navigation-redux-helpers": "^1.0.2",
     "react-redux": "^5.0.7",
     "react-redux-typescript": "^3.0.0-rc.3",
+    "readable-stream": "^1.0.33",
     "recyclerlistview": "^1.2.6",
     "redux": "^3.7.2",
     "redux-axios-middleware": "^4.0.0",
     "redux-persist": "^5.9.1",
     "redux-thunk": "^2.2.0",
     "socket.io-client": "^2.1.0",
+    "stream-browserify": "^1.0.0",
     "typesafe-actions": "^1.1.2",
+    "util": "~0.10.3",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
@@ -147,6 +155,7 @@
     "react-dom": "^16.2.0",
     "react-native-typescript-transformer": "^1.2.3",
     "react-test-renderer": "^16.2.0",
+    "rn-nodeify": "https://github.com/Shadyzpop/rn-nodeify",
     "ts-jest": "^22.0.4",
     "tslint": "^5.9.1",
     "tslint-react": "^3.5.1",
@@ -180,5 +189,23 @@
     "assets": [
       "./Internals/theme/assets/fonts"
     ]
+  },
+  "react-native": {
+    "net": "react-native-tcp",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify"
+  },
+  "browser": {
+    "net": "react-native-tcp",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify"
   }
 }
