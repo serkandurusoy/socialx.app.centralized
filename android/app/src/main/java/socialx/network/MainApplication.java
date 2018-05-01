@@ -3,6 +3,7 @@ package socialx.network;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.peel.react.TcpSocketsModule;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.reactnativecomponent.splashscreen.RCTSplashScreenPackage;
@@ -48,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new TcpSocketsModule(),
                     new RNDeviceInfo(),
                     new RNSpinkitPackage(),
                     new RCTSplashScreenPackage(),

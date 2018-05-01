@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme/';
+import {Colors, Fonts, Sizes} from 'theme';
 
 const SECTION_ICON_MARGIN_RIGHT = Sizes.smartHorizontalScale(35);
 const FRIEND_AVATAR_SIZE = Sizes.smartHorizontalScale(22);
