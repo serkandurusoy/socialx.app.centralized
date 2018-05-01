@@ -1,5 +1,4 @@
-import {Socket} from 'net';
-import net from 'react-native-tcp';
+import net, {Socket} from 'react-native-tcp';
 
 export class TCPClient {
 	private client: Socket;

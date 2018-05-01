@@ -1,4 +1,4 @@
-import net, {Server} from 'net';
+import net, {Server} from 'react-native-tcp';
 import ServerHooks from './hooks/serverSocket';
 
 const randomPort = () => {
@@ -6,9 +6,11 @@ const randomPort = () => {
 };
 
 const triggerCallback = () => {
-	console.log('Opened server on ' + JSON.stringify(TCPServer.address()));
+	console.log('Opened server on ' + NetServerPort);
 };
 
 export const NetServerPort = randomPort();
 
-export const TCPServer: Server = net.createServer(ServerHooks).listen(NetServerPort, triggerCallback);
+export const TCPServer = (): Server => {
+	return net.createServer(ServerHooks).listen(NetServerPort, triggerCallback);
+};

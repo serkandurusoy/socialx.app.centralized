@@ -190,6 +190,7 @@
     ]
   },
   "react-native": {
+    "net": "react-native-tcp",
     "_stream_transform": "readable-stream/transform",
     "_stream_readable": "readable-stream/readable",
     "_stream_writable": "readable-stream/writable",
@@ -198,6 +199,7 @@
     "stream": "stream-browserify"
   },
   "browser": {
+    "net": "react-native-tcp",
     "_stream_transform": "readable-stream/transform",
     "_stream_readable": "readable-stream/readable",
     "_stream_writable": "readable-stream/writable",
