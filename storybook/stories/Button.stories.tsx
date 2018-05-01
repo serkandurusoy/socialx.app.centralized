@@ -1,9 +1,9 @@
 import {boolean, color, number, select, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 
+import {ButtonSizes, SXButton} from 'components/Interaction';
 import React from 'react';
 import {Colors} from 'theme';
-import {ButtonSizes, SXButton} from 'components/Interaction';
 import CenterView from '../CenterView';
 
 storiesOf('Button', module)
@@ -27,7 +27,7 @@ storiesOf('Button', module)
 		const borderColor = color('Border color', Colors.white);
 		return (
 			<SXButton
-				onPress={() => alert("Click handler won't execute when disabled!")}
+				onPress={() => alert('Click handler won\'t execute when disabled!')}
 				label={buttonLabel}
 				disabled={buttonDisabled}
 				width={width}

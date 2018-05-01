@@ -94,7 +94,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				delete wallPostData.includeTaggedFriends;
 
 				const {title, text, location, taggedFriends, image} = wallPostData;
-				const {content, size, mime, path} = image;
+				const {content, size, mime, path, contentOptimized} = image;
 
 				const imageName = path.split('/')[path.split('/').length - 2];
 

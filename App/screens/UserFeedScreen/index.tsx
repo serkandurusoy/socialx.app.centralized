@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {Images} from 'theme';
+import {Icons, Images} from 'theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
@@ -26,10 +26,11 @@ import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 // import {IBlobData} from '../../lib/ipfs';
 import {IBlobData} from 'ipfslib';
-import {addBlob} from 'utilities/ipfs';
+import {addBlobFiles} from 'utilities/ipfs';
 
 import {ipfsConfig as base} from 'configuration';
 
+import {ScreenHeaderButton} from 'components/Interaction/ScreenHeaderButton';
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
@@ -58,9 +59,22 @@ interface IUserFeedScreenState {
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
+	private static navigationOptions = (props: IUserFeedScreenProps) => ({
 		title: 'FEED',
-	};
+		headerRight: (
+			<ScreenHeaderButton
+				onPress={() => UserFeedScreen.launchMessagingScreen(props)}
+				iconSource={Icons.messagingIcon}
+			/>
+		),
+	})
+
+	private static launchMessagingScreen(props: any) {
+		const params = props.navigation.state.params || {};
+		if (params.messagingScreenHandler) {
+			params.messagingScreenHandler();
+		}
+	}
 
 	public state = {
 		allWallPosts: [],
@@ -68,6 +82,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		refreshing: false,
 		currentLoad: 0,
 	};
+
+	public componentWillMount() {
+		this.props.navigation.setParams({
+			messagingScreenHandler: this.navigateToMessagingScreen,
+		});
+	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
 		if (nextProps.Posts.loading || nextProps.data.loading) {
@@ -128,7 +148,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		for (let i = 0; i < allPosts.length; i++) {
 			const post: IPostsProps = allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
-			const media = post.Media ? (post.Media.length > 0 ? base.ipfs_URL + post.Media[0].hash : undefined) : undefined;
+			const media = post.Media
+				? post.Media.length > 0 ? base.ipfs_URL + post.Media[0].optimizedHash : undefined
+				: undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
 
 			const res: IWallPostCardProp = {
@@ -209,68 +231,27 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
 		const {createPost, addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
-		const blobfiles: IBlobData[] = [] as IBlobData[];
 
 		const ipfsHashes: any = [];
 		const mediaIds: string[] = [];
 
-		let multiflag = false;
-
 		// start creating post loading
 		startPostadd();
 
-		data.mediaObjects.forEach((media: MediaObject) => {
-			blobfiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]});
-		});
-
 		try {
-			// check if user entered any text
-			// if (data.text.length < 5) {
-			// 	// TODO: add some warning
-			// 	return;
-			// }
-			// there is media
-			if (data.mediaObjects.length > 0) {
-				// start adding media loading
-				startMediaPost();
+			const ipfsData = await addBlobFiles(data.mediaObjects);
 
-				// add files to ipfs
-				let ipfsResp = await addBlob(blobfiles);
-				ipfsResp = ipfsResp.data.split('\n');
-				// parse all media files from ipfs
-				if (ipfsResp.length > 2) {
-					multiflag = true;
-					ipfsResp.forEach((resp: string) => {
-						if (resp !== '') {
-							const parsed = JSON.parse(resp);
-							ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
-						}
-					});
-				} else {
-					const parsed = JSON.parse(ipfsResp[0]);
-					ipfsHashes.push({size: parsed.Size, hash: parsed.Hash, type: parsed.Name.split('.')[1]});
-				}
-
-				// add media file/s to appsync
-				if (multiflag) {
-					for (let i = 0; i < ipfsHashes.length; i++) {
-						const ipfsData = ipfsHashes[i];
-						const resp = await addMedia({
-							variables: {
-								hash: ipfsData.hash,
-								type: ipfsData.type,
-								size: parseInt(ipfsData.size, undefined),
-							},
-						});
-						mediaIds.push(resp.data.addMedia.id);
-					}
-				} else {
-					const ipfsData = ipfsHashes[0];
-					const resp = await addMedia({
-						variables: {hash: ipfsData.hash, type: ipfsData.type, size: parseInt(ipfsData.size, undefined)},
-					});
-					mediaIds.push(resp.data.addMedia.id);
-				}
+			for (let i = 0; i < ipfsData.length; i++) {
+				const currentIpfsData = ipfsData[i];
+				const gqlResp = await addMedia({
+					variables: {
+						hash: currentIpfsData.hash,
+						type: currentIpfsData.type,
+						optimizedHash: currentIpfsData.optimizedHash,
+						size: parseInt(currentIpfsData.size, undefined),
+					},
+				});
+				mediaIds.push(gqlResp.data.addMedia.id);
 
 				// create the post with media
 				await createPost({
@@ -279,26 +260,14 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						Media: mediaIds,
 					},
 				});
-			} else {
-				// create the post without media
-				await createPost({
-					variables: {
-						text: data.text,
-					},
-				});
 			}
-
-			// stop loading
-			stopLoading();
 			// refresh the wall posts to append the new post
 			this.refreshWallPosts();
 		} catch (ex) {
-			// stop loading
-			stopLoading();
-			// TODO: err handle
-			console.log(ex);
+			//
+			console.log('ex from create', ex);
 		}
-		// just incase -
+
 		stopLoading();
 	}
 
@@ -369,6 +338,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
 		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
+	}
+
+	private navigateToMessagingScreen = () => {
+		this.props.navigation.navigate('MessagingScreen');
 	}
 }
 

@@ -1,7 +1,7 @@
 import {storiesOf} from '@storybook/react-native';
+import {AvatarPicker} from 'components/Avatar';
 import React from 'react';
 import {Colors, Images} from 'theme';
-import {AvatarPicker} from 'components/Avatar';
 import CenterView from '../CenterView';
 
 const containerStyle = {

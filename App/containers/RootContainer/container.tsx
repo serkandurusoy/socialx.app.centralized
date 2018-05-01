@@ -23,7 +23,7 @@ export class RootContainer extends Component<Props> {
 	public render() {
 		return (
 			<View style={styles.applicationView}>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<ReduxNavigation />
 			</View>
 		);
