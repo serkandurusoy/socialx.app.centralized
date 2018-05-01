@@ -12,8 +12,8 @@ export const createPostMut = gql`
 `;
 
 export const addMediaMut = gql`
-	mutation($hash: String!, $type: String!, $size: Int!) {
-		addMedia(hash: $hash, type: $type, size: $size) {
+	mutation($hash: String!, $type: String!, $size: Int!, $optimizedHash: String) {
+		addMedia(hash: $hash, type: $type, size: $size, optimizedHash: $optimizedHash) {
 			id
 		}
 	}
@@ -45,6 +45,7 @@ export const getAllPosts = gql`
 			Media {
 				id
 				hash
+				optimizedHash
 			}
 			owner {
 				userId
