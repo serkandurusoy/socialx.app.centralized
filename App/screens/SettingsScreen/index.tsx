@@ -1,5 +1,6 @@
 import {AvatarName, AvatarPicker} from 'components/Avatar';
 import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
+import {SXButton} from 'components/Interaction';
 import React, {Component} from 'react';
 import {
 	AsyncStorage,
@@ -16,6 +17,7 @@ import {NavigationStackScreenOptions} from 'react-navigation';
 import {Colors, Images, Sizes} from 'theme/';
 import style from './style';
 
+import {resetNavigationToRoute} from 'backend/actions'
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {IUserDataResponse} from 'types';
 
@@ -174,7 +176,9 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 
 	private performSignOut = async () => {
 		try {
-			await AsyncStorage.clear();
+			await AsyncStorage.removeItem('jwtToken');
+			await AsyncStorage.removeItem('refreshToken');
+			await AsyncStorage.removeItem('accessToken');
 			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
 		} catch (ex) {
 			//

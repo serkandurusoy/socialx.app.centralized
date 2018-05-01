@@ -27,12 +27,15 @@ export const AppsyncClient = new AWSAppSyncClient({
 		type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
 		jwtToken: async () => {
 			try {
-				let currentUserJwt = await CurrentUserSession();
-				currentUserJwt = currentUserJwt.getIdToken().getJwtToken();
-				return currentUserJwt;
-			} catch (ex) {
+				// let currentUserJwt = await CurrentUserSession();
+				// currentUserJwt = currentUserJwt.getIdToken().getJwtToken();
+				// return currentUserJwt;
 				const idToken = await AsyncStorage.getItem('jwtToken');
 				return idToken;
+			} catch (ex) {
+				// const idToken = await AsyncStorage.getItem('jwtToken');
+				// return idToken;
+				return;
 			}
 		},
 	},
