@@ -1,10 +1,19 @@
 import {AvatarName, AvatarPicker} from 'components/Avatar';
 import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
+import {SXButton} from 'components/Interaction';
 import React, {Component} from 'react';
-import {ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
+import {
+	AsyncStorage,
+	ImageRequireSource,
+	ImageURISource,
+	Text,
+	TouchableOpacity,
+	View,
+	ViewAsyncStroage,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect, Dispatch} from 'react-redux';
 import {Colors, Images, Sizes} from 'theme';
 import style from './style';
@@ -12,7 +21,7 @@ import style from './style';
 import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
 import {IUserDataResponse} from 'types/gql';
 
-import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 
 import {IBlobData} from 'ipfslib';
 import {addBlob} from 'utilities/ipfs';
@@ -42,6 +51,7 @@ interface ISettingsScreenProps {
 	// todo
 	updateUserData: any;
 	addMedia: any;
+	navigation: NavigationScreenProp<any>;
 	editingDataLoader: () => void;
 	hideLoader: () => void;
 }
@@ -183,6 +193,14 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							returnKeyType={TRKeyboardKeys.done}
 						/>
 					</View>
+					<View>
+						<SXButton
+							label={'Sign Out'}
+							autoWidth={true}
+							borderColor={Colors.transparent}
+							onPress={this.performSignOut}
+						/>
+					</View>
 					{/*<View style={style.miningContainer}>*/}
 					{/*<SettingCheckbox*/}
 					{/*title={'Mining (Beta)'}*/}
@@ -195,6 +213,17 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				{this.renderSaveButton()}
 			</View>
 		);
+	}
+
+	private performSignOut = async () => {
+		try {
+			await AsyncStorage.removeItem('jwtToken');
+			await AsyncStorage.removeItem('refreshToken');
+			await AsyncStorage.removeItem('accessToken');
+			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
+		} catch (ex) {
+			//
+		}
 	}
 
 	private getFullName = () => {
