@@ -1,8 +1,8 @@
 import {date, number, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
+import {CommentCard} from 'components/Displayers';
 import React from 'react';
 import {Colors} from 'theme/';
-import {CommentCard} from 'components/Displayers';
 import CenterView from '../CenterView';
 
 const containerStyle = {

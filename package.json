@@ -178,7 +178,7 @@
   },
   "rnpm": {
     "assets": [
-      "./assets/fonts"
+      "./Internals/theme/assets/fonts"
     ]
   }
 }

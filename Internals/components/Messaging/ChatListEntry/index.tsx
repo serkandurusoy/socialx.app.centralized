@@ -1,21 +1,22 @@
 import moment from 'moment';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 
 import {AvatarImage} from '../../Avatar';
 import style from './style';
 
-export interface IMessagingChatListEntryProps {
+interface IMessagingChatListEntryProps {
 	avatarURL: string;
 	fullName: string;
 	message: string;
 	time: any;
+	onPress: () => void;
 }
 
 export const MessagingChatListEntry: React.SFC<IMessagingChatListEntryProps> = (props) => {
 	const formattedTime = moment(props.time).format('hh:mm A');
 	return (
-		<View style={style.container}>
+		<TouchableOpacity style={style.container} onPress={props.onPress}>
 			<View style={style.leftContainer}>
 				<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
 				<View style={style.verticalContainer}>
@@ -30,6 +31,6 @@ export const MessagingChatListEntry: React.SFC<IMessagingChatListEntryProps> = (
 			<Text style={style.time} numberOfLines={1}>
 				{formattedTime}
 			</Text>
-		</View>
+		</TouchableOpacity>
 	);
 };

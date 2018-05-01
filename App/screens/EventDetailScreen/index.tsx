@@ -1,7 +1,7 @@
+import {IEventData} from 'components/Displayers/EventListItem';
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IEventData} from '../../components/Displayers/EventListItem';
 import {EventDetailScreenComponent} from './screen';
 
 export interface IEventDetailScreenNavParams {
