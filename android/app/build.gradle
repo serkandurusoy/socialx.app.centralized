@@ -163,6 +163,7 @@ dependencies {
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-vector-icons')
     compile project(':react-native-linear-gradient')
+    compile project(':react-native-image-resizer')
     compile project(':react-native-config')
     compile project(':amazon-cognito-identity-js')
     compile project(':react-native-fast-image')

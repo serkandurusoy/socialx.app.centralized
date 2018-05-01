@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.peel.react.TcpSocketsModule;
+import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.reactnativecomponent.splashscreen.RCTSplashScreenPackage;
@@ -48,29 +49,30 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
-                    new MainReactPackage(),
-            new TcpSocketsModule(),
-                    new RNDeviceInfo(),
-                    new RNSpinkitPackage(),
-                    new RCTSplashScreenPackage(),
-                    new FastImageViewPackage(),
-                    // new RNPushNotificationPackage(),
-                    new AndroidKeyboardAdjustPackage(),
-                    new SvgPackage(),
-                    new ReactVideoPackage(),
-                    new VectorIconsPackage(),
-                    new RNTextGradientPackage(),
-                    new OrientationPackage(),
-                    new LinearGradientPackage(),
-                    new PickerPackage(),
-                    new RNFSPackage(),
-                    new RNFetchBlobPackage(),
-                    new ReactNativeConfigPackage(),
-                    new BlurViewPackage(),
-                    new RNAWSCognitoPackage(),
-                    new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
-                    new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
-                    new AppCenterReactNativePackage(MainApplication.this)
+                new MainReactPackage(),
+                new TcpSocketsModule(),
+                new ImageResizerPackage(),
+                new RNDeviceInfo(),
+                new RNSpinkitPackage(),
+                new RCTSplashScreenPackage(),
+                new FastImageViewPackage(),
+                // new RNPushNotificationPackage(),
+                new AndroidKeyboardAdjustPackage(),
+                new SvgPackage(),
+                new ReactVideoPackage(),
+                new VectorIconsPackage(),
+                new RNTextGradientPackage(),
+                new OrientationPackage(),
+                new LinearGradientPackage(),
+                new PickerPackage(),
+                new RNFSPackage(),
+                new RNFetchBlobPackage(),
+                new ReactNativeConfigPackage(),
+                new BlurViewPackage(),
+                new RNAWSCognitoPackage(),
+                new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
+                new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
+                new AppCenterReactNativePackage(MainApplication.this)
             );
         }
 

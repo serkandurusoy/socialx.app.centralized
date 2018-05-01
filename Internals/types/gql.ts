@@ -23,6 +23,7 @@ interface IMediaProps {
 	hash: string;
 	type: string;
 	size: number;
+	optimizedHash: string;
 }
 
 export interface IComments {
