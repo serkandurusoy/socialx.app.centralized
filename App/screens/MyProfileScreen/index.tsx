@@ -122,7 +122,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	};
+	}
 
 	private preloadAllImages = () => {
 		const {data} = this.props;
@@ -154,7 +154,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 		return ret;
-	};
+	}
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

@@ -1,8 +1,8 @@
 import {number, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
 
-import React from 'react';
 import {ProfileStatistics} from 'components/Displayers';
+import React from 'react';
 import {Colors} from 'theme';
 import CenterView from '../CenterView';
 

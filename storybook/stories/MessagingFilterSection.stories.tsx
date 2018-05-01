@@ -1,7 +1,7 @@
 import {boolean, text, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
-import React from 'react';
 import {MessagingFilterSection, MessagingFilterValues} from 'components/Messaging';
+import React from 'react';
 import {Colors} from 'theme';
 import CenterView from '../CenterView';
 

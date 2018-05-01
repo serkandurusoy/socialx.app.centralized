@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {Images} from 'theme';
+import {Icons, Images} from 'theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
@@ -30,6 +30,7 @@ import {addBlob} from 'utilities/ipfs';
 
 import {ipfsConfig as base} from 'configuration';
 
+import {ScreenHeaderButton} from 'components/Interaction/ScreenHeaderButton';
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
@@ -58,9 +59,22 @@ interface IUserFeedScreenState {
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
+	private static navigationOptions = (props: IUserFeedScreenProps) => ({
 		title: 'FEED',
-	};
+		headerRight: (
+			<ScreenHeaderButton
+				onPress={() => UserFeedScreen.launchMessagingScreen(props)}
+				iconSource={Icons.messagingIcon}
+			/>
+		),
+	})
+
+	private static launchMessagingScreen(props: any) {
+		const params = props.navigation.state.params || {};
+		if (params.messagingScreenHandler) {
+			params.messagingScreenHandler();
+		}
+	}
 
 	public state = {
 		allWallPosts: [],
@@ -68,6 +82,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		refreshing: false,
 		currentLoad: 0,
 	};
+
+	public componentWillMount() {
+		this.props.navigation.setParams({
+			messagingScreenHandler: this.navigateToMessagingScreen,
+		});
+	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
 		if (nextProps.Posts.loading || nextProps.data.loading) {
@@ -369,6 +389,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
 		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
+	}
+
+	private navigateToMessagingScreen = () => {
+		this.props.navigation.navigate('MessagingScreen');
 	}
 }
 

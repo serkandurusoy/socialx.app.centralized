@@ -1,7 +1,7 @@
 import {number, withKnobs} from '@storybook/addon-knobs/react';
 import {storiesOf} from '@storybook/react-native';
-import React from 'react';
 import {GridPhotos} from 'components/Displayers';
+import React from 'react';
 import {Colors, Sizes} from 'theme';
 import CenterView from '../CenterView';
 
