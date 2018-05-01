@@ -12,25 +12,12 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-<<<<<<< HEAD
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {AvatarName, AvatarPicker} from '../../components/Avatar';
-import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../../components/Inputs';
-import {Colors, Images, Sizes} from '../../theme/';
-import style from './style';
-
-import {resetNavigationToRoute} from '../../actions';
-import {SXButton} from '../../components/Interaction/Button';
-import {addMediaHoc, createUpdateUserHoc, userHoc} from '../../graphql';
-import {IUserDataResponse} from '../../types/gql';
-=======
 import {NavigationStackScreenOptions} from 'react-navigation';
 import {Colors, Images, Sizes} from 'theme/';
 import style from './style';
 
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {IUserDataResponse} from 'types';
->>>>>>> adcc89e2f969ecb5d80907a6e4604406f8260e69
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
