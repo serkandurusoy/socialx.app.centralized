@@ -7934,9 +7934,9 @@ native-base-shoutem-theme@0.2.2:
     lodash "^4.10.1"
     prop-types "^15.5.10"
 
-native-base@^2.3.9:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/native-base/-/native-base-2.4.3.tgz#a821a4e21b83a167c59d00b6477f4b10d3f9a17d"
+native-base@2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/native-base/-/native-base-2.4.2.tgz#6a93157439f402753260263eac9190c9b65c1035"
   dependencies:
     blueimp-md5 "^2.5.0"
     clamp "^1.0.1"
@@ -9839,9 +9839,9 @@ react-native-tab-view@^0.0.74:
     process "^0.11.9"
     util "^0.10.3"
 
-react-native-text-gradient@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/react-native-text-gradient/-/react-native-text-gradient-0.0.5.tgz#b4717d4ae2f5fd621760390f94eba6c0bd523652"
+react-native-text-gradient@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/react-native-text-gradient/-/react-native-text-gradient-0.0.8.tgz#c7779dc36fc67fe580f8496ec32069ac61474269"
 
 react-native-textinput-effects@^0.4.2:
   version "0.4.2"
