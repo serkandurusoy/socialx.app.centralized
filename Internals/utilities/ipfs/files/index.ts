@@ -7,6 +7,7 @@ interface MediaObject {
 	size: number;
 	name: string;
 	content: any;
+	contentOptimized: any;
 }
 
 /**
@@ -24,32 +25,55 @@ export const addBlob = (data: any): Promise<any> =>
 	});
 
 export const addBlobFiles = async (mediaObjects: MediaObject[]): Promise<any> => {
-	const blobFiles: IBlobData[] = [];
+	const blobSource: IBlobData[] = [];
+	const blobOptimized: IBlobData[] = [];
 	const ipfsHashes: object[] = [];
 	if (mediaObjects.length <= 0) {
 		return ipfsHashes;
 	}
 
-	mediaObjects.forEach((media: MediaObject) =>
-		blobFiles.push({filename: media.name, data: media.content, name: media.name.split('.')[0]}),
-	);
+	mediaObjects.forEach((media: MediaObject) => {
+		const sourceContent = {filename: media.name, data: media.content, name: media.name.split('.')[0]};
+		const optimizedContent = {
+			filename: media.name,
+			data: media.contentOptimized,
+			name: media.name.split('.')[0] + '-optimized',
+		};
+		blobSource.push(sourceContent);
+		blobOptimized.push(optimizedContent);
+	});
 
 	try {
-		let ipfsResp = await addBlob(blobFiles);
-		ipfsResp = ipfsResp.data.split('\n');
-		ipfsResp.forEach((resp: string) => {
-			if (resp !== '') {
-				const parsed = JSON.parse(resp);
-				ipfsHashes.push({
-					size: parsed.Size,
-					hash: parsed.Hash,
-					type: parsed.Name.split('.')[1],
+		let ipfsSourceResp = await addBlob(blobSource);
+		ipfsSourceResp = ipfsSourceResp.data.split('\n');
+
+		let ipfsOptimizedResp = await addBlob(blobOptimized);
+		ipfsOptimizedResp = ipfsOptimizedResp.data.split('\n');
+
+		console.log('sourceResp', ipfsSourceResp);
+		console.log('optimizedResp', ipfsOptimizedResp);
+		ipfsSourceResp.forEach((sourceResp: string) => {
+			if (sourceResp !== '') {
+				const parsedSource = JSON.parse(sourceResp);
+				ipfsOptimizedResp.forEach((optimizedResp: string) => {
+					if (optimizedResp !== '') {
+						const parsedOptimized = JSON.parse(optimizedResp);
+						if (parsedSource.Name === parsedOptimized.Name) {
+							ipfsHashes.push({
+								size: parsedSource.Size,
+								hash: parsedSource.Hash,
+								type: parsedSource.Name.split('.')[1],
+								optimizedHash: parsedOptimized.Hash,
+							});
+						}
+					}
 				});
 			}
 		});
 		return ipfsHashes;
 	} catch (ex) {
 		//
+		console.log(ex);
 	}
 };
 
