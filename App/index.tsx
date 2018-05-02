@@ -1,7 +1,8 @@
+import '../shim.js';
+
 import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Platform, StatusBar} from 'react-native';
-import '../shim.js';
 
 import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';

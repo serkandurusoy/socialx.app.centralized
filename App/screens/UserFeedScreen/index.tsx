@@ -84,9 +84,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public componentWillMount() {
-		this.props.navigation.setParams({
-			messagingScreenHandler: this.navigateToMessagingScreen,
-		});
+		// @ionut this is casuing some issues because its locking the mount thread
+		// this.props.navigation.setParams({
+		// 	messagingScreenHandler: this.navigateToMessagingScreen,
+		// });
 	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
@@ -108,10 +109,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {Posts, data} = this.props;
 		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length === 0;
+		const noPosts = !Posts.loading && Posts.allPosts.length === 0;
 
+		console.log(Posts);
 		return (
 			<UserFeedScreenComponent
-				noPosts={!Posts.loading && Posts.allPosts.length === 0}
+				noPosts={noPosts}
 				isLoading={isLoading}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}

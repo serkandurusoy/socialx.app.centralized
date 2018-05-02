@@ -219,12 +219,11 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 	private performSignOut = async () => {
 		try {
 			await Signout();
-			await AsyncStorage.removeItem('jwtToken');
-			await AsyncStorage.removeItem('refreshToken');
-			await AsyncStorage.removeItem('accessToken');
+			await AsyncStorage.clear();
 			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
 		} catch (ex) {
 			//
+			console.log(ex);
 		}
 	}
 

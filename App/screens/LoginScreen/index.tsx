@@ -8,7 +8,7 @@ import {Colors} from 'theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import {ConfirmSignin, CurrentUserInfo, Signin} from 'utilities';
@@ -148,6 +148,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
 				this.navigateToMainScreen();
 			} catch (ex) {
+				console.log(ex);
 				ModalManager.safeRunAfterModalClosed(() => {
 					// better alert here
 					Alert.alert('Wrong username/password');
