@@ -15,5 +15,13 @@ storiesOf('VideoPlayer', module)
 	.add('with editable props', () => {
 		// const videoURL = 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_1mb.mp4';
 		const videoURL = 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4';
-		return <VideoPlayer videoURL={videoURL} />;
+		return (
+			<VideoPlayer
+				videoURL={videoURL}
+				// autoplay={true}
+				// muted={true}
+				// thumbOnly={true}
+				// startInFullScreen={true}
+			/>
+		);
 	});

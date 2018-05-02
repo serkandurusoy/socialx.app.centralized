@@ -3,6 +3,8 @@ import {IWallPostCardProp, WallPostCard} from 'components/Displayers';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {Colors, Sizes} from 'theme';
 import {IUserQuery} from 'types';
 import style from './style';
 
@@ -51,10 +53,10 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		);
 	};
 
-	// TODO: @ionut
 	const renderNoPosts = () => (
-		<View>
-			<Text>No Posts Found</Text>
+		<View style={style.noPostsContainer}>
+			<Icon name={'md-film'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+			<Text style={style.noPostsText}>{'Your feed is empty. Start adding your first post!'}</Text>
 		</View>
 	);
 

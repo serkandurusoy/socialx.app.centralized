@@ -64,3 +64,8 @@ export interface SearchResultCreateGroup {
 	location: string;
 	avatarURL?: string;
 }
+
+export enum MediaTypes {
+	Image = 'image',
+	Video = 'video',
+}

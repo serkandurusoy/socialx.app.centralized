@@ -4,14 +4,16 @@ import {CheckboxButtonWithIcon} from 'components/Displayers/CheckboxButtonWithIc
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, Icons} from 'theme/';
+import {MediaObjectViewer} from '../../../Internals/components/Displayers/MediaObject';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 
 interface IPhotoScreenComponentProps extends IWithLoaderProps {
 	avatarURL: string;
-	localPhotoURL: string;
+	mediaObject: PickerImage;
 	showTagFriendsModal: () => void;
 	taggedFriends: FriendsSearchResult[];
 }
@@ -76,7 +78,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 					</View>
 				</View>
 				<View style={style.photoContainer}>
-					<Image source={{uri: this.props.localPhotoURL}} resizeMode={'cover'} style={style.photo} />
+					<MediaObjectViewer uri={this.props.mediaObject.path} style={style.photo} />
 				</View>
 				<View style={style.paddingContainer}>
 					{this.renderLocationSection()}

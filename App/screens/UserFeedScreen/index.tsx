@@ -154,7 +154,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const post: IPostsProps = allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media
-				? post.Media.length > 0 ? base.ipfs_URL + post.Media[0].optimizedHash : undefined
+				? post.Media.length > 0
+					? base.ipfs_URL + post.Media[0].optimizedHash
+					: undefined
 				: undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
 
@@ -166,6 +168,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
+				mediaType: post.Media ? post.Media[0].type : null,
 				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 				fullName: post.owner.name,
 				timestamp: new Date(post.createdAt),

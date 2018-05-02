@@ -46,6 +46,7 @@ export const getAllPosts = gql`
 				id
 				hash
 				optimizedHash
+				type
 			}
 			owner {
 				userId

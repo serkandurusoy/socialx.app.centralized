@@ -1,9 +1,8 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from 'theme';
+import {Colors, colorWithAlpha, Fonts, Sizes} from 'theme';
 
 const style: any = {
 	container: {
-		backgroundColor: 'lime',
 		width: '100%',
 		height: Sizes.smartVerticalScale(150),
 	},
@@ -29,11 +28,30 @@ const style: any = {
 		bottom: 0,
 		right: 0,
 	},
-	muteIcon: {
+	smallControlIcon: {
 		fontSize: Sizes.smartHorizontalScale(20),
 		lineHeight: Sizes.smartHorizontalScale(29),
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		color: Colors.white,
+	},
+	resizeButton: {
+		position: 'absolute',
+		top: 0,
+		right: 0,
+	},
+	thumbOverlay: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		backgroundColor: colorWithAlpha(Colors.black, 0.3),
+		alignItems: 'flex-end',
+	},
+	thumbVideoIcon: {
+		fontSize: Sizes.smartHorizontalScale(30),
+		lineHeight: Sizes.smartHorizontalScale(30),
+		color: Colors.white,
+		paddingRight: Sizes.smartHorizontalScale(10),
+		paddingTop: Sizes.smartHorizontalScale(10),
 	},
 };
 

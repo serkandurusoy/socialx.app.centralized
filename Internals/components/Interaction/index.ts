@@ -4,3 +4,4 @@ export * from './IconButton';
 export * from './ScreenHeaderButton';
 export * from './ShareOptionsButton';
 export * from './ToggleIconButton';
+export * from './VideoPlayer';

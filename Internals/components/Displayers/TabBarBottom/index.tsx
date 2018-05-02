@@ -11,6 +11,7 @@ import style from './style';
 import {updateTabBarBottomHeight} from 'backend/actions';
 import RNFS from 'react-native-fs';
 import {connect} from 'react-redux';
+import {MediaTypes} from '../../../types';
 
 interface TabMenuItem {
 	screenName?: string;
@@ -172,35 +173,36 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	private showGalleryPhotoPicker = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
 			cropping: false,
-			mediaType: 'photo',
+			mediaType: 'any',
 		});
-		const retImage = image as PickerImage;
-		this.useSelectedPhoto(retImage);
+		this.useSelectedMediaObject(image as PickerImage);
 	}
 
 	private takeCameraPhoto = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
 			cropping: false,
-			mediaType: 'photo',
+			mediaType: 'any',
 		});
-		const retImage = image as PickerImage;
-		this.useSelectedPhoto(retImage);
+		this.useSelectedMediaObject(image as PickerImage);
 	}
 
-	private useSelectedPhoto = async (retImage: PickerImage) => {
+	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
-			const optimized = await ImageResizer.createResizedImage(
-				retImage.path,
-				retImage.width,
-				retImage.height,
-				'JPEG',
-				50,
-			);
-			const content = await RNFS.readFile(retImage.path, 'base64');
-			const contentOptimized = await RNFS.readFile(optimized.path, 'base64');
-			const type = retImage.path.split('.')[1];
-			const image: any = {...retImage, content, type, contentOptimized};
-			this.props.navigation.navigate('PhotoScreen', {image});
+			let contentOptimized = null;
+			if (retMedia.mime.startsWith(MediaTypes.Image)) {
+				const optimized = await ImageResizer.createResizedImage(
+					retMedia.path,
+					retMedia.width,
+					retMedia.height,
+					'JPEG',
+					50,
+				);
+				contentOptimized = await RNFS.readFile(optimized.path, 'base64');
+			}
+			const content = await RNFS.readFile(retMedia.path, 'base64');
+			const type = retMedia.path.split('.')[1];
+			const image: any = {...retMedia, content, type, contentOptimized};
+			this.props.navigation.navigate('PhotoScreen', {mediaObject: image});
 		} catch (ex) {
 			//
 		}
