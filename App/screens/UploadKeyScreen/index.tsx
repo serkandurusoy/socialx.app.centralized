@@ -1,3 +1,4 @@
+import {resetNavigationToRoute} from 'backend/actions';
 import {SXButton} from 'components/Interaction';
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
@@ -33,6 +34,6 @@ export default class UploadKeyScreen extends Component<IUploadKeyScreenProps, an
 	}
 
 	private navigateToMainScreen = () => {
-		this.props.navigation.navigate('MainScreen');
+		resetNavigationToRoute('MainScreen', this.props.navigation);
 	}
 }

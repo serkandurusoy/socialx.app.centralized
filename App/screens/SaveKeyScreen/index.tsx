@@ -1,3 +1,4 @@
+import {resetNavigationToRoute} from 'backend/actions';
 import {SXButton} from 'components/Interaction';
 import {ModalConfirmation} from 'components/Modals';
 import React, {Component} from 'react';
@@ -58,6 +59,6 @@ export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveK
 	}
 
 	private confirmKeySaved = () => {
-		this.props.navigation.navigate('MainScreen');
+		resetNavigationToRoute('MainScreen', this.props.navigation);
 	}
 }

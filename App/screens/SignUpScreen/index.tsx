@@ -302,7 +302,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
-			this.props.navigation.navigate('MainScreen');
+			resetNavigationToRoute('MainScreen', this.props.navigation);
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			console.log(ex);
