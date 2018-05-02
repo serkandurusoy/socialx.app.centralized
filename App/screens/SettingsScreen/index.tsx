@@ -24,6 +24,7 @@ import {IUserDataResponse} from 'types/gql';
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 
 import {IBlobData} from 'ipfslib';
+import {Signout} from 'utilities/amplify';
 import {addBlob} from 'utilities/ipfs';
 
 import {ipfsConfig as base} from 'configuration/ipfs';
@@ -217,6 +218,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 
 	private performSignOut = async () => {
 		try {
+			await Signout();
 			await AsyncStorage.removeItem('jwtToken');
 			await AsyncStorage.removeItem('refreshToken');
 			await AsyncStorage.removeItem('accessToken');
