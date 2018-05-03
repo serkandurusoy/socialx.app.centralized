@@ -1,6 +1,6 @@
 import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
 import React, {Component} from 'react';
-import {findNodeHandle, Platform, View} from 'react-native';
+import {findNodeHandle, InteractionManager, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import SearchScreenComponent from './screen';
 
@@ -173,7 +173,9 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private blurView = null;
 
 	public componentDidMount() {
-		this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
+		});
 		const blurViewHandle = findNodeHandle(this.blurView);
 		this.setState({blurViewRef: blurViewHandle});
 	}

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, findNodeHandle, View} from 'react-native';
+import {Alert, findNodeHandle, InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
@@ -67,7 +67,9 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	private photoScreen: PhotoScreenComponent | null = null;
 
 	public componentDidMount() {
-		this.props.navigation.setParams({onSendPress: this.sendPostHandler});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({onSendPress: this.sendPostHandler});
+		});
 	}
 
 	public render() {
