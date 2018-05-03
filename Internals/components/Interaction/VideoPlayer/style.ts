@@ -9,6 +9,7 @@ const style: any = {
 	videoObject: {
 		width: '100%',
 		height: '100%',
+		backgroundColor: Colors.midnight,
 	},
 	controlsView: {
 		position: 'absolute',

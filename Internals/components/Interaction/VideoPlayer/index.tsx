@@ -1,7 +1,18 @@
+import {OS_TYPES} from 'consts';
 import React from 'react';
-import {StyleProp, Text, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle} from 'react-native';
+import {
+	ActivityIndicator,
+	Platform,
+	StyleProp,
+	Text,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+	View,
+	ViewStyle,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Video from 'react-native-video';
+import {Colors} from 'theme';
 import style from './style';
 
 export interface IVideoOptions {
@@ -11,6 +22,8 @@ export interface IVideoOptions {
 	thumbOnly?: boolean;
 	startInFullScreen?: boolean;
 	resizeMode?: string;
+	resizeToChangeAspectRatio?: boolean;
+	paused?: boolean;
 }
 
 interface IVideoPlayerProps extends IVideoOptions {
@@ -21,6 +34,8 @@ interface IVideoPlayerState {
 	paused: boolean;
 	muted: boolean;
 	ended: boolean;
+	resizeMode?: string;
+	playReady: boolean;
 }
 
 export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayerState> {
@@ -31,12 +46,15 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		thumbOnly: false,
 		startInFullScreen: false,
 		resizeMode: 'cover',
+		resizeToChangeAspectRatio: false,
 	};
 
 	public state = {
 		paused: !this.props.autoplay,
 		muted: this.props.muted,
 		ended: false,
+		resizeMode: this.props.resizeMode,
+		playReady: false,
 	};
 
 	private player: Video | null = null;
@@ -46,9 +64,11 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 			<TouchableWithoutFeedback onPress={this.onVideoPlayPause} disabled={this.props.thumbOnly}>
 				<View style={this.props.containerStyle}>
 					<Video
+						onReadyForDisplay={this.videoReadyHandler}
+						// poster='https://baconmockup.com/300/200/'
 						source={{uri: this.props.videoURL}}
-						resizeMode={this.props.resizeMode}
-						paused={this.state.paused}
+						resizeMode={this.state.resizeMode}
+						paused={this.state.paused || this.props.paused}
 						muted={this.state.muted}
 						onEnd={this.onVideoEndHandler}
 						playInBackground={false}
@@ -62,29 +82,44 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		);
 	}
 
+	private videoReadyHandler = () => {
+		this.setState({
+			playReady: true,
+		});
+	}
+
 	private renderVideoControls = () => {
-		if (!this.props.thumbOnly) {
-			const muteIcon = this.state.muted ? 'md-volume-off' : 'md-volume-up';
-			const showPlayButton = this.state.paused || this.state.ended;
-			return (
-				<View style={style.controlsView}>
-					{showPlayButton && (
-						<TouchableOpacity onPress={this.onVideoPlayStart}>
-							<Icon name={'md-play'} style={style.playIcon} />
+		if (this.state.playReady || Platform.OS === OS_TYPES.Android) {
+			if (!this.props.thumbOnly) {
+				const muteIcon = this.state.muted ? 'md-volume-off' : 'md-volume-up';
+				const showPlayButton = this.state.paused || this.state.ended;
+				return (
+					<View style={style.controlsView}>
+						{showPlayButton && (
+							<TouchableOpacity onPress={this.onVideoPlayStart}>
+								<Icon name={'md-play'} style={style.playIcon} />
+							</TouchableOpacity>
+						)}
+						<TouchableOpacity style={style.muteButton} onPress={this.onVideoMuteToggle}>
+							<Icon name={muteIcon} style={style.smallControlIcon} />
 						</TouchableOpacity>
-					)}
-					<TouchableOpacity style={style.muteButton} onPress={this.onVideoMuteToggle}>
-						<Icon name={muteIcon} style={style.smallControlIcon} />
-					</TouchableOpacity>
-					<TouchableOpacity style={style.resizeButton} onPress={this.onVideoEnterFullScreen}>
-						<Icon name={'md-resize'} style={style.smallControlIcon} />
-					</TouchableOpacity>
+						{(this.props.resizeToChangeAspectRatio || Platform.OS === OS_TYPES.IOS) && (
+							<TouchableOpacity style={style.resizeButton} onPress={this.onVideoEnterFullScreen}>
+								<Icon name={'md-resize'} style={style.smallControlIcon} />
+							</TouchableOpacity>
+						)}
+					</View>
+				);
+			}
+			return (
+				<View style={style.thumbOverlay}>
+					<Icon name={'md-videocam'} style={style.thumbVideoIcon} />
 				</View>
 			);
 		}
 		return (
-			<View style={style.thumbOverlay}>
-				<Icon name={'md-videocam'} style={style.thumbVideoIcon} />
+			<View style={style.controlsView}>
+				<ActivityIndicator size='large' color={Colors.pink} />
 			</View>
 		);
 	}
@@ -124,7 +159,12 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 
 	private onVideoEnterFullScreen = () => {
 		if (this.player) {
-			this.player.presentFullscreenPlayer();
+			if (this.props.resizeToChangeAspectRatio) {
+				const resizeMode = this.state.resizeMode === 'cover' ? 'contain' : 'cover';
+				this.setState({resizeMode});
+			} else {
+				this.player.presentFullscreenPlayer();
+			}
 		}
 	}
 }

@@ -1,7 +1,7 @@
 import {ModalCloseButton} from 'components';
-import {DeviceOrientations} from 'consts';
+import {DeviceOrientations, OS_TYPES} from 'consts';
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import MediaViewerScreenComponent from './screen';
@@ -21,7 +21,7 @@ export interface IMediaViewerScreenProps {
 export default class MediaViewerScreen extends Component<IMediaViewerScreenProps, IMediaViewerScreenState> {
 	private static navigationOptions = (props: IMediaViewerScreenProps) => {
 		const ret: Partial<NavigationStackScreenOptions> = {
-			title: 'PHOTO',
+			title: 'MEDIA',
 			headerRight: <ModalCloseButton navigation={props.navigation} />,
 			headerLeft: <View />,
 		};
@@ -37,20 +37,25 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 	};
 
 	public componentDidMount() {
-		Orientation.unlockAllOrientations();
-		Orientation.addOrientationListener(this.orientationDidChange);
+		// due to Android problems with Carousel on orientation change enable tilt only on iOS
+		if (Platform.OS === OS_TYPES.IOS) {
+			Orientation.unlockAllOrientations();
+			Orientation.addOrientationListener(this.orientationDidChange);
+		}
 	}
 
 	public componentWillUnmount() {
-		Orientation.lockToPortrait();
-		Orientation.removeOrientationListener(this.orientationDidChange);
+		if (Platform.OS === OS_TYPES.IOS) {
+			Orientation.lockToPortrait();
+			Orientation.removeOrientationListener(this.orientationDidChange);
+		}
 	}
 
 	public render() {
 		const navParams = this.props.navigation.state.params;
 		return (
 			<MediaViewerScreenComponent
-				photos={navParams.photos}
+				mediaObjects={navParams.mediaObjects}
 				startIndex={navParams.startIndex}
 				orientation={this.state.orientation}
 			/>

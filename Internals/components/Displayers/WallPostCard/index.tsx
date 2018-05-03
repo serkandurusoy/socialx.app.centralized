@@ -101,9 +101,12 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	private renderWallPostMedia = () => {
 		if (this.props.imageSource) {
 			return (
-				<TouchableOpacity onPress={() => this.props.onImageClick()}>
-					<MediaObjectViewer uri={this.props.imageSource} style={style.postImage} extension={this.props.mediaType} />
-				</TouchableOpacity>
+				<MediaObjectViewer
+					onPress={this.props.onImageClick}
+					uri={this.props.imageSource}
+					style={style.postImage}
+					extension={this.props.mediaType}
+				/>
 			);
 		}
 		return null;

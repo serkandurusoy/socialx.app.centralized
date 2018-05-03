@@ -7,7 +7,7 @@ interface MediaObject {
 	size: number;
 	name: string;
 	content: any;
-	contentOptimized: any;
+	contentOptimized?: any;
 }
 
 /**
@@ -36,7 +36,7 @@ export const addBlobFiles = async (mediaObjects: MediaObject[]): Promise<any> =>
 		const sourceContent = {filename: media.name, data: media.content, name: media.name.split('.')[0]};
 		const optimizedContent = {
 			filename: media.name,
-			data: media.contentOptimized,
+			data: media.contentOptimized || media.content,
 			name: media.name.split('.')[0] + '-optimized',
 		};
 		blobSource.push(sourceContent);
