@@ -3,9 +3,11 @@ import net, {Socket} from 'react-native-tcp';
 export class TCPClient {
 	private client: Socket;
 
-	constructor(port: number, host: string, cb?: any) {
+	constructor(port: number, host?: string, cb?: any) {
 		this.client = net.createConnection(port, host, () => {
-			cb(this.client);
+			if (cb) {
+				cb(this.client);
+			}
 		});
 	}
 
@@ -13,11 +15,11 @@ export class TCPClient {
 		return this.client;
 	}
 
-	public emit(event: string, data: any) {
+	public emit(event: string, data: string) { // eoxic
 		this.client.emit(event, data);
 	}
 
-	public write(data: any) {
+	public write(data: string) {
 		this.client.write(data);
 	}
 

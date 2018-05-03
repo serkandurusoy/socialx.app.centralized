@@ -121,6 +121,16 @@ const style: any = {
 		marginRight: Sizes.smartHorizontalScale(30),
 		borderRadius: AVATAR_SIZE / 2,
 	},
+	isTypingContainer: {
+		marginTop: 5,
+		marginLeft: 10,
+		marginRight: 10,
+		marginBottom: 10,
+	},
+	isTypingText: {
+		fontSize: 14,
+		color: '#aaa',
+	},
 };
 
 export default StyleSheet.create(style);

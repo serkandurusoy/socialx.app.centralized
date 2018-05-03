@@ -19,10 +19,6 @@ import RootContainer from './containers/RootContainer';
 
 import createStore from './reducers';
 
-// init tcp server
-import {TCPServer} from 'backend/socket';
-TCPServer();
-
 const reduxStage = createStore();
 
 export default class App extends Component<{}, {}> {

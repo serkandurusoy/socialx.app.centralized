@@ -85,9 +85,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	public componentWillMount() {
 		// @ionut this is casuing some issues because its locking the mount thread
-		// this.props.navigation.setParams({
-		// 	messagingScreenHandler: this.navigateToMessagingScreen,
-		// });
+		setTimeout(() => {
+			this.props.navigation.setParams({
+				messagingScreenHandler: this.navigateToMessagingScreen,
+			});
+		}, 100);
 	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
