@@ -22,6 +22,9 @@ interface IChatThreadScreenComponentProps {
 	loadEarlierMessages: () => void;
 	isLoadingEarlier: boolean;
 	hasMore: boolean;
+	renderFooter: any;
+	text: string;
+	onTextChange: any;
 }
 
 interface IChatThreadScreenComponentState {
@@ -91,7 +94,9 @@ export default class ChatThreadScreenComponent extends Component<
 					loadEarlier={this.props.hasMore}
 					onLoadEarlier={this.props.loadEarlierMessages}
 					isLoadingEarlier={this.props.isLoadingEarlier}
-					// renderFooter={} // can be used for something like typing
+					text={this.props.text}
+					onInputTextChanged={this.props.onTextChange}
+					renderFooter={this.props.renderFooter} // can be used for something like typing
 				/>
 			</View>
 		);
@@ -100,6 +105,10 @@ export default class ChatThreadScreenComponent extends Component<
 	private addOwnMessage = (newMessages: MessageData[] = []) => {
 		newMessages[0].ownMessage = true;
 		this.props.sendOwnMessage(newMessages[0]);
+	}
+
+	private renderText = (text: string) => {
+
 	}
 
 	private renderMessage = (props: any) => {

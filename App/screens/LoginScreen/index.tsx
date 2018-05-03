@@ -8,7 +8,7 @@ import {Colors} from 'theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import {ConfirmSignin, CurrentUserInfo, Signin} from 'utilities';
@@ -113,6 +113,11 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		this.props.navigation.navigate(screenName);
 	}
 
+	private navigateToMainScreen = () => {
+		Keyboard.dismiss();
+		resetNavigationToRoute('MainScreen', this.props.navigation);
+	}
+
 	private usernameSubmitPressedHandler = () => {
 		if (this.passwordInput && this.state.usernameValue) {
 			this.passwordInput.focusInput();
@@ -141,8 +146,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				await AsyncStorage.setItem('jwtToken', res.signInUserSession.idToken.jwtToken);
 				await AsyncStorage.setItem('refreshToken', res.signInUserSession.refreshToken.token);
 				await AsyncStorage.setItem('accessToken', res.signInUserSession.accessToken.jwtToken);
-				this.safeNavigateToScreen('MainScreen');
+				this.navigateToMainScreen();
 			} catch (ex) {
+				console.log(ex);
 				ModalManager.safeRunAfterModalClosed(() => {
 					// better alert here
 					Alert.alert('Wrong username/password');
@@ -163,7 +169,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			try {
 				const res = await ConfirmSignin(usernameValue, code);
 				this.toggleVisibleModalSMS(false);
-				this.safeNavigateToScreen('MainScreen');
+				this.navigateToMainScreen();
 			} catch (ex) {
 				ModalManager.safeRunAfterModalClosed(() => {
 					// better alert here

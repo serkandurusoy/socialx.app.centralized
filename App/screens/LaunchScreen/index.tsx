@@ -6,6 +6,7 @@ import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Images} from 'theme';
 import style from './style';
 
+import {resetNavigationToRoute} from 'backend/actions';
 import {CurrentUser} from 'utilities';
 
 export interface ILaunchScreenProps {
@@ -18,15 +19,15 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	};
 
 	public async componentDidMount() {
-		if (AsyncStorage.getItem('jwtToken')) {
-			try {
-				const currentUser = await CurrentUser();
-				if (currentUser) {
-					this.props.navigation.navigate('MainScreen');
-				}
-			} catch (ex) {
-				//
+		try {
+			const currentUser = await CurrentUser();
+			console.log('currentUser', currentUser.username);
+			if (!currentUser) {
+				return;
 			}
+			resetNavigationToRoute('MainScreen', this.props.navigation);
+		} catch (ex) {
+			//
 		}
 		SplashScreen.close({
 			animationType: SplashScreen.animationType.fade,
@@ -66,9 +67,9 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 
 	private navigateToLoginScreen = () => {
 		this.props.navigation.navigate('LoginScreen');
-	}
+	};
 
 	private navigateToSignUpScreen = () => {
 		this.props.navigation.navigate('SignUpScreen');
-	}
+	};
 }
