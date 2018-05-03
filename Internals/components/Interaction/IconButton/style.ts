@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
+const ICON_DEFAULT_SIZE = Sizes.smartHorizontalScale(28);
+
 const style: any = {
 	container: {
 		flexDirection: 'row',
@@ -16,8 +18,8 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(5),
 	},
 	iconStyle: {
-		width: Sizes.smartHorizontalScale(20),
-		height: Sizes.smartHorizontalScale(20),
+		width: ICON_DEFAULT_SIZE,
+		height: ICON_DEFAULT_SIZE,
 	},
 };
 

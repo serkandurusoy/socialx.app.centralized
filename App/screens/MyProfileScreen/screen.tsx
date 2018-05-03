@@ -113,11 +113,11 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 
 	private getTooltipItems = () => {
 		return [
-			{
-				label: 'Profile Analytics',
-				icon: Icons.iconProfileAnalytics,
-				actionHandler: this.goToProfileAnalyticsPage,
-			},
+			// {
+			// 	label: 'Profile Analytics',
+			// 	icon: Icons.iconProfileAnalytics,
+			// 	actionHandler: this.goToProfileAnalyticsPage,
+			// },
 			// {
 			// 	label: 'Wallet',
 			// 	icon: Icons.iconWallet2,

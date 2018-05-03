@@ -65,6 +65,26 @@ const style: any = {
 		paddingLeft: Sizes.smartHorizontalScale(10),
 		color: Colors.shuttleGray,
 	},
+	termContainer: {
+		flexDirection: 'row',
+		paddingBottom: Sizes.smartVerticalScale(15),
+		alignItems: 'center',
+	},
+	acceptText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postFullName,
+	},
+	acceptTextLink: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postHour,
+		padding: Sizes.smartHorizontalScale(5),
+	},
+	acceptCheckbox: {
+		left: 0,
+		marginLeft: Sizes.smartHorizontalScale(5),
+	},
 };
 
 export default StyleSheet.create(style);
