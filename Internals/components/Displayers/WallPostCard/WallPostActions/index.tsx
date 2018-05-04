@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 
+import {IconButton} from 'components';
 import {Icons} from 'theme';
-import {IconButton} from '../../../Interaction';
 import style from './style';
 
 export interface IWallPostActions {
@@ -19,7 +19,7 @@ export interface IWallPostActions {
 
 export class WallPostActions extends Component<IWallPostActions> {
 	public render() {
-		const likeIconSource = this.props.likedByMe ? Icons.iconTabBarNotificationsSelected : Icons.iconPostLike;
+		const likeIconSource = this.props.likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
 		return (
 			<View style={style.container}>
 				{/* Text component for the container alignment, causes padding issues if empty */}

@@ -131,7 +131,7 @@ const MainScreenTabNavigation = TabNavigator(
 
 const MainScreenWithModal = StackNavigator(
 	{
-		MediaLicenseStack: {screen: MediaLicenseStackNavigator}, // TODO: later to be moved!
+		// MediaLicenseStack: {screen: MediaLicenseStackNavigator}, // TODO: later to be moved!
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
 		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
 		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),

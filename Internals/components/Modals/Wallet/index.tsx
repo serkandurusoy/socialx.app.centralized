@@ -1,7 +1,7 @@
 import {SXButton} from 'components';
 import {OS_TYPES} from 'consts';
-import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc';
 import {IManagedModal, withManagedTransitions} from 'hoc/ManagedModal';
+import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import numeral from 'numeral';
 import React, {Component} from 'react';
 import {Image, Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';

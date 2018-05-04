@@ -1,10 +1,10 @@
+import {MediaObjectViewer} from 'components';
 import {ipfsConfig as base} from 'configuration';
 import React, {Component} from 'react';
 import {Dimensions, Image, TouchableOpacity, View} from 'react-native';
 import {DataProvider, LayoutProvider, RecyclerListView} from 'recyclerlistview';
 import {Sizes} from 'theme';
 import {IMediaProps} from 'types';
-import {MediaObjectViewer} from '../MediaObject';
 import style from './style';
 
 interface IExtendedMediaProps extends IMediaProps {
@@ -18,7 +18,7 @@ export interface IGridPhotosProps {
 	thumbWidth?: number;
 	thumbHeight?: number;
 	onScroll?: (rawEvent: any, offsetX: number, offsetY: number) => void;
-	renderGridItem?: (photoData: any) => any;
+	renderGridItem?: (mediaData: IExtendedMediaProps) => any;
 	showsVerticalScrollIndicator?: boolean;
 	bounces?: boolean;
 }
@@ -75,9 +75,11 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 		);
 	}
 
-	private renderGridRow = (type: any, photoData: any) => {
+	private renderGridRow = (type: any, mediaData: IExtendedMediaProps) => {
 		if (!this.props.renderGridItem) {
 			// We can set a placeholder with defaultSource but it will be used only for the images on the first "page"
+			let mediaURL = base.ipfs_URL;
+			mediaURL += mediaData.optimizedHash ? mediaData.optimizedHash : mediaData.hash;
 			return (
 				<TouchableOpacity onPress={() => (this.props.itemPressed ? this.props.itemPressed(mediaData.index) : null)}>
 					<MediaObjectViewer
@@ -89,7 +91,7 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 				</TouchableOpacity>
 			);
 		} else {
-			return this.props.renderGridItem(photoData);
+			return this.props.renderGridItem(mediaData);
 		}
 	}
 
