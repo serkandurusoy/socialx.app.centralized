@@ -10,6 +10,7 @@ import {Icons} from 'theme/Icons';
 import {IUserQuery} from 'types';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
+import {MediaObjectViewer} from '../MediaObject';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
 
@@ -20,6 +21,7 @@ export interface IWallPostCardProp {
 	title?: string;
 	text?: string;
 	imageSource?: string;
+	mediaType?: string;
 	location?: string;
 	taggedFriends?: Array<{
 		fullName: string;
@@ -80,7 +82,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				</View>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
-				{this.renderWallPostImage()}
+				{this.renderWallPostMedia()}
 				<WallPostActions
 					likedByMe={this.props.likedByMe}
 					numberOfLikes={this.props.numberOfLikes}
@@ -96,16 +98,15 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		);
 	}
 
-	private renderWallPostImage = () => {
+	private renderWallPostMedia = () => {
 		if (this.props.imageSource) {
 			return (
-				<TouchableOpacity onPress={() => this.props.onImageClick()}>
-					<FastImage
-						source={{uri: this.props.imageSource}}
-						style={style.postImage}
-						resizeMode={FastImage.resizeMode.cover}
-					/>
-				</TouchableOpacity>
+				<MediaObjectViewer
+					onPress={this.props.onImageClick}
+					uri={this.props.imageSource}
+					style={style.postImage}
+					extension={this.props.mediaType}
+				/>
 			);
 		}
 		return null;

@@ -1,6 +1,6 @@
 import {ScreenHeaderButton} from 'components/Interaction';
 import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, InteractionManager, Text, View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {NavigationScreenProp} from 'react-navigation';
 import uuidv4 from 'uuid/v4';
@@ -116,13 +116,15 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 			// and assign to local var for local use
 			this.friendTcpClient = new TCPClient(NetServerPort);
 		});
-		this.props.navigation.setParams({
-			makeCallHandler: this.makeCallHandler,
-		});
 	}
 
 	public componentDidMount() {
 		this.setState({timeframeBuffer: new Date(Date.now()).getTime()});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				makeCallHandler: this.makeCallHandler,
+			});
+		});
 	}
 
 	public renderUserTyping = () => {

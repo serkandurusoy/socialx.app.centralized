@@ -6,9 +6,7 @@ import MyProfileScreenComponent from './screen';
 import {ipfsConfig as base} from 'configuration';
 
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
-import {IUserDataResponse} from 'types';
-
-import {Images} from 'theme';
+import {IMediaProps, IUserDataResponse} from 'types';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
@@ -26,7 +24,7 @@ const INITIAL_STATE = {
 	fullName: FULL_NAME,
 	username: USER_NAME,
 	loaded: false,
-	images: [] as any,
+	mediaObjects: [],
 };
 
 interface IMyProfileScreenProps {
@@ -46,7 +44,7 @@ interface IMyProfileScreenState {
 	fullName: string;
 	username?: string;
 	loaded: boolean;
-	images: any;
+	mediaObjects: IMediaProps[];
 }
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
@@ -87,7 +85,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			fullName: user.name,
 			username: user.username,
 			loaded: true,
-			images: this.preloadAllImages(),
+			mediaObjects: this.preloadAllMediaObjects(),
 		});
 	}
 
@@ -106,25 +104,25 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 				fullName={this.state.fullName}
 				username={this.state.username}
 				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, this.state.numberOfPhotos)}
-				getAllPhotos={this.state.images}
+				getAllPhotos={this.state.mediaObjects}
 				navigation={this.props.navigation}
 			/>
 		);
 	}
 
-	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number) => {
-		const ret = [];
+	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
+		const ret: IMediaProps[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
 			if (this.lastLoadedPhotoIndex < maxResults) {
-				ret.push(this.state.images[i]);
+				ret.push(this.state.mediaObjects[i]);
 				this.lastLoadedPhotoIndex++;
 			}
 		}
 		return ret;
 	}
 
-	private preloadAllImages = () => {
+	private preloadAllMediaObjects = () => {
 		const {data} = this.props;
 		const {user} = data;
 
@@ -134,26 +132,17 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			return [];
 		}
 
-		const Imgs = [];
+		const Imgs: IMediaProps[] = [];
 		for (let y = 0; y < posts.length; y++) {
 			const currentMedia = posts[y].Media;
 			if (currentMedia) {
 				for (let x = 0; x < currentMedia.length; x++) {
-					const currentHash = currentMedia[x].hash;
-					Imgs.push(currentHash);
+					Imgs.push(currentMedia[x]);
 				}
 			}
 		}
 
-		const ret = [];
-		for (let i = 0; i < Imgs.length; i++) {
-			const current = Imgs[i];
-			ret.push({
-				url: base.ipfs_URL + current,
-				index: i,
-			});
-		}
-		return ret;
+		return Imgs;
 	}
 }
 

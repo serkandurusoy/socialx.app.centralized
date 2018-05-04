@@ -1,7 +1,9 @@
 import {Socket} from 'net';
 
 const onData = (data: any, cb?: any) => {
-	if (cb) cb(JSON.parse(data.toString()));
+	if (cb) {
+		cb(JSON.parse(data.toString()));
+	}
 };
 
 const onErr = () => {

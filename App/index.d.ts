@@ -18,3 +18,16 @@ declare module 'react-native-svg-charts';
 declare module 'react-native-gifted-chat';
 declare module 'react-native-android-keyboard-adjust';
 declare module 'react-native-smart-splash-screen';
+
+declare module 'react-native-mime-types' {
+	export function lookup(filenameOrExt: string): string | false;
+
+	export function contentType(filenameOrExt: string): string | false;
+
+	export function extension(typeString: string): string | false;
+
+	export function charset(typeString: string): string | false;
+
+	export const types: {[key: string]: string};
+	export const extensions: {[key: string]: string[]};
+}

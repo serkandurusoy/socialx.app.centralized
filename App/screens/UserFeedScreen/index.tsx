@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, View} from 'react-native';
+import {Alert, InteractionManager, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
@@ -84,13 +84,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		currentLoad: 0,
 	};
 
-	public componentWillMount() {
-		// @ionut this is casuing some issues because its locking the mount thread
-		setTimeout(() => {
+	public componentDidMount() {
+		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({
 				messagingScreenHandler: this.navigateToMessagingScreen,
 			});
-		}, 100);
+		});
 	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
@@ -114,7 +113,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length === 0;
 		const noPosts = !Posts.loading && Posts.allPosts.length === 0;
 
-		console.log(Posts);
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
@@ -155,7 +153,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const post: IPostsProps = allPosts[i];
 			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
 			const media = post.Media
-				? post.Media.length > 0 ? base.ipfs_URL + post.Media[0].optimizedHash : undefined
+				? post.Media.length > 0
+					? base.ipfs_URL + post.Media[0].optimizedHash
+					: undefined
 				: undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
 
@@ -167,16 +167,17 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
+				mediaType: post.Media ? post.Media[0].type : null,
 				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 				fullName: post.owner.name,
-				timestamp: new Date(post.createdAt),
+				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
 				numberOfComments: post.comments.length,
 				numberOfWalletCoins: 0,
 				onCommentsButtonClick: () => Alert.alert('click'),
 				// TODO: append all media to this with the index of the image
-				onImageClick: () => this.onPhotoPressHandler(0, [{url: media, index: 0}]),
+				onImageClick: () => this.onMediaObjectPressHandler(0, post.Media),
 				onLikeButtonClick: () => this.onLikeButtonClickHandler(post.id),
 				likedByMe,
 				canDelete: false,
@@ -294,9 +295,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 	}
 
-	private onPhotoPressHandler = (index: number, photos: any) => {
+	private onMediaObjectPressHandler = (index: number, mediaObjects: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
-			photos,
+			mediaObjects: mediaObjects ? [mediaObjects[0]] : [],
 			startIndex: index,
 		});
 	}

@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Metrics, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
+import {IMediaProps} from 'types';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';
 
@@ -22,10 +23,10 @@ interface IMyProfileScreenProps extends IWithLoaderProps {
 	avatarURL: any;
 	fullName: string;
 	username?: string;
-	loadMorePhotosHandler: () => void;
+	loadMorePhotosHandler: () => IMediaProps[];
 	totalNumberOfPhotos: number;
 	gridPageSize: number;
-	getAllPhotos: any[];
+	getAllPhotos: IMediaProps[];
 	navigation: NavigationScreenProp<any>;
 }
 
@@ -106,7 +107,7 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 
 	private onPhotoPressHandler = (index: number) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
-			photos: this.props.getAllPhotos,
+			mediaObjects: this.props.getAllPhotos,
 			startIndex: index,
 		});
 	}

@@ -2,7 +2,7 @@ import {IWallPostCardProp} from 'components/Displayers';
 import {ToggleIconButton} from 'components/Interaction';
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons} from 'theme/';
 import UserProfileScreenComponent from './screen';
@@ -98,8 +98,12 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 	private lastLoadedPhotoIndex = 0;
 
 	public componentDidMount() {
-		this.props.navigation.setParams({isFollowed: this.state.isFollowed});
-		this.props.navigation.setParams({toggleFollow: this.toggleFollowHandler});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				isFollowed: this.state.isFollowed,
+				toggleFollow: this.toggleFollowHandler,
+			});
+		});
 	}
 
 	public render() {

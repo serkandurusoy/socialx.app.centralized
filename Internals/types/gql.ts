@@ -18,7 +18,7 @@ export interface ICreateUserProps {
 	};
 }
 
-interface IMediaProps {
+export interface IMediaProps {
 	id: string;
 	hash: string;
 	type: string;
