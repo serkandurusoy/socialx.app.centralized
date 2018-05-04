@@ -113,11 +113,22 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				// add image to ipfs
 				let ipfsResp = await addBlob([{filename: imageName, data: content, name: imageName.split('.')[0]}]);
 				ipfsResp = JSON.parse(ipfsResp.data);
+
+				let ipfsOpResp = await addBlob([
+					{filename: imageName + '-optimized', data: contentOptimized, name: imageName.split('.')[0]},
+				]);
+				ipfsOpResp = JSON.parse(ipfsOpResp.data);
+
 				// parse ipfs response
 				const {Size, Hash} = ipfsResp;
 
 				// create media object on aws
-				const addResp = await addMedia({variables: {hash: Hash, size, Size, type: mime}});
+				const addResp = await addMedia({variables: {
+					hash: Hash,
+					size: parseInt(Size, undefined),
+					type: mime,
+					optimizedHash: ipfsOpResp.Hash,
+				}});
 
 				const mediaId = addResp.data.addMedia.id;
 
