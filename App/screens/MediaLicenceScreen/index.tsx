@@ -1,10 +1,11 @@
 import {ModalWallet} from 'components';
 import findIndex from 'lodash/findIndex';
+import get from 'lodash/get';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IUserQuery, MediaSizes, MediaTypeImage, MediaTypes} from 'types';
-import MediaLicenseScreenComponent from './screen';
+import {IMediaProps, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes} from 'types';
+import MediaLicenceScreenComponent from './screen';
 
 export interface MediaResolutionSection {
 	title: string;
@@ -31,7 +32,7 @@ export interface IMediaSize {
 	section: MediaResolutionSection;
 }
 
-export interface IMediaLicenseData {
+export interface IMediaLicenceData {
 	type: MediaTypes;
 	title: string;
 	mediaPreviewURI: string;
@@ -41,7 +42,7 @@ export interface IMediaLicenseData {
 	sizes: IMediaSize[];
 }
 
-const MEDIA_LICENSE_DATA: IMediaLicenseData = {
+const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 	type: MediaTypeImage,
 	// type: MediaTypeVideo,
 	title: 'Flower Cookie',
@@ -121,55 +122,46 @@ const MEDIA_LICENSE_DATA: IMediaLicenseData = {
 
 const TOTAL_SIMILAR_PHOTOS = 63;
 const SIMILAR_PAGE_SIZE = 10;
-let similarLoadIndex = 0;
 
-const getMoreSimilarMedia = () => {
-	const ret: IMediaLicenseData[] = [];
-	for (let i = 0; i < SIMILAR_PAGE_SIZE; i++) {
-		if (similarLoadIndex < TOTAL_SIMILAR_PHOTOS) {
-			similarLoadIndex++;
-			const randomIndexNumber = Math.round(Math.random() * 999999);
-			const mediaWidth = 400 + Math.round(Math.random() * 200);
-			const mediaHeight = 300 + Math.round(Math.random() * 150);
-			const newMediaData = {...MEDIA_LICENSE_DATA};
-			newMediaData.title = newMediaData.title + ' ' + randomIndexNumber;
-			newMediaData.likedByMe = Math.random() < 0.5;
-			newMediaData.imageID = '#' + randomIndexNumber;
-			newMediaData.mediaPreviewURI = `https://placeimg.com/${mediaWidth}/${mediaHeight}/any`;
-			ret.push(newMediaData);
-		}
-	}
-	return ret;
-};
-
-export interface IMediaLicenseScreenProps {
-	navigation: NavigationScreenProp<any>;
+interface IMediaLicenceScreenNavParams {
+	params: {
+		mediaLicence: IMediaLicenceData;
+	};
 }
 
-export interface IMediaLicenseScreenState extends IMediaLicenseData {
+export interface IMediaLicenceScreenProps {
+	navigation: NavigationScreenProp<IMediaLicenceScreenNavParams>;
+}
+
+export interface IMediaLicenceScreenState extends IMediaLicenceData {
 	modalVisible: boolean;
 	blurViewRef: any;
 	amountToSend: number;
-	similarMedia: IMediaLicenseData[];
+	similarMedia: IMediaLicenceData[];
 	likeToggleCounter: number;
 }
 
-export default class MediaLicenseScreen extends Component<IMediaLicenseScreenProps, IMediaLicenseScreenState> {
+export default class MediaLicenceScreen extends Component<IMediaLicenceScreenProps, IMediaLicenceScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'MEDIA LICENCE',
 		headerRight: <View />,
 	};
 
 	private baseScreen: any = null;
+	private similarLoadIndex = 0;
 
-	constructor(props: IMediaLicenseScreenProps) {
+	constructor(props: IMediaLicenceScreenProps) {
 		super(props);
+		let mediaLicenceData: Partial<IMediaLicenceScreenState> = {...MEDIA_LICENCE_DATA};
+		if (get(props, 'navigation.state.params.mediaLicence', undefined)) {
+			mediaLicenceData = {...props.navigation.state.params.mediaLicence};
+		}
+		mediaLicenceData.similarMedia = this.getMoreSimilarMedia(mediaLicenceData);
 		this.state = {
-			...MEDIA_LICENSE_DATA,
+			...mediaLicenceData,
 			modalVisible: false,
 			blurViewRef: null,
 			amountToSend: 0,
-			similarMedia: getMoreSimilarMedia(),
 			likeToggleCounter: 0,
 		};
 	}
@@ -190,7 +182,7 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 					sendSocXAmount={this.state.amountToSend}
 					destinationUser={this.state.owner}
 				/>
-				<MediaLicenseScreenComponent
+				<MediaLicenceScreenComponent
 					{...this.state}
 					onMediaLike={this.onMediaLikeHandler}
 					onNavigateToFAQScreen={this.onNavigateToFAQScreenHandler}
@@ -210,13 +202,32 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 		);
 	}
 
+	private getMoreSimilarMedia = (refMediaData: IMediaLicenceData) => {
+		const ret: IMediaLicenceData[] = [];
+		for (let i = 0; i < SIMILAR_PAGE_SIZE; i++) {
+			if (this.similarLoadIndex < TOTAL_SIMILAR_PHOTOS) {
+				this.similarLoadIndex++;
+				const randomIndexNumber = Math.round(Math.random() * 999999);
+				const mediaWidth = 400 + Math.round(Math.random() * 200);
+				const mediaHeight = 300 + Math.round(Math.random() * 150);
+				const newMediaData = {...refMediaData};
+				newMediaData.title = newMediaData.title + ' ' + randomIndexNumber;
+				newMediaData.likedByMe = Math.random() < 0.5;
+				newMediaData.imageID = '#' + randomIndexNumber;
+				newMediaData.mediaPreviewURI = `https://placeimg.com/${mediaWidth}/${mediaHeight}/any`;
+				ret.push(newMediaData);
+			}
+		}
+		return ret;
+	}
+
 	private onLoadMoreSimilarMediaHandler = () => {
 		this.setState({
-			similarMedia: this.state.similarMedia.concat(getMoreSimilarMedia()),
+			similarMedia: this.state.similarMedia.concat(this.getMoreSimilarMedia(this.state as IMediaLicenceData)),
 		});
 	}
 
-	private onSimilarMediaLikeHandler = (similarMedia: IMediaLicenseData) => {
+	private onSimilarMediaLikeHandler = (similarMedia: IMediaLicenceData) => {
 		const updatedSimilarMedia = [...this.state.similarMedia];
 		const foundIndex = findIndex(updatedSimilarMedia, {imageID: similarMedia.imageID});
 		if (foundIndex > -1) {
@@ -229,9 +240,9 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 		}
 	}
 
-	private onSimilarMediaSelectHandler = (similarMedia: IMediaLicenseData) => {
-		// TODO: @Ionut: number 8 in the acc. criteria list.
-		// console.log('onSimilarMediaSelectHandler: ' + similarMedia.imageID);
+	private onSimilarMediaSelectHandler = (similarMedia: IMediaLicenceData) => {
+		// TODO: @Ionut: find a way to close all similar screens at once!
+		this.props.navigation.navigate('MediaLicenceScreen', {mediaLicence: similarMedia});
 	}
 
 	private onMediaLikeHandler = () => {
@@ -242,7 +253,7 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 	}
 
 	private onNavigateToFAQScreenHandler = () => {
-		this.props.navigation.navigate('MediaLicenseFAQScreen');
+		this.props.navigation.navigate('MediaLicenceFAQScreen');
 	}
 
 	private showDownloadModal = () => {
@@ -268,8 +279,16 @@ export default class MediaLicenseScreen extends Component<IMediaLicenseScreenPro
 	}
 
 	private onShowPreviewFullScreenHandler = () => {
+		// TODO: update hardcoded value here
+		const newMediaObject: IMediaProps = {
+			id: (Math.random() * 99999).toString(),
+			hash: 'QmWS5XaVeDDQAog9TcRHp7ryms4MP4a3u3gth3ZKwCvQTC',
+			optimizedHash: 'QmWS5XaVeDDQAog9TcRHp7ryms4MP4a3u3gth3ZKwCvQTC',
+			type: 'jpg',
+			size: 123456,
+		};
 		this.props.navigation.navigate('MediaViewerScreen', {
-			photos: [{url: this.state.mediaPreviewURI}],
+			mediaObjects: [newMediaObject],
 			startIndex: 0,
 		});
 	}

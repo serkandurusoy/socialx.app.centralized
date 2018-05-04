@@ -2,9 +2,9 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, SIMILAR_MEDIA_CONTAINER_PADDING, Sizes} from 'theme';
 
 const SCREEN_HORIZONTAL_PADDING = Sizes.smartHorizontalScale(20);
-export const THUMB_WIDTH = Sizes.getMediaLicenseThumbSize().size;
+export const THUMB_WIDTH = Sizes.getMediaLicenceThumbSize().size;
 export const THUMB_HEIGHT = Math.round(THUMB_WIDTH * 0.78);
-export const THUMBS_IN_A_ROW = Sizes.getMediaLicenseThumbSize().thumbsInARow;
+export const THUMBS_IN_A_ROW = Sizes.getMediaLicenceThumbSize().thumbsInARow;
 const ITEM_VERTICAL_PADDING = Sizes.smartVerticalScale(8);
 
 const ITEM_HORIZONTAL_PADDING = Sizes.smartHorizontalScale(8);

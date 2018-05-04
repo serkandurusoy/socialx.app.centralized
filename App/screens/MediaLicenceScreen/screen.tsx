@@ -8,40 +8,40 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import {DataProvider} from 'recyclerlistview';
 import {Colors, Icons} from 'theme';
-import {IMediaLicenseData, IMediaSize, MediaResolutionSection} from './index';
+import {IMediaLicenceData, IMediaSize, MediaResolutionSection} from './index';
 import style, {THUMB_HEIGHT, THUMB_WIDTH, THUMBS_IN_A_ROW} from './style';
 
-interface IMediaLicenseScreenComponentProps extends IMediaLicenseData {
+interface IMediaLicenceScreenComponentProps extends IMediaLicenceData {
 	onMediaLike: () => void;
 	onNavigateToFAQScreen: () => void;
 	onDownload: () => void;
 	onLoadMoreSimilarMedia: () => void;
 	numberOfSimilarMedia: number;
-	onSimilarMediaLike: (item: IMediaLicenseData) => void;
-	onSimilarMediaSelect: (item: IMediaLicenseData) => void;
+	onSimilarMediaLike: (item: IMediaLicenceData) => void;
+	onSimilarMediaSelect: (item: IMediaLicenceData) => void;
 	onShowPreviewFullScreen: () => void;
 	onNavigateToUserProfileScreen: () => void;
 	onNavigateToPhotoIDScreen: () => void;
-	similarMedia: IMediaLicenseData[];
+	similarMedia: IMediaLicenceData[];
 	likeToggleCounter: number;
 }
 
-interface IMediaLicenseScreenComponentState {
+interface IMediaLicenceScreenComponentState {
 	selectedItems: IMediaSize[];
 	visibleSections: MediaResolutionSection[];
 	similarMediaDataProvider: DataProvider;
 	likeToggleCounter: number;
 }
 
-export default class MediaLicenseScreenComponent extends Component<
-	IMediaLicenseScreenComponentProps,
-	IMediaLicenseScreenComponentState
+export default class MediaLicenceScreenComponent extends Component<
+	IMediaLicenceScreenComponentProps,
+	IMediaLicenceScreenComponentState
 > {
 	public static getDerivedStateFromProps(
-		nextProps: Readonly<IMediaLicenseScreenComponentProps>,
-		prevState: Readonly<IMediaLicenseScreenComponentState>,
+		nextProps: Readonly<IMediaLicenceScreenComponentProps>,
+		prevState: Readonly<IMediaLicenceScreenComponentState>,
 	) {
-		let ret: Partial<IMediaLicenseScreenComponentState> | null = null;
+		let ret: Partial<IMediaLicenceScreenComponentState> | null = null;
 		if (nextProps.likeToggleCounter !== prevState.likeToggleCounter) {
 			ret = {};
 			ret.likeToggleCounter = nextProps.likeToggleCounter;
@@ -53,11 +53,11 @@ export default class MediaLicenseScreenComponent extends Component<
 		return ret;
 	}
 
-	private dataProvider = new DataProvider((row1: IMediaLicenseData, row2: IMediaLicenseData) => {
+	private dataProvider = new DataProvider((row1: IMediaLicenceData, row2: IMediaLicenceData) => {
 		return row1.imageID !== row2.imageID || row1.likedByMe !== row2.likedByMe;
 	});
 
-	constructor(props: IMediaLicenseScreenComponentProps) {
+	constructor(props: IMediaLicenceScreenComponentProps) {
 		super(props);
 		this.state = {
 			selectedItems: [],
@@ -213,7 +213,7 @@ export default class MediaLicenseScreenComponent extends Component<
 		);
 	}
 
-	private renderGridItemHandler = (type: ReactText, item: IMediaLicenseData) => {
+	private renderGridItemHandler = (type: ReactText, item: IMediaLicenceData) => {
 		const likeIconSource = item.likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
 		return (
 			<View style={style.gridItemContainer}>
@@ -283,7 +283,7 @@ export default class MediaLicenseScreenComponent extends Component<
 
 	private toggleResolutionSection = (mediaResSection: MediaResolutionSection) => {
 		const visibleSections = [...this.state.visibleSections];
-		const updatedState: Partial<IMediaLicenseScreenComponentState> = {};
+		const updatedState: Partial<IMediaLicenceScreenComponentState> = {};
 		const foundIndex = this.resolutionSectionIsActive(mediaResSection);
 		if (foundIndex > -1) {
 			visibleSections.splice(foundIndex, 1);

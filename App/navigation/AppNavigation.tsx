@@ -12,8 +12,8 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
-import MediaLicenseFAQScreen from '../screens/MediaLicenseFAQScreen';
-import MediaLicenseScreen from '../screens/MediaLicenseScreen';
+import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
+import MediaLicenceScreen from '../screens/MediaLicenceScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
 import MessagingScreen from '../screens/MessagingScreen';
 import MyEventsScreen from '../screens/MyEventsScreen';
@@ -53,10 +53,10 @@ const getSingleScreenStack = (routeName: string, screen: any) => {
 	});
 };
 
-const MediaLicenseStackNavigator = StackNavigator(
+const MediaLicenceStackNavigator = StackNavigator(
 	{
-		MediaLicenseScreen: {screen: MediaLicenseScreen},
-		MediaLicenseFAQScreen: {screen: MediaLicenseFAQScreen},
+		MediaLicenceScreen: {screen: MediaLicenceScreen},
+		MediaLicenceFAQScreen: {screen: MediaLicenceFAQScreen},
 	},
 	{
 		navigationOptions: navOptionsDefault,
@@ -131,7 +131,7 @@ const MainScreenTabNavigation = TabNavigator(
 
 const MainScreenWithModal = StackNavigator(
 	{
-		// MediaLicenseStack: {screen: MediaLicenseStackNavigator}, // TODO: later to be moved!
+		MediaLicenceStack: {screen: MediaLicenceStackNavigator}, // TODO: later to be moved!
 		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
 		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
 		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),

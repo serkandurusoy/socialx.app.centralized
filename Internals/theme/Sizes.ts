@@ -45,7 +45,7 @@ const SizesInt = {
 		}
 		return Math.floor(ret);
 	},
-	getMediaLicenseThumbSize: (minThumbsInARow = 2) => {
+	getMediaLicenceThumbSize: (minThumbsInARow = 2) => {
 		const adjustedBaseWidth = guidelineBaseWidth - 2 * SIMILAR_MEDIA_CONTAINER_PADDING;
 		const adjustedScreenWidth = width - 2 * SIMILAR_MEDIA_CONTAINER_PADDING;
 		const baseThumbSize = adjustedBaseWidth / minThumbsInARow;
