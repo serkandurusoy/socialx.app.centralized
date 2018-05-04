@@ -1,5 +1,7 @@
+import {SXButton} from 'components';
 import {OS_TYPES} from 'consts';
-import {withManagedTransitions} from 'hoc/ManagedModal';
+import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc';
+import {IManagedModal, withManagedTransitions} from 'hoc/ManagedModal';
 import numeral from 'numeral';
 import React, {Component} from 'react';
 import {Image, Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
@@ -8,8 +10,8 @@ import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {Colors} from 'theme';
 import {Icons} from 'theme/Icons';
+import {IUserQuery} from 'types';
 import {TKeyboardKeys, WalletInputField} from '../../Inputs';
-import {SXButton} from '../../Interaction';
 import style from './style';
 
 const PAGE_TEXTS = {

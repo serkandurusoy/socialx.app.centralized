@@ -1,7 +1,7 @@
 import React, {Component, ReactText} from 'react';
 import {Dimensions, Image, TouchableOpacity, View} from 'react-native';
 import {DataProvider, LayoutProvider, RecyclerListView} from 'recyclerlistview';
-import {Sizes} from '../../../theme';
+import {Sizes} from 'theme';
 import style from './style';
 
 export interface INewGridPhotosProps {

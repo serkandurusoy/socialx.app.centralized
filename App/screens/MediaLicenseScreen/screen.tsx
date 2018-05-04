@@ -1,3 +1,4 @@
+import {NewGridPhotos, SXButton} from 'components';
 import findIndex from 'lodash/findIndex';
 import sortBy from 'lodash/sortBy';
 import {CheckBox} from 'native-base';
@@ -6,9 +7,7 @@ import {Dimensions, Image, ImagePropertiesSourceOptions, ScrollView, Text, Touch
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import {DataProvider} from 'recyclerlistview';
-import {NewGridPhotos} from '../../components/Displayers/NewGridPhotos';
-import {SXButton} from '../../components/Interaction/Button';
-import {Colors, Icons} from '../../theme/';
+import {Colors, Icons} from 'theme';
 import {IMediaLicenseData, IMediaSize, MediaResolutionSection} from './index';
 import style, {THUMB_HEIGHT, THUMB_WIDTH, THUMBS_IN_A_ROW} from './style';
 

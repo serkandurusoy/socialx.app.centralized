@@ -25,3 +25,4 @@ export * from './TransactionItem';
 export * from './WallPostCard';
 export * from './WallPostCard/CommentCard';
 export * from './MediaObject';
+export * from './NewGridPhotos';

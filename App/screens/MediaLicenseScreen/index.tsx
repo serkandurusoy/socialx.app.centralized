@@ -1,10 +1,9 @@
+import {ModalWallet} from 'components';
 import findIndex from 'lodash/findIndex';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {ModalWallet} from '../../components/Modals/Wallet';
-import {MediaSizes, MediaTypeImage, MediaTypes, MediaTypeVideo} from '../../types/global';
-import {IUserQuery} from '../../types/gql';
+import {IUserQuery, MediaSizes, MediaTypeImage, MediaTypes} from 'types';
 import MediaLicenseScreenComponent from './screen';
 
 export interface MediaResolutionSection {

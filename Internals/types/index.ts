@@ -1,6 +1,7 @@
 export * from './gql';
 export * from './appUI';
 export * from './popup';
+export * from './global';
 
 // temp
 
@@ -63,9 +64,4 @@ export interface SearchResultCreateGroup {
 	fullName: string;
 	location: string;
 	avatarURL?: string;
-}
-
-export enum MediaTypes {
-	Image = 'image',
-	Video = 'video',
 }

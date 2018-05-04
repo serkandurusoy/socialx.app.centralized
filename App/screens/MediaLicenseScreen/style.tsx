@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from '../../theme/';
-import {SIMILAR_MEDIA_CONTAINER_PADDING} from '../../theme/Sizes';
+import {Colors, Fonts, SIMILAR_MEDIA_CONTAINER_PADDING, Sizes} from 'theme';
 
 const SCREEN_HORIZONTAL_PADDING = Sizes.smartHorizontalScale(20);
 export const THUMB_WIDTH = Sizes.getMediaLicenseThumbSize().size;

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {Colors} from 'theme';
 import {InputSizes, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from '../TextInput';
-import {Text, TouchableOpacity, View} from 'react-native';
 import style from './style';
 
 export interface IModalWalletProps {
