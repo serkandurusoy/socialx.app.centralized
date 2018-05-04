@@ -11,7 +11,7 @@ import style from './style';
 import {updateTabBarBottomHeight} from 'backend/actions';
 import RNFS from 'react-native-fs';
 import {connect} from 'react-redux';
-import {MediaTypes} from '../../../types';
+import {MediaTypes} from 'types';
 
 interface TabMenuItem {
 	screenName?: string;

@@ -1,13 +1,13 @@
 import {AvatarImage} from 'components/Avatar';
 import {AddFriendsList} from 'components/Displayers/AddFriendsList';
 import {CheckboxButtonWithIcon} from 'components/Displayers/CheckboxButtonWithIcon';
+import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, Icons} from 'theme/';
-import {MediaObjectViewer} from '../../../Internals/components/Displayers/MediaObject';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 
