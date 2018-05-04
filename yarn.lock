@@ -9827,7 +9827,7 @@ react-native-tab-view@^0.0.74:
 
 "react-native-tcp@https://github.com/Shadyzpop/react-native-tcp":
   version "3.3.0"
-  resolved "https://github.com/Shadyzpop/react-native-tcp#49266ff89708042c374266364f8f7eb311f2d575"
+  resolved "https://github.com/Shadyzpop/react-native-tcp#42d1d6e956e440b79ba048ebdc06f72382b1c60c"
   dependencies:
     base64-js "0.0.8"
     buffer "^5.0.0"
