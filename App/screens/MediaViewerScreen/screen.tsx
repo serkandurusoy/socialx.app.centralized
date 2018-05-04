@@ -58,6 +58,8 @@ export default class MediaViewerScreenComponent extends Component<
 				<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
 					<Carousel
 						ref={(c: any) => (this.carouselRef = c)}
+						// hack so that renderItem will use updated state value for activeSlide
+						activeSlide={this.state.activeSlide}
 						data={this.props.mediaObjects}
 						renderItem={this.renderCarouselItem}
 						sliderWidth={this.state.viewport.width}
@@ -131,9 +133,6 @@ export default class MediaViewerScreenComponent extends Component<
 
 	private handleSlideChanged = (index: number) => {
 		this.setState({activeSlide: index});
-		if (this.carouselRef) {
-			this.carouselRef.snapToItem(index, false);
-		}
 	}
 
 	private renderCarouselItem = (itemData: {item: IMediaProps; index: number}) => {
