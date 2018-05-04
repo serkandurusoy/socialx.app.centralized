@@ -19,7 +19,7 @@ import {
 	userHoc,
 } from 'backend/graphql';
 import {graphql} from 'react-apollo';
-import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery, IComments} from 'types';
+import {IAllPostsDataResponse, IComments, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from 'types';
 import {CurrentUser} from 'utilities';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
@@ -68,7 +68,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			/>
 		),
 		headerLeft: <View />,
-	});
+	})
 
 	private static launchMessagingScreen(props: any) {
 		const params = props.navigation.state.params || {};
@@ -137,7 +137,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
 		return ret;
-	};
+	}
 
 	private getWallPosts = async (nextProps?: IUserFeedScreenProps) => {
 		const {data, Posts} = this.props;
@@ -169,7 +169,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const res: IWallPostCardProp = {
 				id: post.id,
 				text: post.text,
-				location: 'Home',
+				location: null, // TODO: enable this later when we have backend support
 				smallAvatar: post.owner.avatar
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
@@ -200,7 +200,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			b = b.timestamp;
 			return a > b ? -1 : a < b ? 1 : 0;
 		});
-	};
+	}
 
 	private showNewWallPostPage = () => {
 		const avatarUri = this.props.data.user.avatar
@@ -211,7 +211,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			avatarImage: avatarUri,
 			postCreate: this.addWallPostHandler,
 		});
-	};
+	}
 
 	private loadMorePostsHandler = async (nextProps?: IUserFeedScreenProps) => {
 		const {wallPosts} = this.state;
@@ -241,7 +241,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.setState({
 			wallPosts: this.state.wallPosts.concat(rest),
 		});
-	};
+	}
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
 		const {createPost, addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
@@ -283,7 +283,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		stopLoading();
-	};
+	}
 
 	private refreshWallPosts = async () => {
 		this.setState({refreshing: true});
@@ -300,14 +300,14 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			this.setState({refreshing: false});
 			console.log('ex', Ex);
 		}
-	};
+	}
 
 	private onMediaObjectPressHandler = (index: number, mediaObjects: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: mediaObjects ? [mediaObjects[0]] : [],
 			startIndex: index,
 		});
-	};
+	}
 
 	private onLikeButtonClickHandler = async (postId: string) => {
 		const {likePost, removeLikePost} = this.props;
@@ -334,7 +334,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
 			}),
 		}));
-	};
+	}
 
 	private onPostDeleteClickHandler = async (postId: string) => {
 		const {deletingPostLoad, deletePost, stopLoading} = this.props;
@@ -348,15 +348,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// user doesnt own the post, thus cant delete, or server issues
 		}
 		stopLoading();
-	};
+	}
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
 		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
-	};
+	}
 
 	private navigateToMessagingScreen = () => {
 		this.props.navigation.navigate('MessagingScreen');
-	};
+	}
 }
 
 const MapDispatchToProps = (dispatch: any) => ({

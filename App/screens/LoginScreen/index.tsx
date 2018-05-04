@@ -1,4 +1,5 @@
 import {ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
+import {ModalManager} from 'hoc';
 import React, {Component} from 'react';
 import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -9,7 +10,6 @@ import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
-import {ModalManager} from 'hoc/ManagedModal/manager';
 import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import {ConfirmSignin, CurrentUserInfo, Signin} from 'utilities';
 

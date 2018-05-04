@@ -150,6 +150,8 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	private addNewMediaObject = async (mediaObject: PickerImage) => {
 		const {mediaObjects} = this.state;
 		try {
+			// FIXME @Jake: this is taking lot of time on android, should be optimized?
+			console.log('addNewMediaObject START');
 			let imageOptimizedContent = null;
 			if (mediaObject.mime.startsWith(MediaTypes.Image)) {
 				const optimized = await ImageResizer.createResizedImage(
@@ -175,6 +177,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			this.setState({
 				mediaObjects: mediaObjects.concat([localMediaObject]),
 			});
+			console.log('addNewMediaObject END');
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -183,9 +186,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	private renderPostMediaObjects = () => {
 		const ret: any = [];
 		this.state.mediaObjects.forEach((mediaObject: MediaObject, index) => {
-			ret.push(
-				<MediaObjectViewer key={index} uri={'file://' + mediaObject.path} style={style.mediaObject} thumbOnly={true} />,
-			);
+			ret.push(<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />);
 		});
 		return ret;
 	}

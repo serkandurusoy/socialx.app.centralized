@@ -23,6 +23,8 @@ export const MediaObjectViewer: React.SFC<IMediaObjectViewerProps> = (props) => 
 		return mime.lookup(props.uri);
 	};
 
+	const ImageComponent = props.uri.startsWith('https://') ? FastImage : Image;
+
 	const renderForMediaType = () => {
 		let ret = null;
 		const mediaMimeType = getMimeType();
@@ -31,7 +33,7 @@ export const MediaObjectViewer: React.SFC<IMediaObjectViewerProps> = (props) => 
 		} else if (mediaMimeType.startsWith(MediaTypes.Image)) {
 			ret = (
 				<TouchableOpacity onPress={props.onPress} disabled={!props.onPress}>
-					<FastImage {...props} source={{uri: props.uri}} resizeMode={props.resizeMode as FastImage.ResizeMode} />
+					<ImageComponent {...props} source={{uri: props.uri}} resizeMode={props.resizeMode} />
 				</TouchableOpacity>
 			);
 		} else if (mediaMimeType.startsWith(MediaTypes.Video)) {
