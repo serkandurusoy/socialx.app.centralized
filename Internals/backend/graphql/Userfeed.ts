@@ -62,6 +62,9 @@ export const getAllPosts = gql`
 			}
 			comments {
 				id
+				comments {
+					id
+				}
 			}
 		}
 	}

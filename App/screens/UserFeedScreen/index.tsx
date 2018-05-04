@@ -19,7 +19,7 @@ import {
 	userHoc,
 } from 'backend/graphql';
 import {graphql} from 'react-apollo';
-import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from 'types';
+import {IAllPostsDataResponse, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery, IComments} from 'types';
 import {CurrentUser} from 'utilities';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
@@ -68,7 +68,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			/>
 		),
 		headerLeft: <View />,
-	})
+	});
 
 	private static launchMessagingScreen(props: any) {
 		const params = props.navigation.state.params || {};
@@ -137,7 +137,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
 		return ret;
-	}
+	};
 
 	private getWallPosts = async (nextProps?: IUserFeedScreenProps) => {
 		const {data, Posts} = this.props;
@@ -158,6 +158,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					: undefined
 				: undefined;
 			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
+			const numberOfComments = () => {
+				let cres = 0;
+				for (let x = 0; x < post.comments.length; x++) {
+					cres += post.comments[x].comments.length + 1;
+				}
+				return cres;
+			};
 
 			const res: IWallPostCardProp = {
 				id: post.id,
@@ -173,7 +180,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
-				numberOfComments: post.comments.length,
+				numberOfComments: numberOfComments(),
 				numberOfWalletCoins: 0,
 				onCommentsButtonClick: () => Alert.alert('click'),
 				// TODO: append all media to this with the index of the image
@@ -193,7 +200,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			b = b.timestamp;
 			return a > b ? -1 : a < b ? 1 : 0;
 		});
-	}
+	};
 
 	private showNewWallPostPage = () => {
 		const avatarUri = this.props.data.user.avatar
@@ -204,7 +211,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			avatarImage: avatarUri,
 			postCreate: this.addWallPostHandler,
 		});
-	}
+	};
 
 	private loadMorePostsHandler = async (nextProps?: IUserFeedScreenProps) => {
 		const {wallPosts} = this.state;
@@ -234,7 +241,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.setState({
 			wallPosts: this.state.wallPosts.concat(rest),
 		});
-	}
+	};
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
 		const {createPost, addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
@@ -276,7 +283,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		stopLoading();
-	}
+	};
 
 	private refreshWallPosts = async () => {
 		this.setState({refreshing: true});
@@ -293,14 +300,14 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			this.setState({refreshing: false});
 			console.log('ex', Ex);
 		}
-	}
+	};
 
 	private onMediaObjectPressHandler = (index: number, mediaObjects: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: mediaObjects ? [mediaObjects[0]] : [],
 			startIndex: index,
 		});
-	}
+	};
 
 	private onLikeButtonClickHandler = async (postId: string) => {
 		const {likePost, removeLikePost} = this.props;
@@ -327,7 +334,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
 			}),
 		}));
-	}
+	};
 
 	private onPostDeleteClickHandler = async (postId: string) => {
 		const {deletingPostLoad, deletePost, stopLoading} = this.props;
@@ -341,15 +348,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// user doesnt own the post, thus cant delete, or server issues
 		}
 		stopLoading();
-	}
+	};
 
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
 		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
-	}
+	};
 
 	private navigateToMessagingScreen = () => {
 		this.props.navigation.navigate('MessagingScreen');
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
