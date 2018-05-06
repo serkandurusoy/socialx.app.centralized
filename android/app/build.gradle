@@ -73,11 +73,14 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-        entryFile: "index.js"
+        entryFile: "index.js",
+        extraPackagerArgs: [
+            "--sourcemap-output", file("$buildDir/../../../sourcemap.android.js")
+        ]
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-
+apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -159,6 +162,7 @@ dependencies {
     compile project(':react-native-text-gradient')
     compile project(':react-native-orientation')
     compile project(':react-native-blur')
+    compile project(':react-native-sentry')
     compile project(':react-native-video')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-vector-icons')
