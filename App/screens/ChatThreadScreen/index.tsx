@@ -111,11 +111,11 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 
 	public componentWillMount() {
 		// hook server calls from this client. messages etc..
-		this.phoneTcpServer = TCPServer(this.socketOnGetData, () => {
-			// after the server is started, hook the client to own server (TODO: hook to friend server)
-			// and assign to local var for local use
-			this.friendTcpClient = new TCPClient(NetServerPort);
-		});
+		// this.phoneTcpServer = TCPServer(this.socketOnGetData, () => {
+		// 	// after the server is started, hook the client to own server (TODO: hook to friend server)
+		// 	// and assign to local var for local use
+		// 	this.friendTcpClient = new TCPClient(NetServerPort);
+		// });
 	}
 
 	public componentDidMount() {
@@ -155,74 +155,74 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 	private setComment = (text: string) => {
 		const port = parseInt(text, undefined);
 		console.log('connecting to', port);
-		this.friendTcpClient = new TCPClient(port, '10.0.2.2');
+		// this.friendTcpClient = new TCPClient(port, '10.0.2.2');
 	}
 
 	private setText = (text: string) => {
-		// create time buffer to prevent bulky socket data
-		const bufferDate = this.state.timeframeBuffer;
-		const nowDate = new Date(Date.now());
-		const secondsBuffer = (nowDate.getTime() - bufferDate) / 1000;
+		// // create time buffer to prevent bulky socket data
+		// const bufferDate = this.state.timeframeBuffer;
+		// const nowDate = new Date(Date.now());
+		// const secondsBuffer = (nowDate.getTime() - bufferDate) / 1000;
 
-		if (text === '') {
-			const sendData: IExtraData = {
-				isTyping: false,
-			};
-			this.friendTcpClient.write(JSON.stringify(sendData));
-			this.setState({text});
-			return;
-		}
+		// if (text === '') {
+		// 	const sendData: IExtraData = {
+		// 		isTyping: false,
+		// 	};
+		// 	this.friendTcpClient.write(JSON.stringify(sendData));
+		// 	this.setState({text});
+		// 	return;
+		// }
 
-		if (text.length === 1) {
-			const sendData: IExtraData = {
-				isTyping: true,
-			};
-			this.friendTcpClient.write(JSON.stringify(sendData));
-			this.setState({timeframeBuffer: nowDate.getTime()});
-		}
+		// if (text.length === 1) {
+		// 	const sendData: IExtraData = {
+		// 		isTyping: true,
+		// 	};
+		// 	this.friendTcpClient.write(JSON.stringify(sendData));
+		// 	this.setState({timeframeBuffer: nowDate.getTime()});
+		// }
 
-		if (secondsBuffer > 5) {
-			const sendData: IExtraData = {
-				isTyping: true,
-			};
-			this.friendTcpClient.write(JSON.stringify(sendData));
-			this.setState({timeframeBuffer: nowDate.getTime()});
-		}
-		this.setState({text});
+		// if (secondsBuffer > 5) {
+		// 	const sendData: IExtraData = {
+		// 		isTyping: true,
+		// 	};
+		// 	this.friendTcpClient.write(JSON.stringify(sendData));
+		// 	this.setState({timeframeBuffer: nowDate.getTime()});
+		// }
+		// this.setState({text});
 	}
 
 	// each time the server gets a message, it gets parsed and passed here.
 	private socketOnGetData = (data: MessageData | IExtraData) => {
-		if (instanceOfMessageData(data)) {
-			data.text = 'From realtime p2p';
-			data.ownMessage = false;
-			data._id = uuidv4();
-			this.addNewMessageToTheChat(data);
-		} else {
-			this.setState({isTyping: data.isTyping});
-			// stop typing handler if the user is not typing for x~ seconds
-			// TODO: make better
-			setTimeout(() => {
-				this.setState({isTyping: false});
-			}, 50000);
-		}
+		// if (instanceOfMessageData(data)) {
+		// 	data.text = 'From realtime p2p';
+		// 	data.ownMessage = false;
+		// 	data._id = uuidv4();
+		// 	this.addNewMessageToTheChat(data);
+		// } else {
+		// 	this.setState({isTyping: data.isTyping});
+		// 	// stop typing handler if the user is not typing for x~ seconds
+		// 	// TODO: make better
+		// 	setTimeout(() => {
+		// 		this.setState({isTyping: false});
+		// 	}, 50000);
+		// }
 	}
 
 	private sendOwnMessageHandler = (message: MessageData) => {
-		// TODO: Network send message
-		if (message.text.includes('!port')) {
-			this.setComment(message.text.replace('!port ', ''));
-			this.addNewMessageToTheChat({
-				_id: uuidv4(),
-				text: 'Connecting..',
-				createdAt: new Date(),
-				ownMessage: true,
-			});
-			return;
-		}
-		this.friendTcpClient.write(JSON.stringify(message));
-		this.addNewMessageToTheChat(message);
-		this.setText('');
+		// // TODO: Network send message
+		// if (message.text.includes('!port')) {
+		// 	this.setComment(message.text.replace('!port ', ''));
+		// 	this.addNewMessageToTheChat({
+		// 		_id: uuidv4(),
+		// 		text: 'Connecting..',
+		// 		createdAt: new Date(),
+		// 		ownMessage: true,
+		// 	});
+		// 	return;
+		// }
+		// this.friendTcpClient.write(JSON.stringify(message));
+		// this.addNewMessageToTheChat(message);
+		// this.setText('');
 	}
 
 	private addNewMessageToTheChat = (message: MessageData) => {

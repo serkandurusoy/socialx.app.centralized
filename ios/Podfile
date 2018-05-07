@@ -38,6 +38,8 @@ target 'SocialxTypeActress' do
 
   pod 'react-native-image-resizer', :path => '../node_modules/react-native-image-resizer'
 
+  pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
+
   target 'SocialxTypeActressTests' do
     inherit! :search_paths
     # Pods for testing
