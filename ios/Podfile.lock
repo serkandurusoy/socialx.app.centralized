@@ -7,6 +7,16 @@ PODS:
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
   - FLAnimatedImage (1.0.12)
+  - KSCrash/Core (1.15.18):
+    - KSCrash/Reporting/Filters/Basic
+  - KSCrash/Recording (1.15.18):
+    - KSCrash/Recording/Tools (= 1.15.18)
+  - KSCrash/Recording/Tools (1.15.18)
+  - KSCrash/Reporting/Filters/Base (1.15.18):
+    - KSCrash/Recording
+  - KSCrash/Reporting/Filters/Basic (1.15.18):
+    - KSCrash/Recording
+    - KSCrash/Reporting/Filters/Base
   - QBImagePickerController (3.4.0)
   - React (0.55.3):
     - React/Core (= 0.55.3)
@@ -58,6 +68,15 @@ PODS:
   - SDWebImage/GIF (4.3.3):
     - FLAnimatedImage (~> 1.0)
     - SDWebImage/Core
+  - Sentry (3.12.4):
+    - Sentry/Core (= 3.12.4)
+    - Sentry/KSCrash (= 3.12.4)
+  - Sentry/Core (3.12.4)
+  - Sentry/KSCrash (3.12.4):
+    - KSCrash/Core (~> 1.15.12)
+  - SentryReactNative (0.36.0):
+    - Sentry (~> 3.12.4)
+    - Sentry/KSCrash (~> 3.12.4)
   - yoga (0.55.3.React)
 
 DEPENDENCIES:
@@ -80,6 +99,7 @@ DEPENDENCIES:
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - SentryReactNative (from `../node_modules/react-native-sentry`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
 
 SPEC REPOS:
@@ -87,9 +107,11 @@ SPEC REPOS:
     - AppCenter
     - AppCenterReactNativeShared
     - FLAnimatedImage
+    - KSCrash
     - QBImagePickerController
     - RSKImageCropper
     - SDWebImage
+    - Sentry
 
 EXTERNAL SOURCES:
   React:
@@ -104,6 +126,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  SentryReactNative:
+    :path: "../node_modules/react-native-sentry"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/yoga.podspec"
 
@@ -111,6 +135,7 @@ SPEC CHECKSUMS:
   AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
   AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  KSCrash: 5394936f41e5c1ef7b79cf79b30d53299b0c160e
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: aa2040dbb6f317b95314968021bd2888816e03d5
   react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
@@ -120,8 +145,10 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
   RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
+  Sentry: 7d3ea7176e5184e9c35c12a5825905345807e8c1
+  SentryReactNative: de2a4cfbfea1c2dadc402fa41d925bfcd77ccaf9
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: a85ecfd3f33c94a006a609d1589273ed9d2b8be2
+PODFILE CHECKSUM: 5168706726ec554226fa43425b46d7eb0fb96273
 
 COCOAPODS: 1.5.0
