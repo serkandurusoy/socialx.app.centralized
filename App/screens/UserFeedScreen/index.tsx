@@ -3,7 +3,7 @@ import {Alert, InteractionManager, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp} from 'react-navigation';
 import {Icons, Images} from 'theme';
 import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
@@ -30,14 +30,17 @@ import {addBlobFiles} from 'utilities/ipfs';
 
 import {ipfsConfig as base} from 'configuration';
 
-import {ScreenHeaderButton} from 'components/Interaction/ScreenHeaderButton';
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
 
-interface IUserFeedScreenProps {
-	navigation: NavigationScreenProp<any>;
-	data: IUserDataResponse;
+export interface IFeedProps {
 	Posts: IAllPostsDataResponse;
+	navigation: NavigationScreenProp<any>;
+	hideShareSection: boolean;
+}
+
+interface IUserFeedScreenProps extends IFeedProps {
+	data: IUserDataResponse;
 	User: IUserDataResponse;
 	// TODO: create interface
 	createPost: any;
@@ -59,38 +62,12 @@ interface IUserFeedScreenState {
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
-	private static navigationOptions = (props: IUserFeedScreenProps) => ({
-		title: 'FEED',
-		headerRight: (
-			<ScreenHeaderButton
-				onPress={() => UserFeedScreen.launchMessagingScreen(props)}
-				iconSource={Icons.messagingIcon}
-			/>
-		),
-		headerLeft: <View />,
-	})
-
-	private static launchMessagingScreen(props: any) {
-		const params = props.navigation.state.params || {};
-		if (params.messagingScreenHandler) {
-			params.messagingScreenHandler();
-		}
-	}
-
 	public state = {
 		allWallPosts: [],
 		wallPosts: [],
 		refreshing: false,
 		currentLoad: 0,
 	};
-
-	public componentDidMount() {
-		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({
-				messagingScreenHandler: this.navigateToMessagingScreen,
-			});
-		});
-	}
 
 	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
 		if (nextProps.Posts.loading || nextProps.data.loading) {
@@ -126,6 +103,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
 				onCommentsButtonClick={this.onCommentsButtonClickHandler}
+				hideShareSection={this.props.hideShareSection}
 			/>
 		);
 	}
@@ -193,6 +171,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			};
 			dataSpine.push(res);
 		}
+
+		// TODO @Jake: if we want to have this as generic as possible, maybe the posts should already be sorted from
+		// hoc or even gql query?
 
 		// sort posts by time desc (most recent)
 		return dataSpine.sort((a, b) => {
@@ -353,10 +334,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
 		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
 	}
-
-	private navigateToMessagingScreen = () => {
-		this.props.navigation.navigate('MessagingScreen');
-	}
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -369,9 +346,7 @@ const MapDispatchToProps = (dispatch: any) => ({
 const reduxWrapper = connect(null, MapDispatchToProps)(UserFeedScreen);
 
 const userWrapper = userHoc(reduxWrapper);
-const allPostsWrapper = getAllPostsHoc(userWrapper);
-const createPostWrapper = createPostHoc(allPostsWrapper);
-const addMediaWrapper = addMediaHoc(createPostWrapper);
+const addMediaWrapper = addMediaHoc(userWrapper);
 const likePostWrapper = likePostHoc(addMediaWrapper);
 const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
 const deletePostWrapper = deleteOwnPostHoc(removeLikePostWrapper);

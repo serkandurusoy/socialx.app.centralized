@@ -1,5 +1,6 @@
 import {IContactListItem} from 'components/Displayers';
 import React, {Component} from 'react';
+import {View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MessagingComponent from './screen';
 
@@ -17,6 +18,7 @@ interface IMessagingScreenProps {
 export default class MessagingScreen extends Component<IMessagingScreenProps> {
 	private static navigationOptions = {
 		title: 'MESSAGING',
+		headerRight: <View />,
 	};
 
 	public render() {
