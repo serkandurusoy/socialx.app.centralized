@@ -39,6 +39,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Take a profile photo with camera</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Please allow application to save media object to your photo library</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location access is required if you want to share it with your friends</string>
 	<key>NSPhotoLibraryUsageDescription</key>

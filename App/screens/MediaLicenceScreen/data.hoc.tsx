@@ -1,3 +1,8 @@
+import * as _ from 'lodash';
+import React from 'react';
+import {Alert, CameraRoll, PermissionsAndroid, View} from 'react-native';
+import RNFS from 'react-native-fs';
+
 import {
 	IShareOption,
 	SHARE_GOOGLE_PLUS,
@@ -7,10 +12,12 @@ import {
 	SHARE_WHATS_APP,
 	SHARE_YOUTUBE,
 } from 'components';
-import * as _ from 'lodash';
-import React from 'react';
-import {View} from 'react-native';
 import {ISimpleMediaObject, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes, MediaTypeVideo} from 'types';
+import {requestResourcePermission} from 'utilities';
+
+const REQUEST_SAVE_MEDIA_TITLE = 'Gallery save request';
+const REQUEST_SAVE_MEDIA_MESSAGE = 'The media you download will be saved to device gallery. Please grant access.';
+const SAVE_MEDIA_ACCESS_DENIED = 'Save to gallery denied :(';
 
 export interface MediaResolutionSection {
 	title: string;
@@ -41,6 +48,7 @@ export interface IMediaLicenceData {
 	type: MediaTypes;
 	title: string;
 	mediaPreviewURI: string;
+	extension: string;
 	likedByMe: boolean;
 	imageID: string;
 	owner: Partial<IUserQuery>;
@@ -51,8 +59,10 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 	title: 'Flower Cookie',
 	type: MediaTypeImage,
 	mediaPreviewURI: 'https://placeimg.com/900/650/any',
+	extension: 'jpg',
 	// type: MediaTypeVideo,
 	// mediaPreviewURI: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4',
+	// extension: 'mp4',
 	likedByMe: false,
 	imageID: '#765334',
 	owner: {
@@ -218,9 +228,11 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 					if (i % 5 === 0) {
 						newMediaData.mediaPreviewURI = `https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4`;
 						newMediaData.type = MediaTypeVideo;
+						newMediaData.extension = 'mp4';
 					} else {
 						newMediaData.mediaPreviewURI = `https://placeimg.com/${mediaWidth}/${mediaHeight}/any`;
 						newMediaData.type = MediaTypeImage;
+						newMediaData.extension = 'jpg';
 					}
 					ret.push(newMediaData);
 				}
@@ -258,8 +270,33 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 			// console.log('TODO: Share option selected ' + option.key);
 		}
 
-		private onMediaDownloadPreviewHandler = () => {
-			// console.log('TODO: onMediaDownloadPreviewHandler');
+		private onMediaDownloadPreviewHandler = async () => {
+			// TODO: add progress indicator
+			const granted = await requestResourcePermission(
+				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+				REQUEST_SAVE_MEDIA_TITLE,
+				REQUEST_SAVE_MEDIA_MESSAGE,
+			);
+			if (granted) {
+				const {mediaData} = this.state;
+				const tempSavePath = 'file://' + RNFS.CachesDirectoryPath + '/' + mediaData.title + '.' + mediaData.extension;
+				// console.log('Will save to cache location', tempSavePath);
+				const downloadDescriptor = RNFS.downloadFile({
+					fromUrl: mediaData.mediaPreviewURI,
+					toFile: tempSavePath,
+				});
+				downloadDescriptor.promise.then((result: RNFS.DownloadResult) => {
+					// console.log('Download finished', result.bytesWritten, result.statusCode);
+					CameraRoll.saveToCameraRoll(tempSavePath).then((localURI: string) => {
+						// console.log('Downloaded file moved to', localURI);
+						RNFS.unlink(tempSavePath).then(() => {
+							// console.log('File deleted from temp location');
+						});
+					});
+				});
+			} else {
+				Alert.alert(SAVE_MEDIA_ACCESS_DENIED);
+			}
 		}
 	};
 };
