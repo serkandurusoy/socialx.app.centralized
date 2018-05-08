@@ -27,6 +27,8 @@ import {IBlobData} from 'ipfslib';
 import {Signout} from 'utilities/amplify';
 import {addBlob} from 'utilities/ipfs';
 
+import RNFS from 'react-native-fs';
+
 import {ipfsConfig as base} from 'configuration/ipfs';
 const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
@@ -111,7 +113,6 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			lastName: data.user.name.split(' ')[1],
 			email: data.user.email,
 		});
-
 	}
 
 	public render() {
@@ -120,9 +121,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			// TODO: Add loader here...
 			return (
 				<View>
-					<Text>
-						Loading...
-					</Text>
+					<Text>Loading...</Text>
 				</View>
 			);
 		}
@@ -202,6 +201,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							autoWidth={true}
 							borderColor={Colors.transparent}
 							onPress={this.performSignOut}
+							style={{ marginTop: '20%' }}
 						/>
 					</View>
 					{/*<View style={style.miningContainer}>*/}
@@ -227,11 +227,11 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			//
 			console.log(ex);
 		}
-	}
+	};
 
 	private getFullName = () => {
 		return this.state.firstName + ' ' + this.state.lastName;
-	}
+	};
 
 	private renderSaveButton = () => {
 		if (this.state.hasChanges) {
@@ -245,7 +245,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			);
 		}
 		return null;
-	}
+	};
 
 	private updateAvatarImage = (base64Photo: string) => {
 		this.setState({
@@ -253,14 +253,14 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			hasChanges: true,
 		});
 		this.updatedAvatarImageBase64 = base64Photo;
-	}
+	};
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
 		const newState: any = {};
 		newState[fieldName] = value;
 		newState.hasChanges = true;
 		this.setState(newState);
-	}
+	};
 
 	private toggleMiningSetting = (value: boolean) => {
 		this.miningEnabled = value;
@@ -269,32 +269,35 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				hasChanges: true,
 			});
 		}
-	}
+	};
 
-	private handleImageChange = async (image?: string) => {
+	private handleImageChange = async () => {
 		const {addMedia} = this.props;
 		try {
-			if (!image) {
-				return;
+			if (!this.updatedAvatarImageBase64) {
+				return null;
 			}
 			// NOTE: Uppload image to IPFS
-			let ipfsRes = await addBlob([{fileName: 'ProfileImage.jpeg', data: image, name: 'ProfileImage' }]);
+			let ipfsRes = await addBlob([{fileName: 'ProfileImage.jpg', data: this.updatedAvatarImageBase64, name: 'ProfileImage'}]);
 			ipfsRes = JSON.parse(ipfsRes.data);
-
+			console.log(ipfsRes);
 			// NOTE: Add Midea file on AppSync
-			const qVar = {varabiles : {
-				hash: ipfsRes.hash,
-				type: ipfsRes.type,
-				size: parseInt(ipfsRes.size, undefined),
-			}};
+			const qVar = {
+				variables: {
+					hash: ipfsRes.Hash,
+					type: 'ProfileImage',
+					size: parseInt(ipfsRes.Size, undefined),
+				},
+			};
 
 			const addRes = await addMedia(qVar);
+			console.log(addRes.data);
 			return addRes.data.addMedia.id;
-
 		} catch (e) {
 			//
+			console.log(e);
 		}
-	}
+	};
 
 	private saveChanges = async () => {
 		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
@@ -309,24 +312,32 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		// this.props.saveChanges(saveData);
 
 		editingDataLoader();
-
 		try {
-			const mVar = {varables: {
-				name: `${saveData.firstName} ${saveData.lastName}`,
-				email: saveData.email,
-				bio: saveData.aboutText,
-				avatar: await this.handleImageChange(),
-			}};
+			const avatar = (await this.handleImageChange()) || '';
+			const bio = saveData.aboutText || '';
+			console.log(`image: ${avatar}`);
+
+			const mVar = {
+				variables: {
+					name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
+					email: saveData.email,
+					bio,
+					avatar,
+				},
+			};
+			console.log(mVar);
 
 			await updateUserData(mVar);
 			await data.refetch();
 
+			this.setState({hasChanges: false});
 		} catch (e) {
 			//
+			console.log(e);
 		}
 
 		hideLoader();
-	}
+	};
 }
 
 const MapDispatchToProp = (dispatch: any) => ({
