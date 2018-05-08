@@ -86,6 +86,16 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 					/>
 				);
 
+			case NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE:
+				// @ionut -> todo: make better
+				return (
+					<View>
+						<Text>
+							{activityCardData.username} has {activityCardData.status} your friend request
+						</Text>
+					</View>
+				);
+
 			case NOTIFICATION_TYPES.SUPER_LIKED:
 				return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;
 

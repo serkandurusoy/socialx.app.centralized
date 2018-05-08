@@ -124,6 +124,17 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 							};
 							break;
 
+						case NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE:
+							res = {
+								type: NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE,
+								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
+								fullName: current.owner.name,
+								username: current.owner.username,
+								requestId: current.id,
+								status: current.status,
+							};
+							break;
+
 						default:
 							res = null;
 							break;
