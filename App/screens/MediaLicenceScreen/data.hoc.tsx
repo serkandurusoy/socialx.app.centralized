@@ -10,7 +10,7 @@ import {
 import * as _ from 'lodash';
 import React from 'react';
 import {View} from 'react-native';
-import {ISimpleMediaObject, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes} from 'types';
+import {ISimpleMediaObject, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes, MediaTypeVideo} from 'types';
 
 export interface MediaResolutionSection {
 	title: string;
@@ -48,10 +48,11 @@ export interface IMediaLicenceData {
 }
 
 const MEDIA_LICENCE_DATA: IMediaLicenceData = {
-	type: MediaTypeImage,
-	// type: MediaTypeVideo,
 	title: 'Flower Cookie',
+	type: MediaTypeImage,
 	mediaPreviewURI: 'https://placeimg.com/900/650/any',
+	// type: MediaTypeVideo,
+	// mediaPreviewURI: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4',
 	likedByMe: false,
 	imageID: '#765334',
 	owner: {
@@ -214,7 +215,13 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 					newMediaData.title = newMediaData.title + ' ' + randomIndexNumber;
 					newMediaData.likedByMe = Math.random() < 0.5;
 					newMediaData.imageID = '#' + randomIndexNumber;
-					newMediaData.mediaPreviewURI = `https://placeimg.com/${mediaWidth}/${mediaHeight}/any`;
+					if (i % 5 === 0) {
+						newMediaData.mediaPreviewURI = `https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4`;
+						newMediaData.type = MediaTypeVideo;
+					} else {
+						newMediaData.mediaPreviewURI = `https://placeimg.com/${mediaWidth}/${mediaHeight}/any`;
+						newMediaData.type = MediaTypeImage;
+					}
 					ret.push(newMediaData);
 				}
 			}
@@ -223,7 +230,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 
 		private onLoadMoreSimilarMediaHandler = () => {
 			this.setState({
-				similarMedia: this.state.similarMedia.concat(this.getMoreSimilarMedia(this.state as IMediaLicenceData)),
+				similarMedia: this.state.similarMedia.concat(this.getMoreSimilarMedia(this.state.mediaData)),
 			});
 		}
 

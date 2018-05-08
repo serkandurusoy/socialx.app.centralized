@@ -1,4 +1,11 @@
-import {IShareOption, ModalExternalShareOptions, ModalWallet, NewGridPhotos, SXButton} from 'components';
+import {
+	IShareOption,
+	MediaObjectViewer,
+	ModalExternalShareOptions,
+	ModalWallet,
+	NewGridPhotos,
+	SXButton,
+} from 'components';
 import findIndex from 'lodash/findIndex';
 import sortBy from 'lodash/sortBy';
 import {CheckBox} from 'native-base';
@@ -148,7 +155,7 @@ class MediaLicenceScreenComponent extends Component<
 			<View style={style.paddingContainer}>
 				<Text style={style.mediaTitle}>{composedTitle}</Text>
 				<TouchableOpacity onPress={this.props.onShowPreviewFullScreen}>
-					<Image source={{uri: mediaPreviewURI}} resizeMode={'cover'} style={style.mediaPreviewImage} />
+					<MediaObjectViewer uri={mediaPreviewURI} style={style.mediaPreviewImage} type={type} />
 				</TouchableOpacity>
 				<View style={style.actionButtonsContainer}>
 					<TouchableOpacity onPress={this.props.onMediaLike}>
@@ -274,7 +281,7 @@ class MediaLicenceScreenComponent extends Component<
 		return (
 			<View style={style.gridItemContainer}>
 				<TouchableOpacity onPress={() => this.props.onSimilarMediaSelect(item)} style={style.similarImageTouch}>
-					<Image source={{uri: item.mediaPreviewURI}} style={style.similarImage} resizeMode={'cover'} />
+					<MediaObjectViewer uri={item.mediaPreviewURI} style={style.similarImage} type={item.type} thumbOnly={true} />
 				</TouchableOpacity>
 				<TouchableOpacity style={style.similarLikeIcon} onPress={() => this.props.onSimilarMediaLike(item)}>
 					<Image source={likeIconSource} />
