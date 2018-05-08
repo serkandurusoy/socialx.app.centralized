@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import NotificationsScreenComponent from './screen';
 
-export enum NOTIFICATION_TYPES {
-	RECENT_COMMENT = 'RECENT_COMMENT',
-	FRIEND_REQUEST = 'FRIEND_REQUEST',
-	GROUP_REQUEST = 'GROUP_REQUEST',
-	SUPER_LIKED = 'SUPER_LIKED',
-}
+import {Text, View} from 'react-native';
+
+import {getMyNotificationsMut} from 'backend/graphql';
+import {INotificationsResponse, NOTIFICATION_TYPES} from 'types';
+
+import {ipfsConfig as base} from 'configuration';
+
+const imagePlaceholder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
 export const ACTIVITY_CARDS = [
 	{
@@ -82,12 +84,16 @@ export const ACTIVITY_CARDS = [
 	},
 ];
 
+interface INotificationsScreenProps {
+	notifications: INotificationsResponse;
+}
+
 interface INotificationsScreenState {
 	activityCards: any[];
 	refreshing: boolean;
 }
 
-export default class NotificationsScreen extends Component<any, INotificationsScreenState> {
+class NotificationsScreen extends Component<INotificationsScreenProps, INotificationsScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		title: 'ACTIVITY',
 	};
@@ -97,7 +103,50 @@ export default class NotificationsScreen extends Component<any, INotificationsSc
 		activityCards: [],
 	};
 
+	public componentWillReceiveProps(nextProps: INotificationsScreenProps) {
+		const {notifications} = nextProps;
+		if (!notifications.loading) {
+			if (this.state.activityCards.length < 1 && notifications.myNotifications.length > 0) {
+				const {myNotifications} = notifications;
+				const spine = [];
+				for (let i = 0; i < myNotifications.length; i++) {
+					const current = myNotifications[i];
+					let res = null;
+					switch (current.type) {
+						case NOTIFICATION_TYPES.FRIEND_REQUEST:
+							res = {
+								type: NOTIFICATION_TYPES.FRIEND_REQUEST,
+								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
+								fullName: current.owner.name,
+								username: current.owner.username,
+								requestId: current.id,
+								status: current.status,
+							};
+							break;
+
+						default:
+							res = null;
+							break;
+					}
+					spine.push(res);
+				}
+				this.setState({activityCards: spine});
+			}
+		}
+	}
+
 	public render() {
+		const {notifications} = this.props;
+
+		// @ionut: render inline loader here
+		if (notifications.loading) {
+			return (
+				<View>
+					<Text>Loading..</Text>
+				</View>
+			);
+		}
+
 		return (
 			<NotificationsScreenComponent
 				activityCards={this.state.activityCards}
@@ -107,27 +156,29 @@ export default class NotificationsScreen extends Component<any, INotificationsSc
 				onPostThumbPressed={this.postThumbPressedHandler}
 				onSuperLikedPhotoPressed={this.superLikedPhotoPressedHandler}
 				onFriendRequestApproved={this.friendRequestApprovedHandler}
+				onFriendRequestDeclined={this.friendRequestDeclinedHandler}
 				onGroupRequestConfirmed={this.groupRequestConfirmedHandler}
 			/>
 		);
 	}
 
-	private refreshNotifications = () => {
-		this.setState({
-			refreshing: true,
-		});
-		setTimeout(() => {
-			this.setState({
-				refreshing: false,
-				activityCards: ACTIVITY_CARDS,
-			});
-		}, 1500);
+	private refreshNotifications = async () => {
+		const {notifications} = this.props;
+		try {
+			this.setState({ refreshing: true, activityCards: [] });
+			await notifications.refetch();
+			this.setState({ refreshing: false });
+		} catch (ex) {
+			console.log(ex);
+			this.setState({ refreshing: false });
+		}
 	}
 
 	private loadMoreNotificationsHandler = () => {
-		this.setState({
-			activityCards: this.state.activityCards.concat(ACTIVITY_CARDS),
-		});
+		// todo?
+		// this.setState({
+		// 	activityCards: this.state.activityCards.concat(ACTIVITY_CARDS),
+		// });
 	}
 
 	private postThumbPressedHandler = (postId: string) => {
@@ -142,7 +193,15 @@ export default class NotificationsScreen extends Component<any, INotificationsSc
 		alert('friendRequestApprovedHandler: ' + requestId);
 	}
 
+	private friendRequestDeclinedHandler = (requestId: string) => {
+		alert('friendRequestDeclinedHandler: ' + requestId);
+	}
+
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
 	}
 }
+
+const notificationsWrapper = getMyNotificationsMut(NotificationsScreen);
+
+export default notificationsWrapper;

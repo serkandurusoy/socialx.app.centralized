@@ -11,6 +11,7 @@ export interface IFriendRequestProps {
 	fullName: string;
 	username: string;
 	onRequestConfirmed: () => void;
+	onRequestDeclined: () => void;
 }
 
 export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
@@ -33,6 +34,13 @@ export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
 			</View>
 			<SXButton
 				label={'Approve'}
+				size={ButtonSizes.Small}
+				autoWidth={true}
+				borderColor={Colors.transparent}
+				onPress={props.onRequestConfirmed}
+			/>
+			<SXButton
+				label={'Decline'}
 				size={ButtonSizes.Small}
 				autoWidth={true}
 				borderColor={Colors.transparent}

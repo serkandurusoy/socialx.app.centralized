@@ -5,6 +5,24 @@ export enum CommentType {
 	Comment = 'Comment',
 }
 
+export enum NOTIFICATION_TYPES {
+	RECENT_COMMENT = 'RECENT_COMMENT',
+	FRIEND_REQUEST = 'FRIEND_REQUEST',
+	GROUP_REQUEST = 'GROUP_REQUEST',
+	SUPER_LIKED = 'SUPER_LIKED',
+}
+
+export interface INotifications {
+	id: string;
+	createdAt: string;
+	trigger: string;
+	data: string;
+	targetUser: IUserQuery;
+	owner: IUserQuery;
+	type: NOTIFICATION_TYPES;
+	status: string;
+}
+
 export interface ICreateUserProps {
 	variables: {
 		username: string;
@@ -66,6 +84,11 @@ export interface IUserQuery {
 	posts?: IPostsProps[];
 }
 
+// <------------- Data Wrappers ------------->
+interface INotificationsData {
+	myNotifications: INotifications[];
+}
+
 interface IUserData {
 	user: IUserQuery;
 }
@@ -79,6 +102,8 @@ export interface ICommentsResponse {
 		getComments: IComments[];
 	};
 }
+
+export type INotificationsResponse = GraphqlQueryControls & INotificationsData;
 
 export type IUserDataResponse = GraphqlQueryControls & IUserData;
 
