@@ -10,7 +10,7 @@ export interface IManagedModal {
 
 interface IManagedModalProps {
 	afterDismiss?: () => void;
-	visiblePropName: string;
+	visiblePropName?: string;
 }
 
 export const withManagedTransitions = (CustomModal: any) => {

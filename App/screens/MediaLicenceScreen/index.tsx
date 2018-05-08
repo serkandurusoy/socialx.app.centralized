@@ -1,8 +1,18 @@
-import {ModalWallet} from 'components';
-import findIndex from 'lodash/findIndex';
-import get from 'lodash/get';
+import {
+	IShareOption,
+	ModalCloseButton,
+	ModalExternalShareOptions,
+	ModalWallet,
+	SHARE_GOOGLE_PLUS,
+	SHARE_INSTAGRAM,
+	SHARE_OPTION_FB,
+	SHARE_TWITTER,
+	SHARE_WHATS_APP,
+	SHARE_YOUTUBE,
+} from 'components';
+import * as _ from 'lodash';
 import React, {Component} from 'react';
-import {findNodeHandle, Image, Text, View} from 'react-native';
+import {findNodeHandle, Image, InteractionManager, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {IMediaProps, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes} from 'types';
 import MediaLicenceScreenComponent from './screen';
@@ -139,13 +149,32 @@ export interface IMediaLicenceScreenState extends IMediaLicenceData {
 	amountToSend: number;
 	similarMedia: IMediaLicenceData[];
 	likeToggleCounter: number;
+	shareModalVisible: boolean;
 }
 
+const ENABLED_SHARE_OPTIONS = [
+	SHARE_OPTION_FB,
+	SHARE_GOOGLE_PLUS,
+	SHARE_TWITTER,
+	SHARE_WHATS_APP,
+	SHARE_INSTAGRAM,
+	SHARE_YOUTUBE,
+];
+
 export default class MediaLicenceScreen extends Component<IMediaLicenceScreenProps, IMediaLicenceScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'MEDIA LICENCE',
-		headerRight: <View />,
-	};
+	private static navigationOptions = (props: IMediaLicenceScreenProps) => {
+		const isSimilarMediaScreen = _.get(props, 'navigation.state.params.mediaLicence', undefined) !== undefined;
+		const ret: Partial<NavigationStackScreenOptions> = {
+			title: 'MEDIA LICENCE',
+			headerRight: (
+				<ModalCloseButton onClose={_.get(props, 'navigation.state.params.closeAllMediaScreens', undefined)} />
+			),
+		};
+		if (!isSimilarMediaScreen) {
+			ret.headerLeft = <View />;
+		}
+		return ret;
+	}
 
 	private baseScreen: any = null;
 	private similarLoadIndex = 0;
@@ -153,7 +182,7 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 	constructor(props: IMediaLicenceScreenProps) {
 		super(props);
 		let mediaLicenceData: Partial<IMediaLicenceScreenState> = {...MEDIA_LICENCE_DATA};
-		if (get(props, 'navigation.state.params.mediaLicence', undefined)) {
+		if (_.get(props, 'navigation.state.params.mediaLicence', undefined)) {
 			mediaLicenceData = {...props.navigation.state.params.mediaLicence};
 		}
 		mediaLicenceData.similarMedia = this.getMoreSimilarMedia(mediaLicenceData);
@@ -163,12 +192,16 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 			blurViewRef: null,
 			amountToSend: 0,
 			likeToggleCounter: 0,
+			shareModalVisible: false,
 		};
 	}
 
 	public componentDidMount() {
 		const blurViewHandle = findNodeHandle(this.baseScreen);
 		this.setState({blurViewRef: blurViewHandle});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({closeAllMediaScreens: this.onCloseAllMediaScreensHandler});
+		});
 	}
 
 	public render() {
@@ -181,6 +214,13 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 					socXInWallet={53680} // TODO update with real value here
 					sendSocXAmount={this.state.amountToSend}
 					destinationUser={this.state.owner}
+				/>
+				<ModalExternalShareOptions
+					visible={this.state.shareModalVisible}
+					closeHandler={this.toggleShareOptionsModal}
+					enabledShareOptions={ENABLED_SHARE_OPTIONS}
+					hideLabel={true}
+					onOptionSelected={this.shareOptionSelectedHandler}
 				/>
 				<MediaLicenceScreenComponent
 					{...this.state}
@@ -197,6 +237,7 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 					similarMedia={this.state.similarMedia}
 					onLoadMoreSimilarMedia={this.onLoadMoreSimilarMediaHandler}
 					likeToggleCounter={this.state.likeToggleCounter}
+					onMediaShare={this.toggleShareOptionsModal}
 				/>
 			</View>
 		);
@@ -229,7 +270,7 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 
 	private onSimilarMediaLikeHandler = (similarMedia: IMediaLicenceData) => {
 		const updatedSimilarMedia = [...this.state.similarMedia];
-		const foundIndex = findIndex(updatedSimilarMedia, {imageID: similarMedia.imageID});
+		const foundIndex = _.findIndex(updatedSimilarMedia, {imageID: similarMedia.imageID});
 		if (foundIndex > -1) {
 			updatedSimilarMedia[foundIndex].likedByMe = !updatedSimilarMedia[foundIndex].likedByMe;
 			// TODO: GQL call before updating state!
@@ -299,5 +340,21 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 
 	private onNavigateToMediaIDScreenHandler = () => {
 		alert('Decide later what screen will this link');
+	}
+
+	private onCloseAllMediaScreensHandler = () => {
+		this.props.navigation.popToTop();
+		this.props.navigation.goBack(null);
+	}
+
+	private toggleShareOptionsModal = () => {
+		this.setState({
+			shareModalVisible: !this.state.shareModalVisible,
+		});
+	}
+
+	private shareOptionSelectedHandler = (option: IShareOption) => {
+		// console.log('TODO: Share option selected ' + option.key);
+		this.toggleShareOptionsModal();
 	}
 }

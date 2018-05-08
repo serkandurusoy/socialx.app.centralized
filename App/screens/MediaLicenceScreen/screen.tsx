@@ -24,6 +24,7 @@ interface IMediaLicenceScreenComponentProps extends IMediaLicenceData {
 	onNavigateToPhotoIDScreen: () => void;
 	similarMedia: IMediaLicenceData[];
 	likeToggleCounter: number;
+	onMediaShare: () => void;
 }
 
 interface IMediaLicenceScreenComponentState {
@@ -99,7 +100,7 @@ export default class MediaLicenceScreenComponent extends Component<
 						<Image source={likeIconSource} />
 					</TouchableOpacity>
 					{this.renderActionButton('Download Preview', Icons.mediaDownload, this.mediaDownloadPreviewHandler)}
-					{this.renderActionButton('Share', Icons.mediaShare, this.mediaShareHandler)}
+					{this.renderActionButton('Share', Icons.mediaShare, this.props.onMediaShare)}
 				</View>
 			</View>
 		);
@@ -329,9 +330,5 @@ export default class MediaLicenceScreenComponent extends Component<
 
 	private mediaDownloadPreviewHandler = () => {
 		alert('mediaDownloadPreviewHandler');
-	}
-
-	private mediaShareHandler = () => {
-		alert('mediaShareHandler');
 	}
 }

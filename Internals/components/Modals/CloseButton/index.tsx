@@ -6,13 +6,18 @@ import {Colors, Sizes} from 'theme';
 import style from './style';
 
 interface IModalCloseButtonProps {
-	navigation: NavigationScreenProp<any>;
+	navigation?: NavigationScreenProp<any>;
+	onClose?: () => void;
 }
 
 export const ModalCloseButton: React.SFC<IModalCloseButtonProps> = (props) => {
 	const closeModal = () => {
 		Keyboard.dismiss();
-		props.navigation.goBack(null);
+		if (props.navigation) {
+			props.navigation.goBack(null);
+		} else if (props.onClose) {
+			props.onClose();
+		}
 	};
 
 	return (
