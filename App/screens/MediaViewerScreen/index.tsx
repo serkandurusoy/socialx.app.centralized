@@ -4,12 +4,12 @@ import React, {Component} from 'react';
 import {Platform, View} from 'react-native';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {IMediaProps} from 'types';
+import {IMediaViewerObject} from 'types';
 import MediaViewerScreenComponent from './screen';
 
 interface IMediaViewerScreenNavParams {
 	params: {
-		mediaObjects: IMediaProps[];
+		mediaObjects: IMediaViewerObject[];
 		startIndex: number;
 		hideHeader: boolean;
 	};

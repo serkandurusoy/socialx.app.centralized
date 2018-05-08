@@ -1,3 +1,5 @@
+import {IMediaProps} from 'types';
+
 export interface MediaTypes {
 	key: string;
 	name: string;
@@ -25,3 +27,10 @@ export enum MediaSizes {
 	XXLarge = 'XXL',
 	XXXLarge = 'XXXL',
 }
+
+export interface ISimpleMediaObject {
+	url: string;
+	type: MediaTypes;
+}
+
+export type IMediaViewerObject = IMediaProps | ISimpleMediaObject;

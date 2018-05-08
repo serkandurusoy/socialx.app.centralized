@@ -1,30 +1,37 @@
-import {NewGridPhotos, SXButton} from 'components';
+import {IShareOption, ModalExternalShareOptions, ModalWallet, NewGridPhotos, SXButton} from 'components';
 import findIndex from 'lodash/findIndex';
 import sortBy from 'lodash/sortBy';
 import {CheckBox} from 'native-base';
 import React, {Component, ReactText} from 'react';
-import {Dimensions, Image, ImagePropertiesSourceOptions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+	Dimensions,
+	findNodeHandle,
+	Image,
+	ImagePropertiesSourceOptions,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import {DataProvider} from 'recyclerlistview';
 import {Colors, Icons} from 'theme';
-import {IMediaLicenceData, IMediaSize, MediaResolutionSection} from './index';
+import {
+	IMediaLicenceData,
+	IMediaLicenceWithDataHooksProps,
+	IMediaSize,
+	mediaLicenceWithDataHooks,
+	MediaResolutionSection,
+} from './data.hoc';
 import style, {THUMB_HEIGHT, THUMB_WIDTH, THUMBS_IN_A_ROW} from './style';
 
-interface IMediaLicenceScreenComponentProps extends IMediaLicenceData {
-	onMediaLike: () => void;
+interface IMediaLicenceScreenComponentProps extends IMediaLicenceWithDataHooksProps {
 	onNavigateToFAQScreen: () => void;
-	onDownload: () => void;
-	onLoadMoreSimilarMedia: () => void;
-	numberOfSimilarMedia: number;
-	onSimilarMediaLike: (item: IMediaLicenceData) => void;
 	onSimilarMediaSelect: (item: IMediaLicenceData) => void;
 	onShowPreviewFullScreen: () => void;
 	onNavigateToUserProfileScreen: () => void;
 	onNavigateToPhotoIDScreen: () => void;
-	similarMedia: IMediaLicenceData[];
-	likeToggleCounter: number;
-	onMediaShare: () => void;
 }
 
 interface IMediaLicenceScreenComponentState {
@@ -32,9 +39,13 @@ interface IMediaLicenceScreenComponentState {
 	visibleSections: MediaResolutionSection[];
 	similarMediaDataProvider: DataProvider;
 	likeToggleCounter: number;
+	modalVisible: boolean;
+	blurViewRef: any;
+	amountToSend: number;
+	shareModalVisible: boolean;
 }
 
-export default class MediaLicenceScreenComponent extends Component<
+class MediaLicenceScreenComponent extends Component<
 	IMediaLicenceScreenComponentProps,
 	IMediaLicenceScreenComponentState
 > {
@@ -54,6 +65,8 @@ export default class MediaLicenceScreenComponent extends Component<
 		return ret;
 	}
 
+	private scrollView: ScrollView;
+
 	private dataProvider = new DataProvider((row1: IMediaLicenceData, row2: IMediaLicenceData) => {
 		return row1.imageID !== row2.imageID || row1.likedByMe !== row2.likedByMe;
 	});
@@ -65,12 +78,58 @@ export default class MediaLicenceScreenComponent extends Component<
 			visibleSections: [],
 			similarMediaDataProvider: this.dataProvider.cloneWithRows(props.similarMedia),
 			likeToggleCounter: props.likeToggleCounter,
+			modalVisible: false,
+			blurViewRef: null,
+			amountToSend: 0,
+			shareModalVisible: false,
 		};
+	}
+
+	public componentDidMount() {
+		const blurViewHandle = findNodeHandle(this.scrollView);
+		this.setState({blurViewRef: blurViewHandle});
 	}
 
 	public render() {
 		return (
-			<ScrollView style={style.scrollView} showsVerticalScrollIndicator={false} bounces={false}>
+			<View style={{flex: 1}}>
+				{this.renderModals()}
+				{this.renderScreenWithScroll()}
+			</View>
+		);
+	}
+
+	private renderModals = () => {
+		const {owner} = this.props.mediaData;
+		return (
+			<View>
+				<ModalWallet
+					visible={this.state.modalVisible}
+					blurViewRef={this.state.blurViewRef}
+					onCloseButton={this.toggleModalHandler}
+					socXInWallet={53680} // TODO update with real value here
+					sendSocXAmount={this.state.amountToSend}
+					destinationUser={owner}
+				/>
+				<ModalExternalShareOptions
+					visible={this.state.shareModalVisible}
+					closeHandler={this.toggleShareOptionsModal}
+					enabledShareOptions={this.props.shareOptions}
+					hideLabel={true}
+					onOptionSelected={this.onShareOptionSelectedHandler}
+				/>
+			</View>
+		);
+	}
+
+	private renderScreenWithScroll = () => {
+		return (
+			<ScrollView
+				ref={(ref: ScrollView) => (this.scrollView = ref)}
+				style={style.scrollView}
+				showsVerticalScrollIndicator={false}
+				bounces={false}
+			>
 				{this.renderMediaPreviewAndActions()}
 				{this.renderMediaDescriptionSection()}
 				{this.renderResolutionsSection()}
@@ -80,12 +139,8 @@ export default class MediaLicenceScreenComponent extends Component<
 		);
 	}
 
-	public getSelectedItems = () => {
-		return this.state.selectedItems;
-	}
-
 	private renderMediaPreviewAndActions = () => {
-		const {title, type, mediaPreviewURI, likedByMe} = this.props;
+		const {title, type, mediaPreviewURI, likedByMe} = this.props.mediaData;
 		const composedTitle = type.name + ' - ' + title;
 		const likeIconSource = likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
 
@@ -99,15 +154,15 @@ export default class MediaLicenceScreenComponent extends Component<
 					<TouchableOpacity onPress={this.props.onMediaLike}>
 						<Image source={likeIconSource} />
 					</TouchableOpacity>
-					{this.renderActionButton('Download Preview', Icons.mediaDownload, this.mediaDownloadPreviewHandler)}
-					{this.renderActionButton('Share', Icons.mediaShare, this.props.onMediaShare)}
+					{this.renderActionButton('Download Preview', Icons.mediaDownload, this.props.onMediaDownloadPreview)}
+					{this.renderActionButton('Share', Icons.mediaShare, this.toggleShareOptionsModal)}
 				</View>
 			</View>
 		);
 	}
 
 	private renderMediaDescriptionSection = () => {
-		const {type, imageID, owner} = this.props;
+		const {type, imageID, owner} = this.props.mediaData;
 
 		return (
 			<View style={[style.paddingContainer, style.descriptionContainer]}>
@@ -129,7 +184,7 @@ export default class MediaLicenceScreenComponent extends Component<
 	}
 
 	private renderResolutionsSection = () => {
-		const {sizes} = this.props;
+		const {sizes} = this.props.mediaData;
 
 		const orderedSizes = sortBy(sizes, 'section.order');
 		let currentSection: MediaResolutionSection | null = null;
@@ -182,7 +237,7 @@ export default class MediaLicenceScreenComponent extends Component<
 		return (
 			<View style={style.bottomButtonsContainer}>
 				<View style={style.downloadContainer}>
-					<SXButton label={'DOWNLOAD'} onPress={this.props.onDownload} />
+					<SXButton label={'DOWNLOAD'} onPress={this.showDownloadModal} />
 				</View>
 				<View style={style.faqContainer}>
 					<TouchableOpacity onPress={this.props.onNavigateToFAQScreen}>
@@ -328,7 +383,38 @@ export default class MediaLicenceScreenComponent extends Component<
 		return findIndex(this.state.selectedItems, (mElement: IMediaSize) => mElement.id === mediaElement.id);
 	}
 
-	private mediaDownloadPreviewHandler = () => {
-		alert('mediaDownloadPreviewHandler');
+	private showDownloadModal = () => {
+		const {selectedItems} = this.state;
+		if (selectedItems.length > 0) {
+			let totalPrice = 0;
+			selectedItems.forEach((item: IMediaSize) => {
+				totalPrice += item.price;
+			});
+			this.setState({
+				modalVisible: true,
+				amountToSend: totalPrice,
+			});
+		} else {
+			alert('No media selected');
+		}
+	}
+
+	private toggleShareOptionsModal = () => {
+		this.setState({
+			shareModalVisible: !this.state.shareModalVisible,
+		});
+	}
+
+	private toggleModalHandler = () => {
+		this.setState({
+			modalVisible: !this.state.modalVisible,
+		});
+	}
+
+	private onShareOptionSelectedHandler = (option: IShareOption) => {
+		this.toggleShareOptionsModal();
+		this.props.onMediaShare(option);
 	}
 }
+
+export default mediaLicenceWithDataHooks(MediaLicenceScreenComponent as any);
