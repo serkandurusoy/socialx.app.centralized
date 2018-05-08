@@ -17,8 +17,9 @@ const style: any = {
 	},
 	aboutContainer: {
 		paddingHorizontal: Sizes.smartHorizontalScale(16),
-		paddingTop: Sizes.smartVerticalScale(19),
-		paddingBottom: Sizes.smartVerticalScale(33),
+		marginTop: Sizes.smartVerticalScale(19),
+		marginBottom: Sizes.smartVerticalScale(33),
+		maxHeight: Sizes.smartVerticalScale(120),
 	},
 	personalDetails: {
 		...Fonts.centuryGothicBold,

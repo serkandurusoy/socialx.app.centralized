@@ -42,10 +42,12 @@ export const getAllPosts = gql`
 			id
 			createdAt
 			text
+			location
 			Media {
 				id
 				hash
 				optimizedHash
+				type
 			}
 			owner {
 				userId
@@ -61,6 +63,9 @@ export const getAllPosts = gql`
 			}
 			comments {
 				id
+				comments {
+					id
+				}
 			}
 		}
 	}

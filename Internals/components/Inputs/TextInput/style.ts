@@ -26,6 +26,10 @@ const style: any = {
 		flex: 1,
 		maxHeight: '100%',
 	},
+	multilineTextInput: {
+		paddingBottom: Sizes.smartVerticalScale(7),
+		paddingTop: Sizes.smartVerticalScale(7),
+	},
 	textInputNormal: {
 		paddingVertical: Platform.OS === OS_TYPES.Android ? Sizes.smartHorizontalScale(10) : Sizes.smartHorizontalScale(16),
 	},

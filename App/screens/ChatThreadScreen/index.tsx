@@ -1,11 +1,14 @@
 import {ScreenHeaderButton} from 'components/Interaction';
 import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, InteractionManager, Text, View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {NavigationScreenProp} from 'react-navigation';
 import uuidv4 from 'uuid/v4';
 import ChatThreadScreenComponent from './screen';
 import style from './style';
+
+import {NetServerPort, TCPClient, TCPServer} from 'backend/socket';
+import {Server, Socket} from 'net';
 
 export interface MessageData {
 	_id: string;
@@ -21,10 +24,21 @@ export interface MessageData {
 	};
 }
 
+const instanceOfMessageData = (object: any): object is MessageData => {
+	return typeof object._id === 'string';
+};
+
+export interface IExtraData {
+	isTyping: boolean;
+}
+
 export interface IChatThreadScreenState {
 	messages: MessageData[];
 	isLoadingEarlier: boolean;
 	hasMore: boolean;
+	text: string;
+	isTyping: boolean;
+	timeframeBuffer: number;
 }
 
 interface IChatThreadScreenProps {
@@ -81,16 +95,46 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		}
 	}
 
+	// to send data only.
+	public friendTcpClient: any;
+	// to receive data only.
+	public phoneTcpServer: any;
+
 	public state = {
 		messages: getOnePageOfMessages(), // we should init here with history messages
 		isLoadingEarlier: false,
 		hasMore: true,
+		text: '',
+		isTyping: false,
+		timeframeBuffer: 0,
 	};
 
 	public componentWillMount() {
-		this.props.navigation.setParams({
-			makeCallHandler: this.makeCallHandler,
+		// hook server calls from this client. messages etc..
+		// this.phoneTcpServer = TCPServer(this.socketOnGetData, () => {
+		// 	// after the server is started, hook the client to own server (TODO: hook to friend server)
+		// 	// and assign to local var for local use
+		// 	this.friendTcpClient = new TCPClient(NetServerPort);
+		// });
+	}
+
+	public componentDidMount() {
+		this.setState({timeframeBuffer: new Date(Date.now()).getTime()});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				makeCallHandler: this.makeCallHandler,
+			});
 		});
+	}
+
+	public renderUserTyping = () => {
+		if (this.state.isTyping) {
+			return (
+				<View style={style.isTypingContainer}>
+					<Text style={style.isTypingText}>is Typing..</Text>
+				</View>
+			);
+		}
 	}
 
 	public render() {
@@ -101,32 +145,87 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 				loadEarlierMessages={this.loadEarlierMessagesHandler}
 				isLoadingEarlier={this.state.isLoadingEarlier}
 				hasMore={this.state.hasMore}
+				text={this.state.text}
+				onTextChange={this.setText}
+				renderFooter={this.renderUserTyping}
 			/>
 		);
 	}
 
-	private simulateFriendResponse = () => {
-		const replyDelay = (Math.round(Math.random() * 5) + 2) * 1000;
-		const replyMessage = 'hi';
-		setTimeout(() => {
-			const friendMessage: MessageData = {
-				_id: uuidv4(),
-				text: replyMessage,
-				createdAt: new Date(),
-				ownMessage: false,
-			};
-			this.addNewMessageToTheChat(friendMessage);
-		}, replyDelay);
+	private setComment = (text: string) => {
+		const port = parseInt(text, undefined);
+		console.log('connecting to', port);
+		// this.friendTcpClient = new TCPClient(port, '10.0.2.2');
+	}
+
+	private setText = (text: string) => {
+		// // create time buffer to prevent bulky socket data
+		// const bufferDate = this.state.timeframeBuffer;
+		// const nowDate = new Date(Date.now());
+		// const secondsBuffer = (nowDate.getTime() - bufferDate) / 1000;
+
+		// if (text === '') {
+		// 	const sendData: IExtraData = {
+		// 		isTyping: false,
+		// 	};
+		// 	this.friendTcpClient.write(JSON.stringify(sendData));
+		// 	this.setState({text});
+		// 	return;
+		// }
+
+		// if (text.length === 1) {
+		// 	const sendData: IExtraData = {
+		// 		isTyping: true,
+		// 	};
+		// 	this.friendTcpClient.write(JSON.stringify(sendData));
+		// 	this.setState({timeframeBuffer: nowDate.getTime()});
+		// }
+
+		// if (secondsBuffer > 5) {
+		// 	const sendData: IExtraData = {
+		// 		isTyping: true,
+		// 	};
+		// 	this.friendTcpClient.write(JSON.stringify(sendData));
+		// 	this.setState({timeframeBuffer: nowDate.getTime()});
+		// }
+		// this.setState({text});
+	}
+
+	// each time the server gets a message, it gets parsed and passed here.
+	private socketOnGetData = (data: MessageData | IExtraData) => {
+		// if (instanceOfMessageData(data)) {
+		// 	data.text = 'From realtime p2p';
+		// 	data.ownMessage = false;
+		// 	data._id = uuidv4();
+		// 	this.addNewMessageToTheChat(data);
+		// } else {
+		// 	this.setState({isTyping: data.isTyping});
+		// 	// stop typing handler if the user is not typing for x~ seconds
+		// 	// TODO: make better
+		// 	setTimeout(() => {
+		// 		this.setState({isTyping: false});
+		// 	}, 50000);
+		// }
 	}
 
 	private sendOwnMessageHandler = (message: MessageData) => {
-		// TODO: Network send message
-		this.addNewMessageToTheChat(message);
-		this.simulateFriendResponse();
+		// // TODO: Network send message
+		// if (message.text.includes('!port')) {
+		// 	this.setComment(message.text.replace('!port ', ''));
+		// 	this.addNewMessageToTheChat({
+		// 		_id: uuidv4(),
+		// 		text: 'Connecting..',
+		// 		createdAt: new Date(),
+		// 		ownMessage: true,
+		// 	});
+		// 	return;
+		// }
+		// this.friendTcpClient.write(JSON.stringify(message));
+		// this.addNewMessageToTheChat(message);
+		// this.setText('');
 	}
 
 	private addNewMessageToTheChat = (message: MessageData) => {
-		// TODO: call this when a friend message arrives
 		message.user = {};
 		this.setState({
 			messages: GiftedChat.append(this.state.messages, [message]),
@@ -137,6 +236,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		alert('TODO: makeCallHandler');
 	}
 
+	// todo: get all recent messages with the socket client? database? storage?
 	private loadEarlierMessagesHandler = () => {
 		if (this.state.messages.length < TOTAL_NUMBER_OF_MESSAGES) {
 			this.setState({isLoadingEarlier: true});

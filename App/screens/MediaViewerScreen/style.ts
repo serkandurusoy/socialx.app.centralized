@@ -2,22 +2,17 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
 const style: any = {
+	safeView: {
+		backgroundColor: Colors.midnight,
+	},
 	carouselContainer: {
 		height: '100%',
 		width: '100%',
-		backgroundColor: Colors.white,
 	},
-	carouselLandscapeContainer: {
-		height: '100%',
-		width: '100%',
-		backgroundColor: Colors.white,
-		position: 'absolute',
-	},
-	carouselImage: {
+	carouselMediaObject: {
 		height: '100%',
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: Colors.midnight,
 	},
 	paginationContainer: {
 		zIndex: 2,

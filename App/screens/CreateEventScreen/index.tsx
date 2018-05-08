@@ -1,7 +1,7 @@
 import {IEventData} from 'components/Displayers/EventListItem';
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, InteractionManager, Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {SendPostButton} from '../PhotoScreen/SendPostButton';
 import CreateEventScreenComponent from './screen';
@@ -22,7 +22,9 @@ class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
 	private screenRef: CreateEventScreenComponent | null = null;
 
 	public componentDidMount() {
-		this.props.navigation.setParams({onSendPress: this.createEvent});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({onSendPress: this.createEvent});
+		});
 	}
 
 	public render() {

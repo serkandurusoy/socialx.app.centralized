@@ -1,7 +1,8 @@
+import '../shim.js';
+
 import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Platform, StatusBar} from 'react-native';
-import '../shim.js';
 
 import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
@@ -17,10 +18,6 @@ import {AppsyncClient, Rehydrated} from 'backend/appsync';
 import RootContainer from './containers/RootContainer';
 
 import createStore from './reducers';
-
-// init tcp server
-import {TCPServer} from 'backend/socket';
-TCPServer();
 
 const reduxStage = createStore();
 

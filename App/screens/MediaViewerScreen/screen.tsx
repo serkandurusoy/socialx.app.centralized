@@ -1,22 +1,26 @@
+import {MediaObjectViewer} from 'components';
+import {ipfsConfig as base} from 'configuration';
 import {DeviceOrientations, OS_TYPES} from 'consts';
 import React, {Component} from 'react';
-import {Dimensions, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import {Dimensions, Image, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Sizes} from 'theme';
-import {IPhotoData} from './index';
+import {IMediaProps} from 'types';
 import style from './style';
 
 interface IMediaViewerScreenComponentProps {
-	photos: IPhotoData[];
+	mediaObjects: IMediaProps[];
 	startIndex: number;
 	orientation: string;
 }
 
 interface IMediaViewerScreenComponentState {
 	activeSlide: number;
+	viewport: {
+		width: number;
+	};
 }
 
 export default class MediaViewerScreenComponent extends Component<
@@ -25,16 +29,15 @@ export default class MediaViewerScreenComponent extends Component<
 > {
 	public state = {
 		activeSlide: this.props.startIndex,
+		viewport: {
+			width: Dimensions.get('window').width,
+		},
 	};
 
-	private carouselPortrait: CarouselStatic<IPhotoData> | null = null;
-	private carouselLandscape: CarouselStatic<IPhotoData> | null = null;
-	private portraitWidth: number = 0;
-	private landscapeWidth: number = 0;
+	private carouselRef: CarouselStatic<IMediaProps> | null = null;
 
 	constructor(props: IMediaViewerScreenComponentProps, context: any) {
 		super(props, context);
-		this.setDimensions();
 	}
 
 	get isPortrait() {
@@ -51,26 +54,16 @@ export default class MediaViewerScreenComponent extends Component<
 
 	public render() {
 		return (
-			<View>
-				<View style={[style.carouselContainer, {zIndex: this.isPortrait ? 1 : -1}]}>
+			<SafeAreaView style={style.safeView}>
+				<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
 					<Carousel
-						ref={(c: any) => (this.carouselPortrait = c)}
-						data={this.props.photos}
-						renderItem={this.renderItemPortrait}
-						sliderWidth={this.portraitWidth}
-						itemWidth={this.portraitWidth}
-						firstItem={this.props.startIndex}
-						onSnapToItem={this.handleSlideChanged}
-						{...this.getIOSCarouselProps()}
-					/>
-				</View>
-				<View style={[style.carouselLandscapeContainer, {zIndex: this.isPortrait ? -1 : 1}]}>
-					<Carousel
-						ref={(c: any) => (this.carouselLandscape = c)}
-						data={this.props.photos}
-						renderItem={this.renderItemLandscape}
-						sliderWidth={this.landscapeWidth}
-						itemWidth={this.landscapeWidth}
+						ref={(c: any) => (this.carouselRef = c)}
+						// hack so that renderItem will use updated state value for activeSlide
+						activeSlide={this.state.activeSlide}
+						data={this.props.mediaObjects}
+						renderItem={this.renderCarouselItem}
+						sliderWidth={this.state.viewport.width}
+						itemWidth={this.state.viewport.width}
 						firstItem={this.props.startIndex}
 						onSnapToItem={this.handleSlideChanged}
 						{...this.getIOSCarouselProps()}
@@ -78,8 +71,16 @@ export default class MediaViewerScreenComponent extends Component<
 				</View>
 				{this.renderPagination()}
 				{this.renderCloseButton()}
-			</View>
+			</SafeAreaView>
 		);
+	}
+
+	private carouselContainerOnLayoutHandler = (event: {nativeEvent: {layout: {width: number; height: number}}}) => {
+		this.setState({
+			viewport: {
+				width: event.nativeEvent.layout.width,
+			},
+		});
 	}
 
 	private getIOSCarouselProps = () => {
@@ -105,7 +106,7 @@ export default class MediaViewerScreenComponent extends Component<
 				<Text style={style.paginationText}>
 					{this.state.activeSlide + 1}
 					{' / '}
-					{this.props.photos.length}
+					{this.props.mediaObjects.length}
 				</Text>
 			</View>
 		);
@@ -132,48 +133,21 @@ export default class MediaViewerScreenComponent extends Component<
 
 	private handleSlideChanged = (index: number) => {
 		this.setState({activeSlide: index});
-		if (this.isPortrait) {
-			if (this.carouselLandscape !== null) {
-				this.carouselLandscape.snapToItem(index, false);
-			}
-		} else {
-			if (this.carouselPortrait) {
-				this.carouselPortrait.snapToItem(index, false);
-			}
-		}
 	}
 
-	private setDimensions = () => {
-		const {width, height} = Dimensions.get('window');
-		if (width > height) {
-			// landscape mode
-			this.portraitWidth = height;
-			this.landscapeWidth = width;
-		} else {
-			// portrait mode
-			this.portraitWidth = width;
-			this.landscapeWidth = height;
-		}
-	}
-
-	private renderItemPortrait = (itemData: {item: IPhotoData; index: number}) => {
-		const carouselImageStyles = [style.carouselImage, {width: this.portraitWidth}];
+	private renderCarouselItem = (itemData: {item: IMediaProps; index: number}) => {
+		const carouselImageStyles = [style.carouselMediaObject, {width: this.state.viewport.width}];
+		let mediaURL = base.ipfs_URL;
+		const mediaItem = itemData.item;
+		mediaURL += mediaItem.optimizedHash ? mediaItem.optimizedHash : mediaItem.hash;
 		return (
-			<FastImage
-				source={{uri: itemData.item.url}}
+			<MediaObjectViewer
+				paused={itemData.index !== this.state.activeSlide}
+				uri={mediaURL}
 				style={carouselImageStyles}
-				resizeMode={FastImage.resizeMode.contain}
-			/>
-		);
-	}
-
-	private renderItemLandscape = (itemData: {item: IPhotoData; index: number}) => {
-		const carouselImageStyles = [style.carouselImage, {width: this.landscapeWidth}];
-		return (
-			<FastImage
-				source={{uri: itemData.item.url}}
-				style={carouselImageStyles}
-				resizeMode={FastImage.resizeMode.contain}
+				extension={mediaItem.type}
+				resizeMode={'contain'}
+				resizeToChangeAspectRatio={true}
 			/>
 		);
 	}

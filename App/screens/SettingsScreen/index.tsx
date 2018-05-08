@@ -133,6 +133,8 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 					style={style.keyboardView}
 					contentContainerStyle={style.container}
 					alwaysBounceVertical={false}
+					enableOnAndroid={true}
+					keyboardShouldPersistTaps={'handled'}
 				>
 					<View style={style.pickerContainer}>
 						<AvatarPicker
@@ -152,7 +154,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							value={this.state.aboutText}
 							placeholder={'About you text'}
 							borderColor={Colors.dustWhite}
-							numberOfLines={3}
+							multiline={true}
 							onChangeText={(value: string) => this.handleInputChangeText(value, 'aboutText')}
 						/>
 					</View>
@@ -219,12 +221,11 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 	private performSignOut = async () => {
 		try {
 			await Signout();
-			await AsyncStorage.removeItem('jwtToken');
-			await AsyncStorage.removeItem('refreshToken');
-			await AsyncStorage.removeItem('accessToken');
+			await AsyncStorage.clear();
 			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
 		} catch (ex) {
 			//
+			console.log(ex);
 		}
 	}
 

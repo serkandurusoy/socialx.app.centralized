@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, findNodeHandle, View} from 'react-native';
+import {Alert, findNodeHandle, InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
@@ -19,6 +19,8 @@ import {addBlob} from 'utilities/ipfs';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 
+import {Image as PickerImage} from 'react-native-image-crop-picker';
+
 export interface FriendsSearchResult {
 	id: string;
 	fullName: string;
@@ -35,8 +37,15 @@ export interface WallPostPhoto {
 	includeTaggedFriends: boolean;
 }
 
+interface IPhotoScreenNavParams {
+	params: {
+		mediaObject: PickerImage;
+		onSendPress: () => void;
+	};
+}
+
 interface IPhotoScreenProps extends IModalForAddFriendsProps {
-	navigation: NavigationScreenProp<any>;
+	navigation: NavigationScreenProp<IPhotoScreenNavParams>;
 	data: IUserDataResponse;
 	addMedia: any;
 	createPost: any;
@@ -58,18 +67,21 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	private photoScreen: PhotoScreenComponent | null = null;
 
 	public componentDidMount() {
-		this.props.navigation.setParams({onSendPress: this.sendPostHandler});
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({onSendPress: this.sendPostHandler});
+		});
 	}
 
 	public render() {
 		const {data} = this.props;
+		console.log('PhotoScreen render', data);
 		const placeHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 		return (
 			<PhotoScreenComponent
 				isLoading={data.loading}
 				showTagFriendsModal={this.props.showAddFriendsModal}
 				avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : placeHolder}
-				localPhotoURL={this.props.navigation.state.params.image.path}
+				mediaObject={this.props.navigation.state.params.mediaObject}
 				taggedFriends={this.props.addedFriends}
 				ref={(ref) => (this.photoScreen = ref)}
 			/>
@@ -85,7 +97,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 			try {
 				const wallPostDataInScreen = this.photoScreen.getOriginalRef().getWallPostData();
 				const localPhotoData: Partial<WallPostPhoto> = {
-					image: this.props.navigation.state.params.image,
+					image: this.props.navigation.state.params.mediaObject,
 				};
 				if (wallPostDataInScreen.includeTaggedFriends && this.props.addedFriends.length > 0) {
 					localPhotoData.taggedFriends = this.props.addedFriends;
@@ -101,11 +113,22 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				// add image to ipfs
 				let ipfsResp = await addBlob([{filename: imageName, data: content, name: imageName.split('.')[0]}]);
 				ipfsResp = JSON.parse(ipfsResp.data);
+
+				let ipfsOpResp = await addBlob([
+					{filename: imageName + '-optimized', data: contentOptimized, name: imageName.split('.')[0]},
+				]);
+				ipfsOpResp = JSON.parse(ipfsOpResp.data);
+
 				// parse ipfs response
 				const {Size, Hash} = ipfsResp;
 
 				// create media object on aws
-				const addResp = await addMedia({variables: {hash: Hash, size, Size, type: mime}});
+				const addResp = await addMedia({variables: {
+					hash: Hash,
+					size: parseInt(Size, undefined),
+					type: mime,
+					optimizedHash: ipfsOpResp.Hash,
+				}});
 
 				const mediaId = addResp.data.addMedia.id;
 
@@ -132,7 +155,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 }
 
 const navigationOptions = (props: IPhotoScreenProps) => ({
-	title: 'ADD PHOTO',
+	title: 'ADD MEDIA',
 	headerLeft: <ModalCloseButton navigation={props.navigation} />,
 	headerRight: <SendPostButton navParams={props.navigation.state.params} />,
 });

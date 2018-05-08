@@ -1,6 +1,6 @@
-import {ModalShareOptions} from 'components/Modals';
+import {ModalShareOptions} from 'components';
 import {OS_TYPES} from 'consts';
-import {ModalManager} from 'hoc/ManagedModal/manager';
+import {ModalManager} from 'hoc';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Alert, findNodeHandle, Image, PermissionsAndroid, Platform, Text, TouchableOpacity, View} from 'react-native';
@@ -10,8 +10,7 @@ import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker'
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
-import {isStringPureEmoji} from 'utilities';
-import {requestResourcePermission} from 'utilities/permissions';
+import {isStringPureEmoji, requestResourcePermission} from 'utilities';
 import uuidv4 from 'uuid/v4';
 import {MessageData} from './index';
 import style from './style';
@@ -22,6 +21,9 @@ interface IChatThreadScreenComponentProps {
 	loadEarlierMessages: () => void;
 	isLoadingEarlier: boolean;
 	hasMore: boolean;
+	renderFooter: any;
+	text: string;
+	onTextChange: any;
 }
 
 interface IChatThreadScreenComponentState {
@@ -91,7 +93,9 @@ export default class ChatThreadScreenComponent extends Component<
 					loadEarlier={this.props.hasMore}
 					onLoadEarlier={this.props.loadEarlierMessages}
 					isLoadingEarlier={this.props.isLoadingEarlier}
-					// renderFooter={} // can be used for something like typing
+					text={this.props.text}
+					onInputTextChanged={this.props.onTextChange}
+					renderFooter={this.props.renderFooter} // can be used for something like typing
 				/>
 			</View>
 		);
@@ -101,6 +105,8 @@ export default class ChatThreadScreenComponent extends Component<
 		newMessages[0].ownMessage = true;
 		this.props.sendOwnMessage(newMessages[0]);
 	}
+
+	private renderText = (text: string) => {};
 
 	private renderMessage = (props: any) => {
 		const currentMessage: MessageData = props.currentMessage;

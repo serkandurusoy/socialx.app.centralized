@@ -28,6 +28,7 @@ import SendCoinsScreen from '../screens/SendCoinsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SocialXAccountScreen from '../screens/SocialXAccountScreen';
+import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import UserFeedScreen from '../screens/UserFeedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
@@ -139,6 +140,7 @@ const PreAuthNavigator = StackNavigator(
 		ResetPasswordScreen: {screen: ResetPasswordScreen},
 		UploadKeyScreen: {screen: UploadKeyScreen},
 		SaveKeyScreen: {screen: SaveKeyScreen},
+		TermsAndConditionsScreen: {screen: TermsAndConditionsScreen},
 	},
 	{
 		headerMode: 'screen',

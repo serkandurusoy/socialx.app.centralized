@@ -66,6 +66,7 @@ export const user = gql`
 					type
 					hash
 					size
+					optimizedHash
 				}
 			}
 		}

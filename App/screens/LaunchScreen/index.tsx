@@ -18,23 +18,21 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 		header: null,
 	};
 
-	public componentDidMount() {
-		AsyncStorage.getItem('jwtToken', async (error: Error, result: string) => {
-			if (!error && result !== null) {
-				try {
-					const currentUser = await CurrentUser();
-					if (currentUser) {
-						resetNavigationToRoute('MainScreen', this.props.navigation);
-					}
-				} catch (ex) {
-					//
-				}
+	public async componentDidMount() {
+		try {
+			const currentUser = await CurrentUser();
+			console.log('currentUser', currentUser.username);
+			if (!currentUser) {
+				return;
 			}
-			SplashScreen.close({
-				animationType: SplashScreen.animationType.fade,
-				duration: 1000,
-				delay: 100,
-			});
+			resetNavigationToRoute('MainScreen', this.props.navigation);
+		} catch (ex) {
+			//
+		}
+		SplashScreen.close({
+			animationType: SplashScreen.animationType.fade,
+			duration: 1000,
+			delay: 100,
 		});
 	}
 

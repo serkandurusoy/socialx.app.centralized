@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 import {AvatarImage} from 'components/Avatar';
+import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {SXTextInput} from 'components/Inputs';
 import {ButtonSizes, SXButton} from 'components/Interaction';
 import {ModalCloseButton} from 'components/Modals';
@@ -9,9 +10,9 @@ import {ActionSheet} from 'native-base';
 import RNFS from 'react-native-fs';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
-import Video from 'react-native-video';
 import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Icons, Sizes} from 'theme';
+import {MediaTypes} from 'types';
 import style from './style';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
@@ -21,14 +22,8 @@ const ACTION_SHEET_TITLE = 'Add media file';
 
 const DEFAULT_MARGIN_BOTTOM = Sizes.smartVerticalScale(20);
 
-export enum MediaTypes {
-	Image = 'image',
-	Video = 'video',
-}
-
 export interface MediaObject {
 	path: string;
-	type: MediaTypes;
 	size: number;
 	name: string;
 	content: any;
@@ -84,11 +79,11 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				<View style={style.inputContainer}>
 					<SXTextInput
 						value={this.state.postText}
-						numberOfLines={3}
 						borderColor={Colors.dustWhite}
 						placeholder={'Type a message'}
 						autoFocus={true}
 						onChangeText={this.updatePostText}
+						multiline={true}
 					/>
 				</View>
 				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler}>
@@ -136,43 +131,53 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	}
 
 	private showGalleryPhotoPicker = async () => {
-		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
+		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
 			cropping: false,
 			mediaType: 'any',
 		});
-		this.addNewMediaObject(image as PickerImage);
+		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
 	private takeCameraPhoto = async () => {
-		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
 			cropping: false,
 			mediaType: 'any',
 			useFrontCamera: false,
 		});
-		this.addNewMediaObject(image as PickerImage);
+		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
-	private addNewMediaObject = async (image: PickerImage) => {
+	private addNewMediaObject = async (mediaObject: PickerImage) => {
 		const {mediaObjects} = this.state;
-		const mediaMimeType = image.mime;
 		try {
-			const optimized = await ImageResizer.createResizedImage(image.path, image.width, image.height, 'JPEG', 50);
+			// FIXME @Jake: this is taking lot of time on android, should be optimized?
+			console.log('addNewMediaObject START');
+			let imageOptimizedContent = null;
+			if (mediaObject.mime.startsWith(MediaTypes.Image)) {
+				const optimized = await ImageResizer.createResizedImage(
+					mediaObject.path,
+					mediaObject.width,
+					mediaObject.height,
+					'JPEG',
+					50,
+				);
+				imageOptimizedContent = await RNFS.readFile(optimized.path, 'base64');
+			}
 
-			const imagecontent = await RNFS.readFile(image.path, 'base64');
-			const imageoptimizedContent = await RNFS.readFile(optimized.path, 'base64');
+			const mediaContent = await RNFS.readFile(mediaObject.path, 'base64');
 
-			const localImagePath: MediaObject = {
-				path: (image as PickerImage).path,
-				type: mediaMimeType.startsWith(MediaTypes.Video) ? MediaTypes.Video : MediaTypes.Image,
-				size: image.size,
-				name: image.path.split('/')[image.path.split('/').length - 1],
-				content: imagecontent,
-				contentOptimized: imageoptimizedContent,
+			const localMediaObject: MediaObject = {
+				path: (mediaObject as PickerImage).path,
+				size: mediaObject.size,
+				name: mediaObject.path.split('/')[mediaObject.path.split('/').length - 1],
+				content: mediaContent,
+				contentOptimized: imageOptimizedContent,
 			};
 
 			this.setState({
-				mediaObjects: mediaObjects.concat([localImagePath]),
+				mediaObjects: mediaObjects.concat([localMediaObject]),
 			});
+			console.log('addNewMediaObject END');
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -181,26 +186,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	private renderPostMediaObjects = () => {
 		const ret: any = [];
 		this.state.mediaObjects.forEach((mediaObject: MediaObject, index) => {
-			if (mediaObject.type === MediaTypes.Video) {
-				ret.push(
-					<Video
-						key={index}
-						source={{uri: 'file://' + mediaObject.path}}
-						resizeMode={'cover'}
-						paused={true}
-						style={style.mediaObject}
-					/>,
-				);
-			} else {
-				ret.push(
-					<Image
-						key={index}
-						source={{uri: 'file://' + mediaObject.path}}
-						resizeMode={'cover'}
-						style={style.mediaObject}
-					/>,
-				);
-			}
+			ret.push(<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />);
 		});
 		return ret;
 	}
