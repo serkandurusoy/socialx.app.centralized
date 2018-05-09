@@ -13,7 +13,7 @@ import {
 } from 'components';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import {ISimpleMediaObject, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes, MediaTypeVideo} from 'types';
-import {saveRemoteMediaFileToLocalPhotoLibrary} from 'utilities';
+import {PHOTO_LIB_SAVE_SUCCESS, saveRemoteMediaFileToLocalPhotoLibrary} from 'utilities';
 
 export interface MediaResolutionSection {
 	title: string;
@@ -54,12 +54,12 @@ export interface IMediaLicenceData {
 
 const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 	title: 'Flower Cookie',
-	type: MediaTypeImage,
-	mediaPreviewURI: 'https://placeimg.com/900/650/any',
-	extension: 'jpg',
-	// type: MediaTypeVideo,
-	// mediaPreviewURI: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4',
-	// extension: 'mp4',
+	// type: MediaTypeImage,
+	// mediaPreviewURI: 'https://placeimg.com/900/650/any',
+	// extension: 'jpg',
+	type: MediaTypeVideo,
+	mediaPreviewURI: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4',
+	extension: 'mp4',
 	likedByMe: false,
 	imageID: '#765334',
 	owner: {
@@ -85,7 +85,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 1672,
 			price: 4,
 			section: MEDIA_RESOLUTION_PRINT,
-			url: 'https://placeimg.com/2508/1672any',
+			url: 'https://placeimg.com/2508/1672/any',
 		},
 		{
 			id: 5,
@@ -164,8 +164,8 @@ export interface IMediaLicenceWithDataHooksProps {
 	shareOptions: IShareOption[];
 	onMediaShare: (options: IShareOption) => void;
 	onMediaDownloadPreview: () => void;
-	onSendTokens: (gas: number) => void;
-	onStartDownload: () => void;
+	onSendTokens: (gas: number, tokens: number) => void;
+	onStartDownload: (selectedItems: IMediaSize[]) => void;
 }
 
 interface IMediaLicenceWithDataHooksState {
@@ -178,6 +178,7 @@ interface IMediaLicenceWithDataHooksState {
 interface IInternalProps extends IMediaLicenceWithDataHooksProps {
 	mediaPreviewDownloading: () => void;
 	hideProgressIndicator: () => void;
+	mediaResourcesDownloading: (title: string) => void;
 }
 
 export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMediaLicenceWithDataHooksProps>) => {
@@ -294,21 +295,21 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 			const saveRes = await saveRemoteMediaFileToLocalPhotoLibrary(
 				mediaData.mediaPreviewURI,
 				fileName,
-				this.mediaPreviewDownloadProgress,
+				// this.mediaPreviewDownloadProgress, // later we can add per file progress for now
 			);
 			this.props.hideProgressIndicator();
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(saveRes);
+				Alert.alert('Success', saveRes);
 			});
 		}
 
-		private mediaPreviewDownloadProgress = (progressPercentage: number) => {
-			// TODO: server should provide header Content-Length for this to work!
-			// console.log('Download progress', progressPercentage);
-		}
+		// private mediaPreviewDownloadProgress = (progressPercentage: number) => {
+		// 	// server should provide header Content-Length for this to work!
+		// 	console.log('Download progress', progressPercentage);
+		// }
 
-		private onSendTokensHandler = (gas: number) => {
-			// console.log('onSendTokensHandler', gas);
+		private onSendTokensHandler = (gas: number, tokens: number) => {
+			// TODO: send 'tokens' to user this.getMediaOwner() with fee 'gas'
 			setTimeout(() => {
 				this.setState({
 					transactionCompleted: true,
@@ -316,11 +317,33 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 			}, 2000);
 		}
 
-		private onStartDownloadHandler = () => {
+		private onStartDownloadHandler = async (selectedItems: IMediaSize[]) => {
 			this.setState({
 				transactionCompleted: false,
 			});
-			// console.log('onStartDownloadHandler');
+			const itemsCopy = [...selectedItems];
+			let failedDownloads = 0;
+			while (itemsCopy.length > 0) {
+				const nextItem = itemsCopy.shift();
+				if (nextItem) {
+					this.props.mediaResourcesDownloading(`size ${nextItem.mediaSize}`);
+					const saveRes = await saveRemoteMediaFileToLocalPhotoLibrary(
+						nextItem.url,
+						`${nextItem.id}.${nextItem.extension}`,
+					);
+					if (saveRes !== PHOTO_LIB_SAVE_SUCCESS) {
+						failedDownloads++;
+					}
+				}
+			}
+			this.props.hideProgressIndicator();
+			ModalManager.safeRunAfterModalClosed(() => {
+				const confirmMessage =
+					failedDownloads > 0
+						? `Some media objects failed to download ${failedDownloads}`
+						: 'All media object were saved to your photo library';
+				Alert.alert('Success', confirmMessage);
+			});
 		}
 	};
 };

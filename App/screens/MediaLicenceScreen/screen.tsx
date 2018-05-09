@@ -43,6 +43,7 @@ interface IMediaLicenceScreenComponentProps extends IMediaLicenceWithDataHooksPr
 	onShowPreviewFullScreen: () => void;
 	onNavigateToUserProfileScreen: () => void;
 	onNavigateToPhotoIDScreen: () => void;
+	videoPaused: boolean;
 }
 
 interface IMediaLicenceScreenComponentState {
@@ -122,7 +123,7 @@ class MediaLicenceScreenComponent extends Component<
 					sendSocXAmount={this.state.amountToSend}
 					destinationUser={owner}
 					tokensSent={this.props.transactionCompleted}
-					onSend={this.props.onSendTokens}
+					onSend={this.onSendTokensHandler}
 					onStartDownload={this.onStartDownloadHandler}
 				/>
 				<ModalExternalShareOptions
@@ -162,7 +163,12 @@ class MediaLicenceScreenComponent extends Component<
 			<View style={style.paddingContainer}>
 				<Text style={style.mediaTitle}>{composedTitle}</Text>
 				<TouchableOpacity onPress={this.props.onShowPreviewFullScreen}>
-					<MediaObjectViewer uri={mediaPreviewURI} style={style.mediaPreviewImage} type={type} />
+					<MediaObjectViewer
+						uri={mediaPreviewURI}
+						style={style.mediaPreviewImage}
+						type={type}
+						paused={this.props.videoPaused}
+					/>
 				</TouchableOpacity>
 				<View style={style.actionButtonsContainer}>
 					<TouchableOpacity onPress={this.props.onMediaLike}>
@@ -430,16 +436,22 @@ class MediaLicenceScreenComponent extends Component<
 		this.props.onMediaShare(option);
 	}
 
+	private onSendTokensHandler = (gas: number) => {
+		this.props.onSendTokens(gas, this.state.amountToSend);
+	}
+
 	private onStartDownloadHandler = () => {
 		this.toggleModalHandler();
 		ModalManager.safeRunAfterModalClosed(() => {
-			this.props.onStartDownload();
+			this.props.onStartDownload(this.state.selectedItems);
 		});
 	}
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
 	mediaPreviewDownloading: () => dispatch(showActivityIndicator('Downloading media preview..')),
+	mediaResourcesDownloading: (title: string) =>
+		dispatch(showActivityIndicator(`Downloading ${title}.\n Please wait..`)),
 	hideProgressIndicator: () => dispatch(hideActivityIndicator()),
 });
 

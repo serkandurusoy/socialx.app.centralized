@@ -7,7 +7,7 @@ import {requestResourcePermission} from 'utilities';
 const REQUEST_SAVE_MEDIA_TITLE = 'Photo library save..';
 const REQUEST_SAVE_MEDIA_MESSAGE = 'Please allow application to save media object to your photo library';
 
-const PHOTO_LIB_SAVE_SUCCESS = 'Media saved to local photo library';
+export const PHOTO_LIB_SAVE_SUCCESS = 'Media saved to local photo library';
 const PHOTO_LIB_SAVE_ACCESS_DENIED = 'Save to photo library denied :(';
 const PHOTO_LIB_SAVE_DOWNLOAD_ERROR = 'Save to photo library denied :(';
 const PHOTO_LIB_SAVE_MOVE_TO_PHOTO_LIB_FAILED = 'Media object was downloaded but moving to photo library failed';

@@ -2,7 +2,7 @@ import {ModalCloseButton} from 'components';
 import * as _ from 'lodash';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, InteractionManager, Text, View} from 'react-native';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationEventSubscription, NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {IMediaLicenceData} from './data.hoc';
 import MediaLicenceScreenComponent from './screen';
 
@@ -16,7 +16,11 @@ export interface IMediaLicenceScreenProps {
 	navigation: NavigationScreenProp<IMediaLicenceScreenNavParams>;
 }
 
-export default class MediaLicenceScreen extends Component<IMediaLicenceScreenProps> {
+interface IMediaLicenceScreenState {
+	videoPaused: boolean;
+}
+
+export default class MediaLicenceScreen extends Component<IMediaLicenceScreenProps, IMediaLicenceScreenState> {
 	private static navigationOptions = (props: IMediaLicenceScreenProps) => {
 		const isSimilarMediaScreen = _.get(props, 'navigation.state.params.mediaLicence', undefined) !== undefined;
 		const ret: Partial<NavigationStackScreenOptions> = {
@@ -31,12 +35,29 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 		return ret;
 	}
 
+	public state = {
+		videoPaused: false,
+	};
+
 	private baseScreen: any = null;
+	private didFocusSubscription: NavigationEventSubscription | null = null;
+	private didBlurSubscription: NavigationEventSubscription | null = null;
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({closeAllMediaScreens: this.onCloseAllMediaScreensHandler});
+			this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.screenDidFocusHandler);
+			this.didBlurSubscription = this.props.navigation.addListener('didBlur', this.screenDidBlurHandler);
 		});
+	}
+
+	public componentWillUnmount(): void {
+		if (this.didFocusSubscription) {
+			this.didFocusSubscription.remove();
+		}
+		if (this.didBlurSubscription) {
+			this.didBlurSubscription.remove();
+		}
 	}
 
 	public render() {
@@ -50,6 +71,7 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 				onSimilarMediaSelect={this.onSimilarMediaSelectHandler}
 				onNavigateToFAQScreen={this.onNavigateToFAQScreenHandler}
 				mediaData={navMediaData}
+				videoPaused={this.state.videoPaused}
 			/>
 		);
 	}
@@ -82,5 +104,17 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 
 	private onNavigateToFAQScreenHandler = () => {
 		this.props.navigation.navigate('MediaLicenceFAQScreen');
+	}
+
+	private screenDidFocusHandler = () => {
+		this.setState({
+			videoPaused: false,
+		});
+	}
+
+	private screenDidBlurHandler = () => {
+		this.setState({
+			videoPaused: true,
+		});
 	}
 }

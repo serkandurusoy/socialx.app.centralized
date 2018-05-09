@@ -35,6 +35,7 @@ const IN_ANIMATION_NAME = 'bounceIn';
 const IN_ANIMATION_DURATION = 300;
 const OUT_ANIMATION_NAME = 'bounceOut';
 const OUT_ANIMATION_DURATION = 300;
+const DELAY_BEFORE_DOWNLOAD_START = 1000;
 
 const SOCX_WALLET_AMOUNT_FORMAT = '0,0';
 
@@ -92,7 +93,7 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 				});
 				setTimeout(() => {
 					this.props.onStartDownload();
-				}, 2000); // have little delay for the animation to be visible
+				}, DELAY_BEFORE_DOWNLOAD_START); // have little delay for the animation to be visible
 			});
 		}
 		return true;
