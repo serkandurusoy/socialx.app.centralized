@@ -4,7 +4,7 @@ import NotificationsScreenComponent from './screen';
 
 import {Text, View} from 'react-native';
 
-import {getMyNotificationsMut} from 'backend/graphql';
+import {acceptFriendRequestHoc, declineFriendRequestHoc, getMyNotificationsHoc} from 'backend/graphql';
 import {INotificationsResponse, NOTIFICATION_TYPES} from 'types';
 
 import {ipfsConfig as base} from 'configuration';
@@ -86,6 +86,8 @@ export const ACTIVITY_CARDS = [
 
 interface INotificationsScreenProps {
 	notifications: INotificationsResponse;
+	acceptFriendRequest: any;
+	declineFriendRequest: any;
 }
 
 interface INotificationsScreenState {
@@ -200,12 +202,30 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		alert('superLikedPhotoPressedHandler: ' + postId);
 	}
 
-	private friendRequestApprovedHandler = (requestId: string) => {
-		alert('friendRequestApprovedHandler: ' + requestId);
+	private friendRequestApprovedHandler = async (requestId: string) => {
+		const {acceptFriendRequest} = this.props;
+		try {
+			await acceptFriendRequest({variables: {
+				request: requestId,
+			}});
+			await this.refreshNotifications();
+		} catch (ex) {
+			// TODO: Notify user if accept didn't process
+			console.log(ex);
+		}
 	}
 
-	private friendRequestDeclinedHandler = (requestId: string) => {
-		alert('friendRequestDeclinedHandler: ' + requestId);
+	private friendRequestDeclinedHandler = async (requestId: string) => {
+		const {declineFriendRequest} = this.props;
+		try {
+			await declineFriendRequest({variables: {
+				request: requestId,
+			}});
+			await this.refreshNotifications();
+		} catch (ex) {
+			// TODO: Notify user if accept didn't process
+			console.log(ex);
+		}
 	}
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
@@ -213,6 +233,8 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	}
 }
 
-const notificationsWrapper = getMyNotificationsMut(NotificationsScreen);
+const notificationsWrapper = getMyNotificationsHoc(NotificationsScreen);
+const acceptFriendRequestWrapper = acceptFriendRequestHoc(notificationsWrapper);
+const declineFriendRequestWrapper = declineFriendRequestHoc(acceptFriendRequestWrapper);
 
-export default notificationsWrapper;
+export default declineFriendRequestWrapper;

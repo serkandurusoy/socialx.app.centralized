@@ -26,5 +26,5 @@ const getMyNotificationsQ = gql`
 	}
 `;
 
-export const getMyNotificationsMut: any = (comp: any) =>
+export const getMyNotificationsHoc: any = (comp: any) =>
 	graphql(getMyNotificationsQ, {name: 'notifications', options: {fetchPolicy: 'network-only'}})(comp);
