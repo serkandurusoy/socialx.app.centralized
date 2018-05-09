@@ -169,7 +169,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const res: IWallPostCardProp = {
 				id: post.id,
 				text: post.text,
-				location: 'Home',
+				location: null, // TODO: enable this later when we have backend support
 				smallAvatar: post.owner.avatar
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',

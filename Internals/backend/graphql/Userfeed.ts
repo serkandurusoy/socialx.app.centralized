@@ -42,6 +42,7 @@ export const getAllPosts = gql`
 			id
 			createdAt
 			text
+			location
 			Media {
 				id
 				hash

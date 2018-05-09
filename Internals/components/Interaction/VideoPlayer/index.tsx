@@ -17,7 +17,6 @@ import style from './style';
 
 export interface IVideoOptions {
 	containerStyle?: StyleProp<ViewStyle>;
-	autoplay?: boolean;
 	muted?: boolean;
 	thumbOnly?: boolean;
 	startInFullScreen?: boolean;
@@ -32,6 +31,7 @@ interface IVideoPlayerProps extends IVideoOptions {
 
 interface IVideoPlayerState {
 	paused: boolean;
+	userPaused: boolean;
 	muted: boolean;
 	ended: boolean;
 	resizeMode?: string;
@@ -39,9 +39,20 @@ interface IVideoPlayerState {
 }
 
 export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayerState> {
+	public static getDerivedStateFromProps(
+		nextProps: Readonly<IVideoPlayerProps>,
+		prevState: Readonly<IVideoPlayerState>,
+	) {
+		if ('paused' in nextProps && nextProps.paused !== prevState.paused && !prevState.userPaused) {
+			return {
+				paused: nextProps.paused,
+			};
+		}
+		return null;
+	}
+
 	private static defaultProps: Partial<IVideoPlayerProps> = {
 		containerStyle: style.container,
-		autoplay: false,
 		muted: false,
 		thumbOnly: false,
 		startInFullScreen: false,
@@ -49,15 +60,24 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		resizeToChangeAspectRatio: false,
 	};
 
-	public state = {
-		paused: !this.props.autoplay,
-		muted: this.props.muted,
-		ended: false,
-		resizeMode: this.props.resizeMode,
-		playReady: false,
-	};
-
 	private player: Video | null = null;
+	private androidOneTimeHackDone = false;
+
+	constructor(props: IVideoPlayerProps) {
+		super(props);
+		let pausedInitValue = 'paused' in props ? props.paused : true;
+		if (Platform.OS === OS_TYPES.Android) {
+			pausedInitValue = false;
+		}
+		this.state = {
+			paused: pausedInitValue,
+			userPaused: false,
+			muted: this.props.muted,
+			ended: false,
+			resizeMode: this.props.resizeMode,
+			playReady: false,
+		};
+	}
 
 	public render() {
 		return (
@@ -68,9 +88,10 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 						// poster='https://baconmockup.com/300/200/'
 						source={{uri: this.props.videoURL}}
 						resizeMode={this.state.resizeMode}
-						paused={this.state.paused || this.props.paused}
+						paused={this.state.paused}
 						muted={this.state.muted}
 						onEnd={this.onVideoEndHandler}
+						onProgress={this.onVideoProgressHandler}
 						playInBackground={false}
 						playWhenInactive={false}
 						style={style.videoObject}
@@ -82,6 +103,19 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		);
 	}
 
+	private onVideoProgressHandler = (data: {currentTime: number; playableDuration: number}) => {
+		if (Platform.OS === OS_TYPES.Android && !this.androidOneTimeHackDone) {
+			this.androidOneTimeHackDone = true;
+			const updatedState: Partial<IVideoPlayerState> = {
+				playReady: true,
+			};
+			if (!('paused' in this.props) || this.props.paused) {
+				updatedState.paused = true;
+			}
+			this.setState(updatedState);
+		}
+	}
+
 	private videoReadyHandler = () => {
 		this.setState({
 			playReady: true,
@@ -89,7 +123,7 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 	}
 
 	private renderVideoControls = () => {
-		if (this.state.playReady || Platform.OS === OS_TYPES.Android) {
+		if (this.state.playReady) {
 			if (!this.props.thumbOnly) {
 				const muteIcon = this.state.muted ? 'md-volume-off' : 'md-volume-up';
 				const showPlayButton = this.state.paused || this.state.ended;
@@ -136,12 +170,14 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		this.setState({
 			paused: false,
 			ended: false,
+			userPaused: false,
 		});
 	}
 
 	private onVideoPlayPause = () => {
 		this.setState({
 			paused: true,
+			userPaused: true,
 		});
 	}
 

@@ -68,6 +68,7 @@
 		D368F1C6FEE5A4EBEF8DB186 /* libPods-SocialxTypeActress.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1782328E27122C86D82DFB /* libPods-SocialxTypeActress.a */; };
 		D5FCCC87D9224FEA9FC34CB6 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9BCC00B35EF447D1AAF49176 /* Entypo.ttf */; };
 		D8DE8DADE2DA4D4EAAA9AC1F /* libRNTextGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 176DD81A2C7A4C289738A1FB /* libRNTextGradient.a */; };
+		D91BE8B463854CB08C691917 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C9F416452A34A56B12C262C /* libz.tbd */; };
 		E245E89391C94F3E97FE0C61 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCFD3F89FDFA4E29A6000E97 /* libRNBlur.a */; };
 		E969829425D747B58E37B9D2 /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C884C50D530C4E4AB2F71DCD /* libReactNativeConfig.a */; };
 		ECB8EBA617284A628A5E62FF /* Roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3A1B98ED9324A0A90040D99 /* Roboto_medium.ttf */; };
@@ -567,6 +568,7 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8969794F12744356A7F39EFF /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		8AAD247B15F2402A9CA53D71 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
+		8C9F416452A34A56B12C262C /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8CFFD3BED895AADD2EFD3FCC /* libPods-SocialxTypeActressTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SocialxTypeActressTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		933D0B5625E648E9B98AB636 /* century_gothic_italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = century_gothic_italic.ttf; path = ../Internals/theme/assets/fonts/century_gothic_italic.ttf; sourceTree = "<group>"; };
 		93C54CAC27284E48B5447881 /* libRCTSplashScreen.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTSplashScreen.a; sourceTree = "<group>"; };
@@ -647,6 +649,7 @@
 				D368F1C6FEE5A4EBEF8DB186 /* libPods-SocialxTypeActress.a in Frameworks */,
 				6CD4780AD28C48B19AC6193D /* libRCTSplashScreen.a in Frameworks */,
 				1F7B27164C6A4560B57346DC /* libTcpSockets.a in Frameworks */,
+				D91BE8B463854CB08C691917 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -808,6 +811,7 @@
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				7D1782328E27122C86D82DFB /* libPods-SocialxTypeActress.a */,
 				8CFFD3BED895AADD2EFD3FCC /* libPods-SocialxTypeActressTests.a */,
+				8C9F416452A34A56B12C262C /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1118,7 +1122,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				9C9E91A12048202800B0BDF8 /* Embed Frameworks */,
-				F4F90A99B0925C25F608608A /* [CP] Copy Pods Resources */,
+				B863C9D9E953B3B7BF02ECDD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1800,7 +1804,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F4F90A99B0925C25F608608A /* [CP] Copy Pods Resources */ = {
+		B863C9D9E953B3B7BF02ECDD /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
