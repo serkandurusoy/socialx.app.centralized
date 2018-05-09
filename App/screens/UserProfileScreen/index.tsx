@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons} from 'theme/';
-import {IMediaProps} from 'types';
+import {ISimpleMediaObject, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
 const GRID_PAGE_SIZE = 20;
@@ -144,19 +144,16 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 		});
 	}
 
-	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
-		const ret: IMediaProps[] = [];
+	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): ISimpleMediaObject[] => {
+		const ret: ISimpleMediaObject[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
 			if (this.lastLoadedPhotoIndex < maxResults) {
-				const newMediaObject: IMediaProps = {
-					id: (Math.random() * 99999).toString(),
-					hash: 'QmWS5XaVeDDQAog9TcRHp7ryms4MP4a3u3gth3ZKwCvQTC',
-					optimizedHash: 'QmWS5XaVeDDQAog9TcRHp7ryms4MP4a3u3gth3ZKwCvQTC',
-					type: 'jpg',
-					size: 123456,
-				};
-				ret.push(newMediaObject);
+				ret.push({
+					url: 'https://avatars2.githubusercontent.com/u/' + i,
+					type: MediaTypeImage,
+					index: i,
+				});
 				this.lastLoadedPhotoIndex++;
 			}
 		}

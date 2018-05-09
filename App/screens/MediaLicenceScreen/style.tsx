@@ -10,7 +10,6 @@ const ITEM_VERTICAL_PADDING = Sizes.smartVerticalScale(8);
 const ITEM_HORIZONTAL_PADDING = Sizes.smartHorizontalScale(8);
 const style: any = {
 	scrollView: {
-		flex: 1,
 		width: '100%',
 		backgroundColor: Colors.white,
 	},

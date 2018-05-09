@@ -28,6 +28,7 @@ import {
 } from 'components';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import {Colors, Icons} from 'theme';
+import {ISimpleMediaObject, IUserQuery} from 'types';
 import {
 	IMediaLicenceData,
 	IMediaLicenceWithDataHooksProps,
@@ -40,8 +41,8 @@ import style, {THUMB_HEIGHT, THUMB_WIDTH, THUMBS_IN_A_ROW} from './style';
 interface IMediaLicenceScreenComponentProps extends IMediaLicenceWithDataHooksProps {
 	onNavigateToFAQScreen: () => void;
 	onSimilarMediaSelect: (item: IMediaLicenceData) => void;
-	onShowPreviewFullScreen: () => void;
-	onNavigateToUserProfileScreen: () => void;
+	onShowPreviewFullScreen: (mediaObject: ISimpleMediaObject) => void;
+	onNavigateToUserProfileScreen: (mediaOwner: Partial<IUserQuery>) => void;
 	onNavigateToPhotoIDScreen: () => void;
 	videoPaused: boolean;
 }
@@ -55,6 +56,7 @@ interface IMediaLicenceScreenComponentState {
 	blurViewRef: any;
 	amountToSend: number;
 	shareModalVisible: boolean;
+	isScrolled: boolean;
 }
 
 class MediaLicenceScreenComponent extends Component<
@@ -94,6 +96,7 @@ class MediaLicenceScreenComponent extends Component<
 			blurViewRef: null,
 			amountToSend: 0,
 			shareModalVisible: false,
+			isScrolled: false,
 		};
 	}
 
@@ -142,6 +145,7 @@ class MediaLicenceScreenComponent extends Component<
 			<ScrollView
 				ref={(ref: ScrollView) => (this.scrollView = ref)}
 				style={style.scrollView}
+				// contentContainerStyle={{width: '100%'}}
 				showsVerticalScrollIndicator={false}
 				bounces={false}
 			>
@@ -162,7 +166,7 @@ class MediaLicenceScreenComponent extends Component<
 		return (
 			<View style={style.paddingContainer}>
 				<Text style={style.mediaTitle}>{composedTitle}</Text>
-				<TouchableOpacity onPress={this.props.onShowPreviewFullScreen}>
+				<TouchableOpacity onPress={this.prepareMediaFullScreenPreview}>
 					<MediaObjectViewer
 						uri={mediaPreviewURI}
 						style={style.mediaPreviewImage}
@@ -195,7 +199,7 @@ class MediaLicenceScreenComponent extends Component<
 				<Text style={style.mediaDescriptionText}>{'Media Type: ' + type.category}</Text>
 				<View style={style.mediaDescription}>
 					<Text style={style.mediaDescriptionText}>{'Copyright: '}</Text>
-					<TouchableOpacity onPress={this.props.onNavigateToUserProfileScreen}>
+					<TouchableOpacity onPress={this.prepareShowOwnerScreen}>
 						<Text style={style.mediaDescriptionValue}>{owner.name}</Text>
 					</TouchableOpacity>
 				</View>
@@ -277,16 +281,30 @@ class MediaLicenceScreenComponent extends Component<
 						thumbWidth={THUMB_WIDTH}
 						thumbHeight={THUMB_HEIGHT}
 						showsVerticalScrollIndicator={false}
-						// bounces={false}
-						// onScroll={this.scrollUpdatedHandler}
 						renderGridItem={this.renderGridItemHandler}
 						onLoadMore={this.props.onLoadMoreSimilarMedia}
 						dataProvider={this.state.similarMediaDataProvider}
+						onScroll={this.scrollUpdatedHandler}
 						extendedState={{likeCounter: this.state.likeToggleCounter}}
 					/>
 				</View>
 			</View>
 		);
+	}
+
+	private scrollUpdatedHandler = (rawEvent: any, offsetX: number, offsetY: number) => {
+		if (offsetY > 150 && !this.state.isScrolled) {
+			this.scrollView.scrollToEnd({animated: true});
+			this.setState({
+				isScrolled: true,
+			});
+		}
+		if (offsetY <= 0 && this.state.isScrolled) {
+			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
+			this.setState({
+				isScrolled: false,
+			});
+		}
 	}
 
 	private renderGridItemHandler = (type: ReactText, item: IMediaLicenceData) => {
@@ -386,6 +404,9 @@ class MediaLicenceScreenComponent extends Component<
 		const numberOfRows = Math.ceil(this.props.numberOfSimilarMedia / THUMBS_IN_A_ROW);
 		const maxHeight = numberOfRows * THUMB_HEIGHT;
 		return Math.min(maxHeight, screenHeight);
+		// const gridHeight = Math.min(maxHeight, screenHeight);
+		// console.log('Gird photos height', gridHeight);
+		// return gridHeight;
 	}
 
 	private mediaItemSelectedHandler = (mediaElement: IMediaSize) => {
@@ -445,6 +466,16 @@ class MediaLicenceScreenComponent extends Component<
 		ModalManager.safeRunAfterModalClosed(() => {
 			this.props.onStartDownload(this.state.selectedItems);
 		});
+	}
+
+	private prepareMediaFullScreenPreview = () => {
+		const newMediaObject = this.props.getMediaPreviewObject();
+		this.props.onShowPreviewFullScreen(newMediaObject);
+	}
+
+	private prepareShowOwnerScreen = () => {
+		const mediaOwner = this.props.getMediaOwner();
+		this.props.onNavigateToUserProfileScreen(mediaOwner);
 	}
 }
 

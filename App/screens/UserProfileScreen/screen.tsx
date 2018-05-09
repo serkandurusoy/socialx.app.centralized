@@ -3,7 +3,7 @@ import {GridPhotos, IWallPostCardProp, ProfileStatistics, WallPostCard} from 'co
 import React, {Component} from 'react';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
 import {Metrics} from 'theme';
-import {IMediaProps} from 'types';
+import {ISimpleMediaObject} from 'types';
 import style from './style';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -20,7 +20,7 @@ interface IUserProfileScreenProps {
 	username?: string;
 	aboutMeText: string;
 	recentPosts: IWallPostCardProp[];
-	loadMorePhotosHandler: () => IMediaProps[];
+	loadMorePhotosHandler: () => ISimpleMediaObject[];
 	totalNumberOfPhotos: number;
 	gridPageSize: number;
 }
@@ -109,6 +109,7 @@ export default class UserProfileScreenComponent extends Component<
 		return (
 			<View style={gridPhotosStyles}>
 				<GridPhotos
+					showsVerticalScrollIndicator={false}
 					onScroll={this.scrollUpdated}
 					loadMorePhotos={this.props.loadMorePhotosHandler}
 					itemPressed={this.onPhotoPressHandler}

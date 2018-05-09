@@ -166,6 +166,8 @@ export interface IMediaLicenceWithDataHooksProps {
 	onMediaDownloadPreview: () => void;
 	onSendTokens: (gas: number, tokens: number) => void;
 	onStartDownload: (selectedItems: IMediaSize[]) => void;
+	getMediaOwner: () => Partial<IUserQuery>;
+	getMediaPreviewObject: () => ISimpleMediaObject;
 }
 
 interface IMediaLicenceWithDataHooksState {
@@ -214,21 +216,23 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 						transactionCompleted={this.state.transactionCompleted}
 						onSendTokens={this.onSendTokensHandler}
 						onStartDownload={this.onStartDownloadHandler}
+						getMediaOwner={this.getMediaOwner}
+						getMediaPreviewObject={this.getMediaPreviewObject}
 					/>
 				</View>
 			);
 		}
 
-		public getMediaPreviewObject = (): ISimpleMediaObject => {
+		private getMediaOwner = (): Partial<IUserQuery> => {
+			return this.state.mediaData.owner;
+		}
+
+		private getMediaPreviewObject = (): ISimpleMediaObject => {
 			const {mediaData} = this.state;
 			return {
 				url: mediaData.mediaPreviewURI,
 				type: mediaData.type,
 			};
-		}
-
-		public getMediaOwner = () => {
-			return this.state.mediaData.owner;
 		}
 
 		private getMoreSimilarMedia = (refMediaData: IMediaLicenceData) => {

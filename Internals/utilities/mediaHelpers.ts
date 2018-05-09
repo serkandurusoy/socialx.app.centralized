@@ -1,7 +1,9 @@
-import {ipfsConfig as base} from 'configuration';
 import {Alert, CameraRoll, PermissionsAndroid} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
-import {IMediaProps, IMediaViewerObject, ISimpleMediaObject} from 'types';
+
+import {IMediaObjectViewerProps} from 'components';
+import {ipfsConfig as base} from 'configuration';
+import {IMediaProps, IMediaProsWithIndex, IMediaViewerObject, ISimpleMediaObject} from 'types';
 import {requestResourcePermission} from 'utilities';
 
 const REQUEST_SAVE_MEDIA_TITLE = 'Photo library save..';
@@ -17,11 +19,21 @@ export const getURLForMediaViewerObject = (object: IMediaViewerObject) => {
 	if ('url' in object) {
 		mediaURL = (object as ISimpleMediaObject).url;
 	} else {
-		object = object as IMediaProps;
+		object = object as IMediaProsWithIndex;
 		mediaURL = base.ipfs_URL;
 		mediaURL += object.optimizedHash ? object.optimizedHash : object.hash;
 	}
 	return mediaURL;
+};
+
+export const getTypePropsForMediaViewerObject = (object: IMediaViewerObject) => {
+	const typeProps: Partial<IMediaObjectViewerProps> = {};
+	if ('url' in object) {
+		typeProps.type = (object as ISimpleMediaObject).type;
+	} else {
+		typeProps.extension = (object as IMediaProps).type;
+	}
+	return typeProps;
 };
 
 export const saveRemoteMediaFileToLocalPhotoLibrary = async (

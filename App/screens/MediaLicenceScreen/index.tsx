@@ -1,8 +1,10 @@
-import {ModalCloseButton} from 'components';
 import * as _ from 'lodash';
 import React, {Component} from 'react';
 import {findNodeHandle, Image, InteractionManager, Text, View} from 'react-native';
 import {NavigationEventSubscription, NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+
+import {ModalCloseButton} from 'components';
+import {ISimpleMediaObject, IUserQuery} from 'types';
 import {IMediaLicenceData} from './data.hoc';
 import MediaLicenceScreenComponent from './screen';
 
@@ -39,7 +41,6 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 		videoPaused: false,
 	};
 
-	private baseScreen: any = null;
 	private didFocusSubscription: NavigationEventSubscription | null = null;
 	private didBlurSubscription: NavigationEventSubscription | null = null;
 
@@ -64,7 +65,6 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 		const navMediaData = _.get(this.props, 'navigation.state.params.mediaLicence', undefined);
 		return (
 			<MediaLicenceScreenComponent
-				ref={(ref) => (this.baseScreen = ref)}
 				onShowPreviewFullScreen={this.onShowPreviewFullScreenHandler}
 				onNavigateToUserProfileScreen={this.onNavigateToUserProfileScreenHandler}
 				onNavigateToPhotoIDScreen={this.onNavigateToMediaIDScreenHandler}
@@ -76,16 +76,14 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 		);
 	}
 
-	private onShowPreviewFullScreenHandler = () => {
-		const newMediaObject = this.baseScreen.getMediaPreviewObject();
+	private onShowPreviewFullScreenHandler = (newMediaObject: ISimpleMediaObject) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: [newMediaObject],
 			startIndex: 0,
 		});
 	}
 
-	private onNavigateToUserProfileScreenHandler = () => {
-		const mediaOwner = this.baseScreen.getMediaOwner();
+	private onNavigateToUserProfileScreenHandler = (mediaOwner: Partial<IUserQuery>) => {
 		this.props.navigation.navigate('UserProfileScreen', {user: mediaOwner});
 	}
 

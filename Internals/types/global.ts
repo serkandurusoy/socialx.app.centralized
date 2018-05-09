@@ -31,6 +31,11 @@ export enum MediaSizes {
 export interface ISimpleMediaObject {
 	url: string;
 	type: MediaTypes;
+	index?: number;
 }
 
-export type IMediaViewerObject = IMediaProps | ISimpleMediaObject;
+export interface IMediaProsWithIndex extends IMediaProps {
+	index?: number;
+}
+
+export type IMediaViewerObject = IMediaProsWithIndex | ISimpleMediaObject;

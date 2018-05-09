@@ -1,23 +1,19 @@
-import React, {Component} from 'react';
-import {Image, Text, View} from 'react-native';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import React from 'react';
+import {SafeAreaView, View, WebView} from 'react-native';
+import MediaLicenceFAQHTML from './media_licence_faq.html';
 import style from './style';
 
-export interface IMediaLicenceFAQScreenProps {
-	navigation: NavigationScreenProp<any>;
-}
+const MediaLicenceFAQScreen: React.SFC = () => {
+	return (
+		<SafeAreaView style={style.container}>
+			<WebView source={MediaLicenceFAQHTML} />
+		</SafeAreaView>
+	);
+};
 
-export default class MediaLicenceFAQScreen extends Component<IMediaLicenceFAQScreenProps, any> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'Media Licence - FAQ',
-		headerRight: <View />,
-	};
+MediaLicenceFAQScreen.navigationOptions = {
+	title: 'Media Licence - FAQ',
+	headerRight: <View />,
+};
 
-	public render() {
-		return (
-			<View style={style.container}>
-				<Text>{'MediaLicenceFAQScreen'}</Text>
-			</View>
-		);
-	}
-}
+export default MediaLicenceFAQScreen;
