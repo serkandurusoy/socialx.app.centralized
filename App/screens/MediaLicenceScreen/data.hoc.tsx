@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import React from 'react';
 import {Alert, CameraRoll, PermissionsAndroid, View} from 'react-native';
-import RNFS from 'react-native-fs';
 
 import {
 	IShareOption,
@@ -12,12 +11,9 @@ import {
 	SHARE_WHATS_APP,
 	SHARE_YOUTUBE,
 } from 'components';
+import {ModalManager} from 'hoc/ManagedModal/manager';
 import {ISimpleMediaObject, IUserQuery, MediaSizes, MediaTypeImage, MediaTypes, MediaTypeVideo} from 'types';
-import {requestResourcePermission} from 'utilities';
-
-const REQUEST_SAVE_MEDIA_TITLE = 'Gallery save request';
-const REQUEST_SAVE_MEDIA_MESSAGE = 'The media you download will be saved to device gallery. Please grant access.';
-const SAVE_MEDIA_ACCESS_DENIED = 'Save to gallery denied :(';
+import {saveRemoteMediaFileToLocalPhotoLibrary} from 'utilities';
 
 export interface MediaResolutionSection {
 	title: string;
@@ -42,6 +38,7 @@ export interface IMediaSize {
 	height: number;
 	price: number;
 	section: MediaResolutionSection;
+	url: string;
 }
 
 export interface IMediaLicenceData {
@@ -78,6 +75,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 1119,
 			price: 3,
 			section: MEDIA_RESOLUTION_PRINT,
+			url: 'https://placeimg.com/1678/1119/any',
 		},
 		{
 			id: 4,
@@ -87,6 +85,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 1672,
 			price: 4,
 			section: MEDIA_RESOLUTION_PRINT,
+			url: 'https://placeimg.com/2508/1672any',
 		},
 		{
 			id: 5,
@@ -96,6 +95,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 2554,
 			price: 5,
 			section: MEDIA_RESOLUTION_PRINT,
+			url: 'https://placeimg.com/3831/2554/any',
 		},
 		{
 			id: 6,
@@ -105,6 +105,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 4000,
 			price: 6,
 			section: MEDIA_RESOLUTION_PRINT,
+			url: 'https://placeimg.com/6000/4000/any',
 		},
 		{
 			id: 7,
@@ -114,6 +115,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 5000,
 			price: 10,
 			section: MEDIA_RESOLUTION_PRINT,
+			url: 'https://placeimg.com/7500/5000/any',
 		},
 		{
 			id: 1,
@@ -123,6 +125,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 300,
 			price: 1,
 			section: MEDIA_RESOLUTION_WEB,
+			url: 'https://placeimg.com/450/300/any',
 		},
 		{
 			id: 2,
@@ -132,6 +135,7 @@ const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 			height: 565,
 			price: 2,
 			section: MEDIA_RESOLUTION_WEB,
+			url: 'https://placeimg.com/848/565/any',
 		},
 	],
 };
@@ -150,34 +154,44 @@ const ENABLED_SHARE_OPTIONS = [
 
 export interface IMediaLicenceWithDataHooksProps {
 	mediaData: IMediaLicenceData;
+	similarMedia: IMediaLicenceData[];
+	likeToggleCounter: number;
+	transactionCompleted: boolean;
 	onMediaLike: () => void;
 	numberOfSimilarMedia: number;
 	onSimilarMediaLike: (item: IMediaLicenceData) => void;
-	similarMedia: IMediaLicenceData[];
 	onLoadMoreSimilarMedia: () => void;
-	likeToggleCounter: number;
 	shareOptions: IShareOption[];
 	onMediaShare: (options: IShareOption) => void;
 	onMediaDownloadPreview: () => void;
+	onSendTokens: (gas: number) => void;
+	onStartDownload: () => void;
 }
 
-interface IMediaLicenceWithDataHooksState extends IMediaLicenceData {
+interface IMediaLicenceWithDataHooksState {
 	mediaData: IMediaLicenceData;
 	similarMedia: IMediaLicenceData[];
 	likeToggleCounter: number;
+	transactionCompleted: boolean;
+}
+
+interface IInternalProps extends IMediaLicenceWithDataHooksProps {
+	mediaPreviewDownloading: () => void;
+	hideProgressIndicator: () => void;
 }
 
 export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMediaLicenceWithDataHooksProps>) => {
-	return class extends React.Component<any, IMediaLicenceWithDataHooksState> {
+	return class extends React.Component<IInternalProps, IMediaLicenceWithDataHooksState> {
 		private similarLoadIndex = 0;
 
-		constructor(props: IMediaLicenceWithDataHooksProps) {
+		constructor(props: IInternalProps) {
 			super(props);
 			const mediaData = props.mediaData ? props.mediaData : {...MEDIA_LICENCE_DATA};
 			this.state = {
 				mediaData,
 				similarMedia: this.getMoreSimilarMedia(mediaData),
 				likeToggleCounter: 0,
+				transactionCompleted: false,
 			};
 		}
 
@@ -196,6 +210,9 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 						likeToggleCounter={this.state.likeToggleCounter}
 						onMediaShare={this.onMediaShareHandler}
 						onMediaDownloadPreview={this.onMediaDownloadPreviewHandler}
+						transactionCompleted={this.state.transactionCompleted}
+						onSendTokens={this.onSendTokensHandler}
+						onStartDownload={this.onStartDownloadHandler}
 					/>
 				</View>
 			);
@@ -271,32 +288,39 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 		}
 
 		private onMediaDownloadPreviewHandler = async () => {
-			// TODO: add progress indicator
-			const granted = await requestResourcePermission(
-				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-				REQUEST_SAVE_MEDIA_TITLE,
-				REQUEST_SAVE_MEDIA_MESSAGE,
+			const {mediaData} = this.state;
+			const fileName = mediaData.title + '.' + mediaData.extension;
+			this.props.mediaPreviewDownloading();
+			const saveRes = await saveRemoteMediaFileToLocalPhotoLibrary(
+				mediaData.mediaPreviewURI,
+				fileName,
+				this.mediaPreviewDownloadProgress,
 			);
-			if (granted) {
-				const {mediaData} = this.state;
-				const tempSavePath = 'file://' + RNFS.CachesDirectoryPath + '/' + mediaData.title + '.' + mediaData.extension;
-				// console.log('Will save to cache location', tempSavePath);
-				const downloadDescriptor = RNFS.downloadFile({
-					fromUrl: mediaData.mediaPreviewURI,
-					toFile: tempSavePath,
+			this.props.hideProgressIndicator();
+			ModalManager.safeRunAfterModalClosed(() => {
+				Alert.alert(saveRes);
+			});
+		}
+
+		private mediaPreviewDownloadProgress = (progressPercentage: number) => {
+			// TODO: server should provide header Content-Length for this to work!
+			// console.log('Download progress', progressPercentage);
+		}
+
+		private onSendTokensHandler = (gas: number) => {
+			// console.log('onSendTokensHandler', gas);
+			setTimeout(() => {
+				this.setState({
+					transactionCompleted: true,
 				});
-				downloadDescriptor.promise.then((result: RNFS.DownloadResult) => {
-					// console.log('Download finished', result.bytesWritten, result.statusCode);
-					CameraRoll.saveToCameraRoll(tempSavePath).then((localURI: string) => {
-						// console.log('Downloaded file moved to', localURI);
-						RNFS.unlink(tempSavePath).then(() => {
-							// console.log('File deleted from temp location');
-						});
-					});
-				});
-			} else {
-				Alert.alert(SAVE_MEDIA_ACCESS_DENIED);
-			}
+			}, 2000);
+		}
+
+		private onStartDownloadHandler = () => {
+			this.setState({
+				transactionCompleted: false,
+			});
+			// console.log('onStartDownloadHandler');
 		}
 	};
 };

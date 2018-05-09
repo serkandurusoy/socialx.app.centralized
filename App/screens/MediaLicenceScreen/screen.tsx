@@ -1,11 +1,3 @@
-import {
-	IShareOption,
-	MediaObjectViewer,
-	ModalExternalShareOptions,
-	ModalWallet,
-	NewGridPhotos,
-	SXButton,
-} from 'components';
 import findIndex from 'lodash/findIndex';
 import sortBy from 'lodash/sortBy';
 import {CheckBox} from 'native-base';
@@ -22,7 +14,19 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
+import {connect} from 'react-redux';
 import {DataProvider} from 'recyclerlistview';
+
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {
+	IShareOption,
+	MediaObjectViewer,
+	ModalExternalShareOptions,
+	ModalWallet,
+	NewGridPhotos,
+	SXButton,
+} from 'components';
+import {ModalManager} from 'hoc/ManagedModal/manager';
 import {Colors, Icons} from 'theme';
 import {
 	IMediaLicenceData,
@@ -117,6 +121,9 @@ class MediaLicenceScreenComponent extends Component<
 					socXInWallet={53680} // TODO update with real value here
 					sendSocXAmount={this.state.amountToSend}
 					destinationUser={owner}
+					tokensSent={this.props.transactionCompleted}
+					onSend={this.props.onSendTokens}
+					onStartDownload={this.onStartDownloadHandler}
 				/>
 				<ModalExternalShareOptions
 					visible={this.state.shareModalVisible}
@@ -422,6 +429,20 @@ class MediaLicenceScreenComponent extends Component<
 		this.toggleShareOptionsModal();
 		this.props.onMediaShare(option);
 	}
+
+	private onStartDownloadHandler = () => {
+		this.toggleModalHandler();
+		ModalManager.safeRunAfterModalClosed(() => {
+			this.props.onStartDownload();
+		});
+	}
 }
 
-export default mediaLicenceWithDataHooks(MediaLicenceScreenComponent as any);
+const mapDispatchToProps = (dispatch: any) => ({
+	mediaPreviewDownloading: () => dispatch(showActivityIndicator('Downloading media preview..')),
+	hideProgressIndicator: () => dispatch(hideActivityIndicator()),
+});
+
+const withDataHooks = mediaLicenceWithDataHooks(MediaLicenceScreenComponent as any);
+
+export default connect(null, mapDispatchToProps)(withDataHooks);
