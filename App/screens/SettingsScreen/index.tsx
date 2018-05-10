@@ -27,8 +27,6 @@ import {IBlobData} from 'ipfslib';
 import {Signout} from 'utilities/amplify';
 import {addBlob} from 'utilities/ipfs';
 
-import RNFS from 'react-native-fs';
-
 import {ipfsConfig as base} from 'configuration/ipfs';
 const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 
