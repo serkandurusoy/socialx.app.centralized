@@ -1,5 +1,5 @@
 import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
-import {FriendRequest, GroupRequest} from 'components/Displayers';
+import {FriendRequest, GroupRequest, NotificationGI} from 'components/Displayers';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 import {Icons} from 'theme/Icons';
@@ -16,6 +16,7 @@ interface INotificationsScreenComponentProps {
 	onFriendRequestApproved: (requestId: string) => void;
 	onFriendRequestDeclined: (requestId: string) => void;
 	onGroupRequestConfirmed: (requestId: string) => void;
+	onCheckNotification: (requestId: string) => void;
 }
 
 export default class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
@@ -83,6 +84,15 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 						{...activityCardData}
 						onRequestConfirmed={() => this.props.onFriendRequestApproved(activityCardData.requestId)}
 						onRequestDeclined={() => this.props.onFriendRequestDeclined(activityCardData.requestId)}
+					/>
+				);
+
+			case NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE:
+				// @ionut -> todo: make better
+				return (
+					<NotificationGI
+						{...activityCardData}
+						onCheckNotification={() => this.props.onCheckNotification(activityCardData.requestId)}
 					/>
 				);
 

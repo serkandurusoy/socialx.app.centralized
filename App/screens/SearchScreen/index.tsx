@@ -6,7 +6,7 @@ import SearchScreenComponent from './screen';
 
 import {ipfsConfig as base} from 'configuration';
 
-import {searchUsersHoc} from 'backend/graphql';
+import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
 
 export enum SearchFilterValues {
 	People = 'people',
@@ -18,93 +18,6 @@ export enum SearchResultKind {
 	NotFriend = 'notFriend',
 	Group = 'group',
 }
-
-const SEARCH_RESULTS_CREATE_GROUP: SearchResultCreateGroup[] = [
-	{
-		id: '0',
-		fullName: 'Ionut Movila',
-		location: 'Belgium',
-		avatarURL: 'https://placeimg.com/100/100/people',
-	},
-	{
-		id: '1',
-		fullName: 'Teresa Lamb',
-		location: 'Poland',
-		avatarURL: 'https://placeimg.com/101/101/people',
-	},
-	{
-		id: '2',
-		fullName: 'Terosa McCarthy',
-		location: 'Vietnam',
-		avatarURL: 'https://placeimg.com/102/102/people',
-	},
-	{
-		id: '3',
-		fullName: 'Terosa McCarthy',
-		location: 'Romania',
-		avatarURL: 'https://placeimg.com/103/103/people',
-	},
-	{
-		id: '4',
-		fullName: 'Gregory Bates',
-		location: 'Latvia',
-		avatarURL: 'https://placeimg.com/104/104/people',
-	},
-	{
-		id: '5',
-		fullName: 'Patrick Mullins',
-		location: 'Singapore',
-		avatarURL: 'https://placeimg.com/105/105/people',
-	},
-];
-
-const SEARCH_RESULTS_PEOPLE: SearchResultPeople[] = [
-	{
-		id: '0',
-		kind: SearchResultKind.Friend,
-		fullName: 'Ionut Movila',
-		username: 'ionut.movila',
-		avatarURL: 'https://placeimg.com/100/100/people',
-	},
-	{
-		id: '1',
-		kind: SearchResultKind.NotFriend,
-		fullName: 'Teresa Lamb',
-		username: 'terlamb',
-		avatarURL: 'https://placeimg.com/101/101/people',
-	},
-	{
-		id: '2',
-		kind: SearchResultKind.Friend,
-		fullName: 'Terosa McCarthy',
-		username: 'terosaMcCarthy',
-		avatarURL: 'https://placeimg.com/102/102/people',
-	},
-];
-
-const SEARCH_RESULTS_GROUPS: SearchResultGroups[] = [
-	{
-		id: '3',
-		kind: SearchResultKind.Group,
-		fullName: 'Group name',
-		username: 'afsfnaklsj.dfsaiog',
-		avatarURL: 'https://placeimg.com/100/100/tech',
-	},
-	{
-		id: '4',
-		kind: SearchResultKind.Group,
-		fullName: 'Timisoara JS meetup',
-		username: 'timjs.meet',
-		avatarURL: 'https://placeimg.com/101/101/tech',
-	},
-	{
-		id: '5',
-		kind: SearchResultKind.Group,
-		fullName: 'AMG owners',
-		username: 'amg.owners',
-		avatarURL: 'https://placeimg.com/102/102/tech',
-	},
-];
 
 export interface SearchResultPeople {
 	id: string;
@@ -132,6 +45,7 @@ export interface SearchResultCreateGroup {
 interface ISearchScreenProps {
 	navigation: NavigationScreenProp<any>;
 	search: any;
+	addFriend: any;
 }
 
 interface ISearchScreenState {
@@ -304,8 +218,17 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		return ret;
 	}
 
-	private addFriendHandler = (friendId: string) => {
-		alert('Add friend with ID ' + friendId);
+	private addFriendHandler = async (friendId: string) => {
+		const {addFriend} = this.props;
+		try {
+			await addFriend({variables: {
+				user: friendId,
+			}});
+		} catch (ex) {
+			// TODO: notify user that friend request didn't process
+			console.log(`ex: ${ex}`);
+		}
+		// alert('Add friend with ID ' + friendId);
 	}
 
 	private handleCreateNewGroup = () => {
@@ -323,5 +246,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 }
 
 const searchUsersWrapper = searchUsersHoc(SearchScreen);
+const addFriendWrapper = addFriendHoc(searchUsersWrapper);
 
-export default searchUsersWrapper;
+export default addFriendWrapper;
