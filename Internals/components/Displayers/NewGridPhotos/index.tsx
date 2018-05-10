@@ -1,5 +1,4 @@
 import React, {Component, ReactText} from 'react';
-import {Dimensions, Image, TouchableOpacity, View} from 'react-native';
 import {DataProvider, LayoutProvider, RecyclerListView} from 'recyclerlistview';
 import {Sizes} from 'theme';
 import style from './style';
@@ -15,6 +14,7 @@ export interface INewGridPhotosProps {
 	bounces?: boolean;
 	dataProvider: DataProvider;
 	extendedState?: any;
+	scrollViewProps?: any;
 }
 
 export class NewGridPhotos extends Component<INewGridPhotosProps> {
@@ -49,6 +49,7 @@ export class NewGridPhotos extends Component<INewGridPhotosProps> {
 				onScroll={this.props.onScroll}
 				bounces={this.props.bounces}
 				extendedState={this.props.extendedState}
+				scrollViewProps={this.props.scrollViewProps}
 			/>
 		);
 	}

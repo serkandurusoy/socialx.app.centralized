@@ -83,6 +83,8 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
 		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
 		CommentsStack: {screen: CommentsStackNavigator},
+		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
+		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
@@ -168,20 +170,13 @@ const MainScreenTabNavigation = TabNavigator(
 		},
 		lazy: true,
 		swipeEnabled: false,
-		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
+		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation}/>,
 	},
 );
 
 const hotPostsSingleScreenStack = getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen);
 const MainScreenWithModal = StackNavigator(
 	{
-		MediaLicenceStack: {screen: MediaLicenceStackNavigator}, // TODO: later to be moved down!
-		MainScreenTabNavigation: {screen: MainScreenTabNavigation},
-		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
-		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
-		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
-		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
-		CommentsStack: {screen: CommentsStackNavigator},
 		MainScreenTabNavigationWithModal: getMainStackWithModalsForScreen(
 			'MainScreenTabNavigation',
 			MainScreenTabNavigation,

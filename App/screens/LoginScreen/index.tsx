@@ -29,10 +29,6 @@ export interface ILoginScreenProps extends IWithResizeOnKeyboardShowProps {
 }
 
 class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
-	private static navigationOptions = {
-		headerTitle: 'LOGIN',
-	};
-
 	public state = {
 		usernameValue: '',
 		passwordValue: '',
@@ -80,12 +76,14 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 						blurOnSubmit={true}
 					/>
 				</View>
-				<SXButton
-					label={'LOGIN'}
-					onPress={this.fireSignin}
-					disabled={!this.state.passwordValue || !this.state.usernameValue}
-					borderColor={Colors.transparent}
-				/>
+				<View style={style.fullWidth}>
+					<SXButton
+						label={'LOGIN'}
+						onPress={this.fireSignin}
+						disabled={!this.state.passwordValue || !this.state.usernameValue}
+						borderColor={Colors.transparent}
+					/>
+				</View>
 				<TouchableOpacity
 					onPress={() => this.safeNavigateToScreen('ForgotPasswordScreen')}
 					style={style.forgotPassword}
@@ -191,12 +189,17 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	}
 }
 
+const navigationOptions = {
+	title: 'LOGIN',
+	headerRight: <View />,
+};
+
 const MapDispatchToProps = (dispatch: any) => ({
 	SigninLoader: () => dispatch(showActivityIndicator('Signing in..')),
 	ConfirmLoader: () => dispatch(showActivityIndicator('Confirming code..')),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const loginScreenWithResize = withResizeOnKeyboardShow(LoginScreen);
+const loginScreenWithResize = withResizeOnKeyboardShow(LoginScreen, navigationOptions);
 const reduxWrapper = connect(null, MapDispatchToProps)(loginScreenWithResize as any);
 export default reduxWrapper;

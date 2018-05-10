@@ -7,6 +7,8 @@ import {
 	findNodeHandle,
 	Image,
 	ImagePropertiesSourceOptions,
+	NativeScrollEvent,
+	NativeSyntheticEvent,
 	ScrollView,
 	Text,
 	TouchableOpacity,
@@ -56,7 +58,7 @@ interface IMediaLicenceScreenComponentState {
 	blurViewRef: any;
 	amountToSend: number;
 	shareModalVisible: boolean;
-	isScrolled: boolean;
+	scrollEnabled: boolean;
 }
 
 class MediaLicenceScreenComponent extends Component<
@@ -96,7 +98,7 @@ class MediaLicenceScreenComponent extends Component<
 			blurViewRef: null,
 			amountToSend: 0,
 			shareModalVisible: false,
-			isScrolled: false,
+			scrollEnabled: true,
 		};
 	}
 
@@ -143,11 +145,13 @@ class MediaLicenceScreenComponent extends Component<
 	private renderScreenWithScroll = () => {
 		return (
 			<ScrollView
-				ref={(ref: ScrollView) => (this.scrollView = ref)}
+				ref={(ref) => (this.scrollView = ref)}
 				style={style.scrollView}
-				// contentContainerStyle={{width: '100%'}}
 				showsVerticalScrollIndicator={false}
 				bounces={false}
+				onScroll={this.scrollUpdatedHandler}
+				scrollEventThrottle={100} // once at 100ms
+				scrollEnabled={this.state.scrollEnabled}
 			>
 				{this.renderMediaPreviewAndActions()}
 				{this.renderMediaDescriptionSection()}
@@ -284,26 +288,36 @@ class MediaLicenceScreenComponent extends Component<
 						renderGridItem={this.renderGridItemHandler}
 						onLoadMore={this.props.onLoadMoreSimilarMedia}
 						dataProvider={this.state.similarMediaDataProvider}
-						onScroll={this.scrollUpdatedHandler}
+						onScroll={this.gridScrollUpdatedHandler}
 						extendedState={{likeCounter: this.state.likeToggleCounter}}
+						scrollViewProps={{scrollEnabled: !this.state.scrollEnabled}}
 					/>
 				</View>
 			</View>
 		);
 	}
 
-	private scrollUpdatedHandler = (rawEvent: any, offsetX: number, offsetY: number) => {
-		if (offsetY > 150 && !this.state.isScrolled) {
-			this.scrollView.scrollToEnd({animated: true});
+	private gridScrollUpdatedHandler = (rawEvent: any, offsetX: number, offsetY: number) => {
+		if (offsetY <= 0 && !this.state.scrollEnabled) {
 			this.setState({
-				isScrolled: true,
+				scrollEnabled: true,
 			});
 		}
-		if (offsetY <= 0 && this.state.isScrolled) {
-			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
-			this.setState({
-				isScrolled: false,
-			});
+	}
+
+	private scrollUpdatedHandler = (event?: NativeSyntheticEvent<NativeScrollEvent>) => {
+		// TODO: scroll enable/disable logic can be improved later...
+		if (event) {
+			const {nativeEvent} = event;
+			if (nativeEvent.contentOffset.y > nativeEvent.contentSize.height - nativeEvent.layoutMeasurement.height) {
+				this.setState({
+					scrollEnabled: false,
+				});
+			} else if (!this.state.scrollEnabled) {
+				this.setState({
+					scrollEnabled: true,
+				});
+			}
 		}
 	}
 

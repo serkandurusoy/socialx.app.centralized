@@ -54,12 +54,12 @@ export interface IMediaLicenceData {
 
 const MEDIA_LICENCE_DATA: IMediaLicenceData = {
 	title: 'Flower Cookie',
-	// type: MediaTypeImage,
-	// mediaPreviewURI: 'https://placeimg.com/900/650/any',
-	// extension: 'jpg',
-	type: MediaTypeVideo,
-	mediaPreviewURI: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4',
-	extension: 'mp4',
+	type: MediaTypeImage,
+	mediaPreviewURI: 'https://placeimg.com/900/650/any',
+	extension: 'jpg',
+	// type: MediaTypeVideo,
+	// mediaPreviewURI: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4',
+	// extension: 'mp4',
 	likedByMe: false,
 	imageID: '#765334',
 	owner: {
