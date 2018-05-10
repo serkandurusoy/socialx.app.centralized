@@ -9,22 +9,33 @@ const getMyNotificationsQ = gql`
 			trigger
 			data
 			targetUser {
-                userId
-            }
+				userId
+			}
 			owner {
-                userId
-                username
-                name
-                avatar {
-                    id
-                    hash
-                }
-            }
+				userId
+				username
+				name
+				avatar {
+					id
+					hash
+				}
+			}
 			type
 			status
 		}
 	}
 `;
 
+const checkNotificationsMut = gql`
+	mutation checknotis($request: ID!) {
+		checkNotification(request: $request) {
+			id
+		}
+	}
+`;
+
 export const getMyNotificationsHoc: any = (comp: any) =>
 	graphql(getMyNotificationsQ, {name: 'notifications', options: {fetchPolicy: 'network-only'}})(comp);
+
+export const checkNotificationHoc: any = (comp: any) =>
+	graphql(checkNotificationsMut, {name: 'checkNotification'})(comp);

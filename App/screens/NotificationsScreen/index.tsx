@@ -4,7 +4,12 @@ import NotificationsScreenComponent from './screen';
 
 import {Text, View} from 'react-native';
 
-import {acceptFriendRequestHoc, declineFriendRequestHoc, getMyNotificationsHoc} from 'backend/graphql';
+import {
+	acceptFriendRequestHoc,
+	checkNotificationHoc,
+	declineFriendRequestHoc,
+	getMyNotificationsHoc,
+} from 'backend/graphql';
 import {INotificationsResponse, NOTIFICATION_TYPES} from 'types';
 
 import {ipfsConfig as base} from 'configuration';
@@ -88,6 +93,7 @@ interface INotificationsScreenProps {
 	notifications: INotificationsResponse;
 	acceptFriendRequest: any;
 	declineFriendRequest: any;
+	checkNotification: any;
 }
 
 interface INotificationsScreenState {
@@ -133,6 +139,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 								fullName: current.owner.name,
 								username: current.owner.username,
 								requestId: current.id,
+								text: `${current.owner.username} has ${current.status} you\'r friend request.`,
 								status: current.status,
 							};
 							break;
@@ -168,6 +175,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				loadMoreNotifications={this.loadMoreNotificationsHandler}
 				onPostThumbPressed={this.postThumbPressedHandler}
 				onSuperLikedPhotoPressed={this.superLikedPhotoPressedHandler}
+				onCheckNotification={this.checkNotification}
 				onFriendRequestApproved={this.friendRequestApprovedHandler}
 				onFriendRequestDeclined={this.friendRequestDeclinedHandler}
 				onGroupRequestConfirmed={this.groupRequestConfirmedHandler}
@@ -178,12 +186,12 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	private refreshNotifications = async () => {
 		const {notifications} = this.props;
 		try {
-			this.setState({ refreshing: true, activityCards: [] });
+			this.setState({refreshing: true, activityCards: []});
 			await notifications.refetch();
-			this.setState({ refreshing: false });
+			this.setState({refreshing: false});
 		} catch (ex) {
 			console.log(ex);
-			this.setState({ refreshing: false });
+			this.setState({refreshing: false});
 		}
 	}
 
@@ -203,11 +211,14 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	}
 
 	private friendRequestApprovedHandler = async (requestId: string) => {
+		// @ionut: todo -> display the user some feedback?
 		const {acceptFriendRequest} = this.props;
 		try {
-			await acceptFriendRequest({variables: {
-				request: requestId,
-			}});
+			await acceptFriendRequest({
+				variables: {
+					request: requestId,
+				},
+			});
 			await this.refreshNotifications();
 		} catch (ex) {
 			// TODO: Notify user if accept didn't process
@@ -216,11 +227,14 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	}
 
 	private friendRequestDeclinedHandler = async (requestId: string) => {
+		// @ionut: todo -> display the user some feedback?
 		const {declineFriendRequest} = this.props;
 		try {
-			await declineFriendRequest({variables: {
-				request: requestId,
-			}});
+			await declineFriendRequest({
+				variables: {
+					request: requestId,
+				},
+			});
 			await this.refreshNotifications();
 		} catch (ex) {
 			// TODO: Notify user if accept didn't process
@@ -231,10 +245,23 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
 	}
+
+	private checkNotification = async (requestId: string) => {
+		// @ionut: todo -> display the user some feedback? this one is optional
+		const {checkNotification} = this.props;
+		try {
+			await checkNotification({variables: {request: requestId}});
+			await this.refreshNotifications();
+		} catch (ex) {
+			//
+			console.log(ex);
+		}
+	}
 }
 
 const notificationsWrapper = getMyNotificationsHoc(NotificationsScreen);
 const acceptFriendRequestWrapper = acceptFriendRequestHoc(notificationsWrapper);
 const declineFriendRequestWrapper = declineFriendRequestHoc(acceptFriendRequestWrapper);
+const checkNotificationWrapper = checkNotificationHoc(declineFriendRequestWrapper);
 
-export default declineFriendRequestWrapper;
+export default checkNotificationWrapper;
