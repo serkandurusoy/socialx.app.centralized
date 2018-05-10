@@ -16,6 +16,7 @@ const style: any = {
 	leftContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		paddingRight: Sizes.smartHorizontalScale(10),
 		flex: 1,
 	},
 	avatarImage: {
@@ -43,6 +44,11 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(23),
 		paddingTop: Sizes.smartVerticalScale(3),
+	},
+	iconButton: {
+		fontSize: Sizes.smartHorizontalScale(22),
+		color: Colors.tundora,
+		padding: Sizes.smartHorizontalScale(5),
 	},
 };
 

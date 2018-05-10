@@ -1,9 +1,8 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import {Colors} from 'theme';
-import {AvatarImage} from '../../Avatar';
-import {ButtonSizes, SXButton} from '../../Interaction';
+import {AvatarImage} from 'components';
 import style from './style';
 
 export interface IFriendRequestProps {
@@ -32,21 +31,12 @@ export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
 					<Text style={style.friendRequest}>{'Friend Request'}</Text>
 				</View>
 			</View>
-			{/* @ionut: todo -> replace those with an icon circular buttons with (/) - (x) */}
-			<SXButton
-				label={'Accept'}
-				size={ButtonSizes.Small}
-				autoWidth={true}
-				borderColor={Colors.transparent}
-				onPress={props.onRequestConfirmed}
-			/>
-			<SXButton
-				label={'Decline'}
-				size={ButtonSizes.Small}
-				autoWidth={true}
-				borderColor={Colors.transparent}
-				onPress={props.onRequestConfirmed}
-			/>
+			<TouchableOpacity onPress={props.onRequestDeclined} style={[style.iconTouch, style.declineTouch]}>
+				<Icon name={'md-close'} style={[style.iconButton, style.declineColor]} />
+			</TouchableOpacity>
+			<TouchableOpacity onPress={props.onRequestConfirmed} style={[style.iconTouch, style.acceptTouch]}>
+				<Icon name={'md-checkmark'} style={[style.iconButton, style.acceptColor]} />
+			</TouchableOpacity>
 		</View>
 	);
 };
