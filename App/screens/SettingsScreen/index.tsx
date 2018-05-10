@@ -62,10 +62,11 @@ interface ISettingsScreenProps {
 interface IISettingsScreenState {
 	hasChanges: boolean;
 	avatarImage: any;
-	aboutText: string;
+	aboutText?: string;
 	firstName: string;
 	lastName: string;
 	email: string;
+	selectedImage: boolean;
 }
 
 class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenState> {
@@ -92,6 +93,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		firstName: this.props.firstName,
 		lastName: this.props.lastName,
 		email: this.props.email,
+		selectedImage: false,
 	};
 
 	private updatedAvatarImageBase64: string | null = null;
@@ -109,9 +111,9 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		this.setState({
 			avatarImage: {url: avatarImage},
 			aboutText: data.user.bio,
-			firstName: data.user.name.split(' ')[0],
-			lastName: data.user.name.split(' ')[1],
-			email: data.user.email,
+			firstName: data.user.name.split(' ')[0] || '',
+			lastName: data.user.name.split(' ')[1] || '',
+			email: data.user.email || '',
 		});
 	}
 
@@ -126,6 +128,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			);
 		}
 
+		// @ionut: todo -> make better (signout button / avatar image / add location-age fields)
 		return (
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView
@@ -201,7 +204,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 							autoWidth={true}
 							borderColor={Colors.transparent}
 							onPress={this.performSignOut}
-							style={{ marginTop: '20%' }}
+							style={{marginTop: '20%'}}
 						/>
 					</View>
 					{/*<View style={style.miningContainer}>*/}
@@ -227,11 +230,11 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			//
 			console.log(ex);
 		}
-	};
+	}
 
 	private getFullName = () => {
 		return this.state.firstName + ' ' + this.state.lastName;
-	};
+	}
 
 	private renderSaveButton = () => {
 		if (this.state.hasChanges) {
@@ -245,22 +248,24 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			);
 		}
 		return null;
-	};
+	}
 
 	private updateAvatarImage = (base64Photo: string) => {
+		const base64 = base64Photo.substring(base64Photo.indexOf(',') + 1, base64Photo.length);
 		this.setState({
-			avatarImage: {uri: base64Photo},
+			avatarImage: {uri: base64},
 			hasChanges: true,
+			selectedImage: true,
 		});
-		this.updatedAvatarImageBase64 = base64Photo;
-	};
+		this.updatedAvatarImageBase64 = base64;
+	}
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
 		const newState: any = {};
 		newState[fieldName] = value;
 		newState.hasChanges = true;
 		this.setState(newState);
-	};
+	}
 
 	private toggleMiningSetting = (value: boolean) => {
 		this.miningEnabled = value;
@@ -269,7 +274,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				hasChanges: true,
 			});
 		}
-	};
+	}
 
 	private handleImageChange = async () => {
 		const {addMedia} = this.props;
@@ -277,11 +282,16 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			if (!this.updatedAvatarImageBase64) {
 				return null;
 			}
+
+			if (!this.state.selectedImage) {
+				return null;
+			}
 			// NOTE: Uppload image to IPFS
-			let ipfsRes = await addBlob([{fileName: 'ProfileImage.jpg', data: this.updatedAvatarImageBase64, name: 'ProfileImage'}]);
+			let ipfsRes = await addBlob([
+				{filename: 'ProfileImage.jpeg', data: this.updatedAvatarImageBase64, name: 'ProfileImage'},
+			]);
 			ipfsRes = JSON.parse(ipfsRes.data);
-			console.log(ipfsRes);
-			// NOTE: Add Midea file on AppSync
+			// NOTE: Add Media file on AppSync
 			const qVar = {
 				variables: {
 					hash: ipfsRes.Hash,
@@ -291,13 +301,12 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			};
 
 			const addRes = await addMedia(qVar);
-			console.log(addRes.data);
 			return addRes.data.addMedia.id;
 		} catch (e) {
 			//
 			console.log(e);
 		}
-	};
+	}
 
 	private saveChanges = async () => {
 		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
@@ -315,29 +324,37 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		try {
 			const avatar = (await this.handleImageChange()) || '';
 			const bio = saveData.aboutText || '';
-			console.log(`image: ${avatar}`);
 
-			const mVar = {
-				variables: {
-					name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
-					email: saveData.email,
-					bio,
-					avatar,
-				},
-			};
-			console.log(mVar);
-
+			let mVar: any = null;
+			if (this.state.selectedImage) {
+				mVar = {
+					variables: {
+						name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
+						email: saveData.email,
+						bio,
+						avatar,
+					},
+				};
+			} else {
+				mVar = {
+					variables: {
+						name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
+						email: saveData.email,
+						bio,
+					},
+				};
+			}
 			await updateUserData(mVar);
 			await data.refetch();
 
-			this.setState({hasChanges: false});
+			this.setState({hasChanges: false, selectedImage: false});
 		} catch (e) {
 			//
 			console.log(e);
 		}
 
 		hideLoader();
-	};
+	}
 }
 
 const MapDispatchToProp = (dispatch: any) => ({
