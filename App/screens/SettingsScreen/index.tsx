@@ -1,34 +1,30 @@
-import {AvatarName, AvatarPicker} from 'components/Avatar';
-import {SettingCheckbox, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
-import {SXButton} from 'components/Interaction';
 import React, {Component} from 'react';
 import {
 	AsyncStorage,
 	ImageRequireSource,
 	ImageURISource,
+	InteractionManager,
 	Text,
 	TouchableOpacity,
 	View,
 	ViewAsyncStroage,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
-import {connect, Dispatch} from 'react-redux';
-import {Colors, Images, Sizes} from 'theme';
-import style from './style';
+import {NavigationScreenProp} from 'react-navigation';
+import {connect} from 'react-redux';
 
-import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
-import {IUserDataResponse} from 'types/gql';
+import SettingsScreenComponent from './screen';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
+import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
+import {IUserDataResponse} from 'types/gql';
 
 import {IBlobData} from 'ipfslib';
 import {Signout} from 'utilities/amplify';
 import {addBlob} from 'utilities/ipfs';
 
+import {ScreenHeaderButton} from 'components';
 import {ipfsConfig as base} from 'configuration/ipfs';
-const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+import {Images} from 'theme';
 
 export interface SettingsData {
 	updatedAvatarImageBase64: string | null;
@@ -40,14 +36,6 @@ export interface SettingsData {
 }
 
 interface ISettingsScreenProps {
-	avatarImage: any;
-	aboutText: string;
-	firstName: string;
-	lastName: string;
-	username: string;
-	email: string;
-	miningEnabled: boolean;
-	saveChanges: (data: SettingsData) => void;
 	data: IUserDataResponse;
 	// todo
 	updateUserData: any;
@@ -58,164 +46,77 @@ interface ISettingsScreenProps {
 }
 
 interface IISettingsScreenState {
-	hasChanges: boolean;
 	avatarImage: any;
 	aboutText?: string;
 	firstName: string;
 	lastName: string;
 	email: string;
-	selectedImage: boolean;
 }
 
 class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenState> {
-	public static defaultProps: Partial<ISettingsScreenProps> = {
-		avatarImage: Images.user_avatar_placeholder,
+	public static getDerivedStateFromProps(
+		nextProps: Readonly<ISettingsScreenProps>,
+		prevState: Readonly<IISettingsScreenState>,
+	) {
+		const {data} = nextProps;
+		if (!data.loading) {
+			const avatarImage = data.user.avatar
+				? {uri: `${base.ipfs_URL}${data.user.avatar.hash}`}
+				: Images.user_avatar_placeholder;
+			console.log(`AvatarImage: ${avatarImage.uri}`);
+			// if (prevState.avatarImage) {
+			// 	console.log(`Previous avatar: ${prevState.avatarImage.uri}`);
+			// }
+			return {
+				avatarImage,
+				aboutText: data.user.bio,
+				firstName: data.user.name.split(' ')[0] || '',
+				lastName: data.user.name.split(' ')[1] || '',
+				email: data.user.email || '',
+			};
+		}
+		return null;
+	}
+
+	private static navigationOptions = (props: ISettingsScreenProps) => ({
+		title: 'SETTINGS',
+		headerRight: <ScreenHeaderButton iconName={'md-log-out'} onPress={() => SettingsScreen.runLogoutHandler(props)} />,
+	})
+
+	private static runLogoutHandler = (props: ISettingsScreenProps) => {
+		props.navigation.state.params.logoutHandler();
+	}
+
+	public state = {
+		avatarImage: null,
 		aboutText: '',
 		firstName: '',
 		lastName: '',
-		username: '',
 		email: '',
-		miningEnabled: false,
-		saveChanges: () => alert('saveChanges prop missing!'),
 	};
 
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'SETTINGS',
-		headerRight: <View />,
-	};
+	private screenRef: any;
 
-	public state = {
-		hasChanges: false,
-		avatarImage: this.props.avatarImage,
-		aboutText: this.props.aboutText,
-		firstName: this.props.firstName,
-		lastName: this.props.lastName,
-		email: this.props.email,
-		selectedImage: false,
-	};
-
-	private updatedAvatarImageBase64: string | null = null;
-	private miningEnabled: boolean = this.props.miningEnabled;
-
-	public componentWillReceiveProps(nextProp: ISettingsScreenProps) {
-		const {data} = nextProp;
-		if (data.loading) {
-			return;
-		}
-
-		const avatarImage = data.user.avatar ? `${base.ipfs_URL}${data.user.avatar.hash}` : imagePlaceHolder;
-		console.log(`AvatarImage: ${avatarImage}`);
-
-		this.setState({
-			avatarImage: {url: avatarImage},
-			aboutText: data.user.bio,
-			firstName: data.user.name.split(' ')[0] || '',
-			lastName: data.user.name.split(' ')[1] || '',
-			email: data.user.email || '',
+	public componentDidMount() {
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({logoutHandler: this.performSignOut});
 		});
 	}
 
 	public render() {
 		const {data} = this.props;
-		if (data.loading) {
-			// TODO: Add loader here...
-			return (
-				<View>
-					<Text>Loading...</Text>
-				</View>
-			);
-		}
-
-		// @ionut: todo -> make better (signout button / avatar image / add location-age fields)
 		return (
-			<View style={{flex: 1}}>
-				<KeyboardAwareScrollView
-					style={style.keyboardView}
-					contentContainerStyle={style.container}
-					alwaysBounceVertical={false}
-					enableOnAndroid={true}
-					keyboardShouldPersistTaps={'handled'}
-				>
-					<View style={style.pickerContainer}>
-						<AvatarPicker
-							avatarImage={this.state.avatarImage}
-							afterImagePick={this.updateAvatarImage}
-							avatarSize={Sizes.smartHorizontalScale(103)}
-						/>
-					</View>
-					<AvatarName
-						fullName={this.getFullName()}
-						username={this.props.username}
-						fullNameColor={Colors.postFullName}
-						userNameColor={Colors.postHour}
-					/>
-					<View style={style.aboutContainer}>
-						<SXTextInput
-							value={this.state.aboutText}
-							placeholder={'About you text'}
-							borderColor={Colors.dustWhite}
-							multiline={true}
-							onChangeText={(value: string) => this.handleInputChangeText(value, 'aboutText')}
-						/>
-					</View>
-					<Text style={style.personalDetails}>{'PERSONAL DETAILS'}</Text>
-					<View style={[style.textInputContainer, style.textInputContainerFirst]}>
-						<SXTextInput
-							value={this.state.firstName}
-							iconColor={Colors.iron}
-							placeholder={'First name'}
-							placeholderColor={Colors.postText}
-							borderColor={Colors.transparent}
-							onChangeText={(value: string) => this.handleInputChangeText(value, 'firstName')}
-							blurOnSubmit={true}
-							returnKeyType={TRKeyboardKeys.done}
-						/>
-					</View>
-					<View style={[style.textInputContainer]}>
-						<SXTextInput
-							value={this.state.lastName}
-							iconColor={Colors.iron}
-							placeholder={'Last name'}
-							placeholderColor={Colors.postText}
-							borderColor={Colors.transparent}
-							onChangeText={(value: string) => this.handleInputChangeText(value, 'lastName')}
-							blurOnSubmit={true}
-							returnKeyType={TRKeyboardKeys.done}
-						/>
-					</View>
-					<View style={[style.textInputContainer]}>
-						<SXTextInput
-							value={this.state.email}
-							iconColor={Colors.iron}
-							placeholder={'Email'}
-							placeholderColor={Colors.postText}
-							borderColor={Colors.transparent}
-							onChangeText={(value: string) => this.handleInputChangeText(value, 'email')}
-							keyboardType={TKeyboardKeys.emailAddress}
-							blurOnSubmit={true}
-							returnKeyType={TRKeyboardKeys.done}
-						/>
-					</View>
-					<View>
-						<SXButton
-							label={'Sign Out'}
-							autoWidth={true}
-							borderColor={Colors.transparent}
-							onPress={this.performSignOut}
-							style={{marginTop: '20%'}}
-						/>
-					</View>
-					{/*<View style={style.miningContainer}>*/}
-					{/*<SettingCheckbox*/}
-					{/*title={'Mining (Beta)'}*/}
-					{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
-					{/*initialValue={this.props.miningEnabled}*/}
-					{/*valueUpdated={this.toggleMiningSetting}*/}
-					{/*/>*/}
-					{/*</View>*/}
-				</KeyboardAwareScrollView>
-				{this.renderSaveButton()}
-			</View>
+			<SettingsScreenComponent
+				avatarImage={this.state.avatarImage}
+				aboutText={this.state.aboutText}
+				firstName={this.state.firstName}
+				lastName={this.state.lastName}
+				email={this.state.email}
+				miningEnabled={false} // later update hc value
+				saveChanges={this.saveChanges}
+				isLoading={data.loading}
+				ref={(ref) => (this.screenRef = ref)}
+			/>
 		);
 	}
 
@@ -230,63 +131,16 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		}
 	}
 
-	private getFullName = () => {
-		return this.state.firstName + ' ' + this.state.lastName;
-	}
-
-	private renderSaveButton = () => {
-		if (this.state.hasChanges) {
-			return (
-				<View style={style.bottomContainer}>
-					<TouchableOpacity style={style.saveButton} onPress={this.saveChanges}>
-						<Text style={style.saveButtonText}>{'Save'}</Text>
-						<Icon name={'check'} size={Sizes.smartHorizontalScale(30)} color={Colors.green} />
-					</TouchableOpacity>
-				</View>
-			);
-		}
-		return null;
-	}
-
-	private updateAvatarImage = (base64Photo: string) => {
-		const base64 = base64Photo.substring(base64Photo.indexOf(',') + 1, base64Photo.length);
-		this.setState({
-			avatarImage: {uri: base64},
-			hasChanges: true,
-			selectedImage: true,
-		});
-		this.updatedAvatarImageBase64 = base64;
-	}
-
-	private handleInputChangeText = (value: string, fieldName: string) => {
-		const newState: any = {};
-		newState[fieldName] = value;
-		newState.hasChanges = true;
-		this.setState(newState);
-	}
-
-	private toggleMiningSetting = (value: boolean) => {
-		this.miningEnabled = value;
-		if (value !== this.props.miningEnabled) {
-			this.setState({
-				hasChanges: true,
-			});
-		}
-	}
-
-	private handleImageChange = async () => {
+	private handleImageChange = async (updatedAvatarImageBase64: string | null) => {
 		const {addMedia} = this.props;
 		try {
-			if (!this.updatedAvatarImageBase64) {
+			if (!updatedAvatarImageBase64) {
 				return null;
 			}
 
-			if (!this.state.selectedImage) {
-				return null;
-			}
 			// NOTE: Uppload image to IPFS
 			let ipfsRes = await addBlob([
-				{filename: 'ProfileImage.jpeg', data: this.updatedAvatarImageBase64, name: 'ProfileImage'},
+				{filename: 'ProfileImage.jpeg', data: updatedAvatarImageBase64, name: 'ProfileImage'},
 			]);
 			ipfsRes = JSON.parse(ipfsRes.data);
 			// NOTE: Add Media file on AppSync
@@ -306,25 +160,16 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		}
 	}
 
-	private saveChanges = async () => {
+	private saveChanges = async (saveData: SettingsData) => {
 		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
-		const saveData: SettingsData = {
-			updatedAvatarImageBase64: this.updatedAvatarImageBase64,
-			aboutText: this.state.aboutText,
-			firstName: this.state.firstName,
-			lastName: this.state.lastName,
-			email: this.state.email,
-			miningEnabled: this.miningEnabled,
-		};
-		// this.props.saveChanges(saveData);
 
 		editingDataLoader();
 		try {
-			const avatar = (await this.handleImageChange()) || '';
+			const avatar = (await this.handleImageChange(saveData.updatedAvatarImageBase64)) || '';
 			const bio = saveData.aboutText || '';
 
 			let mVar: any = null;
-			if (this.state.selectedImage) {
+			if (avatar) {
 				mVar = {
 					variables: {
 						name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
@@ -345,7 +190,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			await updateUserData(mVar);
 			await data.refetch();
 
-			this.setState({hasChanges: false, selectedImage: false});
+			this.screenRef.getOriginalRef().resetChanges();
 		} catch (e) {
 			//
 			console.log(e);

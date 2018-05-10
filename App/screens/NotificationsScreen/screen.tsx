@@ -1,12 +1,14 @@
-import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
-import {FriendRequest, GroupRequest, NotificationGI} from 'components/Displayers';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
+
+import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
+import {FriendRequest, GroupRequest, NotificationGI} from 'components/Displayers';
+import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Icons} from 'theme/Icons';
 import {NOTIFICATION_TYPES} from 'types';
 import style from './style';
 
-interface INotificationsScreenComponentProps {
+interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	activityCards: any[];
 	refreshing: boolean;
 	refreshData: () => void;
@@ -19,9 +21,9 @@ interface INotificationsScreenComponentProps {
 	onCheckNotification: (requestId: string) => void;
 }
 
-export default class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
+class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
 	public render() {
-		return <View style={style.container}>{this.conditionalRender()}</View>;
+		return this.props.renderWithLoader(<View style={style.container}>{this.conditionalRender()}</View>);
 	}
 
 	private conditionalRender = () => {
@@ -87,8 +89,7 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 					/>
 				);
 
-			case NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE:
-				// @ionut -> todo: make better
+			case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
 				return (
 					<NotificationGI
 						{...activityCardData}
@@ -117,3 +118,5 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 		);
 	}
 }
+
+export default withInlineLoader(NotificationsScreenComponent as any);

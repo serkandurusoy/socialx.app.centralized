@@ -53,6 +53,14 @@ export const ACTIVITY_CARDS = [
 		requestId: '981326537',
 	},
 	{
+		type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
+		avatarURL: 'https://placeimg.com/160/160/people',
+		fullName: 'Teresa Lamb',
+		username: 'terlamb',
+		requestId: '981326537',
+		text: 'Friend request accepted.',
+	},
+	{
 		type: NOTIFICATION_TYPES.SUPER_LIKED,
 		avatarURL: 'https://placeimg.com/152/152/tech',
 		fullName: 'Cory Maxwell',
@@ -132,9 +140,9 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 							};
 							break;
 
-						case NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE:
+						case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
 							res = {
-								type: NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE,
+								type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
 								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
 								fullName: current.owner.name,
 								username: current.owner.username,
@@ -158,17 +166,9 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	public render() {
 		const {notifications} = this.props;
 
-		// @ionut: render inline loader here
-		if (notifications.loading) {
-			return (
-				<View>
-					<Text>Loading..</Text>
-				</View>
-			);
-		}
-
 		return (
 			<NotificationsScreenComponent
+				isLoading={notifications.loading}
 				activityCards={this.state.activityCards}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshNotifications}

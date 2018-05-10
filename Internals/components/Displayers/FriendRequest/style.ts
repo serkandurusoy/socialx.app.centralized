@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
+const ICON_SIZE = Sizes.smartHorizontalScale(32);
+
 const style: any = {
 	container: {
 		width: '100%',
@@ -43,6 +45,30 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(23),
 		paddingTop: Sizes.smartVerticalScale(3),
+	},
+	iconTouch: {
+		width: ICON_SIZE,
+		height: ICON_SIZE,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: ICON_SIZE / 2,
+		borderWidth: Sizes.smartHorizontalScale(1),
+		marginLeft: Sizes.smartHorizontalScale(15),
+	},
+	acceptTouch: {
+		borderColor: Colors.pink,
+	},
+	declineTouch: {
+		borderColor: Colors.postHour,
+	},
+	iconButton: {
+		fontSize: Sizes.smartHorizontalScale(28),
+	},
+	acceptColor: {
+		color: Colors.pink,
+	},
+	declineColor: {
+		color: Colors.postHour,
 	},
 };
 

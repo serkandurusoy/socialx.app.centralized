@@ -1,9 +1,8 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import {Colors} from 'theme';
-import {AvatarImage} from '../../Avatar';
-import {ButtonSizes, SXButton} from '../../Interaction';
+import {AvatarImage} from 'components';
 import style from './style';
 
 export interface INotificationGIProps {
@@ -32,13 +31,9 @@ export const NotificationGI: React.SFC<INotificationGIProps> = (props) => {
 					<Text style={style.friendRequest}>{props.text}</Text>
 				</View>
 			</View>
-			<SXButton
-				label={'X'}
-				size={ButtonSizes.Small}
-				autoWidth={true}
-				borderColor={Colors.transparent}
-				onPress={props.onCheckNotification}
-			/>
+			<TouchableOpacity onPress={props.onCheckNotification}>
+				<Icon name={'md-close'} style={style.iconButton} />
+			</TouchableOpacity>
 		</View>
 	);
 };
