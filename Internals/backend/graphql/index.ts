@@ -4,4 +4,4 @@ export * from './Users';
 export * from './Post';
 export * from './Comments';
 export * from './Notifications';
-export * from './Friends';
+export * from './friends';
