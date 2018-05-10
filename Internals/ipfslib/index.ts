@@ -46,6 +46,8 @@ export default class Ipfslib {
 			path,
 			method: 'POST',
 			type: 'multipart',
+			field: 'file',
+			notification: {enabled: false},
 			headers: {
 				'Content-Type': 'multipart/form-data',
 			},
