@@ -1,32 +1,40 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
+const SOCX_ICON_SIZE = Sizes.smartHorizontalScale(60);
+
 const style: any = {
 	container: {
 		flex: 1,
 		margin: 0,
+	},
+	blurView: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
 		bottom: 0,
-		position: 'relative',
+		right: 0,
+	},
+	keyboardView: {
+		flex: 1,
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	boxContainer: {
 		justifyContent: 'space-around',
 		width: Sizes.smartHorizontalScale(350),
-		position: 'absolute',
 		marginHorizontal: Sizes.smartHorizontalScale(12),
 		marginVertical: Sizes.smartHorizontalScale(10),
 		backgroundColor: Colors.white,
-		bottom: Sizes.smartVerticalScale(-90),
 		borderRadius: Sizes.smartVerticalScale(8),
 	},
 	closeModalButtonContainer: {
 		position: 'absolute',
 		right: 0,
+		zIndex: 1,
 		paddingVertical: Sizes.smartHorizontalScale(10),
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
-	},
-	closeModalButton: {
-		width: Sizes.smartHorizontalScale(15),
-		height: Sizes.smartHorizontalScale(15),
 	},
 	topContainer: {
 		alignItems: 'center',
@@ -41,20 +49,13 @@ const style: any = {
 		paddingVertical: Sizes.smartVerticalScale(10),
 	},
 	socialXIcon: {
-		height: Sizes.smartVerticalScale(60),
-		width: Sizes.smartHorizontalScale(60),
-	},
-	blurView: {
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		bottom: 0,
-		right: 0,
+		height: SOCX_ICON_SIZE,
+		width: SOCX_ICON_SIZE,
 	},
 	containerSelected: {
 		backgroundColor: Colors.catskillWhite,
 	},
-	isSendSelected: {
+	isSent: {
 		width: Sizes.smartHorizontalScale(23),
 		height: Sizes.smartHorizontalScale(23),
 		alignSelf: 'center',

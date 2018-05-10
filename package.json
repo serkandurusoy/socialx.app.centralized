@@ -71,6 +71,7 @@
     "react-native": "0.55.3",
     "react-native-android-keyboard-adjust": "^1.1.1",
     "react-native-animatable": "^1.2.4",
+    "react-native-background-upload": "^4.4.0",
     "react-native-blur": "^3.2.2",
     "react-native-calendars": "^1.18.2",
     "react-native-config": "^0.11.5",

@@ -1,9 +1,19 @@
-import {UserAvatar} from 'components/Avatar';
-import {GridPhotos, IWallPostCardProp, ProfileStatistics, WallPostCard} from 'components/Displayers';
-import React, {Component} from 'react';
-import {Dimensions, ScrollView, Text, View} from 'react-native';
+import React, {Component, ReactText} from 'react';
+import {Dimensions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {DataProvider} from 'recyclerlistview';
+
+import {
+	IWallPostCardProp,
+	MediaObjectViewer,
+	NewGridPhotos,
+	ProfileStatistics,
+	UserAvatar,
+	WallPostCard,
+} from 'components';
 import {Metrics} from 'theme';
-import style from './style';
+import {IMediaViewerObject, ISimpleMediaObject} from 'types';
+import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
+import style, {USER_MEDIA_THUMB_SIZE} from './style';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const GRID_PHOTOS_SCROLL_THRESHOLD = 150;
@@ -19,24 +29,25 @@ interface IUserProfileScreenProps {
 	username?: string;
 	aboutMeText: string;
 	recentPosts: IWallPostCardProp[];
-	loadMorePhotosHandler: () => void;
+	loadMorePhotosHandler: () => ISimpleMediaObject[];
 	totalNumberOfPhotos: number;
 	gridPageSize: number;
 }
 
-interface IUserProfileScreenComponent {
+interface IUserProfileScreenComponentState {
 	isFollowed: boolean;
 	scrollView: any;
 	isScrolled: boolean;
+	gridMediaProvider: DataProvider;
 }
 
 export default class UserProfileScreenComponent extends Component<
 	IUserProfileScreenProps,
-	IUserProfileScreenComponent
+	IUserProfileScreenComponentState
 > {
 	public static getDerivedStateFromProps(
 		nextProps: Readonly<IUserProfileScreenProps>,
-		prevState: Readonly<IUserProfileScreenComponent>,
+		prevState: Readonly<IUserProfileScreenComponentState>,
 	) {
 		if (nextProps.isFollowed !== prevState.isFollowed) {
 			setTimeout(() => {
@@ -50,11 +61,19 @@ export default class UserProfileScreenComponent extends Component<
 		return null;
 	}
 
-	public state = {
-		scrollView: null,
-		isScrolled: false,
-		isFollowed: this.props.isFollowed,
-	};
+	private dataProvider = new DataProvider((row1: IMediaViewerObject, row2: IMediaViewerObject) => {
+		return row1.index !== row2.index;
+	});
+
+	constructor(props: IUserProfileScreenProps, context: any) {
+		super(props, context);
+		this.state = {
+			scrollView: null,
+			isScrolled: false,
+			isFollowed: this.props.isFollowed,
+			gridMediaProvider: this.dataProvider.cloneWithRows(this.props.loadMorePhotosHandler()),
+		};
+	}
 
 	public render() {
 		return (
@@ -107,12 +126,26 @@ export default class UserProfileScreenComponent extends Component<
 		}
 		return (
 			<View style={gridPhotosStyles}>
-				<GridPhotos
+				<NewGridPhotos
+					thumbWidth={USER_MEDIA_THUMB_SIZE}
+					thumbHeight={USER_MEDIA_THUMB_SIZE}
+					showsVerticalScrollIndicator={false}
+					renderGridItem={this.renderGridItemHandler}
+					onLoadMore={this.initLoadMorePhotosHandler}
+					dataProvider={this.state.gridMediaProvider}
 					onScroll={this.scrollUpdated}
-					loadMorePhotos={this.props.loadMorePhotosHandler}
-					itemPressed={this.onPhotoPressHandler}
 				/>
 			</View>
+		);
+	}
+
+	private renderGridItemHandler = (type: ReactText, mediaData: IMediaViewerObject) => {
+		const mediaURL = getURLForMediaViewerObject(mediaData);
+		const mediaTypeProps = getTypePropsForMediaViewerObject(mediaData);
+		return (
+			<TouchableOpacity onPress={() => this.onPhotoPressHandler(mediaData.index)}>
+				<MediaObjectViewer {...mediaTypeProps} uri={mediaURL} style={style.userMediaThumb} thumbOnly={true} />
+			</TouchableOpacity>
 		);
 	}
 
@@ -156,7 +189,17 @@ export default class UserProfileScreenComponent extends Component<
 		}
 	}
 
-	private onPhotoPressHandler = () => {
-		alert('TBD:onPhotoPressHandler');
+	private initLoadMorePhotosHandler = () => {
+		const {gridMediaProvider} = this.state;
+		const loadedMedia = gridMediaProvider.getAllData();
+		const newMedia = this.props.loadMorePhotosHandler();
+		const allMedia = loadedMedia.concat(newMedia);
+		this.setState({
+			gridMediaProvider: this.state.gridMediaProvider.cloneWithRows(allMedia),
+		});
+	}
+
+	private onPhotoPressHandler = (index: number) => {
+		alert('TBD:onPhotoPressHandler ' + index);
 	}
 }

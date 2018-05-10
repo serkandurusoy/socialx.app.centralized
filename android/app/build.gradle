@@ -96,8 +96,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         applicationId "socialx.network"
@@ -160,6 +160,7 @@ dependencies {
     compile project(':react-native-svg')
     compile project(':react-native-text-gradient')
     compile project(':react-native-orientation')
+    compile project(':react-native-background-upload')
     compile project(':react-native-blur')
     compile project(':react-native-video')
     compile project(':react-native-image-crop-picker')

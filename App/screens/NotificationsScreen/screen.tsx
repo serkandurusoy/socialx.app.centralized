@@ -1,12 +1,14 @@
-import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
-import {FriendRequest, GroupRequest} from 'components/Displayers';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
+
+import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
+import {FriendRequest, GroupRequest, NotificationGI} from 'components/Displayers';
+import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Icons} from 'theme/Icons';
-import {NOTIFICATION_TYPES} from './index';
+import {NOTIFICATION_TYPES} from 'types';
 import style from './style';
 
-interface INotificationsScreenComponentProps {
+interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	activityCards: any[];
 	refreshing: boolean;
 	refreshData: () => void;
@@ -14,12 +16,14 @@ interface INotificationsScreenComponentProps {
 	onPostThumbPressed: (postId: string) => void;
 	onSuperLikedPhotoPressed: (postId: string) => void;
 	onFriendRequestApproved: (requestId: string) => void;
+	onFriendRequestDeclined: (requestId: string) => void;
 	onGroupRequestConfirmed: (requestId: string) => void;
+	onCheckNotification: (requestId: string) => void;
 }
 
-export default class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
+class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
 	public render() {
-		return <View style={style.container}>{this.conditionalRender()}</View>;
+		return this.props.renderWithLoader(<View style={style.container}>{this.conditionalRender()}</View>);
 	}
 
 	private conditionalRender = () => {
@@ -72,24 +76,37 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 
 	private renderActivityCard = (data: any) => {
 		const activityCardData = data.item;
-		if (activityCardData.type === NOTIFICATION_TYPES.RECENT_COMMENT) {
-			return <ActivityRecentCommentCard {...activityCardData} onThumbPress={this.props.onPostThumbPressed} />;
-		} else if (activityCardData.type === NOTIFICATION_TYPES.FRIEND_REQUEST) {
-			return (
-				<FriendRequest
-					{...activityCardData}
-					onRequestConfirmed={() => this.props.onFriendRequestApproved(activityCardData.requestId)}
-				/>
-			);
-		} else if (activityCardData.type === NOTIFICATION_TYPES.SUPER_LIKED) {
-			return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;
-		} else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
-			return (
-				<GroupRequest
-					{...activityCardData}
-					onGroupConfirmed={() => this.props.onGroupRequestConfirmed(activityCardData.requestId)}
-				/>
-			);
+		switch (activityCardData.type) {
+			case NOTIFICATION_TYPES.RECENT_COMMENT:
+				return <ActivityRecentCommentCard {...activityCardData} onThumbPress={this.props.onPostThumbPressed} />;
+
+			case NOTIFICATION_TYPES.FRIEND_REQUEST:
+				return (
+					<FriendRequest
+						{...activityCardData}
+						onRequestConfirmed={() => this.props.onFriendRequestApproved(activityCardData.requestId)}
+						onRequestDeclined={() => this.props.onFriendRequestDeclined(activityCardData.requestId)}
+					/>
+				);
+
+			case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
+				return (
+					<NotificationGI
+						{...activityCardData}
+						onCheckNotification={() => this.props.onCheckNotification(activityCardData.requestId)}
+					/>
+				);
+
+			case NOTIFICATION_TYPES.SUPER_LIKED:
+				return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;
+
+			case NOTIFICATION_TYPES.GROUP_REQUEST:
+				return (
+					<GroupRequest
+						{...activityCardData}
+						onGroupConfirmed={() => this.props.onGroupRequestConfirmed(activityCardData.requestId)}
+					/>
+				);
 		}
 	}
 
@@ -101,3 +118,5 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 		);
 	}
 }
+
+export default withInlineLoader(NotificationsScreenComponent as any);

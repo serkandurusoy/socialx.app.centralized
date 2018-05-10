@@ -1,19 +1,20 @@
+import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
+import {NavigationScreenProp} from 'react-navigation';
 
 import {AvatarImage} from 'components/Avatar';
 import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {SXTextInput} from 'components/Inputs';
 import {ButtonSizes, SXButton} from 'components/Interaction';
 import {ModalCloseButton} from 'components/Modals';
-import {ActionSheet} from 'native-base';
-import RNFS from 'react-native-fs';
-import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
-import ImageResizer from 'react-native-image-resizer';
-import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Icons, Sizes} from 'theme';
 import {MediaTypes} from 'types';
 import style from './style';
+
+import {addFileBN, addFilesBN} from 'utilities/ipfs';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
 const TAKE_A_PHOTO = 'Take a photo/video';
@@ -24,10 +25,16 @@ const DEFAULT_MARGIN_BOTTOM = Sizes.smartVerticalScale(20);
 
 export interface MediaObject {
 	path: string;
-	size: number;
-	name: string;
-	content: any;
-	contentOptimized: any;
+	content: {
+		Hash: string;
+		Name: string;
+		Size: string;
+	};
+	contentOptimized?: {
+		Hash: string;
+		Name: string;
+		Size: string;
+	};
 }
 
 export interface NewWallPostData {
@@ -43,6 +50,8 @@ interface INewWallPostScreenState {
 	marginBottom: number;
 	mediaObjects: MediaObject[];
 	postText: string;
+	isUploading: boolean;
+	uploadProgress: number;
 }
 
 export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWallPostScreenState> {
@@ -56,6 +65,8 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		marginBottom: DEFAULT_MARGIN_BOTTOM,
 		mediaObjects: [] as MediaObject[],
 		postText: '',
+		isUploading: false,
+		uploadProgress: 0,
 	};
 
 	private keyboardDidShowListener: any;
@@ -86,7 +97,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 						multiline={true}
 					/>
 				</View>
-				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler}>
+				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler} disabled={this.state.isUploading}>
 					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
 					<Text style={style.addMediaText}>{'Attach Photo/Video'}</Text>
 				</TouchableOpacity>
@@ -98,7 +109,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					size={ButtonSizes.Small}
 					width={Sizes.smartHorizontalScale(100)}
 					onPress={this.sendPostHandler}
-					disabled={this.state.postText.length < 0 && this.state.mediaObjects.length < 0}
+					disabled={(this.state.postText.length < 0 && this.state.mediaObjects.length < 0) || this.state.isUploading}
 				/>
 			</View>
 		);
@@ -149,10 +160,74 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 
 	private addNewMediaObject = async (mediaObject: PickerImage) => {
 		const {mediaObjects} = this.state;
+
+		// if mediaObject is an image, upload 2 media files
+		// 1) original
+		// 2) optimized
+		// and append the id parameter:
+		// id: 0 => original
+		// id: 1 => optimized
+		// otherwise upload a single file -> video
+		const onProgress = (progress: any, id?: any) => {
+			console.log('progress:', progress, id);
+			this.setState({
+				uploadProgress: Math.round(progress),
+			});
+		};
+
+		const onStart = () => {
+			console.log('started uploading');
+			this.setState({
+				isUploading: true,
+			});
+		};
+
+		const onError = (err: any, id?: any) => {
+			// handle errors here?
+			console.log('upload err:', err, id);
+			this.setState({
+				isUploading: false,
+			});
+		};
+
+		const onPicturesCompleted = (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
+			const localMediaObject: MediaObject = {
+				path: (mediaObject as PickerImage).path,
+				content: null,
+				contentOptimized: null,
+			};
+
+			for (let i = 0; i < data.length; i++) {
+				const current = data[i];
+				if (current.index === 0) {
+					localMediaObject.content = JSON.parse(current.data.responseBody);
+				} else {
+					localMediaObject.contentOptimized = JSON.parse(current.data.responseBody);
+				}
+			}
+			this.setState({
+				mediaObjects: mediaObjects.concat([localMediaObject]),
+				isUploading: false,
+			});
+		};
+
+		const onVideoCompleted = (data: {responseCode: number; responseBody: any}) => {
+			const localMediaObject: MediaObject = {
+				path: (mediaObject as PickerImage).path,
+				content: JSON.parse(data.responseBody),
+				contentOptimized: null,
+			};
+
+			this.setState({
+				mediaObjects: mediaObjects.concat([localMediaObject]),
+				isUploading: false,
+			});
+		};
+
 		try {
-			// FIXME @Jake: this is taking lot of time on android, should be optimized?
-			console.log('addNewMediaObject START');
-			let imageOptimizedContent = null;
+			const mediaPath = mediaObject.path.replace('file://', '');
+			let imageOptimizedPath = null;
+
 			if (mediaObject.mime.startsWith(MediaTypes.Image)) {
 				const optimized = await ImageResizer.createResizedImage(
 					mediaObject.path,
@@ -161,23 +236,14 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					'JPEG',
 					50,
 				);
-				imageOptimizedContent = await RNFS.readFile(optimized.path, 'base64');
+				imageOptimizedPath = optimized.path;
+
+				console.log([mediaPath, imageOptimizedPath]);
+				await addFilesBN([mediaPath, imageOptimizedPath], onStart, onProgress, onError, onPicturesCompleted);
+			} else {
+				// video
+				await addFileBN(mediaPath, onStart, onProgress, onError, onVideoCompleted);
 			}
-
-			const mediaContent = await RNFS.readFile(mediaObject.path, 'base64');
-
-			const localMediaObject: MediaObject = {
-				path: (mediaObject as PickerImage).path,
-				size: mediaObject.size,
-				name: mediaObject.path.split('/')[mediaObject.path.split('/').length - 1],
-				content: mediaContent,
-				contentOptimized: imageOptimizedContent,
-			};
-
-			this.setState({
-				mediaObjects: mediaObjects.concat([localMediaObject]),
-			});
-			console.log('addNewMediaObject END');
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -188,6 +254,14 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		this.state.mediaObjects.forEach((mediaObject: MediaObject, index) => {
 			ret.push(<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />);
 		});
+		if (this.state.isUploading) {
+			ret.push(
+				<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
+					<ActivityIndicator size={'large'} color={Colors.pink} />
+					<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
+				</View>,
+			);
+		}
 		return ret;
 	}
 

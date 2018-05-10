@@ -13,7 +13,7 @@ export interface IAvatarNameProps {
 
 export const AvatarName: React.SFC<IAvatarNameProps> = (props) => {
 	const renderUserName = () => {
-		if (props.username !== '') {
+		if (props.username && props.username !== '') {
 			return <Text style={[style.username, {color: props.userNameColor}]}>{'@' + props.username}</Text>;
 		}
 		return null;

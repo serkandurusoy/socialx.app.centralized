@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from 'theme';
+import {Colors, colorWithAlpha, Fonts, Sizes} from 'theme';
 
 const AVATAR_SIZE = Sizes.smartHorizontalScale(40);
 
@@ -61,6 +61,17 @@ const style: any = {
 		height: '100%',
 		maxHeight: 100,
 		marginLeft: Sizes.smartHorizontalScale(10),
+	},
+	mediaUploadingPlaceholder: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: colorWithAlpha(Colors.black, 0.6),
+	},
+	progressText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(16),
+		color: Colors.white,
+		paddingTop: Sizes.smartVerticalScale(10),
 	},
 };
 

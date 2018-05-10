@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme/';
 
+export const USER_MEDIA_THUMB_SIZE = Sizes.getThumbSize();
+
 const style: any = {
 	container: {
 		backgroundColor: Colors.white,
@@ -45,6 +47,10 @@ const style: any = {
 	},
 	gridPhotosContainer: {
 		width: '100%',
+	},
+	userMediaThumb: {
+		width: USER_MEDIA_THUMB_SIZE,
+		height: USER_MEDIA_THUMB_SIZE,
 	},
 };
 

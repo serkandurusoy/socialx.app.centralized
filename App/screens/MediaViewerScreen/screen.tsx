@@ -1,5 +1,4 @@
 import {MediaObjectViewer} from 'components';
-import {ipfsConfig as base} from 'configuration';
 import {DeviceOrientations, OS_TYPES} from 'consts';
 import React, {Component} from 'react';
 import {Dimensions, Image, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
@@ -7,11 +6,12 @@ import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Sizes} from 'theme';
-import {IMediaProps} from 'types';
+import {IMediaViewerObject} from 'types';
+import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
 import style from './style';
 
 interface IMediaViewerScreenComponentProps {
-	mediaObjects: IMediaProps[];
+	mediaObjects: IMediaViewerObject[];
 	startIndex: number;
 	orientation: string;
 }
@@ -34,7 +34,7 @@ export default class MediaViewerScreenComponent extends Component<
 		},
 	};
 
-	private carouselRef: CarouselStatic<IMediaProps> | null = null;
+	private carouselRef: CarouselStatic<IMediaViewerObject> | null = null;
 
 	constructor(props: IMediaViewerScreenComponentProps, context: any) {
 		super(props, context);
@@ -135,17 +135,17 @@ export default class MediaViewerScreenComponent extends Component<
 		this.setState({activeSlide: index});
 	}
 
-	private renderCarouselItem = (itemData: {item: IMediaProps; index: number}) => {
+	private renderCarouselItem = (itemData: {item: IMediaViewerObject; index: number}) => {
 		const carouselImageStyles = [style.carouselMediaObject, {width: this.state.viewport.width}];
-		let mediaURL = base.ipfs_URL;
-		const mediaItem = itemData.item;
-		mediaURL += mediaItem.optimizedHash ? mediaItem.optimizedHash : mediaItem.hash;
+		const dataItem = itemData.item;
+		const mediaURL = getURLForMediaViewerObject(dataItem);
+		const mediaTypeProps = getTypePropsForMediaViewerObject(dataItem);
 		return (
 			<MediaObjectViewer
+				{...mediaTypeProps}
 				paused={itemData.index !== this.state.activeSlide}
 				uri={mediaURL}
 				style={carouselImageStyles}
-				extension={mediaItem.type}
 				resizeMode={'contain'}
 				resizeToChangeAspectRatio={true}
 			/>
