@@ -1,16 +1,15 @@
+import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
+import {NavigationScreenProp} from 'react-navigation';
 
 import {AvatarImage} from 'components/Avatar';
 import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {SXTextInput} from 'components/Inputs';
 import {ButtonSizes, SXButton} from 'components/Interaction';
 import {ModalCloseButton} from 'components/Modals';
-import {ActionSheet} from 'native-base';
-import RNFS from 'react-native-fs';
-import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
-import ImageResizer from 'react-native-image-resizer';
-import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Icons, Sizes} from 'theme';
 import {MediaTypes} from 'types';
 import style from './style';
@@ -51,6 +50,8 @@ interface INewWallPostScreenState {
 	marginBottom: number;
 	mediaObjects: MediaObject[];
 	postText: string;
+	isUploading: boolean;
+	uploadProgress: number;
 }
 
 export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWallPostScreenState> {
@@ -64,6 +65,8 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		marginBottom: DEFAULT_MARGIN_BOTTOM,
 		mediaObjects: [] as MediaObject[],
 		postText: '',
+		isUploading: false,
+		uploadProgress: 0,
 	};
 
 	private keyboardDidShowListener: any;
@@ -94,21 +97,19 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 						multiline={true}
 					/>
 				</View>
-				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler}>
+				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler} disabled={this.state.isUploading}>
 					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
 					<Text style={style.addMediaText}>{'Attach Photo/Video'}</Text>
 				</TouchableOpacity>
 				<ScrollView style={style.photosContainer} horizontal={true}>
 					{this.renderPostMediaObjects()}
 				</ScrollView>
-				{/* @ionut: TODO -> disable this button while the users file
-				upload is in progress or delay the functionality until progress is done */}
 				<SXButton
 					label={'SEND'}
 					size={ButtonSizes.Small}
 					width={Sizes.smartHorizontalScale(100)}
 					onPress={this.sendPostHandler}
-					disabled={this.state.postText.length < 0 && this.state.mediaObjects.length < 0}
+					disabled={(this.state.postText.length < 0 && this.state.mediaObjects.length < 0) || this.state.isUploading}
 				/>
 			</View>
 		);
@@ -168,17 +169,25 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		// id: 1 => optimized
 		// otherwise upload a single file -> video
 		const onProgress = (progress: any, id?: any) => {
-			// @ionut handle on upload progress
 			console.log('progress:', progress, id);
+			this.setState({
+				uploadProgress: Math.round(progress),
+			});
 		};
 
 		const onStart = () => {
 			console.log('started uploading');
+			this.setState({
+				isUploading: true,
+			});
 		};
 
 		const onError = (err: any, id?: any) => {
 			// handle errors here?
 			console.log('upload err:', err, id);
+			this.setState({
+				isUploading: false,
+			});
 		};
 
 		const onPicturesCompleted = (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
@@ -198,6 +207,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			}
 			this.setState({
 				mediaObjects: mediaObjects.concat([localMediaObject]),
+				isUploading: false,
 			});
 		};
 
@@ -210,6 +220,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 
 			this.setState({
 				mediaObjects: mediaObjects.concat([localMediaObject]),
+				isUploading: false,
 			});
 		};
 
@@ -243,6 +254,14 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		this.state.mediaObjects.forEach((mediaObject: MediaObject, index) => {
 			ret.push(<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />);
 		});
+		if (this.state.isUploading) {
+			ret.push(
+				<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
+					<ActivityIndicator size={'large'} color={Colors.pink} />
+					<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
+				</View>,
+			);
+		}
 		return ret;
 	}
 
