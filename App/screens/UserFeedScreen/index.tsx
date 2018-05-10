@@ -246,15 +246,14 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					},
 				});
 				mediaIds.push(gqlResp.data.addMedia.id);
-
-				// create the post with media
-				await createPost({
-					variables: {
-						text: data.text,
-						Media: mediaIds,
-					},
-				});
 			}
+			// create the post with media
+			await createPost({
+				variables: {
+					text: data.text,
+					Media: mediaIds,
+				},
+			});
 			// refresh the wall posts to append the new post
 			this.refreshWallPosts();
 		} catch (ex) {
