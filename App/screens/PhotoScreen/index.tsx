@@ -92,8 +92,6 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		const {addMedia, createPost, startMediaPost, startPostadd, stopLoading} = this.props;
 
 		if (this.photoScreen) {
-			// start adding media loading
-			startMediaPost();
 			try {
 				const wallPostDataInScreen = this.photoScreen.getOriginalRef().getWallPostData();
 				const localPhotoData: Partial<WallPostPhoto> = {
@@ -106,25 +104,27 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				delete wallPostData.includeTaggedFriends;
 
 				const {title, text, location, taggedFriends, image} = wallPostData;
-				const {content, size, mime, path, contentOptimizedpath} = image;
+				const {content, size, mime, pathx, contentOptimizedpath} = image;
 
 				const onStart = () => {
-					//
+					// start adding media loading
+					startMediaPost();
 				};
 
 				const onError = (err: any, id: any) => {
-					//
+					console.log(err, id);
 				};
 
 				const onProgress = (progress: any, id: any) => {
 					// @ionut: TODO -> image upload progress..
-					//
+					console.log('progress:', progress, id);
 				};
 
 				const onComplete = async (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
 					let mediaOb: any = null;
 					let opMediaOb: any = null;
 
+					console.log('Completed! ->', data);
 					for (let i = 0; i < data.length; i++) {
 						const current = data[i];
 						if (current.index === 0) {
@@ -152,16 +152,17 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 					} else {
 						await createPost({variables: {Media: mediaId}});
 					}
+					stopLoading();
 				};
+
+				await addFilesBN([pathx, contentOptimizedpath], onStart, onProgress, onError, onComplete);
 			} catch (ex) {
+				stopLoading();
 				ModalManager.safeRunAfterModalClosed(() => {
 					Alert.alert('Something went wrong, try again');
 				});
 				console.log(ex);
 			}
-
-			// stop loading
-			stopLoading();
 			this.props.navigation.goBack(null);
 		}
 	}

@@ -344,7 +344,8 @@ const MapDispatchToProps = (dispatch: any) => ({
 const reduxWrapper = connect(null, MapDispatchToProps)(UserFeedScreen);
 
 const userWrapper = userHoc(reduxWrapper);
-const addMediaWrapper = addMediaHoc(userWrapper);
+const createPostWrapper = createPostHoc(userWrapper);
+const addMediaWrapper = addMediaHoc(createPostWrapper);
 const likePostWrapper = likePostHoc(addMediaWrapper);
 const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
 const deletePostWrapper = deleteOwnPostHoc(removeLikePostWrapper);
