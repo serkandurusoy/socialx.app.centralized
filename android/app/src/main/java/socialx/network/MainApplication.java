@@ -3,6 +3,7 @@ package socialx.network;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.vydia.RNUploader.UploaderReactPackage;
 import com.peel.react.TcpSocketsModule;
 import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -50,6 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+                new UploaderReactPackage(),
                 new TcpSocketsModule(),
                 new ImageResizerPackage(),
                 new RNDeviceInfo(),

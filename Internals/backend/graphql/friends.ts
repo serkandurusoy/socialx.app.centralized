@@ -27,7 +27,6 @@ const declineFriendRequestMut = gql`
 
 export const addFriendHoc = (comp: any) => graphql(addFriendMut, {name: 'addFriend'})(comp);
 export const acceptFriendRequestHoc = (comp: any) =>
-  graphql(acceptFriendRequestMut, {name: 'acceptFriendRequest'})(comp);
+	graphql(acceptFriendRequestMut, {name: 'acceptFriendRequest'})(comp);
 export const declineFriendRequestHoc = (comp: any) =>
-  graphql(declineFriendRequestMut, {name: 'declineFriendRequest'})(comp);
-
+	graphql(declineFriendRequestMut, {name: 'declineFriendRequest'})(comp);

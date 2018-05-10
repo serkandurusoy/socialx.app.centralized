@@ -234,16 +234,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		startPostadd();
 
 		try {
-			const ipfsData = await addBlobFiles(data.mediaObjects);
 
-			for (let i = 0; i < ipfsData.length; i++) {
-				const currentIpfsData = ipfsData[i];
+			for (let i = 0; i < data.mediaObjects.length; i++) {
+				const currentData = data.mediaObjects[i];
 				const gqlResp = await addMedia({
 					variables: {
-						hash: currentIpfsData.hash,
-						type: currentIpfsData.type,
-						optimizedHash: currentIpfsData.optimizedHash,
-						size: parseInt(currentIpfsData.size, undefined),
+						hash: currentData.content.Hash,
+						type: currentData.content.Name.split('.')[1],
+						optimizedHash: currentData.contentOptimized ? currentData.contentOptimized.Hash : '',
+						size: parseInt(currentData.content.Size, undefined),
 					},
 				});
 				mediaIds.push(gqlResp.data.addMedia.id);
