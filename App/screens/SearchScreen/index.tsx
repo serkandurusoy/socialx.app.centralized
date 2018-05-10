@@ -1,6 +1,6 @@
 import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
 import React, {Component} from 'react';
-import {findNodeHandle, InteractionManager, Platform, View} from 'react-native';
+import {Alert, findNodeHandle, InteractionManager, Platform, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import SearchScreenComponent from './screen';
 
@@ -224,6 +224,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			await addFriend({variables: {
 				user: friendId,
 			}});
+			// @ionut: TODO -> make better
+			Alert.alert('Request', 'You\'r Friend request has been sent to the user!');
 		} catch (ex) {
 			// TODO: notify user that friend request didn't process
 			console.log(`ex: ${ex}`);
