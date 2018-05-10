@@ -19,6 +19,7 @@ export interface ISXButtonProps {
 	size?: ButtonSizes;
 	autoWidth?: boolean;
 	borderColor?: string;
+	style?: any;
 }
 
 export class SXButton extends Component<ISXButtonProps, any> {
@@ -32,7 +33,11 @@ export class SXButton extends Component<ISXButtonProps, any> {
 
 	public render() {
 		return (
-			<TouchableOpacity disabled={this.props.disabled} onPress={this.props.onPress} style={this.getContainerWidth()}>
+			<TouchableOpacity
+				disabled={this.props.disabled}
+				onPress={this.props.onPress}
+				style={this.getContainerWidth() && this.props.style}
+			>
 				<View style={this.getContainerStyles()}>
 					<Text style={[style.text, style['text' + this.props.size]]}>{this.props.label}</Text>
 				</View>
