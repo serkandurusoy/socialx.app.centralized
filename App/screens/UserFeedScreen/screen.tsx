@@ -19,6 +19,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
+	hideShareSection?: boolean;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -40,6 +41,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 	const renderWithLoading = () => {
 		return props.renderWithLoader(
 			<FlatList
+				windowSize={5}
 				refreshing={props.refreshing}
 				onRefresh={props.refreshData}
 				data={props.wallPosts}
@@ -60,19 +62,32 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		</View>
 	);
 
+	const renderShareSection = () => {
+		if (!props.hideShareSection) {
+			return (
+				<View style={style.shareMessageContainer}>
+					<AvatarImage image={props.avatarImage} style={style.avatarImage} />
+					<TouchableWithoutFeedback onPress={props.showNewWallPostPage}>
+						<View style={style.shareTextContainer}>
+							<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
+						</View>
+					</TouchableWithoutFeedback>
+				</View>
+			);
+		}
+		return null;
+	};
+
 	return (
 		<View style={style.container}>
-			<View style={style.shareMessageContainer}>
-				<AvatarImage image={props.avatarImage} style={style.avatarImage} />
-				<TouchableWithoutFeedback onPress={props.showNewWallPostPage}>
-					<View style={style.shareTextContainer}>
-						<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
-					</View>
-				</TouchableWithoutFeedback>
-			</View>
+			{renderShareSection()}
 			{!props.noPosts ? renderWithLoading() : renderNoPosts()}
 		</View>
 	);
+};
+
+UserFeedScreen.defaultProps = {
+	hideShareSection: false,
 };
 
 export default withInlineLoader(UserFeedScreen as any);
