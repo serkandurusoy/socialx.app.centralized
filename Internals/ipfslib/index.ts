@@ -1,4 +1,5 @@
 // deprecate
+import Upload from 'react-native-background-upload';
 import RNFetchBlob from 'react-native-fetch-blob';
 
 export interface IProviderParams {
@@ -31,6 +32,127 @@ export default class Ipfslib {
 
 	public addBlob = (data: any) => {
 		return RNFetchBlob.fetch('POST', this.apiUrl('/add'), {'Content-Type': 'multipart/form-data'}, data);
+	}
+
+	public addFileBN = async (
+		path: string,
+		onStart: any,
+		onProgress: any,
+		onError: any,
+		onCompleted: (data: { responseCode: number, responseBody: any }) => void,
+	) => {
+		const opts = {
+			url: this.apiUrl('/add'),
+			path,
+			method: 'POST',
+			type: 'multipart',
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		};
+
+		try {
+			const uploadId = await Upload.startUpload(opts);
+			onStart();
+
+			Upload.addListener('progress', uploadId, (data: any) => {
+				onProgress(data.progress);
+			});
+			Upload.addListener('error', uploadId, (data: any) => {
+				onError(data.error);
+			});
+			Upload.addListener('completed', uploadId, (data: { responseCode: number, responseBody: any }) => {
+				// data includes responseCode: number and responseBody: Object
+				onCompleted(data);
+			});
+		} catch (ex) {
+			console.log('from ipfs BN upload:', ex);
+		}
+	}
+
+	public addFilesBN = async (
+		paths: string[],
+		onStart: any,
+		onProgress: any,
+		onError: any,
+		onCompleted: (data: Array<{ index: number, data: {responseCode: number; responseBody: any} }>) => void,
+	) => {
+		const opts = {
+			url: this.apiUrl('/add'),
+			method: 'POST',
+			type: 'multipart',
+			field: 'file',
+			notification: { enabled: false },
+		};
+
+		const mediaOpfs = {
+			...opts,
+			path: paths[0],
+		};
+
+		const optimizedMediaOpfs = {
+			...opts,
+			path: paths[1],
+		};
+		//   Upload.startUpload(mediaOpfs).then((uploadId) => {
+		// 	console.log('Upload started')
+		// 	Upload.addListener('progress', uploadId, (data) => {
+		// 	  console.log(`Progress: ${data.progress}%`)
+		// 	})
+		// 	Upload.addListener('error', uploadId, (data) => {
+		// 	  console.log(`Error: ${data.error}%`)
+		// 	})
+		// 	Upload.addListener('cancelled', uploadId, (data) => {
+		// 	  console.log(`Cancelled!`)
+		// 	})
+		// 	Upload.addListener('completed', uploadId, (data) => {
+		// 	  // data includes responseCode: number and responseBody: Object
+		// 	  console.log('Completed!', data)
+		// 	})
+		//   }).catch((err) => {
+		// 	console.log('Upload error!', err)
+		//   })
+
+		try {
+			const mediaUploadId = await Upload.startUpload(mediaOpfs);
+			const optimizedMediaUId = await Upload.startUpload(optimizedMediaOpfs);
+			const resData: any = [];
+
+			console.log(mediaUploadId, optimizedMediaUId);
+			onStart();
+
+			// media events
+			Upload.addListener('progress', mediaUploadId, (data: any) => {
+				onProgress(data.progress, mediaUploadId);
+			});
+			Upload.addListener('error', mediaUploadId, (data: any) => {
+				onError(data.error, mediaUploadId);
+			});
+			Upload.addListener('completed', mediaUploadId, async (data: { responseCode: number, responseBody: any }) => {
+				// data includes responseCode: number and responseBody: Object
+				resData.push({index: 0, data});
+				if (resData.length === 2) {
+					onCompleted(resData);
+				}
+			});
+
+			// optimized media events
+			Upload.addListener('progress', optimizedMediaUId, (data: any) => {
+				onProgress(data.progress, optimizedMediaUId);
+			});
+			Upload.addListener('error', optimizedMediaUId, (data: any) => {
+				onError(data.error, optimizedMediaUId);
+			});
+			Upload.addListener('completed', optimizedMediaUId, (data: { responseCode: number, responseBody: any }) => {
+				// data includes responseCode: number and responseBody: Object
+				resData.push({index: 1, data});
+				if (resData.length === 2) {
+					onCompleted(resData);
+				}
+			});
+		} catch (ex) {
+			console.log('from ipfs BN upload:', ex);
+		}
 	}
 
 	public addFile = (file: any, opts?: any): Promise<any> =>

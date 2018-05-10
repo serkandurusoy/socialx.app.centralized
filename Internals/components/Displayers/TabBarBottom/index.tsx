@@ -188,7 +188,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 
 	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
-			let contentOptimized = null;
+			let contentOptimizedpath = null;
 			if (retMedia.mime.startsWith(MediaTypes.Image)) {
 				const optimized = await ImageResizer.createResizedImage(
 					retMedia.path,
@@ -197,11 +197,14 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 					'JPEG',
 					50,
 				);
-				contentOptimized = await RNFS.readFile(optimized.path, 'base64');
+				contentOptimizedpath = optimized.path;
 			}
-			const content = await RNFS.readFile(retMedia.path, 'base64');
-			const type = retMedia.path.split('.')[1];
-			const image: any = {...retMedia, content, type, contentOptimized};
+			const image: any = {
+				...retMedia,
+				contentOptimizedpath,
+				type: retMedia.mime,
+				pathx: retMedia.path.replace('file://', ''),
+			};
 			this.props.navigation.navigate('PhotoScreen', {mediaObject: image});
 		} catch (ex) {
 			//

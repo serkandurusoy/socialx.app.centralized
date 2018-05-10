@@ -1,9 +1,9 @@
 import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
-import {FriendRequest, GroupRequest} from 'components/Displayers';
+import {FriendRequest, GroupRequest, NotificationGI} from 'components/Displayers';
 import React, {Component} from 'react';
 import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
 import {Icons} from 'theme/Icons';
-import {NOTIFICATION_TYPES} from './index';
+import {NOTIFICATION_TYPES} from 'types';
 import style from './style';
 
 interface INotificationsScreenComponentProps {
@@ -14,7 +14,9 @@ interface INotificationsScreenComponentProps {
 	onPostThumbPressed: (postId: string) => void;
 	onSuperLikedPhotoPressed: (postId: string) => void;
 	onFriendRequestApproved: (requestId: string) => void;
+	onFriendRequestDeclined: (requestId: string) => void;
 	onGroupRequestConfirmed: (requestId: string) => void;
+	onCheckNotification: (requestId: string) => void;
 }
 
 export default class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
@@ -72,24 +74,38 @@ export default class NotificationsScreenComponent extends Component<INotificatio
 
 	private renderActivityCard = (data: any) => {
 		const activityCardData = data.item;
-		if (activityCardData.type === NOTIFICATION_TYPES.RECENT_COMMENT) {
-			return <ActivityRecentCommentCard {...activityCardData} onThumbPress={this.props.onPostThumbPressed} />;
-		} else if (activityCardData.type === NOTIFICATION_TYPES.FRIEND_REQUEST) {
-			return (
-				<FriendRequest
-					{...activityCardData}
-					onRequestConfirmed={() => this.props.onFriendRequestApproved(activityCardData.requestId)}
-				/>
-			);
-		} else if (activityCardData.type === NOTIFICATION_TYPES.SUPER_LIKED) {
-			return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;
-		} else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
-			return (
-				<GroupRequest
-					{...activityCardData}
-					onGroupConfirmed={() => this.props.onGroupRequestConfirmed(activityCardData.requestId)}
-				/>
-			);
+		switch (activityCardData.type) {
+			case NOTIFICATION_TYPES.RECENT_COMMENT:
+				return <ActivityRecentCommentCard {...activityCardData} onThumbPress={this.props.onPostThumbPressed} />;
+
+			case NOTIFICATION_TYPES.FRIEND_REQUEST:
+				return (
+					<FriendRequest
+						{...activityCardData}
+						onRequestConfirmed={() => this.props.onFriendRequestApproved(activityCardData.requestId)}
+						onRequestDeclined={() => this.props.onFriendRequestDeclined(activityCardData.requestId)}
+					/>
+				);
+
+			case NOTIFICATION_TYPES.Friend_REQUEST_RESPONSE:
+				// @ionut -> todo: make better
+				return (
+					<NotificationGI
+						{...activityCardData}
+						onCheckNotification={() => this.props.onCheckNotification(activityCardData.requestId)}
+					/>
+				);
+
+			case NOTIFICATION_TYPES.SUPER_LIKED:
+				return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;
+
+			case NOTIFICATION_TYPES.GROUP_REQUEST:
+				return (
+					<GroupRequest
+						{...activityCardData}
+						onGroupConfirmed={() => this.props.onGroupRequestConfirmed(activityCardData.requestId)}
+					/>
+				);
 		}
 	}
 

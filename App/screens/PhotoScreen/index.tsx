@@ -15,7 +15,7 @@ import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 
 import {ipfsConfig as base} from 'configuration';
-import {addBlob} from 'utilities/ipfs';
+import {addFilesBN} from 'utilities/ipfs';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 
@@ -92,8 +92,6 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		const {addMedia, createPost, startMediaPost, startPostadd, stopLoading} = this.props;
 
 		if (this.photoScreen) {
-			// start adding media loading
-			startMediaPost();
 			try {
 				const wallPostDataInScreen = this.photoScreen.getOriginalRef().getWallPostData();
 				const localPhotoData: Partial<WallPostPhoto> = {
@@ -106,49 +104,65 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				delete wallPostData.includeTaggedFriends;
 
 				const {title, text, location, taggedFriends, image} = wallPostData;
-				const {content, size, mime, path, contentOptimized} = image;
+				const {content, size, mime, pathx, contentOptimizedpath} = image;
 
-				const imageName = path.split('/')[path.split('/').length - 2];
+				const onStart = () => {
+					// start adding media loading
+					startMediaPost();
+				};
 
-				// add image to ipfs
-				let ipfsResp = await addBlob([{filename: imageName, data: content, name: imageName.split('.')[0]}]);
-				ipfsResp = JSON.parse(ipfsResp.data);
+				const onError = (err: any, id: any) => {
+					console.log(err, id);
+				};
 
-				let ipfsOpResp = await addBlob([
-					{filename: imageName + '-optimized', data: contentOptimized, name: imageName.split('.')[0]},
-				]);
-				ipfsOpResp = JSON.parse(ipfsOpResp.data);
+				const onProgress = (progress: any, id: any) => {
+					// @ionut: TODO -> image upload progress..
+					console.log('progress:', progress, id);
+				};
 
-				// parse ipfs response
-				const {Size, Hash} = ipfsResp;
+				const onComplete = async (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
+					let mediaOb: any = null;
+					let opMediaOb: any = null;
 
-				// create media object on aws
-				const addResp = await addMedia({variables: {
-					hash: Hash,
-					size: parseInt(Size, undefined),
-					type: mime,
-					optimizedHash: ipfsOpResp.Hash,
-				}});
+					console.log('Completed! ->', data);
+					for (let i = 0; i < data.length; i++) {
+						const current = data[i];
+						if (current.index === 0) {
+							mediaOb = JSON.parse(current.data.responseBody);
+						} else {
+							opMediaOb = JSON.parse(current.data.responseBody);
+						}
+					}
+					// create media object on aws
+					const addResp = await addMedia({
+						variables: {
+							hash: mediaOb.Hash,
+							size: parseInt(mediaOb.Size, undefined),
+							type: mime,
+							optimizedHash: opMediaOb.Hash,
+						}});
 
-				const mediaId = addResp.data.addMedia.id;
+					const mediaId = addResp.data.addMedia.id;
 
-				// start adding post loading
-				startPostadd();
-				// create post
-				if (title) {
-					await createPost({variables: {text: title, Media: mediaId}});
-				} else {
-					await createPost({variables: {Media: mediaId}});
-				}
+					// start adding post loading
+					startPostadd();
+					// create post
+					if (title) {
+						await createPost({variables: {text: title, Media: mediaId}});
+					} else {
+						await createPost({variables: {Media: mediaId}});
+					}
+					stopLoading();
+				};
+
+				await addFilesBN([pathx, contentOptimizedpath], onStart, onProgress, onError, onComplete);
 			} catch (ex) {
+				stopLoading();
 				ModalManager.safeRunAfterModalClosed(() => {
 					Alert.alert('Something went wrong, try again');
 				});
 				console.log(ex);
 			}
-
-			// stop loading
-			stopLoading();
 			this.props.navigation.goBack(null);
 		}
 	}

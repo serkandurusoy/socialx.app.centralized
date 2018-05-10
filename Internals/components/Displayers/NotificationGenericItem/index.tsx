@@ -6,15 +6,15 @@ import {AvatarImage} from '../../Avatar';
 import {ButtonSizes, SXButton} from '../../Interaction';
 import style from './style';
 
-export interface IFriendRequestProps {
+export interface INotificationGIProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;
-	onRequestConfirmed: () => void;
-	onRequestDeclined: () => void;
+	text: string;
+	onCheckNotification: () => void;
 }
 
-export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
+export const NotificationGI: React.SFC<INotificationGIProps> = (props) => {
 	const renderUsername = () => {
 		if (props.username !== '') {
 			return <Text style={style.username}>{'@' + props.username}</Text>;
@@ -29,23 +29,15 @@ export const FriendRequest: React.SFC<IFriendRequestProps> = (props) => {
 				<View style={style.avatarNameContainer}>
 					<Text style={style.fullName}>{props.fullName}</Text>
 					{renderUsername()}
-					<Text style={style.friendRequest}>{'Friend Request'}</Text>
+					<Text style={style.friendRequest}>{props.text}</Text>
 				</View>
 			</View>
-			{/* @ionut: todo -> replace those with an icon circular buttons with (/) - (x) */}
 			<SXButton
-				label={'Accept'}
+				label={'X'}
 				size={ButtonSizes.Small}
 				autoWidth={true}
 				borderColor={Colors.transparent}
-				onPress={props.onRequestConfirmed}
-			/>
-			<SXButton
-				label={'Decline'}
-				size={ButtonSizes.Small}
-				autoWidth={true}
-				borderColor={Colors.transparent}
-				onPress={props.onRequestConfirmed}
+				onPress={props.onCheckNotification}
 			/>
 		</View>
 	);

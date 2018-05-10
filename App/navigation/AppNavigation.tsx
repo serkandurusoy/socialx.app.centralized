@@ -1,8 +1,9 @@
 import React from 'react';
-import {StackNavigator, TabNavigator} from 'react-navigation';
+import {NavigationSceneRendererProps, StackNavigator, TabNavigator, TransitionConfig} from 'react-navigation';
 import LaunchScreen from '../screens/LaunchScreen';
 
 import {TabBarBottom} from 'components/Displayers';
+import {Animated, Easing} from 'react-native';
 import {ApplicationStyles, Colors} from 'theme';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
@@ -32,7 +33,8 @@ import SignUpScreen from '../screens/SignUpScreen';
 import SocialXAccountScreen from '../screens/SocialXAccountScreen';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
-import UserFeedScreen from '../screens/UserFeedScreen';
+import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
+import UserRegularFeedScreen from '../screens/UserFeedScreen/regularUserFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
 import styles from './styles/NavigationStyles';
@@ -45,11 +47,52 @@ const navOptionsDefault = {
 	gesturesEnabled: false,
 };
 
-const getSingleScreenStack = (routeName: string, screen: any) => {
+const slideFromLeftTransition = (): TransitionConfig => ({
+	transitionSpec: {
+		duration: 700,
+		easing: Easing.out(Easing.poly(4)),
+		timing: Animated.timing,
+	},
+	screenInterpolator: (sceneProps: NavigationSceneRendererProps) => {
+		const {layout, position, scene} = sceneProps;
+
+		const thisSceneIndex = scene.index;
+		const width = layout.initWidth;
+
+		const translateX = position.interpolate({
+			inputRange: [thisSceneIndex - 1, thisSceneIndex],
+			outputRange: [-width, 0],
+		});
+
+		return {transform: [{translateX}]};
+	},
+});
+
+const getSingleScreenStack = (routeName: string, screen: any, stackConfig: any = {}) => {
 	const routeConfigMap: any = {};
 	routeConfigMap[routeName] = {screen};
 	return StackNavigator(routeConfigMap, {
 		navigationOptions: navOptionsDefault,
+		...stackConfig,
+	});
+};
+
+const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
+	const modalsConfigMap: any = {
+		NewWallPostScreen: getSingleScreenStack('NewWallPostScreen', NewWallPostScreen),
+		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
+		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
+		CommentsStack: {screen: CommentsStackNavigator},
+	};
+	const screenConfigMap: any = {};
+	screenConfigMap[routeName] = screen;
+	const updatedRouteConfig = {
+		...screenConfigMap,
+		...modalsConfigMap,
+	};
+	return StackNavigator(updatedRouteConfig, {
+		mode: 'modal',
+		headerMode: 'none',
 	});
 };
 
@@ -101,7 +144,7 @@ const CommentsStackNavigator = StackNavigator(
 
 const UserFeedStackNavigator = StackNavigator(
 	{
-		UserFeedScreen: {screen: UserFeedScreen},
+		UserRegularFeedScreen: {screen: UserRegularFeedScreen},
 		MessagingScreen: {screen: MessagingScreen},
 		ChatThreadScreen: {screen: ChatThreadScreen},
 	},
@@ -129,6 +172,7 @@ const MainScreenTabNavigation = TabNavigator(
 	},
 );
 
+const hotPostsSingleScreenStack = getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen);
 const MainScreenWithModal = StackNavigator(
 	{
 		MediaLicenceStack: {screen: MediaLicenceStackNavigator}, // TODO: later to be moved down!
@@ -138,10 +182,16 @@ const MainScreenWithModal = StackNavigator(
 		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 		CommentsStack: {screen: CommentsStackNavigator},
+		MainScreenTabNavigationWithModal: getMainStackWithModalsForScreen(
+			'MainScreenTabNavigation',
+			MainScreenTabNavigation,
+		),
+		HotPostsStackWithModal: getMainStackWithModalsForScreen('HotPostsFeedScreenStack', hotPostsSingleScreenStack),
 	},
 	{
 		mode: 'modal',
 		headerMode: 'none',
+		transitionConfig: slideFromLeftTransition,
 	},
 );
 
