@@ -8,3 +8,4 @@ export * from './ShareOptions';
 export * from './TagFriends';
 export * from './Wallet';
 export * from './ReportProblem';
+export * from './ExternalShareOptions';

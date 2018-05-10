@@ -1,6 +1,7 @@
 // leave off @2x/@3x
 export const Icons = {
-	iconPostLike: require('./assets/icons/like_blue.png'),
+	likeIconBlueOutline: require('./assets/icons/like_blue_outline.png'),
+	likeIconBlueFilled: require('./assets/icons/like_blue_filled.png'),
 	iconPostSuperLike: require('./assets/icons/post_super_like.png'),
 	iconPostComments: require('./assets/icons/post_comments.png'),
 	iconPostShare: require('./assets/icons/post_share.png'),
@@ -52,4 +53,6 @@ export const Icons = {
 	analyticsVideos: require('./assets/icons/analytics_videos.png'),
 	analyticsComments: require('./assets/icons/analytics_comments.png'),
 	messagingIcon: require('./assets/icons/messaging_icon.png'),
+	mediaDownload: require('./assets/icons/media_download.png'),
+	mediaShare: require('./assets/icons/media_share.png'),
 };

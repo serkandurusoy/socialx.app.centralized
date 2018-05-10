@@ -11,7 +11,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 // refactoring
 import {getAvailableAnimations} from 'configuration/animations';
 import {OS_TYPES} from 'consts';
-import SplashScreen from 'react-native-smart-splash-screen';
 import {Colors} from 'theme';
 
 import {AppsyncClient, Rehydrated} from 'backend/appsync';
@@ -27,12 +26,6 @@ export default class App extends Component<{}, {}> {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
 		Animatable.initializeRegistryWithDefinitions(getAvailableAnimations());
-		// enable this only when adding sample screens to root navigator!
-		// SplashScreen.close({
-		// 	animationType: SplashScreen.animationType.fade,
-		// 	duration: 1000,
-		// 	delay: 100,
-		// });
 	}
 
 	public render() {
