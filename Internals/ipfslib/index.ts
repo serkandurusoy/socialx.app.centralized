@@ -32,7 +32,7 @@ export default class Ipfslib {
 
 	public addBlob = (data: any) => {
 		return RNFetchBlob.fetch('POST', this.apiUrl('/add'), {'Content-Type': 'multipart/form-data'}, data);
-	}
+	};
 
 	public addFileBN = async (
 		path: string,
@@ -70,7 +70,7 @@ export default class Ipfslib {
 		} catch (ex) {
 			console.log('from ipfs BN upload:', ex);
 		}
-	}
+	};
 
 	public addFilesBN = async (
 		paths: string[],
@@ -143,6 +143,8 @@ export default class Ipfslib {
 			});
 
 			// optimized media events
+			// @iont: TODO -> the progress here is not accurate, the optimized
+			// image finishes really quick so it doesnt actually adds up to the progress
 			Upload.addListener('progress', optimizedMediaUId, (data: any) => {
 				optimiezedMediaProgress = data.progress;
 				onProgress((data.progress + mediaProgress) / 2, optimizedMediaUId);
@@ -160,7 +162,7 @@ export default class Ipfslib {
 		} catch (ex) {
 			console.log('from ipfs BN upload:', ex);
 		}
-	}
+	};
 
 	public addFile = (file: any, opts?: any): Promise<any> =>
 		new Promise((resolve) => {
@@ -175,7 +177,7 @@ export default class Ipfslib {
 				transform: (res: any) => (res ? JSON.parse(res) : null),
 				progress: opts ? opts.progress : null,
 			});
-		})
+		});
 
 	public addFiles = (files: any[], opts?: any): Promise<any> =>
 		new Promise((resolve) => {
@@ -190,7 +192,7 @@ export default class Ipfslib {
 				transform: (res: any) => (res ? JSON.parse(res) : null),
 				progress: opts ? opts.progress : null,
 			});
-		})
+		});
 
 	public add = (input: any, opts?: any): Promise<any> =>
 		new Promise((resolve) => {
