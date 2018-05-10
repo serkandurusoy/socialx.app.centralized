@@ -234,28 +234,26 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		startPostadd();
 
 		try {
-			const ipfsData = await addBlobFiles(data.mediaObjects);
 
-			for (let i = 0; i < ipfsData.length; i++) {
-				const currentIpfsData = ipfsData[i];
+			for (let i = 0; i < data.mediaObjects.length; i++) {
+				const currentData = data.mediaObjects[i];
 				const gqlResp = await addMedia({
 					variables: {
-						hash: currentIpfsData.hash,
-						type: currentIpfsData.type,
-						optimizedHash: currentIpfsData.optimizedHash,
-						size: parseInt(currentIpfsData.size, undefined),
+						hash: currentData.content.Hash,
+						type: currentData.content.Name.split('.')[1],
+						optimizedHash: currentData.contentOptimized ? currentData.contentOptimized.Hash : '',
+						size: parseInt(currentData.content.Size, undefined),
 					},
 				});
 				mediaIds.push(gqlResp.data.addMedia.id);
-
-				// create the post with media
-				await createPost({
-					variables: {
-						text: data.text,
-						Media: mediaIds,
-					},
-				});
 			}
+			// create the post with media
+			await createPost({
+				variables: {
+					text: data.text,
+					Media: mediaIds,
+				},
+			});
 			// refresh the wall posts to append the new post
 			this.refreshWallPosts();
 		} catch (ex) {
@@ -346,7 +344,8 @@ const MapDispatchToProps = (dispatch: any) => ({
 const reduxWrapper = connect(null, MapDispatchToProps)(UserFeedScreen);
 
 const userWrapper = userHoc(reduxWrapper);
-const addMediaWrapper = addMediaHoc(userWrapper);
+const createPostWrapper = createPostHoc(userWrapper);
+const addMediaWrapper = addMediaHoc(createPostWrapper);
 const likePostWrapper = likePostHoc(addMediaWrapper);
 const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
 const deletePostWrapper = deleteOwnPostHoc(removeLikePostWrapper);

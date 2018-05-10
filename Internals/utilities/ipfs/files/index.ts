@@ -24,6 +24,26 @@ export const addBlob = (data: any): Promise<any> =>
 		resolve(res);
 	});
 
+export const addFileBN = async (
+	path: string,
+	onStart: any,
+	onProgress: any,
+	onError: any,
+	onCompleted: (data: {responseCode: number; responseBody: any}) => void,
+) => {
+	await ipfs.addFileBN(path, onStart, onProgress, onError, onCompleted);
+};
+
+export const addFilesBN = async (
+	paths: string[],
+	onStart: any,
+	onProgress: any,
+	onError: any,
+	onCompleted: (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => void,
+) => {
+	await ipfs.addFilesBN(paths, onStart, onProgress, onError, onCompleted);
+};
+
 export const addBlobFiles = async (mediaObjects: MediaObject[]): Promise<any> => {
 	const blobSource: IBlobData[] = [];
 	const blobOptimized: IBlobData[] = [];

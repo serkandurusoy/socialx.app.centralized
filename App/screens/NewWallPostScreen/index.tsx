@@ -15,6 +15,8 @@ import {Colors, Icons, Sizes} from 'theme';
 import {MediaTypes} from 'types';
 import style from './style';
 
+import {addFileBN, addFilesBN} from 'utilities/ipfs';
+
 const PICK_FROM_GALLERY = 'Pick from gallery';
 const TAKE_A_PHOTO = 'Take a photo/video';
 const CANCEL = 'Cancel';
@@ -24,10 +26,16 @@ const DEFAULT_MARGIN_BOTTOM = Sizes.smartVerticalScale(20);
 
 export interface MediaObject {
 	path: string;
-	size: number;
-	name: string;
-	content: any;
-	contentOptimized: any;
+	content: {
+		Hash: string;
+		Name: string;
+		Size: string;
+	};
+	contentOptimized?: {
+		Hash: string;
+		Name: string;
+		Size: string;
+	};
 }
 
 export interface NewWallPostData {
@@ -93,6 +101,8 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				<ScrollView style={style.photosContainer} horizontal={true}>
 					{this.renderPostMediaObjects()}
 				</ScrollView>
+				{/* @ionut: TODO -> disable this button while the users file
+				upload is in progress or delay the functionality until progress is done */}
 				<SXButton
 					label={'SEND'}
 					size={ButtonSizes.Small}
@@ -149,10 +159,64 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 
 	private addNewMediaObject = async (mediaObject: PickerImage) => {
 		const {mediaObjects} = this.state;
+
+		// if mediaObject is an image, upload 2 media files
+		// 1) original
+		// 2) optimized
+		// and append the id parameter:
+		// id: 0 => original
+		// id: 1 => optimized
+		// otherwise upload a single file -> video
+		const onProgress = (progress: any, id?: any) => {
+			// @ionut handle on upload progress
+			console.log('progress:', progress, id);
+		};
+
+		const onStart = () => {
+			console.log('started uploading');
+		};
+
+		const onError = (err: any, id?: any) => {
+			// handle errors here?
+			console.log('upload err:', err, id);
+		};
+
+		const onPicturesCompleted = (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
+			const localMediaObject: MediaObject = {
+				path: (mediaObject as PickerImage).path,
+				content: null,
+				contentOptimized: null,
+			};
+
+			for (let i = 0; i < data.length; i++) {
+				const current = data[i];
+				if (current.index === 0) {
+					localMediaObject.content = JSON.parse(current.data.responseBody);
+				} else {
+					localMediaObject.contentOptimized = JSON.parse(current.data.responseBody);
+				}
+			}
+			this.setState({
+				mediaObjects: mediaObjects.concat([localMediaObject]),
+			});
+		};
+
+		const onVideoCompleted = (data: {responseCode: number; responseBody: any}) => {
+			const localMediaObject: MediaObject = {
+				path: (mediaObject as PickerImage).path,
+				content: JSON.parse(data.responseBody),
+				contentOptimized: null,
+			};
+
+			this.setState({
+				mediaObjects: mediaObjects.concat([localMediaObject]),
+			});
+		};
+
 		try {
-			// FIXME @Jake: this is taking lot of time on android, should be optimized?
-			console.log('addNewMediaObject START');
-			let imageOptimizedContent = null;
+			const mediaPath = mediaObject.path.replace('file://', '');
+			let imageOptimizedPath = null;
+
 			if (mediaObject.mime.startsWith(MediaTypes.Image)) {
 				const optimized = await ImageResizer.createResizedImage(
 					mediaObject.path,
@@ -161,23 +225,14 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					'JPEG',
 					50,
 				);
-				imageOptimizedContent = await RNFS.readFile(optimized.path, 'base64');
+				imageOptimizedPath = optimized.path;
+
+				console.log([mediaPath, imageOptimizedPath]);
+				await addFilesBN([mediaPath, imageOptimizedPath], onStart, onProgress, onError, onPicturesCompleted);
+			} else {
+				// video
+				await addFileBN(mediaPath, onStart, onProgress, onError, onVideoCompleted);
 			}
-
-			const mediaContent = await RNFS.readFile(mediaObject.path, 'base64');
-
-			const localMediaObject: MediaObject = {
-				path: (mediaObject as PickerImage).path,
-				size: mediaObject.size,
-				name: mediaObject.path.split('/')[mediaObject.path.split('/').length - 1],
-				content: mediaContent,
-				contentOptimized: imageOptimizedContent,
-			};
-
-			this.setState({
-				mediaObjects: mediaObjects.concat([localMediaObject]),
-			});
-			console.log('addNewMediaObject END');
 		} catch (ex) {
 			console.log(ex);
 		}
