@@ -9,9 +9,8 @@ import {Icons, Sizes} from 'theme';
 import style from './style';
 
 import {updateTabBarBottomHeight} from 'backend/actions';
-import RNFS from 'react-native-fs';
 import {connect} from 'react-redux';
-import {MediaTypes} from 'types';
+import {MediaTypes, WallPostPhotoOptimized} from 'types';
 
 interface TabMenuItem {
 	screenName?: string;
@@ -188,7 +187,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 
 	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
-			let contentOptimizedpath = null;
+			let contentOptimizedPath;
 			if (retMedia.mime.startsWith(MediaTypes.Image)) {
 				const optimized = await ImageResizer.createResizedImage(
 					retMedia.path,
@@ -197,15 +196,15 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 					'JPEG',
 					50,
 				);
-				contentOptimizedpath = optimized.path;
+				contentOptimizedPath = optimized.path;
 			}
-			const image: any = {
+			const mediaObject: WallPostPhotoOptimized = {
 				...retMedia,
-				contentOptimizedpath,
+				contentOptimizedPath,
 				type: retMedia.mime,
 				pathx: retMedia.path.replace('file://', ''),
 			};
-			this.props.navigation.navigate('PhotoScreen', {mediaObject: image});
+			this.props.navigation.navigate('PhotoScreen', {mediaObject});
 		} catch (ex) {
 			//
 		}

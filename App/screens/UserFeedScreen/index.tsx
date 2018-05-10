@@ -234,14 +234,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		startPostadd();
 
 		try {
-
 			for (let i = 0; i < data.mediaObjects.length; i++) {
 				const currentData = data.mediaObjects[i];
 				const gqlResp = await addMedia({
 					variables: {
 						hash: currentData.content.Hash,
 						type: currentData.content.Name.split('.')[1],
-						optimizedHash: currentData.contentOptimized ? currentData.contentOptimized.Hash : '',
+						optimizedHash: currentData.contentOptimized ? currentData.contentOptimized.Hash : currentData.content.Hash,
 						size: parseInt(currentData.content.Size, undefined),
 					},
 				});

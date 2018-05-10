@@ -39,7 +39,7 @@ export default class Ipfslib {
 		onStart: any,
 		onProgress: any,
 		onError: any,
-		onCompleted: (data: { responseCode: number, responseBody: any }) => void,
+		onCompleted: (data: {responseCode: number; responseBody: any}) => void,
 	) => {
 		const opts = {
 			url: this.apiUrl('/add'),
@@ -61,7 +61,7 @@ export default class Ipfslib {
 			Upload.addListener('error', uploadId, (data: any) => {
 				onError(data.error);
 			});
-			Upload.addListener('completed', uploadId, (data: { responseCode: number, responseBody: any }) => {
+			Upload.addListener('completed', uploadId, (data: {responseCode: number; responseBody: any}) => {
 				// data includes responseCode: number and responseBody: Object
 				onCompleted(data);
 			});
@@ -75,14 +75,14 @@ export default class Ipfslib {
 		onStart: any,
 		onProgress: any,
 		onError: any,
-		onCompleted: (data: Array<{ index: number, data: {responseCode: number; responseBody: any} }>) => void,
+		onCompleted: (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => void,
 	) => {
 		const opts = {
 			url: this.apiUrl('/add'),
 			method: 'POST',
 			type: 'multipart',
 			field: 'file',
-			notification: { enabled: false },
+			notification: {enabled: false},
 		};
 
 		const mediaOpfs = {
@@ -121,14 +121,18 @@ export default class Ipfslib {
 			console.log(mediaUploadId, optimizedMediaUId);
 			onStart();
 
+			let mediaProgress = 0;
+			let optimiezedMediaProgress = 0;
+
 			// media events
 			Upload.addListener('progress', mediaUploadId, (data: any) => {
-				onProgress(data.progress, mediaUploadId);
+				mediaProgress = data.progress;
+				onProgress((data.progress + optimiezedMediaProgress) / 2, mediaUploadId);
 			});
 			Upload.addListener('error', mediaUploadId, (data: any) => {
 				onError(data.error, mediaUploadId);
 			});
-			Upload.addListener('completed', mediaUploadId, async (data: { responseCode: number, responseBody: any }) => {
+			Upload.addListener('completed', mediaUploadId, async (data: {responseCode: number; responseBody: any}) => {
 				// data includes responseCode: number and responseBody: Object
 				resData.push({index: 0, data});
 				if (resData.length === 2) {
@@ -138,12 +142,13 @@ export default class Ipfslib {
 
 			// optimized media events
 			Upload.addListener('progress', optimizedMediaUId, (data: any) => {
-				onProgress(data.progress, optimizedMediaUId);
+				optimiezedMediaProgress = data.progress;
+				onProgress((data.progress + mediaProgress) / 2, optimizedMediaUId);
 			});
 			Upload.addListener('error', optimizedMediaUId, (data: any) => {
 				onError(data.error, optimizedMediaUId);
 			});
-			Upload.addListener('completed', optimizedMediaUId, (data: { responseCode: number, responseBody: any }) => {
+			Upload.addListener('completed', optimizedMediaUId, (data: {responseCode: number; responseBody: any}) => {
 				// data includes responseCode: number and responseBody: Object
 				resData.push({index: 1, data});
 				if (resData.length === 2) {

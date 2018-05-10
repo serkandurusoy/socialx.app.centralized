@@ -5,6 +5,7 @@ export * from './global';
 
 // temp
 
+import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {IUserQuery} from './gql';
 
 export interface FriendsSearchResult {
@@ -64,4 +65,15 @@ export interface SearchResultCreateGroup {
 	fullName: string;
 	location: string;
 	avatarURL?: string;
+}
+
+export enum MediaTypes {
+	Image = 'image',
+	Video = 'video',
+}
+
+export interface WallPostPhotoOptimized extends PickerImage {
+	contentOptimizedPath?: string;
+	type: string;
+	pathx: string;
 }

@@ -8,14 +8,14 @@ import PhotoScreenComponent from './screen';
 import {SendPostButton} from './SendPostButton';
 
 import {addMediaHoc, createPostHoc, userHoc} from 'backend/graphql';
-import {IUserDataResponse} from 'types';
+import {IUserDataResponse, WallPostPhotoOptimized} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 import {ModalManager} from 'hoc/ManagedModal/manager';
 
 import {ipfsConfig as base} from 'configuration';
-import {addFilesBN} from 'utilities/ipfs';
+import {addFileBN, addFilesBN} from 'utilities/ipfs';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 
@@ -33,7 +33,7 @@ export interface WallPostPhoto {
 	text?: string;
 	location?: string;
 	taggedFriends?: FriendsSearchResult[];
-	image: any;
+	media: WallPostPhotoOptimized;
 	includeTaggedFriends: boolean;
 }
 
@@ -74,7 +74,6 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 
 	public render() {
 		const {data} = this.props;
-		console.log('PhotoScreen render', data);
 		const placeHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 		return (
 			<PhotoScreenComponent
@@ -95,7 +94,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 			try {
 				const wallPostDataInScreen = this.photoScreen.getOriginalRef().getWallPostData();
 				const localPhotoData: Partial<WallPostPhoto> = {
-					image: this.props.navigation.state.params.mediaObject,
+					media: this.props.navigation.state.params.mediaObject,
 				};
 				if (wallPostDataInScreen.includeTaggedFriends && this.props.addedFriends.length > 0) {
 					localPhotoData.taggedFriends = this.props.addedFriends;
@@ -103,68 +102,88 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
 				delete wallPostData.includeTaggedFriends;
 
-				const {title, text, location, taggedFriends, image} = wallPostData;
-				const {content, size, mime, pathx, contentOptimizedpath} = image;
+				const {title, text, location, taggedFriends, media} = wallPostData;
+				const {mime, pathx, contentOptimizedPath} = media;
 
 				const onStart = () => {
 					// start adding media loading
-					startMediaPost();
+					startMediaPost(0);
 				};
 
 				const onError = (err: any, id: any) => {
 					console.log(err, id);
+					this.showErrorMessage(err);
 				};
 
 				const onProgress = (progress: any, id: any) => {
-					// @ionut: TODO -> image upload progress..
 					console.log('progress:', progress, id);
+					startMediaPost(Math.round(progress));
 				};
 
 				const onComplete = async (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
-					let mediaOb: any = null;
-					let opMediaOb: any = null;
+					try {
+						let mediaOb: any = null;
+						let opMediaOb: any = null;
 
-					console.log('Completed! ->', data);
-					for (let i = 0; i < data.length; i++) {
-						const current = data[i];
-						if (current.index === 0) {
-							mediaOb = JSON.parse(current.data.responseBody);
+						console.log('Completed! ->', data);
+						if (Array.isArray(data)) {
+							for (let i = 0; i < data.length; i++) {
+								const current = data[i];
+								if (current.index === 0) {
+									mediaOb = JSON.parse(current.data.responseBody);
+								} else {
+									opMediaOb = JSON.parse(current.data.responseBody);
+								}
+							}
 						} else {
-							opMediaOb = JSON.parse(current.data.responseBody);
+							// TODO: @Jake: this needs better handling!
+							mediaOb = JSON.parse(data.responseBody);
 						}
-					}
-					// create media object on aws
-					const addResp = await addMedia({
-						variables: {
-							hash: mediaOb.Hash,
-							size: parseInt(mediaOb.Size, undefined),
-							type: mime,
-							optimizedHash: opMediaOb.Hash,
-						}});
 
-					const mediaId = addResp.data.addMedia.id;
+						// create media object on aws
+						const addResp = await addMedia({
+							variables: {
+								hash: mediaOb.Hash,
+								size: parseInt(mediaOb.Size, undefined),
+								type: mime,
+								optimizedHash: opMediaOb !== null ? opMediaOb.Hash : mediaOb.Hash,
+							},
+						});
 
-					// start adding post loading
-					startPostadd();
-					// create post
-					if (title) {
-						await createPost({variables: {text: title, Media: mediaId}});
-					} else {
-						await createPost({variables: {Media: mediaId}});
+						const mediaId = addResp.data.addMedia.id;
+
+						// start adding post loading
+						startPostadd();
+						// create post
+						if (title) {
+							await createPost({variables: {text: title, Media: mediaId}});
+						} else {
+							await createPost({variables: {Media: mediaId}});
+						}
+						stopLoading();
+						this.props.navigation.goBack(null);
+					} catch (ex) {
+						this.showErrorMessage(ex);
 					}
-					stopLoading();
 				};
 
-				await addFilesBN([pathx, contentOptimizedpath], onStart, onProgress, onError, onComplete);
+				if (contentOptimizedPath) {
+					await addFilesBN([pathx, contentOptimizedPath], onStart, onProgress, onError, onComplete);
+				} else {
+					await addFileBN(pathx, onStart, onProgress, onError, onComplete);
+				}
 			} catch (ex) {
-				stopLoading();
-				ModalManager.safeRunAfterModalClosed(() => {
-					Alert.alert('Something went wrong, try again');
-				});
-				console.log(ex);
+				this.showErrorMessage(ex);
 			}
-			this.props.navigation.goBack(null);
 		}
+	}
+
+	private showErrorMessage = (ex: any) => {
+		this.props.stopLoading();
+		ModalManager.safeRunAfterModalClosed(() => {
+			Alert.alert('Something went wrong, try again');
+		});
+		console.log(ex);
 	}
 }
 
@@ -177,7 +196,8 @@ const navigationOptions = (props: IPhotoScreenProps) => ({
 const withAddFriends = withModalForAddFriends(PhotoScreen as any, navigationOptions as any);
 
 const MapDispatchToProps = (dispatch: any) => ({
-	startMediaPost: () => dispatch(showActivityIndicator('Decentralizing your media', 'Please wait..')),
+	startMediaPost: (progress: string) =>
+		dispatch(showActivityIndicator('Decentralizing your media', `Please wait..\n${progress} %`)),
 	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
