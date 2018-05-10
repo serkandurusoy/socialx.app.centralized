@@ -3,9 +3,14 @@ import React from 'react';
 import {Keyboard, Platform, View} from 'react-native';
 import {ModalManager} from './manager';
 
+export interface IManagedModal {
+	onDismiss: () => void;
+	onModalHide: () => void;
+}
+
 interface IManagedModalProps {
 	afterDismiss?: () => void;
-	visiblePropName: string;
+	visiblePropName?: string;
 }
 
 export const withManagedTransitions = (CustomModal: any) => {

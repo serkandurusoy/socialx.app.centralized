@@ -1,11 +1,11 @@
+import {ShareOptionsButton} from 'components';
 import {OS_TYPES} from 'consts';
-import {withManagedTransitions} from 'hoc/ManagedModal';
+import {IManagedModal, withManagedTransitions} from 'hoc/ManagedModal';
 import React from 'react';
 import {Platform, ScrollView, Tou, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import {Icons} from 'theme';
-import {ShareOptionsButton} from '../../Interaction';
 import style from './style';
 
 const BUTTON_NAMES = {
@@ -17,7 +17,7 @@ const BUTTON_NAMES = {
 	contact: 'Contact',
 };
 
-interface IModalInvitePeopleProps {
+interface IModalShareOptionsProps extends IManagedModal {
 	visible: boolean;
 	walletHandlerPressed: Func;
 	cameraHandlerPressed: Func;
@@ -26,11 +26,9 @@ interface IModalInvitePeopleProps {
 	locationHandlerPressed: Func;
 	contactHandlerPressed: Func;
 	closeHandler: Func;
-	onDismiss: () => void;
-	onModalHide: () => void;
 }
 
-const ModalShareOptionsSFC: React.SFC<IModalInvitePeopleProps> = (props) => {
+const ModalShareOptionsSFC: React.SFC<IModalShareOptionsProps> = (props) => {
 	const renderOSBlurView = () => {
 		if (Platform.OS === OS_TYPES.IOS) {
 			return (

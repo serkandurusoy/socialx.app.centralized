@@ -1,3 +1,4 @@
+import {ModalCloseButton} from 'components';
 import {IWallPostCardProp} from 'components/Displayers';
 import {ToggleIconButton} from 'components/Interaction';
 import get from 'lodash/get';
@@ -5,6 +6,7 @@ import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons} from 'theme/';
+import {ISimpleMediaObject, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
 const GRID_PAGE_SIZE = 20;
@@ -15,8 +17,9 @@ const USER_SMALL_AVATAR_URL = 'https://placeimg.com/120/120/people';
 const USER_BIG_AVATAR_URL = 'https://placeimg.com/240/240/people';
 const USER_NAME = 'LesterWheeler';
 
-const RECENT_USER_POSTS = [
+const RECENT_USER_POSTS: IWallPostCardProp[] = [
 	{
+		id: '111',
 		title: 'My first post!',
 		text:
 			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
@@ -30,8 +33,11 @@ const RECENT_USER_POSTS = [
 		numberOfSuperLikes: 4,
 		numberOfComments: 3,
 		numberOfWalletCoins: 5,
+		canDelete: true,
+		mediaType: 'jpg',
 	},
 	{
+		id: '222',
 		taggedFriends: [{fullName: 'Isabelle Wilson'}, {fullName: 'Teddy Decola'}, {fullName: 'Michiko Bisson'}],
 		location: 'Miami Beach, Florida',
 		title: 'Hey, my second post to SocialX network!',
@@ -43,6 +49,8 @@ const RECENT_USER_POSTS = [
 		numberOfSuperLikes: 6,
 		numberOfComments: 4,
 		numberOfWalletCoins: 2,
+		canDelete: true,
+		mediaType: 'jpg',
 	},
 ];
 
@@ -82,15 +90,18 @@ interface IUserProfileScreenState {
 export default class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileScreenState> {
 	private static navigationOptions = (props: IUserProfileScreenProps) => ({
 		title: 'PROFILE',
-		headerRight: (
-			<ToggleIconButton
-				selectedSource={Icons.iconHeartWhiteFilled}
-				unselectedSource={Icons.iconHeartWhiteOutline}
-				onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}
-				selected={get(props, 'navigation.state.params.isFollowed', false)}
-			/>
-		),
 		headerLeft: <View />,
+		headerRight: (
+			<View style={{flexDirection: 'row'}}>
+				<ToggleIconButton
+					selectedSource={Icons.iconHeartWhiteFilled}
+					unselectedSource={Icons.iconHeartWhiteOutline}
+					onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}
+					selected={get(props, 'navigation.state.params.isFollowed', false)}
+				/>
+				<ModalCloseButton navigation={props.navigation} />
+			</View>
+		),
 	})
 
 	public state = INITIAL_STATE;
@@ -133,13 +144,14 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 		});
 	}
 
-	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number) => {
-		const ret = [];
+	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): ISimpleMediaObject[] => {
+		const ret: ISimpleMediaObject[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
 			if (this.lastLoadedPhotoIndex < maxResults) {
 				ret.push({
 					url: 'https://avatars2.githubusercontent.com/u/' + i,
+					type: MediaTypeImage,
 					index: i,
 				});
 				this.lastLoadedPhotoIndex++;

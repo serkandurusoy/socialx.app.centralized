@@ -54,6 +54,9 @@ const style: any = {
 		lineHeight: Sizes.smartHorizontalScale(17),
 		padding: Sizes.smartHorizontalScale(4),
 	},
+	fullWidth: {
+		width: '100%',
+	},
 };
 
 export default StyleSheet.create(style);

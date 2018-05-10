@@ -4,10 +4,15 @@ import React, {Component} from 'react';
 import {Platform, View} from 'react-native';
 import Orientation, {orientation} from 'react-native-orientation';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {IMediaViewerObject} from 'types';
 import MediaViewerScreenComponent from './screen';
 
-export interface IPhotoData {
-	url: string;
+interface IMediaViewerScreenNavParams {
+	params: {
+		mediaObjects: IMediaViewerObject[];
+		startIndex: number;
+		hideHeader: boolean;
+	};
 }
 
 interface IMediaViewerScreenState {
@@ -15,7 +20,7 @@ interface IMediaViewerScreenState {
 }
 
 export interface IMediaViewerScreenProps {
-	navigation: NavigationScreenProp<any>;
+	navigation: NavigationScreenProp<IMediaViewerScreenNavParams>;
 }
 
 export default class MediaViewerScreen extends Component<IMediaViewerScreenProps, IMediaViewerScreenState> {

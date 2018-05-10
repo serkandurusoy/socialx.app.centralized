@@ -1,22 +1,23 @@
-import {ipfsConfig as base} from 'configuration';
 import React, {Component} from 'react';
 import {Dimensions, Image, TouchableOpacity, View} from 'react-native';
 import {DataProvider, LayoutProvider, RecyclerListView} from 'recyclerlistview';
+
+import {MediaObjectViewer} from 'components';
 import {Sizes} from 'theme';
-import {IMediaProps} from 'types';
-import {MediaObjectViewer} from '../MediaObject';
+import {IMediaViewerObject} from 'types';
+import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
 import style from './style';
 
-interface IExtendedMediaProps extends IMediaProps {
-	index: number;
-}
-
 export interface IGridPhotosProps {
-	loadMorePhotos: () => IMediaProps[];
+	loadMorePhotos: () => IMediaViewerObject[];
 	itemPressed?: (i: number) => void;
 	pageSize?: number;
-	thumbSize?: number;
+	thumbWidth?: number;
+	thumbHeight?: number;
 	onScroll?: (rawEvent: any, offsetX: number, offsetY: number) => void;
+	renderGridItem?: (mediaData: IMediaViewerObject) => any;
+	showsVerticalScrollIndicator?: boolean;
+	bounces?: boolean;
 }
 
 export interface IGridPhotosState {
@@ -25,8 +26,11 @@ export interface IGridPhotosState {
 
 export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 	public static defaultProps: Partial<IGridPhotosProps> = {
-		thumbSize: Sizes.getThumbSize(),
+		thumbWidth: Sizes.getThumbSize(),
+		thumbHeight: Sizes.getThumbSize(),
 		pageSize: 20,
+		showsVerticalScrollIndicator: true,
+		bounces: true,
 	};
 
 	private girdProvider = new LayoutProvider(
@@ -34,8 +38,8 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 			return 0; // use different values if we need to render object with different types
 		},
 		(type: any, dim: any) => {
-			dim.width = this.props.thumbSize;
-			dim.height = this.props.thumbSize;
+			dim.width = this.props.thumbWidth;
+			dim.height = this.props.thumbHeight;
 		},
 	);
 
@@ -57,35 +61,39 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 				// disableRecycling={true}
 				style={style.recyclerGrid}
 				layoutProvider={this.girdProvider}
-				useWindowScroll={true}
-				showsVerticalScrollIndicator={true}
+				showsVerticalScrollIndicator={this.props.showsVerticalScrollIndicator}
 				dataProvider={this.state.dataProvider}
 				rowRenderer={this.renderGridRow}
 				onEndReached={this.loadMorePhotos}
 				onScroll={this.props.onScroll}
+				bounces={this.props.bounces}
 			/>
 		);
 	}
 
-	private renderGridRow = (type: any, mediaData: IExtendedMediaProps) => {
-		// We can set a placeholder with defaultSource but it will be used only for the images on the first "page"
-		let mediaURL = base.ipfs_URL;
-		mediaURL += mediaData.optimizedHash ? mediaData.optimizedHash : mediaData.hash;
-		return (
-			<TouchableOpacity onPress={() => (this.props.itemPressed ? this.props.itemPressed(mediaData.index) : null)}>
-				<MediaObjectViewer
-					uri={mediaURL}
-					style={{width: this.props.thumbSize, height: this.props.thumbSize}}
-					extension={mediaData.type}
-					thumbOnly={true}
-				/>
-			</TouchableOpacity>
-		);
+	private renderGridRow = (type: any, mediaData: IMediaViewerObject) => {
+		if (!this.props.renderGridItem) {
+			// We can set a placeholder with defaultSource but it will be used only for the images on the first "page"
+			const mediaURL = getURLForMediaViewerObject(mediaData);
+			const mediaTypeProps = getTypePropsForMediaViewerObject(mediaData);
+			return (
+				<TouchableOpacity onPress={() => (this.props.itemPressed ? this.props.itemPressed(mediaData.index) : null)}>
+					<MediaObjectViewer
+						{...mediaTypeProps}
+						uri={mediaURL}
+						style={{width: this.props.thumbWidth, height: this.props.thumbHeight}}
+						thumbOnly={true}
+					/>
+				</TouchableOpacity>
+			);
+		} else {
+			return this.props.renderGridItem(mediaData);
+		}
 	}
 
 	private loadInitialPhotos = () => {
 		const initialPhotos = [].concat(this.props.loadMorePhotos());
-		initialPhotos.forEach((photoData: Partial<IExtendedMediaProps>, index: number) => {
+		initialPhotos.forEach((photoData: Partial<IMediaViewerObject>, index: number) => {
 			initialPhotos[index] = {...photoData, index};
 		});
 		return initialPhotos;
@@ -97,7 +105,7 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 		if (nextPhotos.length > 0) {
 			const loadedPhotos = dataProvider.getAllData();
 			const allPhotos = loadedPhotos.concat(nextPhotos);
-			allPhotos.forEach((photoData: IExtendedMediaProps, index: number) => {
+			allPhotos.forEach((photoData: IMediaViewerObject, index: number) => {
 				photoData.index = index;
 			});
 			this.setState({

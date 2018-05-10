@@ -1,13 +1,16 @@
 import React from 'react';
-import {Keyboard, View} from 'react-native';
+import {Keyboard} from 'react-native';
+import {NavigationStackScreenOptions} from 'react-navigation';
 
 export interface IWithResizeOnKeyboardShowProps {
 	marginBottom: number;
 	safeRunAfterKeyboardHide: (handler: () => void) => void;
 }
 
-export const withResizeOnKeyboardShow = (BaseComponent: any) => {
+export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partial<NavigationStackScreenOptions>) => {
 	return class extends React.Component {
+		private static navigationOptions = navOptions;
+
 		public state = {
 			marginBottom: 0,
 			isHidden: false,

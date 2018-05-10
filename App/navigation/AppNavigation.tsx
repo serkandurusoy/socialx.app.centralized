@@ -13,6 +13,8 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
+import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
+import MediaLicenceScreen from '../screens/MediaLicenceScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
 import MessagingScreen from '../screens/MessagingScreen';
 import MyEventsScreen from '../screens/MyEventsScreen';
@@ -81,6 +83,8 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
 		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
 		CommentsStack: {screen: CommentsStackNavigator},
+		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
+		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
@@ -93,6 +97,16 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		headerMode: 'none',
 	});
 };
+
+const MediaLicenceStackNavigator = StackNavigator(
+	{
+		MediaLicenceScreen: {screen: MediaLicenceScreen},
+		MediaLicenceFAQScreen: {screen: MediaLicenceFAQScreen},
+	},
+	{
+		navigationOptions: navOptionsDefault,
+	},
+);
 
 const EventsStackNavigator = StackNavigator(
 	{
@@ -156,7 +170,7 @@ const MainScreenTabNavigation = TabNavigator(
 		},
 		lazy: true,
 		swipeEnabled: false,
-		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
+		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation}/>,
 	},
 );
 
@@ -199,7 +213,6 @@ const PrimaryNav = StackNavigator(
 		PreAuthScreen: {screen: PreAuthNavigator},
 		MainScreen: {screen: MainScreenWithModal},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
-		UserProfileScreen: {screen: UserProfileScreen}, // TODO: later to be moved!
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!
 	},
