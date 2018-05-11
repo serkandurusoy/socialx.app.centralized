@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons} from 'theme/';
-import {ISimpleMediaObject, MediaTypeImage} from 'types';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
 const GRID_PAGE_SIZE = 20;
@@ -59,15 +59,14 @@ const INITIAL_STATE = {
 	numberOfLikes: 24,
 	numberOfFollowers: 13401,
 	numberOfFollowing: 876324,
+	avatarURL: null,
+	fullName: '',
+	username: '',
+	aboutMeText: '',
 	isFollowed: false,
-	avatarURL: USER_BIG_AVATAR_URL,
-	fullName: FULL_NAME,
-	username: USER_NAME,
-	aboutMeText:
-		'You have finished building your own website. You have introduced your company and presented' +
-		' your products and services. You have added propositions and promos to catch your target audience’s ' +
-		'attention. You think you are doing everything “right”, but all your promotions have failed to produce growth.',
 	recentPosts: RECENT_USER_POSTS,
+	isLoading: true,
+	mediaObjects: [], // TODO: update this similar with MyProfileScreen
 };
 
 interface IUserProfileScreenProps {
@@ -85,6 +84,8 @@ interface IUserProfileScreenState {
 	username?: string;
 	aboutMeText: string;
 	recentPosts: IWallPostCardProp[];
+	isLoading: boolean;
+	mediaObjects: IMediaProps[];
 }
 
 export default class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileScreenState> {
@@ -115,11 +116,26 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 				toggleFollow: this.toggleFollowHandler,
 			});
 		});
+		const userId = this.props.navigation.state.params.userId;
+		console.log('TODO: start fetch user data here!', userId);
+		setTimeout(() => {
+			this.setState({
+				isLoading: false,
+				avatarURL: USER_BIG_AVATAR_URL,
+				fullName: FULL_NAME,
+				username: USER_NAME,
+				aboutMeText:
+					'You have finished building your own website. You have introduced your company and presented' +
+					' your products and services. You have added propositions and promos to catch your target audience’s ' +
+					'attention. You think you are doing everything “right”, but all your promotions have failed to produce growth.',
+			});
+		}, 3000); // TODO: remove this and replace with actual data loading logic
 	}
 
 	public render() {
 		return (
 			<UserProfileScreenComponent
+				isLoading={this.state.isLoading}
 				totalNumberOfPhotos={GRID_MAX_RESULTS}
 				gridPageSize={GRID_PAGE_SIZE}
 				numberOfPhotos={this.state.numberOfPhotos}
@@ -133,6 +149,8 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 				aboutMeText={this.state.aboutMeText}
 				recentPosts={this.state.recentPosts}
 				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, GRID_MAX_RESULTS)}
+				navigation={this.props.navigation}
+				allMediaObjects={this.state.mediaObjects}
 			/>
 		);
 	}
@@ -144,7 +162,7 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 		});
 	}
 
-	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): ISimpleMediaObject[] => {
+	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaViewerObject[] => {
 		const ret: ISimpleMediaObject[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {

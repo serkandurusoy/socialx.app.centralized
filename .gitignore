@@ -66,3 +66,4 @@ lerna-*.log
 
 # Bundle artifact
 *.jsbundle
+sourcemap.android.js
