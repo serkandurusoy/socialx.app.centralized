@@ -1,9 +1,8 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 
-import {Colors} from 'theme';
-import {AvatarImage} from '../../Avatar';
-import {ButtonSizes, SXButton} from '../../Interaction';
+import {AvatarImage} from 'components';
+import {Icons} from 'theme';
 import style from './style';
 
 export interface IGroupRequestProps {
@@ -11,6 +10,7 @@ export interface IGroupRequestProps {
 	fullName: string;
 	groupName: string;
 	onGroupConfirmed: () => void;
+	onGroupDeclined: () => void;
 }
 
 export const GroupRequest: React.SFC<IGroupRequestProps> = (props) => {
@@ -24,13 +24,12 @@ export const GroupRequest: React.SFC<IGroupRequestProps> = (props) => {
 					<Text style={style.groupName}>{'@' + props.groupName}</Text>
 				</View>
 			</View>
-			<SXButton
-				label={'Confirm'}
-				size={ButtonSizes.Small}
-				autoWidth={true}
-				borderColor={Colors.transparent}
-				onPress={props.onGroupConfirmed}
-			/>
+			<TouchableOpacity onPress={props.onGroupConfirmed} style={style.iconTouch}>
+				<Image source={Icons.greenRoundCheck} style={style.iconImage} />
+			</TouchableOpacity>
+			<TouchableOpacity onPress={props.onGroupDeclined} style={style.iconTouch}>
+				<Image source={Icons.redRoundCross} style={style.iconImage} />
+			</TouchableOpacity>
 		</View>
 	);
 };

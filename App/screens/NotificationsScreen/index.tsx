@@ -115,8 +115,8 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	public state = {
 		refreshing: false,
-		activityCards: [],
-		// activityCards: ACTIVITY_CARDS,
+		// activityCards: [],
+		activityCards: ACTIVITY_CARDS,
 		hasMore: false,
 	};
 
@@ -181,6 +181,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				onFriendRequestApproved={this.friendRequestApprovedHandler}
 				onFriendRequestDeclined={this.friendRequestDeclinedHandler}
 				onGroupRequestConfirmed={this.groupRequestConfirmedHandler}
+				onGroupRequestDeclined={this.onGroupRequestDeclinedHandler}
 			/>
 		);
 	}
@@ -247,6 +248,10 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
+	}
+
+	private onGroupRequestDeclinedHandler = (requestId: string) => {
+		alert('onGroupRequestDeclinedHandler: ' + requestId);
 	}
 
 	private checkNotification = async (requestId: string) => {

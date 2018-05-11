@@ -21,6 +21,7 @@ interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	onFriendRequestApproved: (requestId: string) => void;
 	onFriendRequestDeclined: (requestId: string) => void;
 	onGroupRequestConfirmed: (requestId: string) => void;
+	onGroupRequestDeclined: (requestId: string) => void;
 	onCheckNotification: (requestId: string) => void;
 	showConfirm: (confirmationOptions: IModalConfirmationProps) => void;
 	hideConfirm: () => void;
@@ -110,6 +111,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 					<GroupRequest
 						{...activityCardData}
 						onGroupConfirmed={() => this.props.onGroupRequestConfirmed(activityCardData.requestId)}
+						onGroupDeclined={() => this.props.onGroupRequestDeclined(activityCardData.requestId)}
 					/>
 				);
 		}
