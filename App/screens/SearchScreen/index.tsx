@@ -47,6 +47,7 @@ interface ISearchScreenState {
 	groupName: string;
 	groupDescription: string;
 	nextShowInvitePeople: boolean;
+	addFriendsRequestsInProgress: any;
 }
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
@@ -69,6 +70,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		groupName: '',
 		groupDescription: '',
 		nextShowInvitePeople: false,
+		addFriendsRequestsInProgress: {},
 	};
 
 	private blurView = null;
@@ -112,6 +114,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					setNewFilter={this.updateSelectedFilter}
 					createGroupHandler={() => this.toggleGroupInfoModal()}
 					onSearchResultSelect={this.onSearchResultSelectHandler}
+					addFriendsRequestsInProgress={this.state.addFriendsRequestsInProgress}
 				/>
 			</View>
 		);
@@ -200,15 +203,26 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private addFriendHandler = async (friendId: string) => {
 		const {addFriend} = this.props;
 		try {
+			const updatedRequests: any = {...this.state.addFriendsRequestsInProgress};
+			updatedRequests[friendId] = true;
+			this.setState({
+				addFriendsRequestsInProgress: updatedRequests,
+			});
+
 			await addFriend({
 				variables: {
 					user: friendId,
 				},
 			});
-			// @ionut: TODO -> make better
-			Alert.alert('Request', 'You\'r Friend request has been sent to the user!');
+
+			const afterAddRequests: any = {...this.state.addFriendsRequestsInProgress};
+			delete afterAddRequests[friendId];
+			this.setState({
+				addFriendsRequestsInProgress: afterAddRequests,
+			});
 		} catch (ex) {
-			// TODO: notify user that friend request didn't process
+			// TODO: @Ionut: revert add button when request fails!
+			Alert.alert('Error', 'Friend request could not be processed at this time. Try again later..');
 			console.log(`ex: ${ex}`);
 		}
 	}

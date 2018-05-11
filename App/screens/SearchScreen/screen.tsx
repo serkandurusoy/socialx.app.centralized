@@ -15,6 +15,7 @@ interface ISearchScreenComponentProps extends IAppUIStateProps {
 	addFriendHandler: (value: string) => void;
 	createGroupHandler: () => void;
 	onSearchResultSelect: (result: SearchResultData) => void;
+	addFriendsRequestsInProgress: any;
 }
 
 interface ISearchScreenComponentState {
@@ -113,10 +114,12 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 		const ret = [];
 		for (let i = 0; i < this.props.searchResults.length; i++) {
 			const searchResult = this.props.searchResults[i];
+			const isLoading = this.props.addFriendsRequestsInProgress.hasOwnProperty(searchResult.id);
 			ret.push(
 				<SearchResultEntry
 					key={i}
 					{...searchResult}
+					loading={isLoading}
 					addFriendHandler={() => this.props.addFriendHandler(searchResult.id)}
 					onEntrySelect={() => this.props.onSearchResultSelect(searchResult)}
 				/>,

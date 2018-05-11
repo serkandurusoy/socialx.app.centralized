@@ -5,6 +5,7 @@ const style: any = {
 	container: {
 		alignItems: 'center',
 		justifyContent: 'center',
+		flexDirection: 'row',
 		backgroundColor: Colors.pink,
 		borderWidth: 1,
 	},
@@ -41,6 +42,9 @@ const style: any = {
 	},
 	disabledButton: {
 		opacity: 0.5,
+	},
+	loadingIndicator: {
+		paddingLeft: Sizes.smartHorizontalScale(10),
 	},
 };
 
