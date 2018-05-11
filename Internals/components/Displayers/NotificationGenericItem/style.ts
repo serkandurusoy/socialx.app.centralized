@@ -3,13 +3,6 @@ import {Colors, Fonts, Sizes} from 'theme';
 
 const style: any = {
 	container: {
-		width: '100%',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingLeft: Sizes.smartHorizontalScale(25),
-		paddingRight: Sizes.smartHorizontalScale(12),
-		paddingVertical: Sizes.smartVerticalScale(24),
 		borderBottomColor: Colors.activityCardBottomBorder,
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 	},

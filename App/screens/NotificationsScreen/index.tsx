@@ -115,8 +115,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	public state = {
 		refreshing: false,
-		// activityCards: [],
-		activityCards: ACTIVITY_CARDS,
+		activityCards: [],
 		hasMore: false,
 	};
 
