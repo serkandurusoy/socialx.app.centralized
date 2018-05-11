@@ -1,5 +1,6 @@
 import React, {Component, ReactText} from 'react';
 import {Dimensions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {NavigationScreenProp} from 'react-navigation';
 import {DataProvider} from 'recyclerlistview';
 
 import {
@@ -10,15 +11,16 @@ import {
 	UserAvatar,
 	WallPostCard,
 } from 'components';
+import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Metrics} from 'theme';
-import {IMediaViewerObject, ISimpleMediaObject} from 'types';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject} from 'types';
 import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
 import style, {USER_MEDIA_THUMB_SIZE} from './style';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const GRID_PHOTOS_SCROLL_THRESHOLD = 150;
 
-interface IUserProfileScreenProps {
+interface IUserProfileScreenProps extends IWithLoaderProps {
 	numberOfPhotos: number;
 	numberOfLikes: number;
 	numberOfFollowers: number;
@@ -32,6 +34,8 @@ interface IUserProfileScreenProps {
 	loadMorePhotosHandler: () => ISimpleMediaObject[];
 	totalNumberOfPhotos: number;
 	gridPageSize: number;
+	navigation: NavigationScreenProp<any>;
+	allMediaObjects: IMediaProps[];
 }
 
 interface IUserProfileScreenComponentState {
@@ -41,10 +45,7 @@ interface IUserProfileScreenComponentState {
 	gridMediaProvider: DataProvider;
 }
 
-export default class UserProfileScreenComponent extends Component<
-	IUserProfileScreenProps,
-	IUserProfileScreenComponentState
-> {
+class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUserProfileScreenComponentState> {
 	public static getDerivedStateFromProps(
 		nextProps: Readonly<IUserProfileScreenProps>,
 		prevState: Readonly<IUserProfileScreenComponentState>,
@@ -76,7 +77,7 @@ export default class UserProfileScreenComponent extends Component<
 	}
 
 	public render() {
-		return (
+		return this.props.renderWithLoader(
 			<ScrollView
 				scrollEnabled={!this.state.isFollowed}
 				style={style.container}
@@ -98,7 +99,7 @@ export default class UserProfileScreenComponent extends Component<
 					/>
 				</View>
 				{this.conditionalRendering()}
-			</ScrollView>
+			</ScrollView>,
 		);
 	}
 
@@ -143,7 +144,7 @@ export default class UserProfileScreenComponent extends Component<
 		const mediaURL = getURLForMediaViewerObject(mediaData);
 		const mediaTypeProps = getTypePropsForMediaViewerObject(mediaData);
 		return (
-			<TouchableOpacity onPress={() => this.onPhotoPressHandler(mediaData.index)}>
+			<TouchableOpacity onPress={() => this.onViewMediaFullScreen(mediaData.index)}>
 				<MediaObjectViewer {...mediaTypeProps} uri={mediaURL} style={style.userMediaThumb} thumbOnly={true} />
 			</TouchableOpacity>
 		);
@@ -199,7 +200,13 @@ export default class UserProfileScreenComponent extends Component<
 		});
 	}
 
-	private onPhotoPressHandler = (index: number) => {
-		alert('TBD:onPhotoPressHandler ' + index);
+	private onViewMediaFullScreen = (index: number) => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			mediaObjects: this.props.allMediaObjects,
+			// mediaObjects: this.state.gridMediaProvider.getAllData(),
+			startIndex: index,
+		});
 	}
 }
+
+export default withInlineLoader(UserProfileScreenComponent);
