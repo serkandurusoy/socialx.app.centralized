@@ -13,6 +13,15 @@ const style: any = {
 		borderBottomColor: Colors.activityCardBottomBorder,
 		borderBottomWidth: Sizes.smartHorizontalScale(1),
 	},
+	swipeContainer: {
+		width: '100%',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingLeft: Sizes.smartHorizontalScale(25),
+		paddingRight: Sizes.smartHorizontalScale(12),
+		paddingVertical: Sizes.smartVerticalScale(24),
+	},
 	leftContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -49,6 +58,17 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(22),
 		color: Colors.tundora,
 		padding: Sizes.smartHorizontalScale(5),
+	},
+	leftSwipeContainer: {
+		backgroundColor: Colors.red,
+		alignItems: 'flex-end',
+		justifyContent: 'center',
+	},
+	leftText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(16),
+		color: Colors.white,
+		paddingHorizontal: Sizes.smartHorizontalScale(15),
 	},
 };
 

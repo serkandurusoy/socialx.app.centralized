@@ -99,7 +99,9 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				return (
 					<NotificationGI
 						{...activityCardData}
-						onCheckNotification={() => this.confirmDismissNotification(activityCardData.requestId)}
+						onCheckNotification={(confirmed: boolean) =>
+							this.confirmDismissNotification(activityCardData.requestId, confirmed)
+						}
 					/>
 				);
 
@@ -128,17 +130,21 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 		return null;
 	}
 
-	private confirmDismissNotification = (requestId: string) => {
-		this.props.showConfirm({
-			title: 'Hide notification?',
-			confirmHandler: () => {
-				this.props.hideConfirm();
-				this.props.onCheckNotification(requestId);
-			},
-			declineHandler: () => {
-				this.props.hideConfirm();
-			},
-		});
+	private confirmDismissNotification = (requestId: string, confirmed: boolean) => {
+		if (!confirmed) {
+			this.props.showConfirm({
+				title: 'Hide notification?',
+				confirmHandler: () => {
+					this.props.hideConfirm();
+					this.props.onCheckNotification(requestId);
+				},
+				declineHandler: () => {
+					this.props.hideConfirm();
+				},
+			});
+		} else {
+			this.props.onCheckNotification(requestId);
+		}
 	}
 }
 

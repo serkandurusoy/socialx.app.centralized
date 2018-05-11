@@ -12,3 +12,4 @@ export interface IAppUIAction {
 }
 
 export const UPDATE_TAB_BAR_BOTTOM_HEIGHT = 'update_tab_bar_bottom_height';
+export const START_APP = 'start_app';
