@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {Colors, Icons} from 'theme';
 import {SearchResultKind} from 'types';
 import {AvatarImage} from '../../Avatar';
@@ -12,6 +12,7 @@ export interface IUserRequestSearchProps {
 	username: string;
 	kind: SearchResultKind;
 	addFriendHandler?: () => void;
+	onEntrySelect?: () => void;
 }
 
 export const SearchResultEntry: React.SFC<IUserRequestSearchProps> = (props) => {
@@ -52,13 +53,13 @@ export const SearchResultEntry: React.SFC<IUserRequestSearchProps> = (props) => 
 
 	return (
 		<View style={style.container}>
-			<View style={style.leftContainer}>
+			<TouchableOpacity style={style.leftContainer} onPress={props.onEntrySelect}>
 				<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
 				<View style={style.avatarNameContainer}>
 					<Text style={style.fullName}>{props.fullName}</Text>
 					{renderUsername()}
 				</View>
-			</View>
+			</TouchableOpacity>
 			{conditionalRendering()}
 		</View>
 	);

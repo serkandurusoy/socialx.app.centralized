@@ -60,6 +60,8 @@ export interface SearchResultGroups {
 	avatarURL?: string;
 }
 
+export type SearchResultData = SearchResultPeople | SearchResultGroups;
+
 export interface SearchResultCreateGroup {
 	id: string;
 	fullName: string;

@@ -3,17 +3,18 @@ import React, {Component} from 'react';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import {connect} from 'react-redux';
 import {Icons} from 'theme/';
-import {IAppUIStateProps} from 'types';
-import {SearchFilterValues, SearchResultGroups, SearchResultPeople} from './index';
+import {IAppUIStateProps, SearchResultData} from 'types';
+import {SearchFilterValues} from './index';
 import style from './style';
 
 interface ISearchScreenComponentProps extends IAppUIStateProps {
 	searchTerm: string;
-	searchResults: SearchResultPeople[] | SearchResultGroups[];
+	searchResults: SearchResultData[];
 	selectedFilter: SearchFilterValues;
 	setNewFilter: (value: SearchFilterValues) => void;
 	addFriendHandler: (value: string) => void;
 	createGroupHandler: () => void;
+	onSearchResultSelect: (result: SearchResultData) => void;
 }
 
 interface ISearchScreenComponentState {
@@ -117,6 +118,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 					key={i}
 					{...searchResult}
 					addFriendHandler={() => this.props.addFriendHandler(searchResult.id)}
+					onEntrySelect={() => this.props.onSearchResultSelect(searchResult)}
 				/>,
 			);
 		}

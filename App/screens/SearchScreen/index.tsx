@@ -1,12 +1,13 @@
 import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
 import React, {Component} from 'react';
-import {Alert, findNodeHandle, InteractionManager, Platform, View} from 'react-native';
+import {Alert, findNodeHandle, InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import SearchScreenComponent from './screen';
 
 import {ipfsConfig as base} from 'configuration';
 
 import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
+import {SearchResultData, SearchResultPeople} from 'types';
 
 export enum SearchFilterValues {
 	People = 'people',
@@ -17,22 +18,6 @@ export enum SearchResultKind {
 	Friend = 'friend',
 	NotFriend = 'notFriend',
 	Group = 'group',
-}
-
-export interface SearchResultPeople {
-	id: string;
-	kind: SearchResultKind;
-	fullName: string;
-	username: string;
-	avatarURL?: string;
-}
-
-export interface SearchResultGroups {
-	id: string;
-	kind: SearchResultKind;
-	fullName: string;
-	username: string;
-	avatarURL?: string;
 }
 
 export interface SearchResultCreateGroup {
@@ -50,7 +35,7 @@ interface ISearchScreenProps {
 
 interface ISearchScreenState {
 	searchTerm: string;
-	searchResults: SearchResultPeople[] | SearchResultGroups[];
+	searchResults: SearchResultData[];
 	selectedFilter: SearchFilterValues;
 	invitePeopleModalVisible: boolean;
 	blurViewRef: any;
@@ -124,6 +109,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					selectedFilter={this.state.selectedFilter}
 					setNewFilter={this.updateSelectedFilter}
 					createGroupHandler={() => this.toggleGroupInfoModal()}
+					onSearchResultSelect={this.onSearchResultSelectHandler}
 				/>
 			</View>
 		);
@@ -210,20 +196,14 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		}
 	}
 
-	private getSearchResults = (term: string, filterValue: SearchFilterValues = this.state.selectedFilter) => {
-		let ret: SearchResultPeople[] | SearchResultGroups[] = [];
-		if (term.length > 3 && term.length < 8) {
-			ret = filterValue === SearchFilterValues.People ? SEARCH_RESULTS_PEOPLE : SEARCH_RESULTS_GROUPS;
-		}
-		return ret;
-	}
-
 	private addFriendHandler = async (friendId: string) => {
 		const {addFriend} = this.props;
 		try {
-			await addFriend({variables: {
-				user: friendId,
-			}});
+			await addFriend({
+				variables: {
+					user: friendId,
+				},
+			});
 			// @ionut: TODO -> make better
 			Alert.alert('Request', 'You\'r Friend request has been sent to the user!');
 		} catch (ex) {
@@ -239,11 +219,18 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	}
 
 	private createGroupSearchUpdated = (term: string) => {
-		let createGroupSearchResults: SearchResultCreateGroup[] = [];
-		if (term.length > 3 && term.length < 8) {
-			createGroupSearchResults = SEARCH_RESULTS_CREATE_GROUP;
+		// let createGroupSearchResults: SearchResultCreateGroup[] = [];
+		// if (term.length > 3 && term.length < 8) {
+		// 	createGroupSearchResults = SEARCH_RESULTS_CREATE_GROUP;
+		// }
+		// this.setState({createGroupSearchResults});
+	}
+
+	private onSearchResultSelectHandler = (result: SearchResultData) => {
+		if (result.kind === SearchResultKind.Friend || result.kind === SearchResultKind.NotFriend) {
+			this.props.navigation.navigate('UserProfileScreen', {userId: result.id});
 		}
-		this.setState({createGroupSearchResults});
+		// later add other user cases!
 	}
 }
 
