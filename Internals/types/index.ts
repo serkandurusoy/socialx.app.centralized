@@ -2,6 +2,7 @@ export * from './gql';
 export * from './appUI';
 export * from './popup';
 export * from './global';
+export * from './confirmation';
 
 // temp
 
