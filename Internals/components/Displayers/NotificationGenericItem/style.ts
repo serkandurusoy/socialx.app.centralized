@@ -15,6 +15,15 @@ const style: any = {
 		paddingRight: Sizes.smartHorizontalScale(12),
 		paddingVertical: Sizes.smartVerticalScale(24),
 	},
+	swipeContainer: {
+		width: '100%',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingLeft: Sizes.smartHorizontalScale(25),
+		paddingRight: Sizes.smartHorizontalScale(12),
+		paddingVertical: Sizes.smartVerticalScale(24),
+	},
 	leftContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
