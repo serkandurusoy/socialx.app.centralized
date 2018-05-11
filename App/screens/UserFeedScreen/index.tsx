@@ -152,7 +152,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					? base.ipfs_URL + post.owner.avatar.hash
 					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
 				imageSource: media,
-				mediaType: post.Media ? post.Media[0].type : null,
+				mediaType: post.Media.length ? post.Media[0].type : null,
 				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 				fullName: post.owner.name,
 				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
@@ -246,7 +246,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				});
 				mediaIds.push(gqlResp.data.addMedia.id);
 			}
-			if (mediaIds) {
+			if (mediaIds.length > 0) {
 				await createPost({
 					variables: {
 						text: data.text,
