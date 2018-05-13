@@ -85,6 +85,11 @@ export interface IUserQuery {
 	posts?: IPostsProps[];
 }
 
+interface IPaginatedPosts {
+	Items: IPostsProps[];
+	nextToken: string;
+}
+
 // <------------- Data Wrappers ------------->
 interface INotificationsData {
 	myNotifications: INotifications[];
@@ -95,7 +100,7 @@ interface IUserData {
 }
 
 interface IPostsData {
-	allPosts: IPostsProps[];
+	getPublicPosts: IPaginatedPosts;
 }
 
 export interface ICommentsResponse {

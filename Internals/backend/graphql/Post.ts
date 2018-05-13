@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
 import {graphql, QueryProps} from 'react-apollo';
 
+import {IAllPostsDataResponse} from 'types';
+
 const likePost = gql`
 	mutation likePost($postId: ID!) {
 		likePost(postId: $postId) {
@@ -76,4 +78,32 @@ export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: '
 
 export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'deletePost'})(comp);
 
-export const getPublicPostsHoc = (comp: any) => graphql(getPublicPostsQ, {name: 'Posts'});
+export const getPublicPostsHoc = (comp: any) =>
+	graphql(getPublicPostsQ, {
+		name: 'Posts',
+		props({Posts: {loading, getPublicPosts, fetchMore, refetch}}) {
+			const {nextToken} = getPublicPosts;
+			return {
+				loading,
+				Posts: getPublicPosts,
+				refresh: async () => {
+					await refetch();
+				},
+				loadMore: fetchMore({
+					variables: {next: nextToken},
+					updateQuery: (previousResult, { fetchMoreResult }) => {
+						const previousEntry = previousResult.entry;
+						const newPosts = fetchMoreResult.moreComments.Items;
+						const newNext = fetchMoreResult.moreComments.nextToken;
+						return {
+							nextToken: newNext,
+							entry: {
+								Items: [ ...newPosts, ...previousEntry.Items ],
+							},
+						};
+					},
+				}),
+			};
+			//
+		},
+	});
