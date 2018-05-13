@@ -17,6 +17,8 @@ import {ModalManager} from 'hoc/ManagedModal/manager';
 import {ipfsConfig as base} from 'configuration';
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
 
+import {AvatarImagePlaceholder} from 'consts';
+
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 
 import {Image as PickerImage} from 'react-native-image-crop-picker';
@@ -74,12 +76,11 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 
 	public render() {
 		const {data} = this.props;
-		const placeHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 		return (
 			<PhotoScreenComponent
 				isLoading={data.loading}
 				showTagFriendsModal={this.props.showAddFriendsModal}
-				avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : placeHolder}
+				avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : AvatarImagePlaceholder}
 				mediaObject={this.props.navigation.state.params.mediaObject}
 				taggedFriends={this.props.addedFriends}
 				ref={(ref) => (this.photoScreen = ref)}

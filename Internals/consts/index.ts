@@ -36,3 +36,6 @@ export enum CoinFullName {
 	SOCX = 'SOCX',
 	ETH = 'Ethereum',
 }
+
+export const AvatarImagePlaceholder =
+	'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';

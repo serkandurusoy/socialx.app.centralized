@@ -1,7 +1,9 @@
 import gql from 'graphql-tag';
 import {graphql, QueryProps} from 'react-apollo';
 
-import {IAllPostsDataResponse} from 'types';
+import {IAllPostsDataResponse, IPaginatedPosts} from 'types';
+
+import {AvatarImagePlaceholder} from 'consts';
 
 import {ipfsConfig as base} from 'configuration';
 
@@ -36,6 +38,18 @@ const deletePostMut = gql`
 		}
 	}
 `;
+
+interface IPostInputProps {
+	next: string;
+}
+
+interface IPostVariables {
+	next: string;
+}
+
+interface IPostResponse {
+	getPublicPosts: IPaginatedPosts;
+}
 
 const getPublicPostsQ = gql`
 	query getPublicPosts($next: String) {
@@ -80,6 +94,7 @@ export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: '
 
 export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'deletePost'})(comp);
 
+// IPostInputProps, IPostResponse, IPostVariables
 export const getPublicPostsHoc = (comp: any) =>
 	graphql(getPublicPostsQ, {
 		name: 'Posts',
@@ -108,12 +123,12 @@ export const getPublicPostsHoc = (comp: any) =>
 					rets.push({
 						id: post.id,
 						text: post.text,
-						location: null, // TODO: enable this later when we have backend support
+						location: post.location,
 						smallAvatar: post.owner.avatar
-							? base.ipfs_URL + post.owner.avatar.hash
-							: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+							? base.ipfs_URL + post.owner.avatar.hash : AvatarImagePlaceholder,
 						imageSource: media,
 						mediaType: post.Media.length ? post.Media[0].type : null,
+						media: post.Media,
 						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 						fullName: post.owner.name,
 						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),

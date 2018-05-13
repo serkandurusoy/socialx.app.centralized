@@ -20,6 +20,9 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
+	onMediaPress: any;
+	onLikePress: any;
+	onPostDeletePress: any;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -33,6 +36,9 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					{...data.item}
 					canDelete={canDelete}
 					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
+					onImageClick={() => props.onMediaPress(0, data.item.media)}
+					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
+					onLikeButtonClick={() => props.onLikePress(data.item.id)}
 				/>
 			</View>
 		);

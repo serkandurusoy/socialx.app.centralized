@@ -96,6 +96,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				showNewWallPostPage={this.showNewWallPostPage}
 				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 				hideShareSection={this.props.hideShareSection}
+
+				onMediaPress={this.onMediaObjectPressHandler}
+				onLikePress={this.onLikeButtonClickHandler}
+				onPostDeletePress={this.onPostDeleteClickHandler}
 			/>
 		);
 	}
@@ -182,36 +186,24 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onMediaObjectPressHandler = (index: number, mediaObjects: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: mediaObjects ? [mediaObjects[0]] : [],
+			mediaObjects: mediaObjects || [],
 			startIndex: index,
 		});
 	}
 
-	private onLikeButtonClickHandler = async (postId: string) => {
+	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		const {likePost, removeLikePost, Items, refresh} = this.props;
 
-		const post: any = Items.find((p: IWallPostCardProp) => p.id === postId);
-		if (!post) {
-			return;
-		}
+		const likeQuery = {variables: {postId}};
 
-		const likeQuery = {variables: {postId: post.id}};
-
-		const result = post.likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
+		const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 
 		if (result.error) {
 			console.log(result.error);
 			return;
 		}
 
-		const {likes} = result.data[post.likedByMe ? 'removelikePost' : 'likePost'];
 		await refresh();
-		// TODO: make better
-		// this.setState((preveState: IUserFeedScreenState | any) => ({
-		// 	wallPosts: preveState.wallPosts.map((p: IWallPostCardProp) => {
-		// 		return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
-		// 	}),
-		// }));
 	}
 
 	private onPostDeleteClickHandler = async (postId: string) => {

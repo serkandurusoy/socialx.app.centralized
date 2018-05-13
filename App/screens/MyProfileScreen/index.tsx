@@ -8,6 +8,8 @@ import {ipfsConfig as base} from 'configuration';
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {IMediaProps, IUserDataResponse} from 'types';
 
+import {AvatarImagePlaceholder} from 'consts';
+
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
 
@@ -73,8 +75,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		const userAvatar = avatar
-			? base.ipfs_URL + avatar.hash
-			: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+			? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
