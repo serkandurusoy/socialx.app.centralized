@@ -85,7 +85,7 @@ export interface IUserQuery {
 	posts?: IPostsProps[];
 }
 
-interface IPaginatedPosts {
+export interface IPaginatedPosts {
 	Items: IPostsProps[];
 	nextToken: string;
 }

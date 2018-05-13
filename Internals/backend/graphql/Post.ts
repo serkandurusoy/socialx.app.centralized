@@ -3,6 +3,8 @@ import {graphql, QueryProps} from 'react-apollo';
 
 import {IAllPostsDataResponse} from 'types';
 
+import {ipfsConfig as base} from 'configuration';
+
 const likePost = gql`
 	mutation likePost($postId: ID!) {
 		likePost(postId: $postId) {
@@ -81,29 +83,82 @@ export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'de
 export const getPublicPostsHoc = (comp: any) =>
 	graphql(getPublicPostsQ, {
 		name: 'Posts',
-		props({Posts: {loading, getPublicPosts, fetchMore, refetch}}) {
-			const {nextToken} = getPublicPosts;
+		props(pps) {
+			const {
+				Posts: {loading, error, getPublicPosts, fetchMore, refetch},
+			} = pps;
+			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
+			const {nextToken, Items} = getPublicPosts;
+			const numberOfComments = (post: any) => {
+				let cres = 0;
+				for (let x = 0; x < post.comments.length; x++) {
+					cres += post.comments[x].comments.length + 1;
+				}
+				return cres;
+			};
+			const dataSpine = () => {
+				let rets = [];
+				for (let i = 0; i < getPublicPosts.Items.length; i++) {
+					const post = getPublicPosts.Items[i];
+					const media = post.Media
+						? post.Media.length > 0
+							? base.ipfs_URL + post.Media[0].optimizedHash
+							: undefined
+						: undefined;
+					rets.push({
+						id: post.id,
+						text: post.text,
+						location: null, // TODO: enable this later when we have backend support
+						smallAvatar: post.owner.avatar
+							? base.ipfs_URL + post.owner.avatar.hash
+							: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+						imageSource: media,
+						mediaType: post.Media.length ? post.Media[0].type : null,
+						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+						fullName: post.owner.name,
+						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+						numberOfLikes: post.likes.length,
+						numberOfSuperLikes: 0,
+						numberOfComments: numberOfComments(post),
+						numberOfWalletCoins: 0,
+						onCommentsButtonClick: () => {},
+						// TODO: append all media to this with the index of the image
+						onImageClick: () => null,
+						onLikeButtonClick: () => null,
+						likedByMe: false,
+						canDelete: false,
+						owner: post.owner,
+						onDeleteClick: null,
+					});
+				}
+				return rets;
+			};
+
 			return {
 				loading,
-				Posts: getPublicPosts,
+				Items: dataSpine(),
 				refresh: async () => {
 					await refetch();
 				},
-				loadMore: fetchMore({
-					variables: {next: nextToken},
-					updateQuery: (previousResult, { fetchMoreResult }) => {
-						const previousEntry = previousResult.entry;
-						const newPosts = fetchMoreResult.moreComments.Items;
-						const newNext = fetchMoreResult.moreComments.nextToken;
-						return {
-							nextToken: newNext,
-							entry: {
-								Items: [ ...newPosts, ...previousEntry.Items ],
+				noPosts: !Items.length,
+				loadMore: nextToken
+					? fetchMore({
+							variables: {next: nextToken},
+							updateQuery: (previousResult, {fetchMoreResult}) => {
+								const previousEntry = previousResult.entry;
+								const newPosts = fetchMoreResult.getPublicPosts.Items;
+								const newNext = fetchMoreResult.getPublicPosts.nextToken;
+								const previousItems = previousEntry ? previousEntry.Items : [];
+
+								return {
+									nextToken: newNext,
+									entry: {
+										Items: [...newPosts, ...previousItems],
+									},
+								};
 							},
-						};
-					},
-				}),
+					  })
+					: null,
 			};
-			//
 		},
-	});
+	})(comp);

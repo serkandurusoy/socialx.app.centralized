@@ -19,7 +19,15 @@ import {
 	userHoc,
 } from 'backend/graphql';
 import {graphql} from 'react-apollo';
-import {IAllPostsDataResponse, IComments, ICommentsResponse, IPostsProps, IUserDataResponse, IUserQuery} from 'types';
+import {
+	IAllPostsDataResponse,
+	IComments,
+	ICommentsResponse,
+	IPaginatedPosts,
+	IPostsProps,
+	IUserDataResponse,
+	IUserQuery,
+} from 'types';
 import {CurrentUser} from 'utilities';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
@@ -34,7 +42,8 @@ import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/scree
 import {IMediaRec} from './types';
 
 export interface IFeedProps {
-	Posts: IAllPostsDataResponse;
+	Posts: IPaginatedPosts;
+	loadMore: any;
 	navigation: NavigationScreenProp<any>;
 	hideShareSection: boolean;
 }
@@ -52,54 +61,37 @@ interface IUserFeedScreenProps extends IFeedProps {
 	deletingPostLoad: any;
 	stopLoading: any;
 	deletePost: any;
+	loading: boolean;
+	noPosts: boolean;
+	refresh: () => void;
+	loadMore: () => void;
+	Items: any;
 }
 
 interface IUserFeedScreenState {
-	allWallPosts: IWallPostCardProp[];
-	wallPosts: IWallPostCardProp[];
 	refreshing: boolean;
-	currentLoad: number;
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	public state = {
-		allWallPosts: [],
-		wallPosts: [],
 		refreshing: false,
-		currentLoad: 0,
 	};
 
-	public componentWillReceiveProps(nextProps: IUserFeedScreenProps) {
-		if (nextProps.Posts.loading || nextProps.data.loading) {
-			return;
-		}
-		if (this.state.wallPosts.length === 0 && nextProps.Posts.allPosts.length > 0) {
-			this.loadMorePostsHandler(nextProps);
-		}
-	}
-
-	// public shouldComponentUpdate(nextProp: IUserFeedScreenProps, nextState: IUserFeedScreenState) {
-	// 	if (nextProp.Posts.loading || nextProp.data.loading) {
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
-
 	public render() {
-		const {Posts, data} = this.props;
-		const isLoading = data.loading || Posts.loading || this.state.wallPosts.length === 0;
-		const noPosts = !Posts.loading && Posts.allPosts.length === 0;
+		console.log(this.props);
+		const {Posts, data, loading, noPosts, refresh, loadMore, Items} = this.props;
+		const isLoading = data.loading || loading;
 
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
-				isLoading={isLoading}
+				isLoading={loading}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
 				avatarImage={this.getAvatarImage()}
-				wallPosts={this.state.wallPosts}
-				loadMorePosts={this.loadMorePostsHandler}
+				wallPosts={Items}
+				loadMorePosts={loadMore}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
 				onCommentsButtonClick={this.onCommentsButtonClickHandler}
@@ -111,76 +103,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
 		const {Posts, data} = this.props;
-		if (!data.loading && !Posts.loading && data.user.avatar) {
+		if (!data.loading && data.user.avatar) {
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
 		return ret;
-	}
-
-	private getWallPosts = async (nextProps?: IUserFeedScreenProps) => {
-		const {data, Posts} = this.props;
-		const dataSpine: any[] = [];
-
-		const allPosts = nextProps && nextProps.Posts ? nextProps.Posts.allPosts : Posts.allPosts;
-
-		if (!allPosts || allPosts.length < 0) {
-			return dataSpine;
-		}
-
-		for (let i = 0; i < allPosts.length; i++) {
-			const post: IPostsProps = allPosts[i];
-			// TODO: for each media create a Photo handler object to pass on a click / display multiple / etc..
-			const media = post.Media
-				? post.Media.length > 0
-					? base.ipfs_URL + post.Media[0].optimizedHash
-					: undefined
-				: undefined;
-			const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === data.user.userId);
-			const numberOfComments = () => {
-				let cres = 0;
-				for (let x = 0; x < post.comments.length; x++) {
-					cres += post.comments[x].comments.length + 1;
-				}
-				return cres;
-			};
-
-			const res: IWallPostCardProp = {
-				id: post.id,
-				text: post.text,
-				location: null, // TODO: enable this later when we have backend support
-				smallAvatar: post.owner.avatar
-					? base.ipfs_URL + post.owner.avatar.hash
-					: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-				imageSource: media,
-				mediaType: post.Media.length ? post.Media[0].type : null,
-				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
-				fullName: post.owner.name,
-				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
-				numberOfLikes: post.likes.length,
-				numberOfSuperLikes: 0,
-				numberOfComments: numberOfComments(),
-				numberOfWalletCoins: 0,
-				onCommentsButtonClick: () => Alert.alert('click'),
-				// TODO: append all media to this with the index of the image
-				onImageClick: () => this.onMediaObjectPressHandler(0, post.Media),
-				onLikeButtonClick: () => this.onLikeButtonClickHandler(post.id),
-				likedByMe,
-				canDelete: false,
-				owner: post.owner,
-				onDeleteClick: this.onPostDeleteClickHandler,
-			};
-			dataSpine.push(res);
-		}
-
-		// TODO @Jake: if we want to have this as generic as possible, maybe the posts should already be sorted from
-		// hoc or even gql query?
-
-		// sort posts by time desc (most recent)
-		return dataSpine.sort((a, b) => {
-			a = a.timestamp;
-			b = b.timestamp;
-			return a > b ? -1 : a < b ? 1 : 0;
-		});
 	}
 
 	private showNewWallPostPage = () => {
@@ -191,36 +117,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			fullName: this.props.data.user.name,
 			avatarImage: avatarUri,
 			postCreate: this.addWallPostHandler,
-		});
-	}
-
-	private loadMorePostsHandler = async (nextProps?: IUserFeedScreenProps) => {
-		const {wallPosts} = this.state;
-		const Posts = await this.getWallPosts(nextProps);
-
-		if (Posts.length < 0) {
-			return;
-		}
-
-		if (wallPosts.length === Posts.length) {
-			return;
-		}
-
-		let appendRate = Posts.length % 2 === 0 ? 2 : 1;
-		const rest: any = [];
-		let currentLoadNew = wallPosts.length;
-
-		if (Posts.length < 4) {
-			appendRate = Posts.length;
-			currentLoadNew = 0;
-		}
-
-		for (currentLoadNew; currentLoadNew < wallPosts.length + appendRate; currentLoadNew++) {
-			rest.push(Posts[currentLoadNew]);
-		}
-
-		this.setState({
-			wallPosts: this.state.wallPosts.concat(rest),
 		});
 	}
 
@@ -274,13 +170,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.setState({refreshing: true});
 		try {
 			await this.props.data.refetch();
-			await this.props.Posts.refetch();
+			await this.props.refresh();
 			this.setState({
 				refreshing: false,
-				wallPosts: [],
-				currentLoad: 0,
 			});
-			this.loadMorePostsHandler();
 		} catch (Ex) {
 			this.setState({refreshing: false});
 			console.log('ex', Ex);
@@ -295,10 +188,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onLikeButtonClickHandler = async (postId: string) => {
-		const {likePost, removeLikePost} = this.props;
-		const {wallPosts} = this.state;
+		const {likePost, removeLikePost, Items, refresh} = this.props;
 
-		const post: any = wallPosts.find((p: IWallPostCardProp) => p.id === postId);
+		const post: any = Items.find((p: IWallPostCardProp) => p.id === postId);
 		if (!post) {
 			return;
 		}
@@ -313,12 +205,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		const {likes} = result.data[post.likedByMe ? 'removelikePost' : 'likePost'];
+		await refresh();
 		// TODO: make better
-		this.setState((preveState: IUserFeedScreenState | any) => ({
-			wallPosts: preveState.wallPosts.map((p: IWallPostCardProp) => {
-				return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
-			}),
-		}));
+		// this.setState((preveState: IUserFeedScreenState | any) => ({
+		// 	wallPosts: preveState.wallPosts.map((p: IWallPostCardProp) => {
+		// 		return p.id === post.id ? {...p, numberOfLikes: likes.length, likedByMe: !p.likedByMe} : p;
+		// 	}),
+		// }));
 	}
 
 	private onPostDeleteClickHandler = async (postId: string) => {
