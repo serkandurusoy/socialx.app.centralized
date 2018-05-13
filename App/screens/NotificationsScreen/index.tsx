@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import NotificationsScreenComponent from './screen';
 
-import {Text, View} from 'react-native';
-
 import {
 	acceptFriendRequestHoc,
 	checkNotificationHoc,
@@ -107,6 +105,7 @@ interface INotificationsScreenProps {
 interface INotificationsScreenState {
 	activityCards: any[];
 	refreshing: boolean;
+	hasMore: boolean;
 }
 
 class NotificationsScreen extends Component<INotificationsScreenProps, INotificationsScreenState> {
@@ -117,6 +116,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	public state = {
 		refreshing: false,
 		activityCards: [],
+		hasMore: false,
 	};
 
 	public componentWillReceiveProps(nextProps: INotificationsScreenProps) {
@@ -171,6 +171,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				isLoading={notifications.loading}
 				activityCards={this.state.activityCards}
 				refreshing={this.state.refreshing}
+				hasMore={this.state.hasMore}
 				refreshData={this.refreshNotifications}
 				loadMoreNotifications={this.loadMoreNotificationsHandler}
 				onPostThumbPressed={this.postThumbPressedHandler}
@@ -179,6 +180,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				onFriendRequestApproved={this.friendRequestApprovedHandler}
 				onFriendRequestDeclined={this.friendRequestDeclinedHandler}
 				onGroupRequestConfirmed={this.groupRequestConfirmedHandler}
+				onGroupRequestDeclined={this.onGroupRequestDeclinedHandler}
 			/>
 		);
 	}
@@ -200,6 +202,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		// this.setState({
 		// 	activityCards: this.state.activityCards.concat(ACTIVITY_CARDS),
 		// });
+		// make sure to update state.hasMore
 	}
 
 	private postThumbPressedHandler = (postId: string) => {
@@ -244,6 +247,10 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
+	}
+
+	private onGroupRequestDeclinedHandler = (requestId: string) => {
+		alert('onGroupRequestDeclinedHandler: ' + requestId);
 	}
 
 	private checkNotification = async (requestId: string) => {

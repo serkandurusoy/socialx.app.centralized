@@ -1,21 +1,21 @@
-import {resetNavigationToRoute} from 'backend/actions';
-import {SXButton} from 'components/Interaction';
-import {ModalConfirmation} from 'components/Modals';
 import React, {Component} from 'react';
 import {Image, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {connect} from 'react-redux';
+
+import {hideModalConfirmation, resetNavigationToRoute, showModalConfirmation} from 'backend/actions';
+import {SXButton} from 'components/Interaction';
 import {Colors, Images} from 'theme';
+import {IModalConfirmationProps} from 'types';
 import style from './style';
 
 export interface ISaveKeyScreenProps {
 	navigation: NavigationScreenProp<any>;
+	showConfirm: (confirmationOptions: IModalConfirmationProps) => void;
+	hideConfirm: () => void;
 }
 
-export interface ISaveKeyScreenState {
-	modalVisible: boolean;
-}
-
-export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveKeyScreenState> {
+class SaveKeyScreen extends Component<ISaveKeyScreenProps> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
 		headerStyle: {
 			borderBottomWidth: 0,
@@ -24,20 +24,9 @@ export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveK
 		},
 	};
 
-	public state = {
-		modalVisible: false,
-	};
-
 	public render() {
 		return (
 			<View style={style.container}>
-				<ModalConfirmation
-					title={'Important Notification'}
-					message={'Are you sure you saved your private key at a secure location?'}
-					confirmHandler={this.confirmKeySaved}
-					declineHandler={this.toggleModalShow}
-					visible={this.state.modalVisible}
-				/>
 				<Image source={Images.unlock_key} resizeMode={'cover'} style={style.unlockImage} />
 				<Text style={style.uploadKeyText}>{'Welcome, save your'}</Text>
 				<Text style={style.uploadKeyText}>{'Private Key'}</Text>
@@ -46,19 +35,30 @@ export default class SaveKeyScreen extends Component<ISaveKeyScreenProps, ISaveK
 					{'We removed any trace of your password.'}
 				</Text>
 				<View style={style.chooseKeyButton}>
-					<SXButton label={'DOWNLOAD UNLOCK FILE'} onPress={this.toggleModalShow} />
+					<SXButton label={'DOWNLOAD UNLOCK FILE'} onPress={this.presentModalConfirmationHandler} />
 				</View>
 			</View>
 		);
 	}
 
-	private toggleModalShow = () => {
-		this.setState({
-			modalVisible: !this.state.modalVisible,
+	private presentModalConfirmationHandler = () => {
+		this.props.showConfirm({
+			title: 'Important Notification',
+			message: 'Are you sure you saved your private key at a secure location?',
+			confirmHandler: this.confirmKeySaved,
+			declineHandler: this.props.hideConfirm,
 		});
 	}
 
 	private confirmKeySaved = () => {
+		this.props.hideConfirm();
 		resetNavigationToRoute('MainScreen', this.props.navigation);
 	}
 }
+
+const mapDispatchToProps = (dispatch: any) => ({
+	showConfirm: (confirmationOptions: IModalConfirmationProps) => dispatch(showModalConfirmation(confirmationOptions)),
+	hideConfirm: () => dispatch(hideModalConfirmation()),
+});
+
+export default connect(null, mapDispatchToProps)(SaveKeyScreen as any);

@@ -16,6 +16,7 @@ import {Colors} from 'theme';
 import {AppsyncClient, Rehydrated} from 'backend/appsync';
 import RootContainer from './containers/RootContainer';
 
+import {START_APP} from 'types';
 import createStore from './reducers';
 
 const reduxStage = createStore();
@@ -35,7 +36,7 @@ export default class App extends Component<{}, {}> {
 			<ApolloProvider client={AppsyncClient}>
 				<Rehydrated>
 					<Provider store={store}>
-						<PersistGate loading={null} persistor={persistor}>
+						<PersistGate loading={null} persistor={persistor} onBeforeLift={() => store.dispatch({type: START_APP})}>
 							<RootContainer />
 						</PersistGate>
 					</Provider>
