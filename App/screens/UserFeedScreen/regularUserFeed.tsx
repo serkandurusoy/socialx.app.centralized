@@ -1,4 +1,4 @@
-import {getAllPostsHoc} from 'backend/graphql';
+import {getPublicPostsHoc} from 'backend/graphql';
 import {ScreenHeaderButton} from 'components';
 import React from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
@@ -36,5 +36,5 @@ const navigateToHotPosts = (props: IFeedProps) => {
 	props.navigation.navigate('HotPostsFeedScreenStack');
 };
 
-const withAllPosts = getAllPostsHoc(UserFeedScreen);
+const withAllPosts = getPublicPostsHoc(UserFeedScreen);
 export default withRegularUserFeed(withAllPosts, navigationOptions as any);

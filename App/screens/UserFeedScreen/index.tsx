@@ -12,7 +12,7 @@ import {
 	addMediaHoc,
 	createPostHoc,
 	deleteOwnPostHoc,
-	getAllPostsHoc,
+	getPublicPostsHoc,
 	getUserPostsHoc,
 	likePostHoc,
 	removeLikePostHoc,

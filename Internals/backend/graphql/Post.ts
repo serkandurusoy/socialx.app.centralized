@@ -33,7 +33,47 @@ const deletePostMut = gql`
 	}
 `;
 
+const getPublicPostsQ = gql`
+	query getPublicPosts($next: String) {
+		getPublicPosts(next: $next) {
+			Items {
+				id
+				text
+				createdAt
+				location
+				likes {
+					userId
+				}
+				Media {
+					id
+					hash
+					optimizedHash
+					type
+				}
+				owner {
+					userId
+					username
+					name
+					avatar {
+						id
+						hash
+					}
+				}
+				comments {
+					id
+					comments {
+						id
+					}
+				}
+			}
+			nextToken
+		}
+	}
+`;
+
 export const likePostHoc = (comp: any) => graphql(likePost, {name: 'likePost'})(comp);
 export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: 'removeLikePost'})(comp);
 
 export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'deletePost'})(comp);
+
+export const getPublicPostsHoc = (comp: any) => graphql(getPublicPostsQ, {name: 'Posts'});

@@ -33,9 +33,9 @@ export interface IWallPostCardProp {
 	numberOfSuperLikes: number;
 	numberOfComments: number;
 	numberOfWalletCoins: number;
-	onImageClick: () => void;
-	onLikeButtonClick: () => void;
-	onCommentsButtonClick: () => void;
+	onImageClick: (id: string) => void;
+	onLikeButtonClick: (id: string) => void;
+	onCommentsButtonClick: (id: string) => void;
 	onDeleteClick: (postId: string) => void;
 	likedByMe?: boolean;
 	canDelete: boolean;

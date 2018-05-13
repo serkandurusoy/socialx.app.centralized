@@ -61,7 +61,7 @@ export interface IPostsProps {
 	id: string;
 	createdAt: string;
 	text: string;
-	Media?: IMediaProps[];
+	Media: IMediaProps[];
 	owner: IUserQuery;
 	likes: IUserQuery[];
 	comments: IComments[];
