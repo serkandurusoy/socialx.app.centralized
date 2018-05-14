@@ -38,7 +38,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					canDelete={canDelete}
 					likedByMe={likedByMe}
 					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
-					onImageClick={() => props.onMediaPress(0, data.item.media)}
+					onImageClick={(index) => props.onMediaPress(index, data.item.media)}
 					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
 				/>

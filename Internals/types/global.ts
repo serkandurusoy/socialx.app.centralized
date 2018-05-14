@@ -34,8 +34,8 @@ export interface ISimpleMediaObject {
 	index?: number;
 }
 
-export interface IMediaProsWithIndex extends IMediaProps {
+export interface IMediaPropsWithIndex extends IMediaProps {
 	index?: number;
 }
 
-export type IMediaViewerObject = IMediaProsWithIndex | ISimpleMediaObject;
+export type IMediaViewerObject = IMediaPropsWithIndex | ISimpleMediaObject;
