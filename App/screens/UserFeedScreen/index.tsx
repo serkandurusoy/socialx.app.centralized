@@ -78,10 +78,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public render() {
-		console.log(this.props);
 		const {Posts, data, loading, noPosts, refresh, loadMore, Items} = this.props;
-		const isLoading = data.loading || loading;
 
+		console.log(this.props);
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
@@ -102,6 +101,15 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onPostDeletePress={this.onPostDeleteClickHandler}
 			/>
 		);
+	}
+
+	private onLoadMore = async () => {
+		const {loadMore} = this.props;
+		try {
+			const at = await loadMore();
+		} catch (ex) {
+			console.log(ex);
+		}
 	}
 
 	private getAvatarImage = () => {
@@ -197,6 +205,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const likeQuery = {variables: {postId}};
 
 		const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
+		console.log('result:', result);
 
 		if (result.error) {
 			console.log(result.error);

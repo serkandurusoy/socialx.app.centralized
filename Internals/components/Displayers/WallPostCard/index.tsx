@@ -41,6 +41,7 @@ export interface IWallPostCardProp {
 	canDelete: boolean;
 	owner: IUserQuery;
 	media: any;
+	likes: any;
 }
 
 export interface IWallPostCardState {

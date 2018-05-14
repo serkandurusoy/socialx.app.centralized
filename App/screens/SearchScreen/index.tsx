@@ -211,7 +211,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			// TODO: notify user that friend request didn't process
 			console.log(`ex: ${ex}`);
 		}
-		// alert('Add friend with ID ' + friendId);
 	}
 
 	private handleCreateNewGroup = () => {

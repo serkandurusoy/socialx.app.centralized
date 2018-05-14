@@ -98,12 +98,13 @@ export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'de
 export const getPublicPostsHoc = (comp: any) =>
 	graphql(getPublicPostsQ, {
 		name: 'Posts',
+		options: {fetchPolicy: 'network-only'},
 		props(pps) {
 			const {
 				Posts: {loading, error, getPublicPosts, fetchMore, refetch},
 			} = pps;
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
-			const {nextToken, Items} = getPublicPosts;
+			const {nextToken, Items, rawItems} = getPublicPosts;
 			const numberOfComments = (post: any) => {
 				let cres = 0;
 				for (let x = 0; x < post.comments.length; x++) {
@@ -111,10 +112,11 @@ export const getPublicPostsHoc = (comp: any) =>
 				}
 				return cres;
 			};
-			const dataSpine = () => {
+
+			const dataSpine = (pItems: any) => {
 				let rets = [];
-				for (let i = 0; i < getPublicPosts.Items.length; i++) {
-					const post = getPublicPosts.Items[i];
+				for (let i = 0; i < pItems.length; i++) {
+					const post = pItems[i];
 					const media = post.Media
 						? post.Media.length > 0
 							? base.ipfs_URL + post.Media[0].optimizedHash
@@ -124,8 +126,7 @@ export const getPublicPostsHoc = (comp: any) =>
 						id: post.id,
 						text: post.text,
 						location: post.location,
-						smallAvatar: post.owner.avatar
-							? base.ipfs_URL + post.owner.avatar.hash : AvatarImagePlaceholder,
+						smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash : AvatarImagePlaceholder,
 						imageSource: media,
 						mediaType: post.Media.length ? post.Media[0].type : null,
 						media: post.Media,
@@ -140,40 +141,44 @@ export const getPublicPostsHoc = (comp: any) =>
 						// TODO: append all media to this with the index of the image
 						onImageClick: () => null,
 						onLikeButtonClick: () => null,
-						likedByMe: false,
 						canDelete: false,
 						owner: post.owner,
 						onDeleteClick: null,
+						likes: post.likes,
 					});
 				}
 				return rets;
 			};
-
 			return {
 				loading,
-				Items: dataSpine(),
+				rawItems: Items,
+				Items: dataSpine(Items),
 				refresh: async () => {
 					await refetch();
 				},
 				noPosts: !Items.length,
-				loadMore: nextToken
-					? fetchMore({
-							variables: {next: nextToken},
-							updateQuery: (previousResult, {fetchMoreResult}) => {
-								const previousEntry = previousResult.entry;
-								const newPosts = fetchMoreResult.getPublicPosts.Items;
-								const newNext = fetchMoreResult.getPublicPosts.nextToken;
-								const previousItems = previousEntry ? previousEntry.Items : [];
+				loadMore: () => fetchMore({
+					variables: {next: nextToken},
+					updateQuery: (previousResult, {fetchMoreResult}) => {
+						const previousEntry = previousResult.getPublicPosts;
+						const previousItems = previousEntry ? previousEntry.Items : [];
 
-								return {
-									nextToken: newNext,
-									entry: {
-										Items: [...newPosts, ...previousItems],
-									},
-								};
+						const newItems = fetchMoreResult.getPublicPosts.Items;
+						const newNext = fetchMoreResult.getPublicPosts.nextToken;
+
+						const newPosts = {
+							getPublicPosts : {
+								nextToken: newNext,
+								Items: newNext ? previousItems.concat(newItems) : previousItems,
+								__typename: 'PaginatedPosts',
 							},
-					  })
-					: null,
+						};
+
+						const res = newNext ? newPosts : previousResult;
+
+						return res;
+					},
+				}),
 			};
 		},
 	})(comp);
