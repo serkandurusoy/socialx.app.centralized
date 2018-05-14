@@ -212,7 +212,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return;
 		}
 
-		await refresh();
+		// await refresh();
 	}
 
 	private onPostDeleteClickHandler = async (postId: string) => {
