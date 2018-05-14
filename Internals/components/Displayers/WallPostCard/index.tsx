@@ -2,12 +2,13 @@ import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import moment from 'moment';
 import React, {Component} from 'react';
-import {findNodeHandle, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
-import {IUserQuery} from 'types';
+import {IMediaProps, IUserQuery} from 'types';
+import {getURLForMediaViewerObject} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import {MediaObjectViewer} from '../MediaObject';
@@ -33,7 +34,7 @@ export interface IWallPostCardProp {
 	numberOfSuperLikes: number;
 	numberOfComments: number;
 	numberOfWalletCoins: number;
-	onImageClick: () => void;
+	onImageClick: (index: number) => void;
 	onLikeButtonClick: () => void;
 	onCommentsButtonClick: () => void;
 	onDeleteClick: (postId: string) => void;
@@ -101,17 +102,74 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private renderWallPostMedia = () => {
-		if (this.props.imageSource) {
-			return (
-				<MediaObjectViewer
-					onPress={this.props.onImageClick}
-					uri={this.props.imageSource}
-					style={style.postImage}
-					extension={this.props.mediaType}
-				/>
-			);
+		if (this.props.media.length > 2) {
+			return this.renderMultiMediaPost(this.props.media);
+		} else if (this.props.media.length > 1) {
+			return this.renderDualMediaPost(this.props.media);
+		} else if (this.props.media.length > 0) {
+			return this.renderSingleMediaPost(this.props.media[0]);
 		}
 		return null;
+	}
+
+	private renderSingleMediaPost = (mediaProps: IMediaProps) => {
+		const mediaURL = getURLForMediaViewerObject(mediaProps);
+		return (
+			<MediaObjectViewer
+				onPress={() => this.props.onImageClick(0)}
+				uri={mediaURL}
+				style={style.postMediaContainer}
+				extension={mediaProps.type}
+			/>
+		);
+	}
+
+	private renderDualMediaPost = (mediaProps: IMediaProps[], splitVertical = false, startIndex = 0) => {
+		const firstMediaURL = getURLForMediaViewerObject(mediaProps[startIndex]);
+		const secondMediaURL = getURLForMediaViewerObject(mediaProps[startIndex + 1]);
+		const containerStyle = [style.postMediaContainer, !splitVertical ? {flexDirection: 'row'} : {}];
+		const mediaContainerStyle = splitVertical ? style.halfMediaContainerVertical : style.halfMediaContainerHorizontal;
+		return (
+			<View style={containerStyle}>
+				<View style={mediaContainerStyle}>
+					<MediaObjectViewer
+						onPress={() => this.props.onImageClick(startIndex)}
+						thumbOnly={true}
+						uri={firstMediaURL}
+						style={style.halfMediaObject}
+						extension={mediaProps[startIndex].type}
+					/>
+				</View>
+				<View style={mediaContainerStyle}>
+					<MediaObjectViewer
+						onPress={() => this.props.onImageClick(startIndex + 1)}
+						thumbOnly={true}
+						uri={secondMediaURL}
+						style={style.halfMediaObject}
+						extension={mediaProps[startIndex + 1].type}
+					/>
+				</View>
+			</View>
+		);
+	}
+
+	private renderMultiMediaPost = (mediaProps: IMediaProps[]) => {
+		const firstMediaURL = getURLForMediaViewerObject(mediaProps[0]);
+		return (
+			<View style={style.postMediaContainer}>
+				<View style={style.halfMediaContainerHorizontal}>
+					<MediaObjectViewer
+						onPress={() => this.props.onImageClick(0)}
+						thumbOnly={true}
+						uri={firstMediaURL}
+						style={style.halfMediaObject}
+						extension={mediaProps[0].type}
+					/>
+				</View>
+				<View style={style.halfMediaContainerHorizontal}>{this.renderDualMediaPost(mediaProps, true, 1)}</View>
+				{this.renderDualMediaPost(mediaProps)}
+			</View>
+		);
 	}
 
 	private renderTaggedFriends = () => {

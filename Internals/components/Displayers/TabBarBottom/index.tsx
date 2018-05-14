@@ -162,7 +162,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		return (
 			<View style={style.notificationsContainer}>
 				{this.renderSimpleTabButton(menuItem)}
-				{this.props.newNotifications && (
+				{this.props.newNotifications > 0 && (
 					<View style={style.badgeBackground}>
 						<Text style={style.notificationBadge}>{this.props.newNotifications}</Text>
 					</View>
