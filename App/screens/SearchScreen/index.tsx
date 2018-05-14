@@ -9,6 +9,8 @@ import {ipfsConfig as base} from 'configuration';
 import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
 import {SearchResultData, SearchResultPeople} from 'types';
 
+import {AvatarImagePlaceholder} from 'consts';
+
 export enum SearchFilterValues {
 	People = 'people',
 	Groups = 'groups',
@@ -135,8 +137,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					fullName: current.name,
 					username: current.username,
 					avatarURL: current.avatar
-						? base.ipfs_URL + current.avatar.hash
-						: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+						? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
 				});
 			}
 			return results;
@@ -210,7 +211,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			// TODO: notify user that friend request didn't process
 			console.log(`ex: ${ex}`);
 		}
-		// alert('Add friend with ID ' + friendId);
 	}
 
 	private handleCreateNewGroup = () => {

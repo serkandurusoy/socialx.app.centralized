@@ -11,8 +11,7 @@ import {
 import {INotificationsResponse, NOTIFICATION_TYPES} from 'types';
 
 import {ipfsConfig as base} from 'configuration';
-
-const imagePlaceholder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+import {AvatarImagePlaceholder} from 'consts';
 
 export const ACTIVITY_CARDS = [
 	{
@@ -132,7 +131,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 						case NOTIFICATION_TYPES.FRIEND_REQUEST:
 							res = {
 								type: NOTIFICATION_TYPES.FRIEND_REQUEST,
-								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
+								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : AvatarImagePlaceholder,
 								fullName: current.owner.name,
 								username: current.owner.username,
 								requestId: current.id,
@@ -143,7 +142,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 						case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
 							res = {
 								type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
-								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
+								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : AvatarImagePlaceholder,
 								fullName: current.owner.name,
 								username: current.owner.username,
 								requestId: current.id,

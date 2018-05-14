@@ -12,8 +12,7 @@ import {ipfsConfig as base} from 'configuration';
 import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-
-const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+import {AvatarImagePlaceholder} from 'consts';
 
 export interface IWallPostCommentReply {
 	id: string;
@@ -54,7 +53,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private static navigationOptions = (props: IWallPostCommentsProps) => ({
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
 		headerLeft: <View />,
-	})
+	});
 
 	public state = {
 		allComments: [],
@@ -84,7 +83,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const {userId} = this.props.navigation.state.params;
 		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
-	}
+	};
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
 		const {likeComment, removeCommentLike} = this.props;
@@ -99,11 +98,11 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
 		// console.log('TODO: delete comment with ID', comment.id);
-	}
+	};
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;
@@ -121,7 +120,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		}
 		hideLoader();
 		// console.log('onCommentSendHandler', commentText);
-	}
+	};
 
 	private preFetchComments = async () => {
 		const {postId, userId} = this.props.navigation.state.params;
@@ -141,7 +140,9 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		for (let i = 0; i < comments.length; i++) {
 			const currentComment = comments[i];
-			const ownerAv = currentComment.owner.avatar ? base.ipfs_URL + currentComment.owner.avatar.hash : imagePlaceHolder;
+			const ownerAv = currentComment.owner.avatar
+				? base.ipfs_URL + currentComment.owner.avatar.hash
+				: AvatarImagePlaceholder;
 			const allReplies: IWallPostComment[] = [];
 
 			if (currentComment.comments.length > 0) {
@@ -149,7 +150,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 					const currentReply = currentComment.comments[y];
 					const replyOwnerAv = currentReply.owner.avatar
 						? base.ipfs_URL + currentReply.owner.avatar.hash
-						: imagePlaceHolder;
+						: AvatarImagePlaceholder;
 
 					allReplies.push({
 						id: currentReply.id,
@@ -197,7 +198,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				return a > b ? -1 : a < b ? 1 : 0;
 			}),
 		});
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({

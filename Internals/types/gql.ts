@@ -61,7 +61,7 @@ export interface IPostsProps {
 	id: string;
 	createdAt: string;
 	text: string;
-	Media?: IMediaProps[];
+	Media: IMediaProps[];
 	owner: IUserQuery;
 	likes: IUserQuery[];
 	comments: IComments[];
@@ -85,6 +85,11 @@ export interface IUserQuery {
 	posts?: IPostsProps[];
 }
 
+export interface IPaginatedPosts {
+	Items: IPostsProps[];
+	nextToken: string;
+}
+
 // <------------- Data Wrappers ------------->
 interface INotificationsData {
 	myNotifications: INotifications[];
@@ -95,7 +100,7 @@ interface IUserData {
 }
 
 interface IPostsData {
-	allPosts: IPostsProps[];
+	getPublicPosts: IPaginatedPosts;
 }
 
 export interface ICommentsResponse {
