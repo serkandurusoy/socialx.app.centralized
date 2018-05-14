@@ -58,6 +58,12 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 
 	private lastLoadedPhotoIndex = 0;
 
+	public async componentDidMount() {
+		if (!this.props.data.loading) {
+			this.props.data.refetch();
+		}
+	}
+
 	public componentWillReceiveProps(nextProps: IMyProfileScreenProps) {
 		const {data} = nextProps;
 		if (data.loading || this.state.loaded) {

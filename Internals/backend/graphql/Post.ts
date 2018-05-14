@@ -104,7 +104,9 @@ export const getPublicPostsHoc = (comp: any) =>
 				Posts: {loading, error, getPublicPosts, fetchMore, refetch},
 			} = pps;
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
-			const {nextToken, Items, rawItems} = getPublicPosts;
+			// const {nextToken, Items, rawItems} = getPublicPosts;
+			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
+			const Items = getPublicPosts ? getPublicPosts.Items : [];
 			const numberOfComments = (post: any) => {
 				let cres = 0;
 				for (let x = 0; x < post.comments.length; x++) {
