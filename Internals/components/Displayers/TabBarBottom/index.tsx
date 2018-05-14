@@ -1,6 +1,6 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Image, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Image, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 
@@ -10,7 +10,13 @@ import style from './style';
 
 import {updateTabBarBottomHeight} from 'backend/actions';
 import {connect} from 'react-redux';
-import {MediaTypes, WallPostPhotoOptimized} from 'types';
+import {IAppUIStateProps, MediaTypes, WallPostPhotoOptimized} from 'types';
+
+export enum MENU_BUTTON_TYPE {
+	MENU_BUTTON_SIMPLE = 'MENU_BUTTON_SIMPLE',
+	MENU_BUTTON_CAMERA = 'MENU_BUTTON_CAMERA',
+	MENU_BUTTON_NOTIFICATIONS = 'MENU_BUTTON_NOTIFICATIONS',
+}
 
 interface TabMenuItem {
 	screenName?: string;
@@ -20,7 +26,7 @@ interface TabMenuItem {
 		width: number;
 		height: number;
 	};
-	custom: boolean;
+	type: MENU_BUTTON_TYPE;
 }
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
@@ -37,7 +43,7 @@ const MENU_ITEMS: TabMenuItem[] = [
 			width: Sizes.smartHorizontalScale(20),
 			height: Sizes.smartHorizontalScale(16),
 		},
-		custom: false,
+		type: MENU_BUTTON_TYPE.MENU_BUTTON_SIMPLE,
 	},
 	{
 		screenName: 'SearchTab',
@@ -47,7 +53,7 @@ const MENU_ITEMS: TabMenuItem[] = [
 			width: Sizes.smartHorizontalScale(17),
 			height: Sizes.smartHorizontalScale(17),
 		},
-		custom: false,
+		type: MENU_BUTTON_TYPE.MENU_BUTTON_SIMPLE,
 	},
 	{
 		image: Icons.iconTabBarPhoto,
@@ -55,7 +61,7 @@ const MENU_ITEMS: TabMenuItem[] = [
 			width: Sizes.smartHorizontalScale(22),
 			height: Sizes.smartHorizontalScale(18),
 		},
-		custom: true,
+		type: MENU_BUTTON_TYPE.MENU_BUTTON_CAMERA,
 	},
 	{
 		screenName: 'NotificationsTab',
@@ -65,7 +71,7 @@ const MENU_ITEMS: TabMenuItem[] = [
 			width: Sizes.smartHorizontalScale(20),
 			height: Sizes.smartHorizontalScale(16),
 		},
-		custom: false,
+		type: MENU_BUTTON_TYPE.MENU_BUTTON_NOTIFICATIONS,
 	},
 	{
 		screenName: 'MyProfileTab',
@@ -75,7 +81,7 @@ const MENU_ITEMS: TabMenuItem[] = [
 			width: Sizes.smartHorizontalScale(16),
 			height: Sizes.smartHorizontalScale(18),
 		},
-		custom: false,
+		type: MENU_BUTTON_TYPE.MENU_BUTTON_SIMPLE,
 	},
 ];
 
@@ -83,7 +89,7 @@ interface ITabBarBottomState {
 	selectedTab: string;
 }
 
-interface ITabBarBottomProps {
+interface ITabBarBottomProps extends IAppUIStateProps {
 	navigation: NavigationScreenProp<any>;
 	TabBarBottomHeight: (height: number) => void;
 }
@@ -107,7 +113,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	}
 
 	private getMenuItemComponent = (menuItem: TabMenuItem, index: number) => {
-		if (menuItem.custom) {
+		if (menuItem.type === MENU_BUTTON_TYPE.MENU_BUTTON_CAMERA) {
 			return (
 				<View style={style.menuItemContainer} key={index}>
 					<TouchableOpacity onPress={this.showPhotoOptionsMenu}>
@@ -117,27 +123,52 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 					</TouchableOpacity>
 				</View>
 			);
-		} else {
-			const tabIsSelected = this.state.selectedTab === menuItem.screenName;
+		} else if (menuItem.type === MENU_BUTTON_TYPE.MENU_BUTTON_NOTIFICATIONS) {
 			return (
 				<View style={style.menuItemContainer} key={index}>
-					<TouchableWithoutFeedback onPress={() => this.handleTabChange(menuItem.screenName)}>
-						<View style={style.imageContainer}>
-							<Image
-								source={menuItem.image}
-								resizeMode={'contain'}
-								style={[menuItem.style, {opacity: tabIsSelected ? 0 : 1}]}
-							/>
-							<Image
-								source={menuItem.imageSelected}
-								resizeMode={'contain'}
-								style={[menuItem.style, style.imageSelected, {opacity: tabIsSelected ? 1 : 0}]}
-							/>
-						</View>
-					</TouchableWithoutFeedback>
+					{this.renderNotificationsIconWithBadge(menuItem)}
+				</View>
+			);
+		} else {
+			return (
+				<View style={style.menuItemContainer} key={index}>
+					{this.renderSimpleTabButton(menuItem)}
 				</View>
 			);
 		}
+	}
+
+	private renderSimpleTabButton = (menuItem: TabMenuItem) => {
+		const tabIsSelected = this.state.selectedTab === menuItem.screenName;
+		return (
+			<TouchableWithoutFeedback onPress={() => this.handleTabChange(menuItem.screenName)}>
+				<View style={style.imageContainer}>
+					<Image
+						source={menuItem.image}
+						resizeMode={'contain'}
+						style={[menuItem.style, {opacity: tabIsSelected ? 0 : 1}]}
+					/>
+					<Image
+						source={menuItem.imageSelected}
+						resizeMode={'contain'}
+						style={[menuItem.style, style.imageSelected, {opacity: tabIsSelected ? 1 : 0}]}
+					/>
+				</View>
+			</TouchableWithoutFeedback>
+		);
+	}
+
+	private renderNotificationsIconWithBadge = (menuItem: TabMenuItem) => {
+		return (
+			<View style={style.notificationsContainer}>
+				{this.renderSimpleTabButton(menuItem)}
+				{this.props.newNotifications && (
+					<View style={style.badgeBackground}>
+						<Text style={style.notificationBadge}>{this.props.newNotifications}</Text>
+					</View>
+				)}
+			</View>
+		);
 	}
 
 	private handleTabChange = (screenName: string) => {
@@ -215,4 +246,8 @@ const MapDispatchToProps = (dispatch: any) => ({
 	TabBarBottomHeight: (height: number) => dispatch(updateTabBarBottomHeight(height)),
 });
 
-export const TabBarBottom = connect(null, MapDispatchToProps)(TabBarBottomComponent as any);
+const mapStateToProps: any = (state: any): IAppUIStateProps => ({
+	...state.appUI,
+});
+
+export const TabBarBottom = connect(mapStateToProps, MapDispatchToProps)(TabBarBottomComponent as any);

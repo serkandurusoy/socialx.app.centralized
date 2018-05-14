@@ -116,7 +116,7 @@ export const getPublicPostsHoc = (comp: any) =>
 			};
 
 			const dataSpine = (pItems: any) => {
-				let rets = [];
+				const rets = [];
 				for (let i = 0; i < pItems.length; i++) {
 					const post = pItems[i];
 					const media = post.Media
@@ -159,28 +159,29 @@ export const getPublicPostsHoc = (comp: any) =>
 					await refetch();
 				},
 				noPosts: !Items.length,
-				loadMore: () => fetchMore({
-					variables: {next: nextToken},
-					updateQuery: (previousResult, {fetchMoreResult}) => {
-						const previousEntry = previousResult.getPublicPosts;
-						const previousItems = previousEntry ? previousEntry.Items : [];
+				loadMore: () =>
+					fetchMore({
+						variables: {next: nextToken},
+						updateQuery: (previousResult, {fetchMoreResult}) => {
+							const previousEntry = previousResult.getPublicPosts;
+							const previousItems = previousEntry ? previousEntry.Items : [];
 
-						const newItems = fetchMoreResult.getPublicPosts.Items;
-						const newNext = fetchMoreResult.getPublicPosts.nextToken;
+							const newItems = fetchMoreResult.getPublicPosts.Items;
+							const newNext = fetchMoreResult.getPublicPosts.nextToken;
 
-						const newPosts = {
-							getPublicPosts : {
-								nextToken: newNext,
-								Items: newNext ? previousItems.concat(newItems) : previousItems,
-								__typename: 'PaginatedPosts',
-							},
-						};
+							const newPosts = {
+								getPublicPosts: {
+									nextToken: newNext,
+									Items: newNext ? previousItems.concat(newItems) : previousItems,
+									__typename: 'PaginatedPosts',
+								},
+							};
 
-						const res = newNext ? newPosts : previousResult;
+							const res = newNext ? newPosts : previousResult;
 
-						return res;
-					},
-				}),
+							return res;
+						},
+					}),
 			};
 		},
 	})(comp);
