@@ -1,25 +1,19 @@
-import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
 import React, {Component} from 'react';
-import {Alert, findNodeHandle, InteractionManager, View} from 'react-native';
+import {findNodeHandle, InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
+
+import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
 import SearchScreenComponent from './screen';
 
 import {ipfsConfig as base} from 'configuration';
 
 import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
-import {SearchResultData, SearchResultPeople} from 'types';
-
 import {AvatarImagePlaceholder} from 'consts';
+import {SearchResultData, SearchResultKind, SearchResultPeople} from 'types';
 
 export enum SearchFilterValues {
 	People = 'people',
 	Groups = 'groups',
-}
-
-export enum SearchResultKind {
-	Friend = 'friend',
-	NotFriend = 'notFriend',
-	Group = 'group',
 }
 
 export interface SearchResultCreateGroup {
@@ -47,7 +41,6 @@ interface ISearchScreenState {
 	groupName: string;
 	groupDescription: string;
 	nextShowInvitePeople: boolean;
-	addFriendsRequestsInProgress: any;
 }
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
@@ -70,7 +63,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		groupName: '',
 		groupDescription: '',
 		nextShowInvitePeople: false,
-		addFriendsRequestsInProgress: {},
 	};
 
 	private blurView = null;
@@ -114,7 +106,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					setNewFilter={this.updateSelectedFilter}
 					createGroupHandler={() => this.toggleGroupInfoModal()}
 					onSearchResultSelect={this.onSearchResultSelectHandler}
-					addFriendsRequestsInProgress={this.state.addFriendsRequestsInProgress}
 				/>
 			</View>
 		);
@@ -133,14 +124,13 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 				return results;
 			}
 			for (let i = 0; i < resp.length; i++) {
-				const current = resp[i];
+				const current = resp[i].user;
 				results.push({
 					id: current.userId,
-					kind: SearchResultKind.NotFriend,
+					kind: resp[i].connection,
 					fullName: current.name,
 					username: current.username,
-					avatarURL: current.avatar
-						? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
+					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
 				});
 			}
 			return results;
@@ -202,29 +192,12 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 
 	private addFriendHandler = async (friendId: string) => {
 		const {addFriend} = this.props;
-		try {
-			const updatedRequests: any = {...this.state.addFriendsRequestsInProgress};
-			updatedRequests[friendId] = true;
-			this.setState({
-				addFriendsRequestsInProgress: updatedRequests,
-			});
 
-			await addFriend({
-				variables: {
-					user: friendId,
-				},
-			});
-
-			const afterAddRequests: any = {...this.state.addFriendsRequestsInProgress};
-			delete afterAddRequests[friendId];
-			this.setState({
-				addFriendsRequestsInProgress: afterAddRequests,
-			});
-		} catch (ex) {
-			// TODO: @Ionut: revert add button when request fails!
-			Alert.alert('Error', 'Friend request could not be processed at this time. Try again later..');
-			console.log(`ex: ${ex}`);
-		}
+		await addFriend({
+			variables: {
+				user: friendId,
+			},
+		});
 	}
 
 	private handleCreateNewGroup = () => {
@@ -241,7 +214,11 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	}
 
 	private onSearchResultSelectHandler = (result: SearchResultData) => {
-		if (result.kind === SearchResultKind.Friend || result.kind === SearchResultKind.NotFriend) {
+		if (
+			result.kind === SearchResultKind.Friend ||
+			result.kind === SearchResultKind.NotFriend ||
+			result.kind === SearchResultKind.FriendRequestSent
+		) {
 			this.props.navigation.navigate('UserProfileScreen', {userId: result.id});
 		}
 		// later add other user cases!

@@ -30,7 +30,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		const canDelete = props.currentUser.userId === data.item.owner.userId;
-		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === props.currentUser.userId)
+		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === props.currentUser.userId);
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard

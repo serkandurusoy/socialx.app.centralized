@@ -1,6 +1,8 @@
+import {Toast} from 'native-base';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {AvatarImage} from 'components';
 import {Colors, Icons} from 'theme';
@@ -18,50 +20,23 @@ export interface IUserRequestSearchProps {
 	fullName: string;
 	username: string;
 	kind: SearchResultKind;
-	addFriendHandler?: () => void;
+	addFriendHandler: () => Promise<any>;
 	onEntrySelect?: () => void;
-	loading: boolean;
 }
 
 interface ISearchResultEntryState {
 	loading: boolean;
-	willGoOut: boolean;
 	kind: SearchResultKind;
 }
 
 export class SearchResultEntry extends React.Component<IUserRequestSearchProps, ISearchResultEntryState> {
-	public static getDerivedStateFromProps(
-		nextProps: Readonly<IUserRequestSearchProps>,
-		prevState: Readonly<ISearchResultEntryState>,
-	) {
-		if (nextProps.loading !== prevState.loading) {
-			return {
-				loading: nextProps.loading,
-				willGoOut: prevState.loading && !nextProps.loading,
-			};
-		}
-		return null;
-	}
-
 	public state = {
 		loading: false,
-		willGoOut: false,
 		kind: this.props.kind,
 	};
 
 	private addButtonRef = null;
-
-	public shouldComponentUpdate(nextProps: IUserRequestSearchProps, nextState: ISearchResultEntryState): boolean {
-		if (this.state.loading && !nextState.loading) {
-			this.addButtonRef.animate(OUT_ANIMATION_NAME, OUT_ANIMATION_DURATION).then(() => {
-				this.setState({
-					kind: SearchResultKind.Friend,
-					willGoOut: false,
-				});
-			});
-		}
-		return true;
-	}
+	private renderWithAnimation = false;
 
 	public render() {
 		return (
@@ -86,30 +61,36 @@ export class SearchResultEntry extends React.Component<IUserRequestSearchProps, 
 	}
 
 	private renderIsFriend = () => {
-		return (
-			<Animatable.View
-				animation={IN_ANIMATION_NAME}
-				easing='ease-out'
-				iterationCount={1}
-				duration={IN_ANIMATION_DURATION}
-			>
-				<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isFiendIcon} />
-			</Animatable.View>
-		);
+		return <Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isFiendIcon} />;
 	}
 
 	private renderAddFriend = () => {
 		return (
 			<Animatable.View ref={(ref: any) => (this.addButtonRef = ref)}>
 				<SXButton
-					loading={this.state.loading || this.state.willGoOut}
+					loading={this.state.loading}
 					label={'Add'}
 					size={ButtonSizes.Small}
 					autoWidth={true}
 					borderColor={Colors.transparent}
-					onPress={this.props.addFriendHandler}
+					onPress={this.onAddFriend}
 				/>
 			</Animatable.View>
+		);
+	}
+
+	private renderRequestSent = () => {
+		const ViewComponent = this.renderWithAnimation ? Animatable.View : View;
+		this.renderWithAnimation = false;
+		return (
+			<ViewComponent
+				animation={IN_ANIMATION_NAME}
+				easing='ease-out'
+				iterationCount={1}
+				duration={IN_ANIMATION_DURATION}
+			>
+				<Icon name={'ios-swap'} style={style.friendRequestSentIcon} />
+			</ViewComponent>
 		);
 	}
 
@@ -119,9 +100,39 @@ export class SearchResultEntry extends React.Component<IUserRequestSearchProps, 
 			ret = this.renderAddFriend();
 		} else if (this.state.kind === SearchResultKind.Friend) {
 			ret = this.renderIsFriend();
+		} else if (this.state.kind === SearchResultKind.FriendRequestSent) {
+			ret = this.renderRequestSent();
 		} else if (this.state.kind === SearchResultKind.Group) {
 			ret = null;
 		}
 		return ret;
+	}
+
+	private onAddFriend = () => {
+		this.setState({
+			loading: true,
+		});
+		this.props.addFriendHandler().then(
+			() => {
+				this.addButtonRef.animate(OUT_ANIMATION_NAME, OUT_ANIMATION_DURATION).then(() => {
+					this.renderWithAnimation = true;
+					this.setState({
+						loading: false,
+						kind: SearchResultKind.FriendRequestSent,
+					});
+				});
+			},
+			(ex) => {
+				console.log(`ex: ${ex}`);
+				this.setState({
+					loading: false,
+				});
+				Toast.show({
+					text: 'Friend request could not be processed at this time. Try again later..',
+					duration: 3000,
+					position: 'top',
+				});
+			},
+		);
 	}
 }
