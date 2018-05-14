@@ -4,15 +4,18 @@ import {graphql, QueryProps} from 'react-apollo';
 const searchUsers = gql`
 	mutation search($query: String!) {
 		searchUsers(query: $query) {
-			userId
-			username
-			name
-			email
-			avatar {
-				hash
-				size
-				type
+			user {
+				userId
+				username
+				name
+				email
+				avatar {
+					hash
+					size
+					type
+				}
 			}
+			connection
 		}
 	}
 `;

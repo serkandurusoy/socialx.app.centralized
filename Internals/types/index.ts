@@ -40,8 +40,9 @@ export enum SearchFilterValues {
 }
 
 export enum SearchResultKind {
-	Friend = 'friend',
-	NotFriend = 'notFriend',
+	Friend = 'FRIEND',
+	NotFriend = 'NOT_FRIEND',
+	FriendRequestSent = 'FRIEND_REQUEST_SENT',
 	Group = 'group',
 }
 
