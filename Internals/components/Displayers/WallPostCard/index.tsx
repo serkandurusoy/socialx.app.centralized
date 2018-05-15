@@ -1,3 +1,4 @@
+import {OS_TYPES} from 'consts';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
@@ -35,12 +36,12 @@ export interface IWallPostCardProp {
 	onLikeButtonClick: () => void;
 	onDeleteClick: (postId: string) => void;
 	onUserClick: () => void;
+	onCommentClick: () => void;
 	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
 	media: any;
 	likes: any;
-	navigation: NavigationScreenProp<any>;
 }
 
 export interface IWallPostCardState {
@@ -71,20 +72,18 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				<TouchableOpacity onPress={this.props.onUserClick} style={style.topContainer}>
 					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
 					<View style={style.topRightContainer}>
-						<TouchableOpacity onPress={this.showUserProfilePage}>
-							<Text style={style.fullName}>
-								{this.props.fullName}
-								{this.renderTaggedFriends()}
-								{this.renderLocation()}
-							</Text>
-						</TouchableOpacity>
+						<Text style={style.fullName}>
+							{this.props.fullName}
+							{this.renderTaggedFriends()}
+							{this.renderLocation()}
+						</Text>
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
 					<TooltipDots items={this.getTooltipItems()} />
 				</TouchableOpacity>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
-				<WallPostMedia mediaObjects={this.props.media} onMediaObjectView={this.onMediaObjectPressHandler} />
+				<WallPostMedia mediaObjects={this.props.media} onMediaObjectView={this.props.onImageClick} />
 				<WallPostActions
 					likedByMe={this.props.likedByMe}
 					numberOfLikes={this.props.numberOfLikes}
@@ -93,7 +92,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.onCommentsButtonClickHandler}
+					commentsButtonPressed={this.onCommentClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
 			</View>
@@ -314,20 +313,5 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private walletCoinsButtonPressedHandler = () => {
 		alert('Go to my wallet');
-	}
-
-	private showUserProfilePage = () => {
-		this.props.navigation.navigate('UserProfileScreen', {userId: this.props.owner.userId});
-	}
-
-	private onMediaObjectPressHandler = (index: number) => {
-		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: this.props.media,
-			startIndex: index,
-		});
-	}
-
-	private onCommentsButtonClickHandler = () => {
-		this.props.navigation.navigate('CommentsStack', {postId: this.props.id, userId: this.props.owner.userId});
 	}
 }

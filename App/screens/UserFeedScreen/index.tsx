@@ -95,12 +95,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onLikePress={this.onLikeButtonClickHandler}
 				onPostDeletePress={this.onPostDeleteClickHandler}
 				onUserPress={this.gotoUserProfile}
+				onMediaPress={this.onMediaObjectPressHandler}
+				onCommentPress={this.onCommentsButtonClickHandler}
 			/>
 		);
-	}
-
-	private gotoUserProfile = (userId: string) => {
-		this.props.navigation.navigate('UserProfileScreen', {userId});
 	}
 
 	private onLoadMore = async () => {
@@ -220,6 +218,21 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// user doesnt own the post, thus cant delete, or server issues
 		}
 		stopLoading();
+	}
+
+	private gotoUserProfile = (userId: string) => {
+		this.props.navigation.navigate('UserProfileScreen', {userId});
+	}
+
+	private onMediaObjectPressHandler = (index: number, media: any) => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			mediaObjects: media,
+			startIndex: index,
+		});
+	}
+
+	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
+		this.props.navigation.navigate('CommentsStack', {postId, userId});
 	}
 }
 

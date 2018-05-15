@@ -17,6 +17,8 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	refreshData: () => void;
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
+	onMediaPress: (index: any, media: any) => void;
+	onCommentPress: (postId: any, owner: any) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
@@ -37,7 +39,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					{...data.item}
 					canDelete={canDelete}
 					likedByMe={likedByMe}
-					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
+					onCommentClick={() => props.onCommentPress(data.item.id, data.item.owner.userId)}
 					onImageClick={(index) => props.onMediaPress(index, data.item.media)}
 					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
