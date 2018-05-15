@@ -88,7 +88,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				refreshData={this.refreshWallPosts}
 				avatarImage={this.getAvatarImage()}
 				wallPosts={Items}
-				loadMorePosts={loadMore}
+				loadMorePosts={this.onLoadMore}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
 				hideShareSection={this.props.hideShareSection}
@@ -103,8 +103,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onLoadMore = async () => {
 		const {loadMore} = this.props;
+		// @ionut: TODO -> inline loader at the end of the user feed
 		try {
-			const at = await loadMore();
+			await loadMore();
 		} catch (ex) {
 			console.log(ex);
 		}
