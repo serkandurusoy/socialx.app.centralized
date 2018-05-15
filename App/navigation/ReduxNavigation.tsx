@@ -7,7 +7,7 @@ import AppNavigation from './AppNavigation';
 // for react-navigation 1.0.0-beta.30
 import {createReactNavigationReduxMiddleware, createReduxBoundAddListener} from 'react-navigation-redux-helpers';
 
-import {ModalActivityIndicator, ModalConfirmation} from 'components/Modals';
+import {ModalActivityIndicator, ModalConfirmation, OfflineOverlay} from 'components/Modals';
 import {Root} from 'native-base';
 
 const middleware: any = createReactNavigationReduxMiddleware('root', (state: any) => state.nav);
@@ -31,6 +31,7 @@ function ReduxNavigation(props: any) {
 	return (
 		<Root>
 			<AppNavigation />
+			<OfflineOverlay />
 			<ModalActivityIndicator visiblePropName={'showActivityIndicator'} />
 			<ModalConfirmation visiblePropName={'confirmActive'} />
 		</Root>

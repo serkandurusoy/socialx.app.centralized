@@ -215,7 +215,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				label: 'Block',
 				icon: Icons.redRoundCross,
 				actionHandler: () => {
-					alert('Block user');
+					ModalManager.safeRunAfterModalClosed(() => {
+						alert('Block user');
+					});
 				},
 			},
 			{
