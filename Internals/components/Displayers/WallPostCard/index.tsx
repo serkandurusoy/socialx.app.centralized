@@ -51,7 +51,6 @@ export interface IWallPostCardState {
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public static defaultProps: Partial<IWallPostCardProp> = {
 		canDelete: false,
-		title: 'Sample post title to be replace later',
 	};
 
 	public state = {
@@ -229,8 +228,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private renderPostDescription = () => {
-		const {text} = this.props;
-		if (text) {
+		const {text, title} = this.props;
+		if (text && title) {
+			// if post has both title and text show here the text part!
 			// due to an android limitation nesting a button in the end of the text is not possible, see
 			// https://facebook.github.io/react-native/docs/text.html#nested-views-ios-only
 			const hasMore =
@@ -262,10 +262,12 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private renderPostTitle = () => {
-		if (this.props.title) {
+		const title = this.props.title ? this.props.title : this.props.text;
+		// if no title present use the text part as title!
+		if (title) {
 			return (
 				<Text style={style.postTitle} numberOfLines={1}>
-					{this.props.title}
+					{title}
 				</Text>
 			);
 		}
