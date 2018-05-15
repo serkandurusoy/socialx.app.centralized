@@ -1,3 +1,4 @@
+import get from 'lodash/get';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
@@ -69,11 +70,15 @@ interface IUserFeedScreenProps extends IFeedProps {
 
 interface IUserFeedScreenState {
 	refreshing: boolean;
+	loadingMore: boolean;
+	hasMore: boolean;
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	public state = {
 		refreshing: false,
+		loadingMore: false,
+		hasMore: true,
 	};
 
 	public render() {
@@ -83,6 +88,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			<UserFeedScreenComponent
 				noPosts={noPosts}
 				isLoading={loading}
+				loadingMore={this.state.loadingMore}
+				hasMore={this.state.hasMore}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
@@ -102,12 +109,23 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onLoadMore = async () => {
-		const {loadMore} = this.props;
-		// @ionut: TODO -> inline loader at the end of the user feed
-		try {
-			await loadMore();
-		} catch (ex) {
-			console.log(ex);
+		if (this.state.hasMore) {
+			const {loadMore} = this.props;
+			try {
+				this.setState({
+					loadingMore: true,
+				});
+				const loadResult: any = await loadMore();
+				this.setState({
+					loadingMore: false,
+					hasMore: get(loadResult, 'data.getPublicPosts.nextToken', false),
+				});
+			} catch (ex) {
+				console.log(ex);
+				this.setState({
+					loadingMore: false,
+				});
+			}
 		}
 	}
 
@@ -178,7 +196,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private refreshWallPosts = async () => {
-		this.setState({refreshing: true});
+		this.setState({refreshing: true, hasMore: true});
 		try {
 			await this.props.data.refetch();
 			await this.props.refresh();
