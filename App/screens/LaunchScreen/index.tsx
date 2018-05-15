@@ -1,21 +1,17 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Image, Text, View} from 'react-native';
+import {Image, Text, View} from 'react-native';
 
 import {SXButton, SXGradientButton, TextGradient} from 'components';
 import SplashScreen from 'react-native-smart-splash-screen';
 import {NavigationScreenProp} from 'react-navigation';
-import {connect} from 'react-redux';
 import {Colors, Images} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, resetNavigationToRoute} from 'backend/actions';
+import {resetNavigationToRoute} from 'backend/actions';
 import {CurrentUser} from 'utilities';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
-	isLoadModalOn: boolean;
-	hideLoader: () => void;
-	notifications: any;
 }
 
 export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
@@ -24,26 +20,17 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	};
 
 	public async componentDidMount() {
-		const {hideLoader, isLoadModalOn, notifications} = this.props;
 		try {
 			const currentUser = await CurrentUser();
 			if (!currentUser) {
 				return;
 			}
 
-			if (isLoadModalOn) {
-				hideLoader();
-			}
-
 			resetNavigationToRoute('MainScreen', this.props.navigation);
 		} catch (ex) {
 			//
 		}
-		SplashScreen.close({
-			animationType: SplashScreen.animationType.fade,
-			duration: 1000,
-			delay: 100,
-		});
+		this.closeSplashScreen();
 	}
 
 	public render() {
@@ -81,5 +68,13 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 
 	private navigateToSignUpScreen = () => {
 		this.props.navigation.navigate('SignUpScreen');
+	}
+
+	private closeSplashScreen = () => {
+		SplashScreen.close({
+			animationType: SplashScreen.animationType.fade,
+			duration: 1000,
+			delay: 100,
+		});
 	}
 }

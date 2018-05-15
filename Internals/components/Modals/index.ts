@@ -9,3 +9,4 @@ export * from './TagFriends';
 export * from './Wallet';
 export * from './ReportProblem';
 export * from './ExternalShareOptions';
+export * from './OfflineOverlay';
