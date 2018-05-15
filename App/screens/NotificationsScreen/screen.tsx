@@ -1,21 +1,17 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, FlatList, Image, Text, View} from 'react-native';
-import {connect} from 'react-redux';
+import {FlatList, Image, Text, View} from 'react-native';
 
-import {hideModalConfirmation, showModalConfirmation} from 'backend/actions';
 import {ActivityRecentCommentCard, ActivitySuperLikedCard} from 'components/Activity';
 import {FriendRequest, GroupRequest, NotificationGI} from 'components/Displayers';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Icons} from 'theme/Icons';
-import {IModalConfirmationProps, NOTIFICATION_TYPES} from 'types';
+import {NOTIFICATION_TYPES} from 'types';
 import style from './style';
 
 interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	activityCards: any[];
 	refreshing: boolean;
-	hasMore: boolean;
 	refreshData: () => void;
-	loadMoreNotifications: () => void;
 	onPostThumbPressed: (postId: string) => void;
 	onSuperLikedPhotoPressed: (postId: string) => void;
 	onFriendRequestApproved: (requestId: string) => void;
@@ -23,8 +19,6 @@ interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	onGroupRequestConfirmed: (requestId: string) => void;
 	onGroupRequestDeclined: (requestId: string) => void;
 	onCheckNotification: (requestId: string) => void;
-	showConfirm: (confirmationOptions: IModalConfirmationProps) => void;
-	hideConfirm: () => void;
 }
 
 class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
@@ -69,11 +63,8 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				data={this.props.activityCards}
 				keyExtractor={this.keyExtractor}
 				renderItem={this.renderActivityCard}
-				onEndReachedThreshold={0.2}
-				onEndReached={this.props.loadMoreNotifications}
 				refreshing={this.props.refreshing}
 				onRefresh={this.props.refreshData}
-				ListFooterComponent={this.renderFooterWhenLoading}
 			/>
 		);
 	}
@@ -96,14 +87,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				);
 
 			case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
-				return (
-					<NotificationGI
-						{...activityCardData}
-						onCheckNotification={(confirmed: boolean) =>
-							this.confirmDismissNotification(activityCardData.requestId, confirmed)
-						}
-					/>
-				);
+				return <NotificationGI {...activityCardData} onCheckNotification={this.props.onCheckNotification} />;
 
 			case NOTIFICATION_TYPES.SUPER_LIKED:
 				return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;
@@ -118,41 +102,6 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				);
 		}
 	}
-
-	private renderFooterWhenLoading = () => {
-		if (this.props.hasMore) {
-			return (
-				<View style={style.bottomLoadingContainer}>
-					<ActivityIndicator size={'small'} />
-				</View>
-			);
-		}
-		return null;
-	}
-
-	private confirmDismissNotification = (requestId: string, confirmed: boolean) => {
-		if (!confirmed) {
-			this.props.showConfirm({
-				title: 'Hide notification?',
-				confirmHandler: () => {
-					this.props.hideConfirm();
-					this.props.onCheckNotification(requestId);
-				},
-				declineHandler: () => {
-					this.props.hideConfirm();
-				},
-			});
-		} else {
-			this.props.onCheckNotification(requestId);
-		}
-	}
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-	showConfirm: (confirmationOptions: IModalConfirmationProps) => dispatch(showModalConfirmation(confirmationOptions)),
-	hideConfirm: () => dispatch(hideModalConfirmation()),
-});
-
-const withLoader = withInlineLoader(NotificationsScreenComponent as any);
-
-export default connect(null, mapDispatchToProps)(withLoader as any);
+export default withInlineLoader(NotificationsScreenComponent as any);

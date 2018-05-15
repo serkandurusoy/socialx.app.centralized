@@ -104,7 +104,6 @@ interface INotificationsScreenProps {
 interface INotificationsScreenState {
 	activityCards: any[];
 	refreshing: boolean;
-	hasMore: boolean;
 }
 
 class NotificationsScreen extends Component<INotificationsScreenProps, INotificationsScreenState> {
@@ -115,7 +114,6 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	public state = {
 		refreshing: false,
 		activityCards: [],
-		hasMore: false,
 	};
 
 	public componentWillReceiveProps(nextProps: INotificationsScreenProps) {
@@ -170,9 +168,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				isLoading={notifications.loading}
 				activityCards={this.state.activityCards}
 				refreshing={this.state.refreshing}
-				hasMore={this.state.hasMore}
 				refreshData={this.refreshNotifications}
-				loadMoreNotifications={this.loadMoreNotificationsHandler}
 				onPostThumbPressed={this.postThumbPressedHandler}
 				onSuperLikedPhotoPressed={this.superLikedPhotoPressedHandler}
 				onCheckNotification={this.checkNotification}
@@ -196,14 +192,6 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		}
 	}
 
-	private loadMoreNotificationsHandler = () => {
-		// todo?
-		// this.setState({
-		// 	activityCards: this.state.activityCards.concat(ACTIVITY_CARDS),
-		// });
-		// make sure to update state.hasMore
-	}
-
 	private postThumbPressedHandler = (postId: string) => {
 		alert('postThumbPressedHandler: ' + postId);
 	}
@@ -213,35 +201,23 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	}
 
 	private friendRequestApprovedHandler = async (requestId: string) => {
-		// @ionut: todo -> display the user some feedback?
 		const {acceptFriendRequest} = this.props;
-		try {
-			await acceptFriendRequest({
-				variables: {
-					request: requestId,
-				},
-			});
-			await this.refreshNotifications();
-		} catch (ex) {
-			// TODO: Notify user if accept didn't process
-			console.log(ex);
-		}
+		await acceptFriendRequest({
+			variables: {
+				request: requestId,
+			},
+		});
+		await this.refreshNotifications();
 	}
 
 	private friendRequestDeclinedHandler = async (requestId: string) => {
-		// @ionut: todo -> display the user some feedback?
 		const {declineFriendRequest} = this.props;
-		try {
-			await declineFriendRequest({
-				variables: {
-					request: requestId,
-				},
-			});
-			await this.refreshNotifications();
-		} catch (ex) {
-			// TODO: Notify user if accept didn't process
-			console.log(ex);
-		}
+		await declineFriendRequest({
+			variables: {
+				request: requestId,
+			},
+		});
+		await this.refreshNotifications();
 	}
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
@@ -253,15 +229,9 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	}
 
 	private checkNotification = async (requestId: string) => {
-		// @ionut: todo -> display the user some feedback? this one is optional
 		const {checkNotification} = this.props;
-		try {
-			await checkNotification({variables: {request: requestId}});
-			await this.refreshNotifications();
-		} catch (ex) {
-			//
-			console.log(ex);
-		}
+		await checkNotification({variables: {request: requestId}});
+		await this.refreshNotifications();
 	}
 }
 
