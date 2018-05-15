@@ -119,18 +119,11 @@ export const getPublicPostsHoc = (comp: any) =>
 				const rets = [];
 				for (let i = 0; i < pItems.length; i++) {
 					const post = pItems[i];
-					const media = post.Media
-						? post.Media.length > 0
-							? base.ipfs_URL + post.Media[0].optimizedHash
-							: undefined
-						: undefined;
 					rets.push({
 						id: post.id,
 						text: post.text,
 						location: post.location,
 						smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash : AvatarImagePlaceholder,
-						imageSource: media,
-						mediaType: post.Media.length ? post.Media[0].type : null,
 						media: post.Media,
 						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 						fullName: post.owner.name,
@@ -139,9 +132,6 @@ export const getPublicPostsHoc = (comp: any) =>
 						numberOfSuperLikes: 0,
 						numberOfComments: numberOfComments(post),
 						numberOfWalletCoins: 0,
-						onCommentsButtonClick: () => {},
-						// TODO: append all media to this with the index of the image
-						onImageClick: () => null,
 						onLikeButtonClick: () => null,
 						canDelete: false,
 						owner: post.owner,

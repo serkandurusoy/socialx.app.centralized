@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons} from 'theme/';
-import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, IUserQuery, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
 import {ApolloClient} from 'apollo-client';
@@ -18,11 +18,6 @@ import {AvatarImagePlaceholder} from 'consts';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
-
-const FULL_NAME = 'Lester Wheeler';
-const USER_SMALL_AVATAR_URL = 'https://placeimg.com/120/120/people';
-const USER_BIG_AVATAR_URL = 'https://placeimg.com/240/240/people';
-const USER_NAME = 'LesterWheeler';
 
 const INITIAL_STATE = {
 	numberOfPhotos: 0,
@@ -36,7 +31,7 @@ const INITIAL_STATE = {
 	isFollowed: false,
 	recentPosts: [],
 	isLoading: true,
-	mediaObjects: [], // TODO: update this similar with MyProfileScreen
+	mediaObjects: [],
 };
 
 interface IUserProfileScreenProps {
@@ -109,7 +104,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			});
 
 			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
-			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser.name, getUser.userId);
+			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);
 
 			console.log(preLoadPosts);
 			this.setState({
@@ -151,10 +146,13 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		);
 	}
 
-	private preLoadPrevPosts = (posts: any, ownerAvatar: any, ownerName: any, ownerId: any) => {
+	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
 		if (!posts) {
 			return [];
 		}
+
+		const ownerName = user.name;
+		const ownerId = user.userId;
 
 		const getCommentsNum = (comments: any) => {
 			if (!comments.length) {
@@ -179,14 +177,14 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				title: null,
 				text: currentPost.text,
 				location: currentPost.location,
-				imageSource: currentPost.Media[0] ? base.ipfs_URL + currentPost.Media[0].hash : null,
 				smallAvatar: ownerAvatar,
 				fullName: ownerName,
 				timestamp: new Date(parseInt(currentPost.createdAt, 10) * 1000),
 				numberOfLikes: currentPost.likes.length,
 				numberOfComments: getCommentsNum(currentPost.comments),
 				canDelete: currentPost.owner.userId === ownerId,
-				mediaType: currentPost.Media[0] ? currentPost.Media[0].type : null,
+				media: currentPost.Media,
+				owner: user,
 			});
 		}
 		return recentPosts;

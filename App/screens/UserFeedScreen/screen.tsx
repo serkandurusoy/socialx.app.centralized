@@ -4,6 +4,7 @@ import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {SFC} from 'react';
 import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Sizes} from 'theme';
 import {IUserQuery} from 'types';
 import style from './style';
@@ -16,11 +17,9 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	refreshData: () => void;
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
-	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
-	onMediaPress: any;
 	onLikePress: any;
 	onPostDeletePress: any;
 	onUserPress: any;
@@ -39,7 +38,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					canDelete={canDelete}
 					likedByMe={likedByMe}
 					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
-					onImageClick={() => props.onMediaPress(0, data.item.media)}
+					onImageClick={(index) => props.onMediaPress(index, data.item.media)}
 					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
 					onUserClick={() => props.onUserPress(data.item.owner.userId)}
