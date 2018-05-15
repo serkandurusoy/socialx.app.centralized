@@ -25,8 +25,8 @@ const USER_BIG_AVATAR_URL = 'https://placeimg.com/240/240/people';
 const USER_NAME = 'LesterWheeler';
 
 const INITIAL_STATE = {
-	numberOfPhotos: 13,
-	numberOfLikes: 24,
+	numberOfPhotos: 0,
+	numberOfLikes: 0,
 	numberOfFollowers: 0,
 	numberOfFollowing: 0,
 	avatarURL: null,
@@ -104,7 +104,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			const mediaObjs = this.preloadAllMediaObjects(userPosts);
 
 			let numOfLikes = 0;
-			userPosts.forEach((post: any) => {
+			getUser.posts.forEach((post: any) => {
 				numOfLikes += post.likes.length;
 			});
 
@@ -120,6 +120,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				aboutMeText: getUser.bio,
 				mediaObjects: mediaObjs,
 				numberOfPhotos: mediaObjs.length,
+				numberOfLikes: numOfLikes,
 				recentPosts: preLoadPosts,
 			});
 		} catch (ex) {

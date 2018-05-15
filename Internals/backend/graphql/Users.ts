@@ -9,6 +9,12 @@ export const getUserProfileQ = gql`
 			username
 			email
 			bio
+			posts {
+				id
+				likes {
+					userId
+				}
+			}
 			avatar {
 				id
 				hash
