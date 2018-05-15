@@ -168,7 +168,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 		for (let i = 0; i < this.props.recentPosts.length; i++) {
 			ret.push(
 				<View style={style.wallPostContainer} key={i}>
-					<WallPostCard {...this.props.recentPosts[i]} canDelete={false} />
+					<WallPostCard {...this.props.recentPosts[i]} canDelete={false} navigation={this.props.navigation} />
 				</View>,
 			);
 		}

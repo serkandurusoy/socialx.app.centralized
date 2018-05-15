@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {Icons} from 'theme/';
-import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, IUserQuery, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
 import {ApolloClient} from 'apollo-client';
@@ -19,48 +19,6 @@ import {AvatarImagePlaceholder} from 'consts';
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
 
-const FULL_NAME = 'Lester Wheeler';
-const USER_SMALL_AVATAR_URL = 'https://placeimg.com/120/120/people';
-const USER_BIG_AVATAR_URL = 'https://placeimg.com/240/240/people';
-const USER_NAME = 'LesterWheeler';
-
-const RECENT_USER_POSTS: IWallPostCardProp[] = [
-	{
-		id: '111',
-		title: 'My first post!',
-		text:
-			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
-			'Then ellipsis will show to indicate that more text is hidden. ' +
-			'To a general advertiser outdoor advertising is worthy of consideration',
-		imageSource: 'https://placeimg.com/2000/1500/any',
-		smallAvatar: USER_SMALL_AVATAR_URL,
-		fullName: FULL_NAME,
-		timestamp: new Date('Jan 20 2018'),
-		numberOfLikes: 20,
-		numberOfSuperLikes: 4,
-		numberOfComments: 3,
-		numberOfWalletCoins: 5,
-		canDelete: true,
-		mediaType: 'jpg',
-	},
-	{
-		id: '222',
-		taggedFriends: [{fullName: 'Isabelle Wilson'}, {fullName: 'Teddy Decola'}, {fullName: 'Michiko Bisson'}],
-		location: 'Miami Beach, Florida',
-		title: 'Hey, my second post to SocialX network!',
-		imageSource: 'https://placeimg.com/640/550/any',
-		smallAvatar: USER_SMALL_AVATAR_URL,
-		fullName: FULL_NAME,
-		timestamp: new Date('Jun 17 2017'),
-		numberOfLikes: 11,
-		numberOfSuperLikes: 6,
-		numberOfComments: 4,
-		numberOfWalletCoins: 2,
-		canDelete: true,
-		mediaType: 'jpg',
-	},
-];
-
 const INITIAL_STATE = {
 	numberOfPhotos: 13,
 	numberOfLikes: 24,
@@ -71,9 +29,9 @@ const INITIAL_STATE = {
 	username: '',
 	aboutMeText: '',
 	isFollowed: false,
-	recentPosts: RECENT_USER_POSTS,
+	recentPosts: [],
 	isLoading: true,
-	mediaObjects: [], // TODO: update this similar with MyProfileScreen
+	mediaObjects: [],
 };
 
 interface IUserProfileScreenProps {
@@ -139,7 +97,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			});
 
 			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
-			const preLoadPosts = this.preLoadPrevPosts(getUser.posts, avatar, getUser.name, getUser.userId);
+			const preLoadPosts = this.preLoadPrevPosts(getUser.posts, avatar, getUser);
 
 			console.log(preLoadPosts);
 			this.setState({
@@ -180,10 +138,13 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		);
 	}
 
-	private preLoadPrevPosts = (posts: any, ownerAvatar: any, ownerName: any, ownerId: any) => {
+	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
 		if (!posts) {
 			return [];
 		}
+
+		const ownerName = user.name;
+		const ownerId = user.userId;
 
 		const getCommentsNum = (comments: any) => {
 			if (!comments.length) {
@@ -208,14 +169,14 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				title: null,
 				text: currentPost.text,
 				location: currentPost.location,
-				imageSource: currentPost.Media[0] ? base.ipfs_URL + currentPost.Media[0].hash : null,
 				smallAvatar: ownerAvatar,
 				fullName: ownerName,
 				timestamp: new Date(parseInt(currentPost.createdAt, 10) * 1000),
 				numberOfLikes: currentPost.likes.length,
 				numberOfComments: getCommentsNum(currentPost.comments),
 				canDelete: currentPost.owner.userId === ownerId,
-				mediaType: currentPost.Media[0] ? currentPost.Media[0].type : null,
+				media: currentPost.Media,
+				owner: user,
 			});
 		}
 		return recentPosts;

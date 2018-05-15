@@ -1,3 +1,5 @@
+// TODO: this is pretty outdated and will need refactoring before data hook!
+
 import {IWallPostCardProp, TitleWithSubtitle} from 'components/Displayers';
 import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
@@ -15,7 +17,6 @@ const INITIAL_USER_POSTS = [
 			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
 			'Then ellipsis will show to indicate that more text is hidden. ' +
 			'To a general advertiser outdoor advertising is worthy of consideration',
-		imageSource: 'https://c1.staticflickr.com/8/7378/13997705508_a218e00c81_b.jpg',
 		smallAvatar: 'https://s.yimg.com/pw/images/buddyicon00.png',
 		fullName: 'Tom Thompson',
 		timestamp: new Date('Jan 20 2018'),
@@ -29,7 +30,6 @@ const INITIAL_USER_POSTS = [
 		text: 'Hey, my first post to SocialX network!',
 		taggedFriends: [{fullName: 'Isabelle Wilson'}, {fullName: 'Teddy Decola'}, {fullName: 'Michiko Bisson'}],
 		location: 'Panselelor 47, Timisoara',
-		imageSource: 'https://placeimg.com/640/550/any',
 		smallAvatar: 'https://placeimg.com/120/120/people',
 		fullName: 'Ionut Movila',
 		timestamp: new Date('Jun 17 2017'),
@@ -95,7 +95,6 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 	private addGroupPostHandler = (data: NewWallPostData) => {
 		const newPost: IWallPostCardProp = {
 			text: data.text,
-			imageSource: data.mediaObjects.length > 0 ? data.mediaObjects[0].path : undefined,
 			smallAvatar: 'https://placeimg.com/110/110/people',
 			fullName: 'Ionut Movila',
 			timestamp: new Date(),

@@ -58,22 +58,6 @@ const style: any = {
 		lineHeight: Sizes.smartHorizontalScale(24),
 		color: Colors.postText,
 	},
-	postMediaContainer: {
-		width: '100%',
-		height: Sizes.smartVerticalScale(254),
-	},
-	halfMediaContainerHorizontal: {
-		width: '50%',
-		height: '100%',
-	},
-	halfMediaContainerVertical: {
-		width: '100%',
-		height: '50%',
-	},
-	halfMediaObject: {
-		width: '100%',
-		height: '100%',
-	},
 	locationPin: {
 		height: Sizes.smartHorizontalScale(14),
 	},
