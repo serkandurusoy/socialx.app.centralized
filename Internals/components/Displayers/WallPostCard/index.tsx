@@ -1,5 +1,3 @@
-import {OS_TYPES} from 'consts';
-import {ModalManager} from 'hoc/ManagedModal/manager';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
@@ -11,9 +9,9 @@ import {IMediaProps, IUserQuery} from 'types';
 import {getURLForMediaViewerObject} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
-import {MediaObjectViewer} from '../MediaObject';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
+import {WallPostMedia} from './WallPostMedia';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 
@@ -21,14 +19,13 @@ export interface IWallPostCardProp {
 	id: string;
 	title?: string;
 	text?: string;
-	imageSource?: string;
-	mediaType?: string;
 	location?: string;
 	taggedFriends?: Array<{
+		// TODO: should be an array of IUserQuery
 		fullName: string;
 	}>;
-	smallAvatar: string;
-	fullName: string;
+	smallAvatar: string; // @deprecated, use instead owner!
+	fullName: string; // @deprecated, use instead owner!
 	timestamp: Date;
 	numberOfLikes: number;
 	numberOfSuperLikes: number;
@@ -36,7 +33,6 @@ export interface IWallPostCardProp {
 	numberOfWalletCoins: number;
 	onImageClick: (index: number) => void;
 	onLikeButtonClick: () => void;
-	onCommentsButtonClick: () => void;
 	onDeleteClick: (postId: string) => void;
 	onUserClick: () => void;
 	likedByMe?: boolean;
@@ -44,6 +40,7 @@ export interface IWallPostCardProp {
 	owner: IUserQuery;
 	media: any;
 	likes: any;
+	navigation: NavigationScreenProp<any>;
 }
 
 export interface IWallPostCardState {
@@ -75,18 +72,20 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				<TouchableOpacity onPress={this.props.onUserClick} style={style.topContainer}>
 					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
 					<View style={style.topRightContainer}>
-						<Text style={style.fullName}>
-							{this.props.fullName}
-							{this.renderTaggedFriends()}
-							{this.renderLocation()}
-						</Text>
+						<TouchableOpacity onPress={this.showUserProfilePage}>
+							<Text style={style.fullName}>
+								{this.props.fullName}
+								{this.renderTaggedFriends()}
+								{this.renderLocation()}
+							</Text>
+						</TouchableOpacity>
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
 					<TooltipDots items={this.getTooltipItems()} />
 				</TouchableOpacity>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
-				{this.renderWallPostMedia()}
+				<WallPostMedia mediaObjects={this.props.media} onMediaObjectView={this.onMediaObjectPressHandler} />
 				<WallPostActions
 					likedByMe={this.props.likedByMe}
 					numberOfLikes={this.props.numberOfLikes}
@@ -95,7 +94,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.props.onCommentsButtonClick}
+					commentsButtonPressed={this.onCommentsButtonClickHandler}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
 			</View>
@@ -313,5 +312,20 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private walletCoinsButtonPressedHandler = () => {
 		alert('Go to my wallet');
+	}
+
+	private showUserProfilePage = () => {
+		this.props.navigation.navigate('UserProfileScreen', {userId: this.props.owner.userId});
+	}
+
+	private onMediaObjectPressHandler = (index: number) => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			mediaObjects: this.props.media,
+			startIndex: index,
+		});
+	}
+
+	private onCommentsButtonClickHandler = () => {
+		this.props.navigation.navigate('CommentsStack', {postId: this.props.id, userId: this.props.owner.userId});
 	}
 }

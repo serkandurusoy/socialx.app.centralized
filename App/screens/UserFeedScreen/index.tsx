@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import {Alert, InteractionManager, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationScreenProp} from 'react-navigation';
-import {Icons, Images} from 'theme';
-import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
+import {Images} from 'theme';
+import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {
@@ -80,7 +79,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {Posts, data, loading, noPosts, refresh, loadMore, Items} = this.props;
 
-		console.log(this.props);
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
@@ -93,10 +91,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				loadMorePosts={loadMore}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
-				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 				hideShareSection={this.props.hideShareSection}
-
-				onMediaPress={this.onMediaObjectPressHandler}
 				onLikePress={this.onLikeButtonClickHandler}
 				onPostDeletePress={this.onPostDeleteClickHandler}
 				onUserPress={this.gotoUserProfile}
@@ -197,13 +192,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 	}
 
-	private onMediaObjectPressHandler = (index: number, mediaObjects: any) => {
-		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: mediaObjects || [],
-			startIndex: index,
-		});
-	}
-
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		const {likePost, removeLikePost, Items, refresh} = this.props;
 
@@ -232,10 +220,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// user doesnt own the post, thus cant delete, or server issues
 		}
 		stopLoading();
-	}
-
-	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
-		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
 	}
 }
 
