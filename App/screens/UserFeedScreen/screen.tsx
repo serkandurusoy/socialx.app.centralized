@@ -2,9 +2,8 @@ import {AvatarImage} from 'components/Avatar';
 import {IWallPostCardProp, WallPostCard} from 'components/Displayers';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {SFC} from 'react';
-import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Sizes} from 'theme';
 import {IUserQuery} from 'types';
 import style from './style';
@@ -25,6 +24,8 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	onLikePress: any;
 	onPostDeletePress: any;
 	onUserPress: any;
+	loadingMore: boolean;
+	hasMore: boolean;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -49,6 +50,17 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		);
 	};
 
+	const renderFooterWhenLoading = () => {
+		if (props.loadingMore && props.hasMore) {
+			return (
+				<View style={style.bottomLoadingContainer}>
+					<ActivityIndicator size={'small'} />
+				</View>
+			);
+		}
+		return null;
+	};
+
 	const renderWithLoading = () => {
 		return props.renderWithLoader(
 			<FlatList
@@ -62,6 +74,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 				onEndReachedThreshold={0.2}
 				alwaysBounceVertical={false}
 				keyboardShouldPersistTaps={'handled'}
+				ListFooterComponent={renderFooterWhenLoading}
 			/>,
 		);
 	};

@@ -52,6 +52,9 @@ const style: any = {
 		textAlign: 'center',
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
 	},
+	bottomLoadingContainer: {
+		paddingVertical: Sizes.smartVerticalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);
