@@ -37,6 +37,7 @@ export interface IWallPostCardProp {
 	onLikeButtonClick: () => void;
 	onCommentsButtonClick: () => void;
 	onDeleteClick: (postId: string) => void;
+	onUserClick: () => void;
 	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
@@ -70,7 +71,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					confirmHandler={this.reportProblemHandler}
 					declineHandler={this.toggleDeclineReportModal}
 				/>
-				<View style={style.topContainer}>
+				<TouchableOpacity onPress={this.props.onUserClick} style={style.topContainer}>
 					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
 					<View style={style.topRightContainer}>
 						<Text style={style.fullName}>
@@ -81,7 +82,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
 					<TooltipDots items={this.getTooltipItems()} />
-				</View>
+				</TouchableOpacity>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
 				{this.renderWallPostMedia()}

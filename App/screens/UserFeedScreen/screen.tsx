@@ -23,6 +23,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	onMediaPress: any;
 	onLikePress: any;
 	onPostDeletePress: any;
+	onUserPress: any;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -41,6 +42,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					onImageClick={() => props.onMediaPress(0, data.item.media)}
 					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
+					onUserClick={() => props.onUserPress(data.item.owner.userId)}
 				/>
 			</View>
 		);
