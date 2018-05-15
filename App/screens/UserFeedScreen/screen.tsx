@@ -54,7 +54,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 		if (props.loadingMore && props.hasMore) {
 			return (
 				<View style={style.bottomLoadingContainer}>
-					<ActivityIndicator size={'small'} />
+					<ActivityIndicator size={'large'} />
 				</View>
 			);
 		}

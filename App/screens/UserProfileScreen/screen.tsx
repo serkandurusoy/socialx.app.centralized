@@ -11,10 +11,12 @@ import {
 	UserAvatar,
 	WallPostCard,
 } from 'components';
+import {ipfsConfig as base} from 'configuration';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Metrics} from 'theme';
 import {IMediaProps, IMediaViewerObject, ISimpleMediaObject} from 'types';
 import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
+
 import style, {USER_MEDIA_THUMB_SIZE} from './style';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -86,11 +88,13 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				ref={this.setScrollView}
 			>
 				<View style={style.topContainer}>
-					<UserAvatar
-						avatarURL={{uri: this.props.avatarURL}}
-						fullName={this.props.fullName}
-						username={this.props.username}
-					/>
+					<TouchableOpacity onPress={this.showImage}>
+						<UserAvatar
+							avatarURL={{uri: this.props.avatarURL}}
+							fullName={this.props.fullName}
+							username={this.props.username}
+						/>
+					</TouchableOpacity>
 					<ProfileStatistics
 						numberOfPhotos={this.props.numberOfPhotos}
 						numberOfLikes={this.props.numberOfLikes}
@@ -101,6 +105,14 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				{this.conditionalRendering()}
 			</ScrollView>,
 		);
+	}
+
+	private showImage = () => {
+		const {navigation, avatarURL} = this.props;
+		this.props.navigation.navigate('MediaViewerScreen', {
+			mediaObjects: [{type: 'jpg', hash: avatarURL.replace(base.ipfs_URL, '')}],
+			startIndex: 0,
+		});
 	}
 
 	private setScrollView = (ref: any) => {

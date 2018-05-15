@@ -282,6 +282,13 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	private getTooltipItems = (): TooltipItem[] => {
 		const ret = [
 			{
+				label: 'Block',
+				icon: Icons.redRoundCross,
+				actionHandler: () => {
+					alert('Block user');
+				},
+			},
+			{
 				label: 'Report a Problem',
 				icon: Icons.iconReport,
 				actionHandler: this.tooltipsReportPressedHandler,
