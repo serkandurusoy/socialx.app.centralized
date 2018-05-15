@@ -12,8 +12,7 @@ import {IWallPostCommentReply} from '../index';
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 import {ipfsConfig as base} from 'configuration';
-
-const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+import {AvatarImagePlaceholder} from 'consts';
 
 interface IRepliesScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -116,7 +115,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				const currentComment = comments[i];
 				const commentOwnerAv = currentComment.owner.avatar
 					? base.ipfs_URL + currentComment.owner.avatar.hash
-					: imagePlaceHolder;
+					: AvatarImagePlaceholder;
 
 				resComments.push({
 					id: currentComment.id,

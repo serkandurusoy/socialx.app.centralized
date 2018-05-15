@@ -40,6 +40,8 @@ export interface IWallPostCardProp {
 	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
+	media: any;
+	likes: any;
 }
 
 export interface IWallPostCardState {

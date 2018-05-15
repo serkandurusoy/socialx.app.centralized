@@ -2,6 +2,7 @@ export * from './gql';
 export * from './appUI';
 export * from './popup';
 export * from './global';
+export * from './confirmation';
 
 // temp
 
@@ -39,8 +40,9 @@ export enum SearchFilterValues {
 }
 
 export enum SearchResultKind {
-	Friend = 'friend',
-	NotFriend = 'notFriend',
+	Friend = 'FRIEND',
+	NotFriend = 'NOT_FRIEND',
+	FriendRequestSent = 'FRIEND_REQUEST_SENT',
 	Group = 'group',
 }
 

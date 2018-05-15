@@ -1,16 +1,21 @@
-import {SXButton, SXGradientButton, TextGradient} from 'components';
 import React, {Component} from 'react';
 import {AsyncStorage, Image, Text, View} from 'react-native';
+
+import {SXButton, SXGradientButton, TextGradient} from 'components';
 import SplashScreen from 'react-native-smart-splash-screen';
 import {NavigationScreenProp} from 'react-navigation';
+import {connect} from 'react-redux';
 import {Colors, Images} from 'theme';
 import style from './style';
 
-import {resetNavigationToRoute} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute} from 'backend/actions';
 import {CurrentUser} from 'utilities';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
+	isLoadModalOn: boolean;
+	hideLoader: () => void;
+	notifications: any;
 }
 
 export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
@@ -19,12 +24,17 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	};
 
 	public async componentDidMount() {
+		const {hideLoader, isLoadModalOn, notifications} = this.props;
 		try {
 			const currentUser = await CurrentUser();
-			console.log('currentUser', currentUser.username);
 			if (!currentUser) {
 				return;
 			}
+
+			if (isLoadModalOn) {
+				hideLoader();
+			}
+
 			resetNavigationToRoute('MainScreen', this.props.navigation);
 		} catch (ex) {
 			//

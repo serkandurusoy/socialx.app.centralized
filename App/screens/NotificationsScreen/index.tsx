@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
 import NotificationsScreenComponent from './screen';
 
-import {Text, View} from 'react-native';
-
 import {
 	acceptFriendRequestHoc,
 	checkNotificationHoc,
@@ -13,8 +11,7 @@ import {
 import {INotificationsResponse, NOTIFICATION_TYPES} from 'types';
 
 import {ipfsConfig as base} from 'configuration';
-
-const imagePlaceholder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+import {AvatarImagePlaceholder} from 'consts';
 
 export const ACTIVITY_CARDS = [
 	{
@@ -107,6 +104,7 @@ interface INotificationsScreenProps {
 interface INotificationsScreenState {
 	activityCards: any[];
 	refreshing: boolean;
+	hasMore: boolean;
 }
 
 class NotificationsScreen extends Component<INotificationsScreenProps, INotificationsScreenState> {
@@ -117,6 +115,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	public state = {
 		refreshing: false,
 		activityCards: [],
+		hasMore: false,
 	};
 
 	public componentWillReceiveProps(nextProps: INotificationsScreenProps) {
@@ -132,7 +131,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 						case NOTIFICATION_TYPES.FRIEND_REQUEST:
 							res = {
 								type: NOTIFICATION_TYPES.FRIEND_REQUEST,
-								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
+								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : AvatarImagePlaceholder,
 								fullName: current.owner.name,
 								username: current.owner.username,
 								requestId: current.id,
@@ -143,7 +142,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 						case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
 							res = {
 								type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
-								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : imagePlaceholder,
+								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : AvatarImagePlaceholder,
 								fullName: current.owner.name,
 								username: current.owner.username,
 								requestId: current.id,
@@ -171,6 +170,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				isLoading={notifications.loading}
 				activityCards={this.state.activityCards}
 				refreshing={this.state.refreshing}
+				hasMore={this.state.hasMore}
 				refreshData={this.refreshNotifications}
 				loadMoreNotifications={this.loadMoreNotificationsHandler}
 				onPostThumbPressed={this.postThumbPressedHandler}
@@ -179,6 +179,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				onFriendRequestApproved={this.friendRequestApprovedHandler}
 				onFriendRequestDeclined={this.friendRequestDeclinedHandler}
 				onGroupRequestConfirmed={this.groupRequestConfirmedHandler}
+				onGroupRequestDeclined={this.onGroupRequestDeclinedHandler}
 			/>
 		);
 	}
@@ -200,6 +201,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		// this.setState({
 		// 	activityCards: this.state.activityCards.concat(ACTIVITY_CARDS),
 		// });
+		// make sure to update state.hasMore
 	}
 
 	private postThumbPressedHandler = (postId: string) => {
@@ -244,6 +246,10 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
+	}
+
+	private onGroupRequestDeclinedHandler = (requestId: string) => {
+		alert('onGroupRequestDeclinedHandler: ' + requestId);
 	}
 
 	private checkNotification = async (requestId: string) => {

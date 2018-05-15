@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
+const ICON_SIZE = Sizes.smartHorizontalScale(25);
+
 const style: any = {
 	container: {
 		width: '100%',
@@ -43,6 +45,14 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(23),
 		paddingTop: Sizes.smartVerticalScale(3),
+	},
+	iconTouch: {
+		padding: Sizes.smartHorizontalScale(5),
+		marginLeft: Sizes.smartHorizontalScale(15),
+	},
+	iconImage: {
+		width: ICON_SIZE,
+		height: ICON_SIZE,
 	},
 };
 

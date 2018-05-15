@@ -55,4 +55,6 @@ export const Icons = {
 	messagingIcon: require('./assets/icons/messaging_icon.png'),
 	mediaDownload: require('./assets/icons/media_download.png'),
 	mediaShare: require('./assets/icons/media_share.png'),
+	greenRoundCheck: require('./assets/icons/green_round_check.png'),
+	redRoundCross: require('./assets/icons/red_round_cross.png'),
 };

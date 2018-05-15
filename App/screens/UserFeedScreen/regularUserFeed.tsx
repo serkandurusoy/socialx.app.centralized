@@ -1,4 +1,4 @@
-import {getAllPostsHoc} from 'backend/graphql';
+import {getPublicPostsHoc} from 'backend/graphql';
 import {ScreenHeaderButton} from 'components';
 import React from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
@@ -13,7 +13,13 @@ const withRegularUserFeed = (
 		private static navigationOptions = navOptions;
 
 		public render() {
-			return <BaseComponent Posts={this.props.Posts} navigation={this.props.navigation} hideShareSection={false} />;
+			return (
+				<BaseComponent
+					Posts={this.props.Posts}
+					navigation={this.props.navigation}
+					hideShareSection={false}
+				/>
+			);
 		}
 	};
 };
@@ -24,7 +30,7 @@ const navigationOptions = (props: any) => {
 		headerRight: (
 			<ScreenHeaderButton onPress={() => navigateToMessagingScreen(props)} iconSource={Icons.messagingIcon} />
 		),
-		headerLeft: <ScreenHeaderButton iconName={'md-flame'} onPress={() => navigateToHotPosts(props)} />,
+		headerLeft: <ScreenHeaderButton iconName={'md-flame'} onPress={() => {/* navigateToHotPosts(props) */}} />,
 	};
 };
 
@@ -36,5 +42,5 @@ const navigateToHotPosts = (props: IFeedProps) => {
 	props.navigation.navigate('HotPostsFeedScreenStack');
 };
 
-const withAllPosts = getAllPostsHoc(UserFeedScreen);
+const withAllPosts = getPublicPostsHoc(UserFeedScreen);
 export default withRegularUserFeed(withAllPosts, navigationOptions as any);

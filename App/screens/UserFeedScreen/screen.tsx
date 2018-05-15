@@ -20,6 +20,9 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
+	onMediaPress: any;
+	onLikePress: any;
+	onPostDeletePress: any;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -27,12 +30,17 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		const canDelete = props.currentUser.userId === data.item.owner.userId;
+		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === props.currentUser.userId);
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard
 					{...data.item}
 					canDelete={canDelete}
+					likedByMe={likedByMe}
 					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
+					onImageClick={() => props.onMediaPress(0, data.item.media)}
+					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
+					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
 				/>
 			</View>
 		);

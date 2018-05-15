@@ -12,8 +12,7 @@ import {ipfsConfig as base} from 'configuration';
 import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-
-const imagePlaceHolder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+import {AvatarImagePlaceholder} from 'consts';
 
 export interface IWallPostCommentReply {
 	id: string;
@@ -141,7 +140,9 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		for (let i = 0; i < comments.length; i++) {
 			const currentComment = comments[i];
-			const ownerAv = currentComment.owner.avatar ? base.ipfs_URL + currentComment.owner.avatar.hash : imagePlaceHolder;
+			const ownerAv = currentComment.owner.avatar
+				? base.ipfs_URL + currentComment.owner.avatar.hash
+				: AvatarImagePlaceholder;
 			const allReplies: IWallPostComment[] = [];
 
 			if (currentComment.comments.length > 0) {
@@ -149,7 +150,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 					const currentReply = currentComment.comments[y];
 					const replyOwnerAv = currentReply.owner.avatar
 						? base.ipfs_URL + currentReply.owner.avatar.hash
-						: imagePlaceHolder;
+						: AvatarImagePlaceholder;
 
 					allReplies.push({
 						id: currentReply.id,
@@ -159,7 +160,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 							avatarURL: replyOwnerAv,
 							id: currentReply.owner.userId,
 						},
-						timestamp: new Date(currentReply.createdAt),
+						timestamp: new Date(parseInt(currentReply.createdAt, 10) * 1000),
 						numberOfLikes: currentReply.likes.length,
 						likes: currentReply.likes,
 						replies: [],
@@ -176,7 +177,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 					avatarURL: ownerAv,
 					id: currentComment.owner.userId,
 				},
-				timestamp: new Date(currentComment.createdAt),
+				timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
 				numberOfLikes: currentComment.likes.length,
 				likes: currentComment.likes,
 				replies: allReplies,
