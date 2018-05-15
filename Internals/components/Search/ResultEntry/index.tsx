@@ -1,4 +1,3 @@
-import {Toast} from 'native-base';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
@@ -7,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AvatarImage} from 'components';
 import {Colors, Icons} from 'theme';
 import {SearchResultKind} from 'types';
+import {showToastMessage} from 'utilities';
 import {ButtonSizes, SXButton} from '../../Interaction';
 import style from './style';
 
@@ -127,11 +127,7 @@ export class SearchResultEntry extends React.Component<IUserRequestSearchProps, 
 				this.setState({
 					loading: false,
 				});
-				Toast.show({
-					text: 'Friend request could not be processed at this time. Try again later..',
-					duration: 3000,
-					position: 'top',
-				});
+				showToastMessage('Friend request could not be processed at this time. Try again later..');
 			},
 		);
 	}

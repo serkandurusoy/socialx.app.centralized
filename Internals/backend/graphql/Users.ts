@@ -9,11 +9,24 @@ export const getUserProfileQ = gql`
 			username
 			email
 			bio
+			posts {
+				id
+				likes {
+					userId
+				}
+			}
 			avatar {
 				id
 				hash
 			}
-			posts {
+		}
+	}
+`;
+
+export const getUserPostsQ = gql`
+	query getPosts($userId: ID!) {
+		getPostsOwner(userId: $userId) {
+			Items {
 				id
 				createdAt
 				location
@@ -34,27 +47,6 @@ export const getUserProfileQ = gql`
 					comments {
 						id
 					}
-				}
-			}
-		}
-	}
-`;
-
-export const getUserPostsQ = gql`
-	query getPosts($userId: ID!) {
-		getPostsOwner(userId: $userId) {
-			Items {
-				id
-				text
-				location
-				createdAt
-				likes {
-					userId
-				}
-				Media {
-					id
-					hash
-					type
 				}
 			}
 			nextToken

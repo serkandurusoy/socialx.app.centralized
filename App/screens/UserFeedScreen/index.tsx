@@ -1,11 +1,11 @@
+import get from 'lodash/get';
 import React, {Component} from 'react';
-import {Alert, InteractionManager, View} from 'react-native';
 import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationScreenProp} from 'react-navigation';
-import {Icons, Images} from 'theme';
-import {MediaObject, NewWallPostData} from '../NewWallPostScreen';
+import {Images} from 'theme';
+import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
 
 import {
@@ -70,45 +70,62 @@ interface IUserFeedScreenProps extends IFeedProps {
 
 interface IUserFeedScreenState {
 	refreshing: boolean;
+	loadingMore: boolean;
+	hasMore: boolean;
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	public state = {
 		refreshing: false,
+		loadingMore: false,
+		hasMore: true,
 	};
 
 	public render() {
 		const {Posts, data, loading, noPosts, refresh, loadMore, Items} = this.props;
 
-		console.log(this.props);
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
 				isLoading={loading}
+				loadingMore={this.state.loadingMore}
+				hasMore={this.state.hasMore}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
 				avatarImage={this.getAvatarImage()}
 				wallPosts={Items}
-				loadMorePosts={loadMore}
+				loadMorePosts={this.onLoadMore}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
-				onCommentsButtonClick={this.onCommentsButtonClickHandler}
 				hideShareSection={this.props.hideShareSection}
-
-				onMediaPress={this.onMediaObjectPressHandler}
 				onLikePress={this.onLikeButtonClickHandler}
 				onPostDeletePress={this.onPostDeleteClickHandler}
+				onUserPress={this.gotoUserProfile}
+				onMediaPress={this.onMediaObjectPressHandler}
+				onCommentPress={this.onCommentsButtonClickHandler}
 			/>
 		);
 	}
 
 	private onLoadMore = async () => {
-		const {loadMore} = this.props;
-		try {
-			const at = await loadMore();
-		} catch (ex) {
-			console.log(ex);
+		if (this.state.hasMore) {
+			const {loadMore} = this.props;
+			try {
+				this.setState({
+					loadingMore: true,
+				});
+				const loadResult: any = await loadMore();
+				this.setState({
+					loadingMore: false,
+					hasMore: get(loadResult, 'data.getPublicPosts.nextToken', false),
+				});
+			} catch (ex) {
+				console.log(ex);
+				this.setState({
+					loadingMore: false,
+				});
+			}
 		}
 	}
 
@@ -179,7 +196,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private refreshWallPosts = async () => {
-		this.setState({refreshing: true});
+		this.setState({refreshing: true, hasMore: true});
 		try {
 			await this.props.data.refetch();
 			await this.props.refresh();
@@ -190,13 +207,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			this.setState({refreshing: false});
 			console.log('ex', Ex);
 		}
-	}
-
-	private onMediaObjectPressHandler = (index: number, mediaObjects: any) => {
-		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: mediaObjects || [],
-			startIndex: index,
-		});
 	}
 
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
@@ -229,8 +239,19 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		stopLoading();
 	}
 
-	private onCommentsButtonClickHandler = async (wallPostData: IWallPostCardProp) => {
-		this.props.navigation.navigate('CommentsStack', {postId: wallPostData.id, userId: this.props.data.user.userId});
+	private gotoUserProfile = (userId: string) => {
+		this.props.navigation.navigate('UserProfileScreen', {userId});
+	}
+
+	private onMediaObjectPressHandler = (index: number, media: any) => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			mediaObjects: media,
+			startIndex: index,
+		});
+	}
+
+	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
+		this.props.navigation.navigate('CommentsStack', {postId, userId});
 	}
 }
 

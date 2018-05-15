@@ -4,7 +4,6 @@ import {
 	ActivityIndicator,
 	Platform,
 	StyleProp,
-	Text,
 	TouchableOpacity,
 	TouchableWithoutFeedback,
 	View,
@@ -27,6 +26,7 @@ export interface IVideoOptions {
 
 interface IVideoPlayerProps extends IVideoOptions {
 	videoURL: string;
+	onPress?: () => void;
 }
 
 interface IVideoPlayerState {
@@ -80,8 +80,10 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 	}
 
 	public render() {
+		const pressHandler = this.props.thumbOnly ? this.props.onPress : this.onVideoPlayPause;
+		const touchDisabled = !pressHandler;
 		return (
-			<TouchableWithoutFeedback onPress={this.onVideoPlayPause} disabled={this.props.thumbOnly}>
+			<TouchableWithoutFeedback onPress={pressHandler} disabled={touchDisabled}>
 				<View style={this.props.containerStyle}>
 					<Video
 						onReadyForDisplay={this.videoReadyHandler}

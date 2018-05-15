@@ -2,7 +2,7 @@ import {AvatarImage} from 'components/Avatar';
 import {IWallPostCardProp, WallPostCard} from 'components/Displayers';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {SFC} from 'react';
-import {FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
 import {IUserQuery} from 'types';
@@ -16,13 +16,16 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	refreshData: () => void;
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
-	onCommentsButtonClick: (wallPostData: IWallPostCardProp) => void;
+	onMediaPress: (index: any, media: any) => void;
+	onCommentPress: (postId: any, owner: any) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
-	onMediaPress: any;
 	onLikePress: any;
 	onPostDeletePress: any;
+	onUserPress: any;
+	loadingMore: boolean;
+	hasMore: boolean;
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
@@ -37,13 +40,25 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					{...data.item}
 					canDelete={canDelete}
 					likedByMe={likedByMe}
-					onCommentsButtonClick={() => props.onCommentsButtonClick(data.item)}
-					onImageClick={() => props.onMediaPress(0, data.item.media)}
+					onCommentClick={() => props.onCommentPress(data.item.id, data.item.owner.userId)}
+					onImageClick={(index) => props.onMediaPress(index, data.item.media)}
 					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
+					onUserClick={() => props.onUserPress(data.item.owner.userId)}
 				/>
 			</View>
 		);
+	};
+
+	const renderFooterWhenLoading = () => {
+		if (props.loadingMore && props.hasMore) {
+			return (
+				<View style={style.bottomLoadingContainer}>
+					<ActivityIndicator size={'large'} />
+				</View>
+			);
+		}
+		return null;
 	};
 
 	const renderWithLoading = () => {
@@ -59,6 +74,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 				onEndReachedThreshold={0.2}
 				alwaysBounceVertical={false}
 				keyboardShouldPersistTaps={'handled'}
+				ListFooterComponent={renderFooterWhenLoading}
 			/>,
 		);
 	};

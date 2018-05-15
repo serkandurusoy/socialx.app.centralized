@@ -3,7 +3,7 @@ import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
 
 import {IMediaObjectViewerProps} from 'components';
 import {ipfsConfig as base} from 'configuration';
-import {IMediaProps, IMediaProsWithIndex, IMediaViewerObject, ISimpleMediaObject} from 'types';
+import {IMediaProps, IMediaPropsWithIndex, IMediaViewerObject, ISimpleMediaObject} from 'types';
 import {requestResourcePermission} from 'utilities';
 
 const REQUEST_SAVE_MEDIA_TITLE = 'Photo library save..';
@@ -19,7 +19,7 @@ export const getURLForMediaViewerObject = (object: IMediaViewerObject) => {
 	if ('url' in object) {
 		mediaURL = (object as ISimpleMediaObject).url;
 	} else {
-		object = object as IMediaProsWithIndex;
+		object = object as IMediaPropsWithIndex;
 		mediaURL = base.ipfs_URL;
 		mediaURL += object.optimizedHash ? object.optimizedHash : object.hash;
 	}

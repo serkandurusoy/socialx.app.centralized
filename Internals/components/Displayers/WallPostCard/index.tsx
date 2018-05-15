@@ -1,18 +1,19 @@
-import {OS_TYPES} from 'consts';
-import {ModalManager} from 'hoc/ManagedModal/manager';
 import moment from 'moment';
 import React, {Component} from 'react';
-import {findNodeHandle, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import {OS_TYPES} from 'consts';
+import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
 import {IUserQuery} from 'types';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
-import {MediaObjectViewer} from '../MediaObject';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
+import {WallPostMedia} from './WallPostMedia';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 
@@ -20,23 +21,23 @@ export interface IWallPostCardProp {
 	id: string;
 	title?: string;
 	text?: string;
-	imageSource?: string;
-	mediaType?: string;
 	location?: string;
 	taggedFriends?: Array<{
+		// TODO: should be an array of IUserQuery
 		fullName: string;
 	}>;
-	smallAvatar: string;
-	fullName: string;
+	smallAvatar: string; // @deprecated, use instead owner!
+	fullName: string; // @deprecated, use instead owner!
 	timestamp: Date;
 	numberOfLikes: number;
 	numberOfSuperLikes: number;
 	numberOfComments: number;
 	numberOfWalletCoins: number;
-	onImageClick: () => void;
+	onImageClick: (index: number) => void;
 	onLikeButtonClick: () => void;
-	onCommentsButtonClick: () => void;
 	onDeleteClick: (postId: string) => void;
+	onUserClick: () => void;
+	onCommentClick: () => void;
 	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
@@ -52,7 +53,6 @@ export interface IWallPostCardState {
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public static defaultProps: Partial<IWallPostCardProp> = {
 		canDelete: false,
-		title: 'Sample post title to be replace later',
 	};
 
 	public state = {
@@ -70,7 +70,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					confirmHandler={this.reportProblemHandler}
 					declineHandler={this.toggleDeclineReportModal}
 				/>
-				<View style={style.topContainer}>
+				<TouchableOpacity onPress={this.props.onUserClick} style={style.topContainer}>
 					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
 					<View style={style.topRightContainer}>
 						<Text style={style.fullName}>
@@ -81,10 +81,10 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
 					</View>
 					<TooltipDots items={this.getTooltipItems()} />
-				</View>
+				</TouchableOpacity>
 				{this.renderPostTitle()}
 				{this.renderPostDescription()}
-				{this.renderWallPostMedia()}
+				<WallPostMedia mediaObjects={this.props.media} onMediaObjectView={this.props.onImageClick} />
 				<WallPostActions
 					likedByMe={this.props.likedByMe}
 					numberOfLikes={this.props.numberOfLikes}
@@ -93,25 +93,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.props.onCommentsButtonClick}
+					commentsButtonPressed={this.props.onCommentClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
 			</View>
 		);
-	}
-
-	private renderWallPostMedia = () => {
-		if (this.props.imageSource) {
-			return (
-				<MediaObjectViewer
-					onPress={this.props.onImageClick}
-					uri={this.props.imageSource}
-					style={style.postImage}
-					extension={this.props.mediaType}
-				/>
-			);
-		}
-		return null;
 	}
 
 	private renderTaggedFriends = () => {
@@ -171,8 +157,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private renderPostDescription = () => {
-		const {text} = this.props;
-		if (text) {
+		const {text, title} = this.props;
+		if (text && title) {
+			// if post has both title and text show here the text part!
 			// due to an android limitation nesting a button in the end of the text is not possible, see
 			// https://facebook.github.io/react-native/docs/text.html#nested-views-ios-only
 			const hasMore =
@@ -204,10 +191,12 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private renderPostTitle = () => {
-		if (this.props.title) {
+		const title = this.props.title ? this.props.title : this.props.text;
+		// if no title present use the text part as title!
+		if (title) {
 			return (
 				<Text style={style.postTitle} numberOfLines={1}>
-					{this.props.title}
+					{title}
 				</Text>
 			);
 		}
@@ -222,6 +211,15 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private getTooltipItems = (): TooltipItem[] => {
 		const ret = [
+			{
+				label: 'Block',
+				icon: Icons.redRoundCross,
+				actionHandler: () => {
+					ModalManager.safeRunAfterModalClosed(() => {
+						alert('Block user');
+					});
+				},
+			},
 			{
 				label: 'Report a Problem',
 				icon: Icons.iconReport,
