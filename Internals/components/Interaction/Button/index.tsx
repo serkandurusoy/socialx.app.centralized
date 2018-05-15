@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
 
 import {Colors} from 'theme';
 import style from './style';
@@ -19,7 +19,7 @@ export interface ISXButtonProps {
 	size?: ButtonSizes;
 	autoWidth?: boolean;
 	borderColor?: string;
-	style?: any;
+	loading?: boolean;
 }
 
 export class SXButton extends Component<ISXButtonProps, any> {
@@ -29,17 +29,21 @@ export class SXButton extends Component<ISXButtonProps, any> {
 		size: ButtonSizes.Normal,
 		autoWidth: false,
 		borderColor: Colors.white,
+		loading: false,
 	};
+
+	get isDisabled(): boolean | undefined {
+		return this.props.disabled || this.props.loading;
+	}
 
 	public render() {
 		return (
-			<TouchableOpacity
-				disabled={this.props.disabled}
-				onPress={this.props.onPress}
-				style={this.getContainerWidth() && this.props.style}
-			>
+			<TouchableOpacity disabled={this.isDisabled} onPress={this.props.onPress} style={this.getContainerWidth()}>
 				<View style={this.getContainerStyles()}>
 					<Text style={[style.text, style['text' + this.props.size]]}>{this.props.label}</Text>
+					{this.props.loading && (
+						<ActivityIndicator size={'small'} color={Colors.white} style={style.loadingIndicator} />
+					)}
 				</View>
 			</TouchableOpacity>
 		);
@@ -58,7 +62,7 @@ export class SXButton extends Component<ISXButtonProps, any> {
 	protected getContainerStyles = () => {
 		const ret: any[] = [style.container, {borderColor: this.props.borderColor}, style['container' + this.props.size]];
 
-		if (this.props.disabled) {
+		if (this.isDisabled) {
 			ret.push(style.disabledButton);
 		}
 		return ret;

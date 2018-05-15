@@ -1,18 +1,74 @@
 import gql from 'graphql-tag';
 import {graphql, QueryProps} from 'react-apollo';
 
+export const getUserProfileQ = gql`
+	query getUser($userId: ID!) {
+		getUser(userId: $userId) {
+			userId
+			name
+			username
+			email
+			bio
+			posts {
+				id
+				likes {
+					userId
+				}
+			}
+			avatar {
+				id
+				hash
+			}
+		}
+	}
+`;
+
+export const getUserPostsQ = gql`
+	query getPosts($userId: ID!) {
+		getPostsOwner(userId: $userId) {
+			Items {
+				id
+				createdAt
+				location
+				text
+				likes {
+					userId
+				}
+				owner {
+					userId
+				}
+				Media {
+					id
+					hash
+					type
+				}
+				comments {
+					id
+					comments {
+						id
+					}
+				}
+			}
+			nextToken
+		}
+	}
+`;
+
 const searchUsers = gql`
 	mutation search($query: String!) {
 		searchUsers(query: $query) {
-			userId
-			username
-			name
-			email
-			avatar {
-				hash
-				size
-				type
+			user {
+				userId
+				username
+				name
+				email
+				avatar {
+					hash
+					size
+					type
+				}
 			}
+			connection
 		}
 	}
 `;

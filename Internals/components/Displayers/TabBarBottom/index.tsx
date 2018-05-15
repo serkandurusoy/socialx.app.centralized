@@ -9,6 +9,7 @@ import {Icons, Sizes} from 'theme';
 import style from './style';
 
 import {updateTabBarBottomHeight} from 'backend/actions';
+import {getMyNotificationsHoc} from 'backend/graphql';
 import {connect} from 'react-redux';
 import {IAppUIStateProps, MediaTypes, WallPostPhotoOptimized} from 'types';
 
@@ -92,6 +93,7 @@ interface ITabBarBottomState {
 interface ITabBarBottomProps extends IAppUIStateProps {
 	navigation: NavigationScreenProp<any>;
 	TabBarBottomHeight: (height: number) => void;
+	notifications: any;
 }
 
 class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomState> {
@@ -159,14 +161,20 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	}
 
 	private renderNotificationsIconWithBadge = (menuItem: TabMenuItem) => {
+		const {notifications} = this.props;
+		const {myNotifications, loading} = notifications;
+
+		const notificationsRender = () =>
+			myNotifications.length > 0 && (
+				<View style={style.badgeBackground}>
+					<Text style={style.notificationBadge}>{myNotifications.length.toString()}</Text>
+				</View>
+			);
+
 		return (
 			<View style={style.notificationsContainer}>
 				{this.renderSimpleTabButton(menuItem)}
-				{this.props.newNotifications > 0 && (
-					<View style={style.badgeBackground}>
-						<Text style={style.notificationBadge}>{this.props.newNotifications}</Text>
-					</View>
-				)}
+				{!loading && notificationsRender()}
 			</View>
 		);
 	}
@@ -250,4 +258,6 @@ const mapStateToProps: any = (state: any): IAppUIStateProps => ({
 	...state.appUI,
 });
 
-export const TabBarBottom = connect(mapStateToProps, MapDispatchToProps)(TabBarBottomComponent as any);
+const notificationsWrapper = getMyNotificationsHoc(TabBarBottomComponent);
+
+export const TabBarBottom = connect(mapStateToProps, MapDispatchToProps)(notificationsWrapper);

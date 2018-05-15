@@ -99,8 +99,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onMediaPress={this.onMediaObjectPressHandler}
 				onLikePress={this.onLikeButtonClickHandler}
 				onPostDeletePress={this.onPostDeleteClickHandler}
+				onUserPress={this.gotoUserProfile}
 			/>
 		);
+	}
+
+	private gotoUserProfile = (userId: string) => {
+		this.props.navigation.navigate('UserProfileScreen', {userId});
 	}
 
 	private onLoadMore = async () => {

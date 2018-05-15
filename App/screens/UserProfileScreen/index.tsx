@@ -9,6 +9,13 @@ import {Icons} from 'theme/';
 import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
+import {ApolloClient} from 'apollo-client';
+import {withApollo} from 'react-apollo';
+
+import {getUserPostsQ, getUserProfileQ} from 'backend/graphql';
+import {ipfsConfig as base} from 'configuration';
+import {AvatarImagePlaceholder} from 'consts';
+
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
 
@@ -17,60 +24,24 @@ const USER_SMALL_AVATAR_URL = 'https://placeimg.com/120/120/people';
 const USER_BIG_AVATAR_URL = 'https://placeimg.com/240/240/people';
 const USER_NAME = 'LesterWheeler';
 
-const RECENT_USER_POSTS: IWallPostCardProp[] = [
-	{
-		id: '111',
-		title: 'My first post!',
-		text:
-			'This is a very long text that will be truncated and only the first 3 lines will be displayed. ' +
-			'Then ellipsis will show to indicate that more text is hidden. ' +
-			'To a general advertiser outdoor advertising is worthy of consideration',
-		imageSource: 'https://placeimg.com/2000/1500/any',
-		smallAvatar: USER_SMALL_AVATAR_URL,
-		fullName: FULL_NAME,
-		timestamp: new Date('Jan 20 2018'),
-		numberOfLikes: 20,
-		numberOfSuperLikes: 4,
-		numberOfComments: 3,
-		numberOfWalletCoins: 5,
-		canDelete: true,
-		mediaType: 'jpg',
-	},
-	{
-		id: '222',
-		taggedFriends: [{fullName: 'Isabelle Wilson'}, {fullName: 'Teddy Decola'}, {fullName: 'Michiko Bisson'}],
-		location: 'Miami Beach, Florida',
-		title: 'Hey, my second post to SocialX network!',
-		imageSource: 'https://placeimg.com/640/550/any',
-		smallAvatar: USER_SMALL_AVATAR_URL,
-		fullName: FULL_NAME,
-		timestamp: new Date('Jun 17 2017'),
-		numberOfLikes: 11,
-		numberOfSuperLikes: 6,
-		numberOfComments: 4,
-		numberOfWalletCoins: 2,
-		canDelete: true,
-		mediaType: 'jpg',
-	},
-];
-
 const INITIAL_STATE = {
-	numberOfPhotos: 13,
-	numberOfLikes: 24,
-	numberOfFollowers: 13401,
-	numberOfFollowing: 876324,
+	numberOfPhotos: 0,
+	numberOfLikes: 0,
+	numberOfFollowers: 0,
+	numberOfFollowing: 0,
 	avatarURL: null,
 	fullName: '',
 	username: '',
 	aboutMeText: '',
 	isFollowed: false,
-	recentPosts: RECENT_USER_POSTS,
+	recentPosts: [],
 	isLoading: true,
 	mediaObjects: [], // TODO: update this similar with MyProfileScreen
 };
 
 interface IUserProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
+	client: ApolloClient<any>;
 }
 
 interface IUserProfileScreenState {
@@ -88,7 +59,7 @@ interface IUserProfileScreenState {
 	mediaObjects: IMediaProps[];
 }
 
-export default class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileScreenState> {
+class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileScreenState> {
 	private static navigationOptions = (props: IUserProfileScreenProps) => ({
 		title: 'PROFILE',
 		headerLeft: <View />,
@@ -109,27 +80,52 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 
 	private lastLoadedPhotoIndex = 0;
 
-	public componentDidMount() {
+	public async componentDidMount() {
+		const {client} = this.props;
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({
 				isFollowed: this.state.isFollowed,
 				toggleFollow: this.toggleFollowHandler,
 			});
 		});
-		const userId = this.props.navigation.state.params.userId;
-		console.log('TODO: start fetch user data here!', userId);
-		setTimeout(() => {
+
+		try {
+			const userId = this.props.navigation.state.params.userId;
+			const userProfileRes = await client.query({
+				query: getUserProfileQ,
+				variables: {userId},
+				fetchPolicy: 'network-only',
+			});
+			const getUser = userProfileRes.data.getUser;
+
+			const userPostsRes = await client.query({query: getUserPostsQ, variables: {userId}, fetchPolicy: 'network-only'});
+			const userPosts = userPostsRes.data.getPostsOwner.Items;
+
+			const mediaObjs = this.preloadAllMediaObjects(userPosts);
+
+			let numOfLikes = 0;
+			getUser.posts.forEach((post: any) => {
+				numOfLikes += post.likes.length;
+			});
+
+			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
+			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser.name, getUser.userId);
+
+			console.log(preLoadPosts);
 			this.setState({
 				isLoading: false,
-				avatarURL: USER_BIG_AVATAR_URL,
-				fullName: FULL_NAME,
-				username: USER_NAME,
-				aboutMeText:
-					'You have finished building your own website. You have introduced your company and presented' +
-					' your products and services. You have added propositions and promos to catch your target audience’s ' +
-					'attention. You think you are doing everything “right”, but all your promotions have failed to produce growth.',
+				avatarURL: avatar,
+				fullName: getUser.name,
+				username: getUser.username,
+				aboutMeText: getUser.bio,
+				mediaObjects: mediaObjs,
+				numberOfPhotos: mediaObjs.length,
+				numberOfLikes: numOfLikes,
+				recentPosts: preLoadPosts,
 			});
-		}, 3000); // TODO: remove this and replace with actual data loading logic
+		} catch (ex) {
+			console.log(ex);
+		}
 	}
 
 	public render() {
@@ -155,6 +151,65 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 		);
 	}
 
+	private preLoadPrevPosts = (posts: any, ownerAvatar: any, ownerName: any, ownerId: any) => {
+		if (!posts) {
+			return [];
+		}
+
+		const getCommentsNum = (comments: any) => {
+			if (!comments.length) {
+				return 0;
+			}
+
+			let res = 0;
+			for (res; res < comments.length; res++) {
+				res += comments[res].comments.length > 0 ? comments[res].comments.length : 0;
+			}
+			return res;
+		};
+
+		const recentPosts: any = [];
+		for (let i = 0; i < posts.length; i++) {
+			if (i > 2) {
+				return recentPosts;
+			}
+			const currentPost = posts[i];
+			recentPosts.push({
+				id: currentPost.id,
+				title: null,
+				text: currentPost.text,
+				location: currentPost.location,
+				imageSource: currentPost.Media[0] ? base.ipfs_URL + currentPost.Media[0].hash : null,
+				smallAvatar: ownerAvatar,
+				fullName: ownerName,
+				timestamp: new Date(parseInt(currentPost.createdAt, 10) * 1000),
+				numberOfLikes: currentPost.likes.length,
+				numberOfComments: getCommentsNum(currentPost.comments),
+				canDelete: currentPost.owner.userId === ownerId,
+				mediaType: currentPost.Media[0] ? currentPost.Media[0].type : null,
+			});
+		}
+		return recentPosts;
+	}
+
+	private preloadAllMediaObjects = (posts: any) => {
+		if (!posts) {
+			return [];
+		}
+
+		const Imgs: IMediaProps[] = [];
+		for (let y = 0; y < posts.length; y++) {
+			const currentMedia = posts[y].Media;
+			if (currentMedia) {
+				for (let x = 0; x < currentMedia.length; x++) {
+					Imgs.push(currentMedia[x]);
+				}
+			}
+		}
+
+		return Imgs;
+	}
+
 	private toggleFollowHandler = () => {
 		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
 		this.setState({
@@ -178,3 +233,7 @@ export default class UserProfileScreen extends Component<IUserProfileScreenProps
 		return ret;
 	}
 }
+
+const ApolloWrapper = withApollo(UserProfileScreen);
+
+export default ApolloWrapper;
