@@ -266,8 +266,9 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	}
 
 	private sendPostHandler = () => {
+		const escapedText = this.state.postText.replace(/\n/g, '\\n');
 		const wallPostData: NewWallPostData = {
-			text: this.state.postText,
+			text: escapedText,
 			mediaObjects: this.state.mediaObjects,
 		};
 		this.props.navigation.state.params.postCreate(wallPostData);

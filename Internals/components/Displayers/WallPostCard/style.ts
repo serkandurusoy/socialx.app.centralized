@@ -44,7 +44,7 @@ const style: any = {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postFullName,
-		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		marginHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
 		paddingBottom: Sizes.smartHorizontalScale(6),
 	},
 	postTextContainer: {

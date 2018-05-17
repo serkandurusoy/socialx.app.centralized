@@ -16,6 +16,7 @@ import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
+const TITLE_MAX_LINES = 3;
 
 export interface IWallPostCardProp {
 	id: string;
@@ -46,6 +47,7 @@ export interface IWallPostCardProp {
 }
 
 export interface IWallPostCardState {
+	fullTitleVisible: boolean;
 	fullDescriptionVisible: boolean;
 	modalVisibleReportProblem: boolean;
 }
@@ -56,6 +58,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	public state = {
+		fullTitleVisible: false,
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
 	};
@@ -184,23 +187,60 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	}
 
+	private renderPostTitle = () => {
+		const title = this.props.title ? this.props.title : this.props.text;
+		// if no title present use the text part as title!
+		if (title) {
+			const numberOfLines = title.split('\n').length;
+
+			const hasMore =
+				(title.length > DESCRIPTION_TEXT_LENGTH_SHORT || numberOfLines > TITLE_MAX_LINES) &&
+				!this.state.fullTitleVisible &&
+				Platform.OS === OS_TYPES.IOS;
+
+			let textToRender = title;
+
+			if (hasMore) {
+				if (numberOfLines > TITLE_MAX_LINES) {
+					textToRender = textToRender
+						.split('\n')
+						.slice(0, TITLE_MAX_LINES)
+						.join('\n');
+				}
+
+				if (title.length > DESCRIPTION_TEXT_LENGTH_SHORT) {
+					textToRender = textToRender.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT);
+				}
+
+				textToRender = textToRender + '...';
+			}
+
+			const showMoreButton = hasMore ? (
+				<TouchableOpacity onPress={this.toggleShowFullTitle}>
+					<Text style={style.showMoreText}>{'More'}</Text>
+				</TouchableOpacity>
+			) : null;
+
+			return (
+				<Text style={style.postTitle} numberOfLines={numberOfLines}>
+					{textToRender}
+					{showMoreButton}
+				</Text>
+			);
+		}
+		return null;
+	}
+
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
 	}
 
-	private renderPostTitle = () => {
-		const title = this.props.title ? this.props.title : this.props.text;
-		// if no title present use the text part as title!
-		if (title) {
-			return (
-				<Text style={style.postTitle} numberOfLines={1}>
-					{title}
-				</Text>
-			);
-		}
-		return null;
+	private toggleShowFullTitle = () => {
+		this.setState({
+			fullTitleVisible: true,
+		});
 	}
 
 	private toggleDeclineReportModal = () => {
