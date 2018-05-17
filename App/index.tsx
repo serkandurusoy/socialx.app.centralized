@@ -19,6 +19,9 @@ import RootContainer from './containers/RootContainer';
 import {START_APP} from 'types';
 import createStore from './reducers';
 
+import Init from './initializers';
+Init();
+
 const reduxStage = createStore();
 
 export default class App extends Component<{}, {}> {
