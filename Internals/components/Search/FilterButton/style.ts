@@ -4,15 +4,16 @@ import {Colors, Fonts, Sizes} from 'theme';
 const style: any = {
 	background: {
 		backgroundColor: Colors.white,
-		// backgroundColor: 'lime',
 	},
 	backgroundSelected: {
 		backgroundColor: Colors.searchFilterButtonSelectedBg,
 	},
+	containerPadding: {
+		paddingHorizontal: Sizes.smartHorizontalScale(39),
+	},
 	text: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
-		paddingHorizontal: Sizes.smartHorizontalScale(39),
 		paddingVertical: Sizes.smartVerticalScale(15),
 	},
 	textSelected: {

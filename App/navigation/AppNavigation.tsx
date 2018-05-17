@@ -36,6 +36,7 @@ import UploadKeyScreen from '../screens/UploadKeyScreen';
 import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
 import UserRegularFeedScreen from '../screens/UserFeedScreen/regularUserFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
 import styles from './styles/NavigationStyles';
 
@@ -170,13 +171,14 @@ const MainScreenTabNavigation = TabNavigator(
 		},
 		lazy: true,
 		swipeEnabled: false,
-		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation}/>,
+		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
 	},
 );
 
 const hotPostsSingleScreenStack = getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen);
 const MainScreenWithModal = StackNavigator(
 	{
+		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen), // TODO: move when done
 		MainScreenTabNavigationWithModal: getMainStackWithModalsForScreen(
 			'MainScreenTabNavigation',
 			MainScreenTabNavigation,

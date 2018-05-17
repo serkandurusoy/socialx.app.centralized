@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
+import {StyleProp, Text, TouchableOpacity, ViewStyle} from 'react-native';
 
 import style from './style';
 
@@ -7,6 +7,7 @@ export interface ISearchFilterButtonProps {
 	selected: boolean;
 	text: string;
 	onPress: () => void;
+	containerStyle?: StyleProp<ViewStyle>;
 }
 
 export const SearchFilterButton: React.SFC<ISearchFilterButtonProps> = (props) => {
@@ -21,9 +22,11 @@ export const SearchFilterButton: React.SFC<ISearchFilterButtonProps> = (props) =
 	};
 
 	const getBackgroundStyle = () => {
-		let ret = style.background;
+		const ret = [props.containerStyle];
 		if (props.selected) {
-			ret = style.backgroundSelected;
+			ret.push(style.backgroundSelected);
+		} else {
+			ret.push(style.background);
 		}
 		return ret;
 	};
@@ -33,4 +36,8 @@ export const SearchFilterButton: React.SFC<ISearchFilterButtonProps> = (props) =
 			<Text style={getTextStyle()}>{props.text}</Text>
 		</TouchableOpacity>
 	);
+};
+
+SearchFilterButton.defaultProps = {
+	containerStyle: style.containerPadding,
 };
