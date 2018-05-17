@@ -11,7 +11,7 @@ import {SXTextInput} from 'components/Inputs';
 import {ButtonSizes, SXButton} from 'components/Interaction';
 import {ModalCloseButton} from 'components/Modals';
 import {Colors, Icons, Sizes} from 'theme';
-import {MediaTypes} from 'types';
+import {MediaTypeImage} from 'types';
 import style from './style';
 
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
@@ -228,7 +228,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			const mediaPath = mediaObject.path.replace('file://', '');
 			let imageOptimizedPath = null;
 
-			if (mediaObject.mime.startsWith(MediaTypes.Image)) {
+			if (mediaObject.mime.startsWith(MediaTypeImage.key)) {
 				const optimized = await ImageResizer.createResizedImage(
 					mediaObject.path,
 					mediaObject.width,

@@ -2,13 +2,13 @@ import React from 'react';
 import {View} from 'react-native';
 import {VotingScreenComponent} from './screen';
 
-export default class VotingScreen extends React.Component {
-	private static navigationOptions = {
-		title: 'VOTING',
-		headerRight: <View />,
-	};
+const VotingScreen: React.SFC = (props) => {
+	return <VotingScreenComponent />;
+};
 
-	public render() {
-		return <VotingScreenComponent />;
-	}
-}
+VotingScreen.navigationOptions = {
+	title: 'VOTING',
+	headerRight: <View />,
+};
+
+export default VotingScreen;

@@ -11,7 +11,7 @@ import style from './style';
 import {updateTabBarBottomHeight} from 'backend/actions';
 import {getMyNotificationsHoc} from 'backend/graphql';
 import {connect} from 'react-redux';
-import {IAppUIStateProps, MediaTypes, WallPostPhotoOptimized} from 'types';
+import {IAppUIStateProps, MediaTypeImage, WallPostPhotoOptimized} from 'types';
 
 export enum MENU_BUTTON_TYPE {
 	MENU_BUTTON_SIMPLE = 'MENU_BUTTON_SIMPLE',
@@ -227,7 +227,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
 			let contentOptimizedPath;
-			if (retMedia.mime.startsWith(MediaTypes.Image)) {
+			if (retMedia.mime.startsWith(MediaTypeImage.key)) {
 				const optimized = await ImageResizer.createResizedImage(
 					retMedia.path,
 					retMedia.width,

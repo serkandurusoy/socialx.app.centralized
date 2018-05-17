@@ -8,7 +8,7 @@ import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
-import {IUserQuery} from 'types';
+import {IMediaProps, IUserQuery} from 'types';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -18,7 +18,7 @@ import {WallPostMedia} from './WallPostMedia';
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 const TITLE_MAX_LINES = 3;
 
-export interface IWallPostCardProp {
+export interface ISimpleWallPostCardProps {
 	id: string;
 	title?: string;
 	text?: string;
@@ -27,9 +27,13 @@ export interface IWallPostCardProp {
 		// TODO: should be an array of IUserQuery
 		fullName: string;
 	}>;
+	timestamp: Date;
+	owner: Partial<IUserQuery>;
+}
+
+export interface IWallPostCardProp extends ISimpleWallPostCardProps {
 	smallAvatar: string; // @deprecated, use instead owner!
 	fullName: string; // @deprecated, use instead owner!
-	timestamp: Date;
 	numberOfLikes: number;
 	numberOfSuperLikes: number;
 	numberOfComments: number;
@@ -42,7 +46,7 @@ export interface IWallPostCardProp {
 	likedByMe?: boolean;
 	canDelete: boolean;
 	owner: IUserQuery;
-	media: any;
+	media: IMediaProps[];
 	likes: any;
 }
 

@@ -12,7 +12,7 @@ import {
 import {SearchFilterButton} from 'components';
 import AdvertisementTab from './advertisement';
 import FeatureRequestsTab from './featureRequests';
-import GovernanceTab from './governance';
+import GovernanceTab from './GovernanceTab';
 import style from './style';
 
 enum VotingTabs {
