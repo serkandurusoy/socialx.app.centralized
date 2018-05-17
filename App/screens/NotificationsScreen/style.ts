@@ -28,9 +28,6 @@ const style: any = {
 		height: Sizes.smartHorizontalScale(33),
 		marginBottom: Sizes.smartVerticalScale(15),
 	},
-	bottomLoadingContainer: {
-		paddingVertical: Sizes.smartVerticalScale(10),
-	},
 };
 
 export default StyleSheet.create(style);

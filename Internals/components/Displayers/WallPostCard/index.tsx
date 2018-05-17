@@ -1,13 +1,14 @@
-import {OS_TYPES} from 'consts';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import {OS_TYPES} from 'consts';
+import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
-import {IMediaProps, IUserQuery} from 'types';
-import {getURLForMediaViewerObject} from 'utilities';
+import {IUserQuery} from 'types';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -15,6 +16,7 @@ import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
+const TITLE_MAX_LINES = 3;
 
 export interface IWallPostCardProp {
 	id: string;
@@ -45,6 +47,7 @@ export interface IWallPostCardProp {
 }
 
 export interface IWallPostCardState {
+	fullTitleVisible: boolean;
 	fullDescriptionVisible: boolean;
 	modalVisibleReportProblem: boolean;
 }
@@ -55,6 +58,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	public state = {
+		fullTitleVisible: false,
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
 	};
@@ -92,80 +96,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.onCommentClick}
+					commentsButtonPressed={this.props.onCommentClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
-			</View>
-		);
-	}
-
-	private renderWallPostMedia = () => {
-		if (this.props.media.length > 2) {
-			return this.renderMultiMediaPost(this.props.media);
-		} else if (this.props.media.length > 1) {
-			return this.renderDualMediaPost(this.props.media);
-		} else if (this.props.media.length > 0) {
-			return this.renderSingleMediaPost(this.props.media[0]);
-		}
-		return null;
-	}
-
-	private renderSingleMediaPost = (mediaProps: IMediaProps) => {
-		const mediaURL = getURLForMediaViewerObject(mediaProps);
-		return (
-			<MediaObjectViewer
-				onPress={() => this.props.onImageClick(0)}
-				uri={mediaURL}
-				style={style.postMediaContainer}
-				extension={mediaProps.type}
-			/>
-		);
-	}
-
-	private renderDualMediaPost = (mediaProps: IMediaProps[], splitVertical = false, startIndex = 0) => {
-		const firstMediaURL = getURLForMediaViewerObject(mediaProps[startIndex]);
-		const secondMediaURL = getURLForMediaViewerObject(mediaProps[startIndex + 1]);
-		const containerStyle = [style.postMediaContainer, !splitVertical ? {flexDirection: 'row'} : {}];
-		const mediaContainerStyle = splitVertical ? style.halfMediaContainerVertical : style.halfMediaContainerHorizontal;
-		return (
-			<View style={containerStyle}>
-				<View style={mediaContainerStyle}>
-					<MediaObjectViewer
-						onPress={() => this.props.onImageClick(startIndex)}
-						thumbOnly={true}
-						uri={firstMediaURL}
-						style={style.halfMediaObject}
-						extension={mediaProps[startIndex].type}
-					/>
-				</View>
-				<View style={mediaContainerStyle}>
-					<MediaObjectViewer
-						onPress={() => this.props.onImageClick(startIndex + 1)}
-						thumbOnly={true}
-						uri={secondMediaURL}
-						style={style.halfMediaObject}
-						extension={mediaProps[startIndex + 1].type}
-					/>
-				</View>
-			</View>
-		);
-	}
-
-	private renderMultiMediaPost = (mediaProps: IMediaProps[]) => {
-		const firstMediaURL = getURLForMediaViewerObject(mediaProps[0]);
-		return (
-			<View style={style.postMediaContainer}>
-				<View style={style.halfMediaContainerHorizontal}>
-					<MediaObjectViewer
-						onPress={() => this.props.onImageClick(0)}
-						thumbOnly={true}
-						uri={firstMediaURL}
-						style={style.halfMediaObject}
-						extension={mediaProps[0].type}
-					/>
-				</View>
-				<View style={style.halfMediaContainerHorizontal}>{this.renderDualMediaPost(mediaProps, true, 1)}</View>
-				{this.renderDualMediaPost(mediaProps)}
 			</View>
 		);
 	}
@@ -254,23 +187,60 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	}
 
+	private renderPostTitle = () => {
+		const title = this.props.title ? this.props.title : this.props.text;
+		// if no title present use the text part as title!
+		if (title) {
+			const numberOfLines = title.split('\n').length;
+
+			const hasMore =
+				(title.length > DESCRIPTION_TEXT_LENGTH_SHORT || numberOfLines > TITLE_MAX_LINES) &&
+				!this.state.fullTitleVisible &&
+				Platform.OS === OS_TYPES.IOS;
+
+			let textToRender = title;
+
+			if (hasMore) {
+				if (numberOfLines > TITLE_MAX_LINES) {
+					textToRender = textToRender
+						.split('\n')
+						.slice(0, TITLE_MAX_LINES)
+						.join('\n');
+				}
+
+				if (title.length > DESCRIPTION_TEXT_LENGTH_SHORT) {
+					textToRender = textToRender.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT);
+				}
+
+				textToRender = textToRender + '...';
+			}
+
+			const showMoreButton = hasMore ? (
+				<TouchableOpacity onPress={this.toggleShowFullTitle}>
+					<Text style={style.showMoreText}>{'More'}</Text>
+				</TouchableOpacity>
+			) : null;
+
+			return (
+				<Text style={style.postTitle} numberOfLines={numberOfLines}>
+					{textToRender}
+					{showMoreButton}
+				</Text>
+			);
+		}
+		return null;
+	}
+
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
 	}
 
-	private renderPostTitle = () => {
-		const title = this.props.title ? this.props.title : this.props.text;
-		// if no title present use the text part as title!
-		if (title) {
-			return (
-				<Text style={style.postTitle} numberOfLines={1}>
-					{title}
-				</Text>
-			);
-		}
-		return null;
+	private toggleShowFullTitle = () => {
+		this.setState({
+			fullTitleVisible: true,
+		});
 	}
 
 	private toggleDeclineReportModal = () => {
@@ -285,7 +255,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				label: 'Block',
 				icon: Icons.redRoundCross,
 				actionHandler: () => {
-					alert('Block user');
+					ModalManager.safeRunAfterModalClosed(() => {
+						alert('Block user');
+					});
 				},
 			},
 			{

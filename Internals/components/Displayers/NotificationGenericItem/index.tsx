@@ -1,9 +1,13 @@
 import React from 'react';
-import {Dimensions, LayoutChangeEvent, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Dimensions, LayoutChangeEvent, Text, TouchableOpacity, View} from 'react-native';
 import Swipeable from 'react-native-swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {connect} from 'react-redux';
 
+import {hideModalConfirmation, showModalConfirmation} from 'backend/actions';
 import {AvatarImage} from 'components';
+import {IModalConfirmationProps} from 'types';
+import {showToastMessage} from 'utilities';
 import style from './style';
 
 export interface INotificationGIProps {
@@ -11,16 +15,21 @@ export interface INotificationGIProps {
 	fullName: string;
 	username: string;
 	text: string;
-	onCheckNotification: (confirmed: boolean) => void;
+	onCheckNotification: (requestId: string) => Promise<any>;
+	showConfirm: (confirmationOptions: IModalConfirmationProps) => void;
+	hideConfirm: () => void;
+	requestId: string;
 }
 
 interface INotificationGIState {
 	swipeOutHeight: number;
+	loading: boolean;
 }
 
-export class NotificationGI extends React.Component<INotificationGIProps, INotificationGIState> {
+class NotificationGIComp extends React.Component<INotificationGIProps, INotificationGIState> {
 	public state = {
 		swipeOutHeight: 0,
+		loading: false,
 	};
 
 	private firstLayoutEvent = false;
@@ -37,7 +46,7 @@ export class NotificationGI extends React.Component<INotificationGIProps, INotif
 			<View {...containerProps}>
 				<Swipeable
 					leftContent={this.getLeftContent()}
-					onLeftActionRelease={() => this.props.onCheckNotification(true)}
+					onLeftActionRelease={() => this.confirmDismissNotification(true)}
 					leftActionActivationDistance={Dimensions.get('window').width / 2}
 				>
 					<View style={style.swipeContainer}>
@@ -49,13 +58,22 @@ export class NotificationGI extends React.Component<INotificationGIProps, INotif
 								<Text style={style.friendRequest}>{this.props.text}</Text>
 							</View>
 						</View>
-						<TouchableOpacity onPress={() => this.props.onCheckNotification(false)}>
-							<Icon name={'md-close'} style={style.iconButton} />
-						</TouchableOpacity>
+						{this.renderCloseButtonWithLoading()}
 					</View>
 				</Swipeable>
 			</View>
 		);
+	}
+
+	private renderCloseButtonWithLoading = () => {
+		if (!this.state.loading) {
+			return (
+				<TouchableOpacity onPress={() => this.confirmDismissNotification(false)}>
+					<Icon name={'md-close'} style={style.iconButton} />
+				</TouchableOpacity>
+			);
+		}
+		return <ActivityIndicator size={'small'} />;
 	}
 
 	private layoutHandler = (event: LayoutChangeEvent) => {
@@ -73,4 +91,43 @@ export class NotificationGI extends React.Component<INotificationGIProps, INotif
 			</View>
 		);
 	}
+
+	private confirmDismissNotification = (confirmed: boolean) => {
+		if (!confirmed) {
+			this.props.showConfirm({
+				title: 'Hide notification?',
+				confirmHandler: () => {
+					this.props.hideConfirm();
+					this.checkNotificationHandler();
+				},
+				declineHandler: () => {
+					this.props.hideConfirm();
+				},
+			});
+		} else {
+			this.checkNotificationHandler();
+		}
+	}
+
+	private checkNotificationHandler = async () => {
+		try {
+			this.setState({
+				loading: true,
+			});
+			await this.props.onCheckNotification(this.props.requestId);
+		} catch (ex) {
+			console.log(`ex: ${ex}`);
+			showToastMessage('Could not check notification at this time. Try again later..');
+			this.setState({
+				loading: false,
+			});
+		}
+	}
 }
+
+const mapDispatchToProps = (dispatch: any) => ({
+	showConfirm: (confirmationOptions: IModalConfirmationProps) => dispatch(showModalConfirmation(confirmationOptions)),
+	hideConfirm: () => dispatch(hideModalConfirmation()),
+});
+
+export const NotificationGI = connect(null, mapDispatchToProps)(NotificationGIComp as any);
