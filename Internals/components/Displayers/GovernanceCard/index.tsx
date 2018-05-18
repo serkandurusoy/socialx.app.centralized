@@ -30,7 +30,7 @@ export const GovernanceCard: React.SFC<IGovernanceCardProps> = (props: IGovernan
 	return (
 		<View style={style.container}>
 			<TouchableOpacity style={style.mediaObjectContainer} onPress={props.onShowFullScreen}>
-				<MediaObjectViewer uri={mediaURL} {...mediaTypeProps} style={style.mediaObject} />
+				<MediaObjectViewer uri={mediaURL} {...mediaTypeProps} style={style.mediaObject} thumbOnly={true} />
 				<View style={style.votesContainer}>
 					{renderVotes(props.upVotes, style.upVoteColor)}
 					{renderVotes(props.downVotes, style.downVoteColor)}

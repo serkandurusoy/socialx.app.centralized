@@ -57,4 +57,6 @@ export const Icons = {
 	mediaShare: require('./assets/icons/media_share.png'),
 	greenRoundCheck: require('./assets/icons/green_round_check.png'),
 	redRoundCross: require('./assets/icons/red_round_cross.png'),
+	greenCrossGovernance: require('./assets/icons/green_cross_governance.png'),
+	redCheckGovernance: require('./assets/icons/red_check_governance.png'),
 };

@@ -9,14 +9,13 @@ export interface IScreenHeaderButtonProps {
 	iconName?: string;
 	iconSource?: number;
 	iconColor?: string;
+	iconSize?: number;
 }
 
 export const ScreenHeaderButton: React.SFC<IScreenHeaderButtonProps> = (props) => {
 	return (
 		<TouchableOpacity onPress={props.onPress} style={style.iconContainer}>
-			{props.iconName ? (
-				<Icon name={props.iconName} size={Sizes.smartHorizontalScale(25)} color={props.iconColor} />
-			) : null}
+			{props.iconName ? <Icon name={props.iconName} size={props.iconSize} color={props.iconColor} /> : null}
 			{props.iconSource ? (
 				<Image source={props.iconSource} style={style.headerButtonIcon} resizeMode={'contain'} />
 			) : null}
@@ -26,4 +25,5 @@ export const ScreenHeaderButton: React.SFC<IScreenHeaderButtonProps> = (props) =
 
 ScreenHeaderButton.defaultProps = {
 	iconColor: Colors.white,
+	iconSize: Sizes.smartHorizontalScale(25),
 };

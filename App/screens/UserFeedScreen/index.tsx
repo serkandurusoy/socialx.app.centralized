@@ -87,7 +87,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
-				isLoading={loading}
+				isLoading={loading || data.loading}
 				loadingMore={this.state.loadingMore}
 				hasMore={this.state.hasMore}
 				currentUser={data.user}

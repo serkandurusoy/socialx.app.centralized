@@ -5,6 +5,7 @@ import {
 	NavigationActions,
 	NavigationContainer,
 	NavigationNavigateAction,
+	NavigationScreenProp,
 	NavigationState,
 	TabNavigator,
 } from 'react-navigation';
@@ -36,11 +37,15 @@ const VotingScreens = TabNavigator(tabsRouteConfig, {
 	},
 });
 
+interface IVotingScreenComponentProps {
+	navigation: NavigationScreenProp<any>;
+}
+
 interface IVotingScreenComponentState {
 	selectedTab: VotingTabs;
 }
 
-export class VotingScreenComponent extends React.Component<any, IVotingScreenComponentState> {
+export class VotingScreenComponent extends React.Component<IVotingScreenComponentProps, IVotingScreenComponentState> {
 	public state = {
 		selectedTab: VotingTabs.Governance,
 	};
@@ -79,6 +84,7 @@ export class VotingScreenComponent extends React.Component<any, IVotingScreenCom
 					</ScrollView>
 				</View>
 				<VotingScreens
+					screenProps={{topLevelNav: this.props.navigation}}
 					ref={(nav: any) => (this.tabNavigator = nav)}
 					onNavigationStateChange={this.handleNavigationChange}
 				/>

@@ -9,6 +9,7 @@ import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
 import {IMediaProps, IUserQuery} from 'types';
+import {getUserAvatar, getUserFullName} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -28,82 +29,106 @@ export interface ISimpleWallPostCardProps {
 		fullName: string;
 	}>;
 	timestamp: Date;
-	owner: Partial<IUserQuery>;
+	owner: IUserQuery;
 }
 
 export interface IWallPostCardProp extends ISimpleWallPostCardProps {
-	smallAvatar: string; // @deprecated, use instead owner!
-	fullName: string; // @deprecated, use instead owner!
-	numberOfLikes: number;
-	numberOfSuperLikes: number;
-	numberOfComments: number;
-	numberOfWalletCoins: number;
-	onImageClick: (index: number) => void;
-	onLikeButtonClick: () => void;
-	onDeleteClick: (postId: string) => void;
-	onUserClick: () => void;
-	onCommentClick: () => void;
+	governanceVersion?: boolean;
+	numberOfLikes?: number;
+	numberOfSuperLikes?: number;
+	numberOfComments?: number;
+	numberOfWalletCoins?: number;
+	onImageClick?: (index: number) => void;
+	onLikeButtonClick?: () => void;
+	onDeleteClick?: (postId: string) => void;
+	onUserClick?: () => void;
+	onCommentClick?: () => void;
 	likedByMe?: boolean;
-	canDelete: boolean;
-	owner: IUserQuery;
+	canDelete?: boolean;
 	media: IMediaProps[];
-	likes: any;
+	likes?: any;
 }
 
 export interface IWallPostCardState {
 	fullTitleVisible: boolean;
 	fullDescriptionVisible: boolean;
 	modalVisibleReportProblem: boolean;
+	hideAdvancedMenu: boolean;
+	hideGoToUserProfile: boolean;
+	hidePostActionsAndComments: boolean;
+	disableMediaFullScreen: boolean;
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public static defaultProps: Partial<IWallPostCardProp> = {
 		canDelete: false,
+		likedByMe: false,
+		numberOfLikes: 0,
+		numberOfSuperLikes: 0,
+		numberOfComments: 0,
+		numberOfWalletCoins: 0,
+		onLikeButtonClick: () => Function,
+		onCommentClick: () => Function,
 	};
 
 	public state = {
 		fullTitleVisible: false,
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
+		hideAdvancedMenu: this.props.governanceVersion || false,
+		hideGoToUserProfile: this.props.governanceVersion || false,
+		hidePostActionsAndComments: this.props.governanceVersion || false,
+		disableMediaFullScreen: this.props.governanceVersion || false,
 	};
 
 	public render() {
-		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
-		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
 		return (
 			<View style={style.container}>
+				{this.renderModalReportProblem()}
+				{this.renderUserDetails()}
+				{this.renderPostTitle()}
+				{this.renderPostDescription()}
+				{this.renderWallPostMedia()}
+				{this.renderWallPostActions()}
+			</View>
+		);
+	}
+
+	private renderModalReportProblem = () => {
+		if (!this.state.hideAdvancedMenu) {
+			return (
 				<ModalReportProblem
 					visible={this.state.modalVisibleReportProblem}
 					confirmHandler={this.reportProblemHandler}
 					declineHandler={this.toggleDeclineReportModal}
 				/>
-				<TouchableOpacity onPress={this.props.onUserClick} style={style.topContainer}>
-					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
-					<View style={style.topRightContainer}>
-						<Text style={style.fullName}>
-							{this.props.fullName}
-							{this.renderTaggedFriends()}
-							{this.renderLocation()}
-						</Text>
-						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
-					</View>
-					<TooltipDots items={this.getTooltipItems()} />
-				</TouchableOpacity>
-				{this.renderPostTitle()}
-				{this.renderPostDescription()}
-				<WallPostMedia mediaObjects={this.props.media} onMediaObjectView={this.props.onImageClick} />
-				<WallPostActions
-					likedByMe={this.props.likedByMe}
-					numberOfLikes={this.props.numberOfLikes}
-					numberOfSuperLikes={this.props.numberOfSuperLikes}
-					numberOfComments={this.props.numberOfComments}
-					numberOfWalletCoins={this.props.numberOfWalletCoins}
-					likeButtonPressed={this.props.onLikeButtonClick}
-					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.props.onCommentClick}
-					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
-				/>
-			</View>
+			);
+		}
+		return null;
+	}
+
+	private renderUserDetails = () => {
+		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
+		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
+		const avatarURL = getUserAvatar(this.props.owner);
+		const fullName = getUserFullName(this.props.owner);
+		return (
+			<TouchableOpacity
+				onPress={this.props.onUserClick}
+				style={style.topContainer}
+				disabled={this.state.hideGoToUserProfile}
+			>
+				<FastImage source={{uri: avatarURL}} style={style.smallAvatarImage} />
+				<View style={style.topRightContainer}>
+					<Text style={style.fullName}>
+						{fullName}
+						{this.renderTaggedFriends()}
+						{this.renderLocation()}
+					</Text>
+					<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
+				</View>
+				{!this.state.hideAdvancedMenu && <TooltipDots items={this.getTooltipItems()} />}
+			</TouchableOpacity>
 		);
 	}
 
@@ -161,6 +186,16 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				modalVisibleReportProblem: true,
 			});
 		});
+	}
+
+	private renderWallPostMedia = () => {
+		return (
+			<WallPostMedia
+				mediaObjects={this.props.media}
+				onMediaObjectView={this.props.onImageClick}
+				noInteraction={this.state.disableMediaFullScreen}
+			/>
+		);
 	}
 
 	private renderPostDescription = () => {
@@ -230,6 +265,25 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					{textToRender}
 					{showMoreButton}
 				</Text>
+			);
+		}
+		return null;
+	}
+
+	private renderWallPostActions = () => {
+		if (!this.state.hidePostActionsAndComments) {
+			return (
+				<WallPostActions
+					likedByMe={this.props.likedByMe}
+					numberOfLikes={this.props.numberOfLikes}
+					numberOfSuperLikes={this.props.numberOfSuperLikes}
+					numberOfComments={this.props.numberOfComments}
+					numberOfWalletCoins={this.props.numberOfWalletCoins}
+					likeButtonPressed={this.props.onLikeButtonClick}
+					superLikeButtonPressed={this.superLikeButtonPressedHandler}
+					commentsButtonPressed={this.props.onCommentClick}
+					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
+				/>
 			);
 		}
 		return null;

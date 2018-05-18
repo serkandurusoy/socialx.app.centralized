@@ -1,4 +1,6 @@
+import findIndex from 'lodash/findIndex';
 import React from 'react';
+import {NavigationScreenProp} from 'react-navigation';
 
 import {ISimpleWallPostCardProps} from 'components';
 import {IMediaProps} from 'types';
@@ -40,14 +42,14 @@ const GOVERNANCE_POSTS: IGovPostData[] = [
 	},
 	{
 		id: '2',
-		title: 'guten morgen',
+		title: 'sample video test',
 		timestamp: new Date(),
 		owner: SAMPLE_OWNER,
 		media: {
-			hash: 'QmVMFdKJrXFSzNAnd81Di8vyxQnCSWKojSTwvqLFmNk7cQ',
-			id: '41937a32-378c-4dfa-acc7-3e2edf9922a7',
-			optimizedHash: 'Qmde5fWt9bAuAtWnUsWND7vuTisnbd1U6WpgXc1NKyeq5V',
-			type: 'image/jpeg',
+			hash: 'QmNbsEi16AeUeUoYA1mRRkt1u4XSZLhM5yqRDUoTyYYWHb',
+			id: 'a3404939-9b6b-475e-b347-f471fcc87ce0',
+			optimizedHash: 'QmNbsEi16AeUeUoYA1mRRkt1u4XSZLhM5yqRDUoTyYYWHb',
+			type: 'mp4',
 			size: 123456,
 		},
 		upVotes: 0,
@@ -70,16 +72,103 @@ const GOVERNANCE_POSTS: IGovPostData[] = [
 	},
 ];
 
-export default class GovernanceTab extends React.Component {
-	private static navigationOptions = {
-		header: null,
+const TOTAL_NUMBER_OF_POSTS = 20;
+
+interface IGovernanceTabProps {
+	screenProps: {
+		topLevelNav: NavigationScreenProp<any>;
+	};
+}
+
+interface IGovernanceTabState {
+	refreshing: boolean;
+	loadingMore: boolean;
+	hasMore: boolean;
+	govPosts: IGovPostData[];
+}
+
+export default class GovernanceTab extends React.Component<IGovernanceTabProps, IGovernanceTabState> {
+	public state = {
+		refreshing: false,
+		loadingMore: false,
+		hasMore: true,
+		govPosts: [...GOVERNANCE_POSTS],
 	};
 
 	public render() {
-		return <GovernanceTabScreen showFullScreenMedia={this.showFullScreenMediaHandler} wallPosts={GOVERNANCE_POSTS} />;
+		return (
+			<GovernanceTabScreen
+				wallPosts={this.state.govPosts}
+				refreshing={this.state.refreshing}
+				loadingMore={this.state.loadingMore}
+				hasMore={this.state.hasMore}
+				onRefresh={this.onRefreshHandler}
+				onLoadMore={this.onLoadMoreHandler}
+				showFullScreenMedia={this.showFullScreenMediaHandler}
+				onVoteUp={this.onVoteUpHandler}
+				onVoteDown={this.onVoteDownHandler}
+			/>
+		);
 	}
 
-	private showFullScreenMediaHandler = () => {
-		alert('showFullScreenMediaHandler');
+	private showFullScreenMediaHandler = (media: IMediaProps) => {
+		this.props.screenProps.topLevelNav.navigate('MediaViewerScreen', {
+			mediaObjects: [media],
+			startIndex: 0,
+		});
+	}
+
+	private onRefreshHandler = () => {
+		this.setState({refreshing: true, hasMore: true});
+		setTimeout(() => {
+			this.setState({
+				refreshing: false,
+				govPosts: [...GOVERNANCE_POSTS],
+			});
+		}, 2000);
+	}
+
+	private onLoadMoreHandler = () => {
+		if (this.state.hasMore && !this.state.loadingMore) {
+			this.setState({
+				loadingMore: true,
+			});
+			setTimeout(() => {
+				const allGovPosts = this.state.govPosts.concat(JSON.parse(JSON.stringify(GOVERNANCE_POSTS)));
+				this.updateIdsForNewGovPosts(allGovPosts);
+				this.setState({
+					loadingMore: false,
+					govPosts: allGovPosts,
+					hasMore: allGovPosts.length < TOTAL_NUMBER_OF_POSTS,
+				});
+			}, 2000);
+		}
+	}
+
+	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) => {
+		// TODO: can be deleted when we have data with unique IDs
+		allGovPosts.forEach((govPost, index) => {
+			govPost.id = index.toString();
+		});
+	}
+
+	private onVoteUpHandler = (govPost: IGovPostData) => {
+		// TODO: network call to update upVotes, maybe hide this card?
+		const updatedGovPosts = [...this.state.govPosts];
+		const foundIndex = findIndex(updatedGovPosts, {id: govPost.id});
+		updatedGovPosts[foundIndex].upVotes += 1;
+		this.setState({
+			govPosts: updatedGovPosts,
+		});
+	}
+
+	private onVoteDownHandler = (govPost: IGovPostData) => {
+		// TODO: network call to update downVotes, maybe hide this card?
+		const updatedGovPosts = [...this.state.govPosts];
+		const foundIndex = findIndex(updatedGovPosts, {id: govPost.id});
+		updatedGovPosts[foundIndex].downVotes += 1;
+		this.setState({
+			govPosts: updatedGovPosts,
+		});
 	}
 }

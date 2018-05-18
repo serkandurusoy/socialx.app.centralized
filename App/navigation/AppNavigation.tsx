@@ -86,6 +86,7 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		CommentsStack: {screen: CommentsStackNavigator},
 		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
+		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
@@ -178,7 +179,6 @@ const MainScreenTabNavigation = TabNavigator(
 const hotPostsSingleScreenStack = getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen);
 const MainScreenWithModal = StackNavigator(
 	{
-		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen), // TODO: move when done
 		MainScreenTabNavigationWithModal: getMainStackWithModalsForScreen(
 			'MainScreenTabNavigation',
 			MainScreenTabNavigation,

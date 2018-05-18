@@ -1,9 +1,15 @@
 import React from 'react';
 import {View} from 'react-native';
+import {NavigationScreenProp} from 'react-navigation';
+
 import {VotingScreenComponent} from './screen';
 
-const VotingScreen: React.SFC = (props) => {
-	return <VotingScreenComponent />;
+interface IVotingScreenProps {
+	navigation: NavigationScreenProp<any>;
+}
+
+const VotingScreen: React.SFC<IVotingScreenProps> = (props) => {
+	return <VotingScreenComponent navigation={props.navigation} />;
 };
 
 VotingScreen.navigationOptions = {

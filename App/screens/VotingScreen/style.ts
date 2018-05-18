@@ -16,6 +16,7 @@ const style: any = {
 	tabButton: {
 		flex: 1,
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
+		alignItems: 'center',
 	},
 };
 
