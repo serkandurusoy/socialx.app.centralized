@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import {Colors, Images, Sizes} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from 'utilities';
 
 import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from 'backend/graphql';

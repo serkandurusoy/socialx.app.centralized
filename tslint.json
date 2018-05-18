@@ -25,7 +25,8 @@
     "no-implicit-dependencies": false,
     "prefer-for-of": false,
     "jsx-no-multiline-js": false,
-    "no-bitwise": false
+    "no-bitwise": false,
+    "member-access": false
   },
   "include": [
     "App/**/*.ts",
