@@ -208,11 +208,18 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		);
 	}
 
+	// TODO: show the user that he has excceded the maximum file size
+	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
+
 	private showGalleryPhotoPicker = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
 			cropping: false,
 			mediaType: 'any',
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(image)) {
+			return;
+		}
 		this.useSelectedMediaObject(image as PickerImage);
 	}
 
@@ -221,6 +228,10 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 			cropping: false,
 			mediaType: 'any',
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(image)) {
+			return;
+		}
 		this.useSelectedMediaObject(image as PickerImage);
 	}
 

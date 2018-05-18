@@ -141,11 +141,18 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		);
 	}
 
+	// TODO: show the user that he has excceded the maximum file size
+	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
+
 	private showGalleryPhotoPicker = async () => {
 		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
 			cropping: false,
 			mediaType: 'any',
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(mediaObject)) {
+			return;
+		}
 		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
@@ -155,6 +162,10 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			mediaType: 'any',
 			useFrontCamera: false,
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(mediaObject)) {
+			return;
+		}
 		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
