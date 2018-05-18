@@ -63,6 +63,17 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		modalVisibleReportProblem: false,
 	};
 
+	public shouldComponentUpdate(
+		nextProps: Readonly<IWallPostCardProp>,
+		nextState: Readonly<IWallPostCardState>,
+	): boolean {
+		return (
+			this.props.id !== nextProps.id ||
+			this.props.numberOfLikes !== nextProps.numberOfLikes ||
+			this.props.numberOfComments !== nextProps.numberOfComments
+		);
+	}
+
 	public render() {
 		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
 		const timeStampHour = moment(this.props.timestamp).format('hh:mma');

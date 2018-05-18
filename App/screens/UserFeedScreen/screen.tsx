@@ -29,7 +29,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 }
 
 const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) => {
-	const keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
+	const keyExtractor = (item: IWallPostCardProp, index: number) => item.id;
 
 	const renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		const canDelete = props.currentUser.userId === data.item.owner.userId;
@@ -51,7 +51,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 	};
 
 	const renderFooterWhenLoading = () => {
-		if (props.loadingMore && props.hasMore) {
+		if (props.hasMore) {
 			return (
 				<View style={style.bottomLoadingContainer}>
 					<ActivityIndicator size={'large'} />
@@ -71,7 +71,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 				keyExtractor={keyExtractor}
 				renderItem={renderWallPosts}
 				onEndReached={props.loadMorePosts}
-				onEndReachedThreshold={0.2}
+				onEndReachedThreshold={1}
 				alwaysBounceVertical={false}
 				keyboardShouldPersistTaps={'handled'}
 				ListFooterComponent={renderFooterWhenLoading}
