@@ -111,7 +111,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
-        multiDexEnabled true
+        // multiDexEnabled true => appcenter might be causing issues
     }
     signingConfigs {
         release {
