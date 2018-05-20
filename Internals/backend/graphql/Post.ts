@@ -148,6 +148,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				refresh: async () => {
 					await refetch();
 				},
+				nextToken,
 				noPosts: !Items.length,
 				loadMore: () =>
 					fetchMore({

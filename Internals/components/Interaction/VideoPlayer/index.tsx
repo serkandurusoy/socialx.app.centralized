@@ -1,4 +1,3 @@
-import {OS_TYPES} from 'consts';
 import React from 'react';
 import {
 	ActivityIndicator,
@@ -11,6 +10,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Video from 'react-native-video';
+
+import {OS_TYPES} from 'consts';
 import {Colors} from 'theme';
 import style from './style';
 
@@ -18,7 +19,6 @@ export interface IVideoOptions {
 	containerStyle?: StyleProp<ViewStyle>;
 	muted?: boolean;
 	thumbOnly?: boolean;
-	startInFullScreen?: boolean;
 	resizeMode?: string;
 	resizeToChangeAspectRatio?: boolean;
 	paused?: boolean;
@@ -36,6 +36,7 @@ interface IVideoPlayerState {
 	ended: boolean;
 	resizeMode?: string;
 	playReady: boolean;
+	fullscreen: boolean;
 }
 
 export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayerState> {
@@ -55,27 +56,23 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		containerStyle: style.container,
 		muted: false,
 		thumbOnly: false,
-		startInFullScreen: false,
 		resizeMode: 'cover',
 		resizeToChangeAspectRatio: false,
 	};
 
 	private player: Video | null = null;
-	private androidOneTimeHackDone = false;
 
 	constructor(props: IVideoPlayerProps) {
 		super(props);
-		let pausedInitValue = 'paused' in props ? props.paused : true;
-		if (Platform.OS === OS_TYPES.Android) {
-			pausedInitValue = false;
-		}
+		const pausedInitValue = ('paused' in props ? props.paused : true) as boolean;
 		this.state = {
 			paused: pausedInitValue,
 			userPaused: false,
-			muted: this.props.muted,
+			muted: this.props.muted || false,
 			ended: false,
 			resizeMode: this.props.resizeMode,
 			playReady: false,
+			fullscreen: false,
 		};
 	}
 
@@ -93,10 +90,10 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 						paused={this.state.paused}
 						muted={this.state.muted}
 						onEnd={this.onVideoEndHandler}
-						onProgress={this.onVideoProgressHandler}
 						playInBackground={false}
 						playWhenInactive={false}
 						style={style.videoObject}
+						fullscreen={this.state.fullscreen}
 						ref={(ref) => (this.player = ref)}
 					/>
 					{this.renderVideoControls()}
@@ -105,23 +102,12 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		);
 	}
 
-	private onVideoProgressHandler = (data: {currentTime: number; playableDuration: number}) => {
-		if (Platform.OS === OS_TYPES.Android && !this.androidOneTimeHackDone) {
-			this.androidOneTimeHackDone = true;
-			const updatedState: Partial<IVideoPlayerState> = {
-				playReady: true,
-			};
-			if (!('paused' in this.props) || this.props.paused) {
-				updatedState.paused = true;
-			}
-			this.setState(updatedState);
-		}
-	}
-
 	private videoReadyHandler = () => {
-		this.setState({
-			playReady: true,
-		});
+		if (!this.state.playReady) {
+			this.setState({
+				playReady: true,
+			});
+		}
 	}
 
 	private renderVideoControls = () => {
@@ -164,11 +150,6 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 		if (this.state.ended && this.player) {
 			this.player.seek(0);
 		}
-		if (this.props.startInFullScreen) {
-			if (this.player) {
-				this.player.presentFullscreenPlayer();
-			}
-		}
 		this.setState({
 			paused: false,
 			ended: false,
@@ -196,13 +177,13 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 	}
 
 	private onVideoEnterFullScreen = () => {
-		if (this.player) {
-			if (this.props.resizeToChangeAspectRatio) {
-				const resizeMode = this.state.resizeMode === 'cover' ? 'contain' : 'cover';
-				this.setState({resizeMode});
-			} else {
-				this.player.presentFullscreenPlayer();
-			}
+		if (this.props.resizeToChangeAspectRatio) {
+			const resizeMode = this.state.resizeMode === 'cover' ? 'contain' : 'cover';
+			this.setState({resizeMode});
+		} else {
+			this.setState({
+				fullscreen: true,
+			});
 		}
 	}
 }
