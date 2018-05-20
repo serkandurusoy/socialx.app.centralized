@@ -1,8 +1,6 @@
-import {getConnection} from 'lib/connection';
-
-import connection from './connection';
+import {languageInit} from 'utilities/amplify';
 
 export default () => {
-	// initialize connection check and connection change events
-	getConnection(connection as any);
+	// init I18n language set
+	languageInit();
 };

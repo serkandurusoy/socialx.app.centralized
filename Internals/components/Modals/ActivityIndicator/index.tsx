@@ -28,7 +28,7 @@ const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (prop
 		<Modal
 			onDismiss={props.onDismiss}
 			onModalHide={props.onModalHide}
-			isVisible={props.showActivityIndicator}
+			isVisible={false}
 			backdropOpacity={0.2}
 			animationIn={'slideInDown'}
 			animationOut={'slideOutUp'}
