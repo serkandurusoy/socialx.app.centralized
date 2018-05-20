@@ -101,15 +101,18 @@ export default class MediaViewerScreenComponent extends Component<
 	}
 
 	private renderPagination = () => {
-		return (
-			<View style={style.paginationContainer}>
-				<Text style={style.paginationText}>
-					{this.state.activeSlide + 1}
-					{' / '}
-					{this.props.mediaObjects.length}
-				</Text>
-			</View>
-		);
+		if (this.props.mediaObjects.length > 1) {
+			return (
+				<View style={style.paginationContainer}>
+					<Text style={style.paginationText}>
+						{this.state.activeSlide + 1}
+						{' / '}
+						{this.props.mediaObjects.length}
+					</Text>
+				</View>
+			);
+		}
+		return null;
 	}
 
 	private renderCloseButton = () => {

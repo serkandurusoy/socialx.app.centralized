@@ -11,7 +11,7 @@ import {SXTextInput} from 'components/Inputs';
 import {ButtonSizes, SXButton} from 'components/Interaction';
 import {ModalCloseButton} from 'components/Modals';
 import {Colors, Icons, Sizes} from 'theme';
-import {MediaTypes} from 'types';
+import {MediaTypeImage} from 'types';
 import style from './style';
 
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
@@ -141,11 +141,18 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		);
 	}
 
+	// TODO: show the user that he has excceded the maximum file size
+	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
+
 	private showGalleryPhotoPicker = async () => {
 		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
 			cropping: false,
 			mediaType: 'any',
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(mediaObject)) {
+			return;
+		}
 		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
@@ -155,6 +162,10 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			mediaType: 'any',
 			useFrontCamera: false,
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(mediaObject)) {
+			return;
+		}
 		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
@@ -228,7 +239,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			const mediaPath = mediaObject.path.replace('file://', '');
 			let imageOptimizedPath = null;
 
-			if (mediaObject.mime.startsWith(MediaTypes.Image)) {
+			if (mediaObject.mime.startsWith(MediaTypeImage.key)) {
 				const optimized = await ImageResizer.createResizedImage(
 					mediaObject.path,
 					mediaObject.width,
@@ -266,8 +277,9 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	}
 
 	private sendPostHandler = () => {
+		const escapedText = this.state.postText.replace(/\n/g, '\\n');
 		const wallPostData: NewWallPostData = {
-			text: this.state.postText,
+			text: escapedText,
 			mediaObjects: this.state.mediaObjects,
 		};
 		this.props.navigation.state.params.postCreate(wallPostData);

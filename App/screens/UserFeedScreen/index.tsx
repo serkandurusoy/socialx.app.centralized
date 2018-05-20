@@ -66,6 +66,7 @@ interface IUserFeedScreenProps extends IFeedProps {
 	refresh: () => void;
 	loadMore: () => void;
 	Items: any;
+	nextToken: string | null;
 }
 
 interface IUserFeedScreenState {
@@ -78,7 +79,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public state = {
 		refreshing: false,
 		loadingMore: false,
-		hasMore: true,
+		hasMore: this.props.nextToken !== null,
 	};
 
 	public render() {
@@ -87,7 +88,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
-				isLoading={loading}
+				isLoading={loading || data.loading}
 				loadingMore={this.state.loadingMore}
 				hasMore={this.state.hasMore}
 				currentUser={data.user}
@@ -109,7 +110,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onLoadMore = async () => {
-		if (this.state.hasMore) {
+		if (this.state.hasMore && !this.state.loadingMore) {
 			const {loadMore} = this.props;
 			try {
 				this.setState({

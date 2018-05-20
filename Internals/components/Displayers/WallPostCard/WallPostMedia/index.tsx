@@ -9,10 +9,15 @@ import style from './style';
 interface IWallPostMediaProps {
 	mediaObjects: IMediaProps[];
 	onMediaObjectView?: (index: number) => void;
+	noInteraction?: boolean;
 }
 
 export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 	const {mediaObjects} = props;
+
+	const getViewMediaProp = (index: number) => {
+		return props.noInteraction ? {} : {onPress: () => viewMediaObjectAtIndex(index)};
+	};
 
 	const viewMediaObjectAtIndex = (index: number) => {
 		if (props.onMediaObjectView) {
@@ -25,7 +30,8 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 		const mediaURL = getURLForMediaViewerObject(mediaProps);
 		return (
 			<MediaObjectViewer
-				onPress={() => viewMediaObjectAtIndex(0)}
+				{...getViewMediaProp(0)}
+				thumbOnly={props.noInteraction}
 				uri={mediaURL}
 				style={style.postMediaContainerFullWidth}
 				extension={mediaProps.type}
@@ -40,7 +46,7 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 			<View style={style.postMediaContainerFullWidth}>
 				<View style={style.fullHeightHalfWidth}>
 					<MediaObjectViewer
-						onPress={() => viewMediaObjectAtIndex(0)}
+						{...getViewMediaProp(0)}
 						thumbOnly={true}
 						uri={firstMediaURL}
 						style={style.fullWidthHeight}
@@ -49,7 +55,7 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 				</View>
 				<View style={style.fullHeightHalfWidth}>
 					<MediaObjectViewer
-						onPress={() => viewMediaObjectAtIndex(1)}
+						{...getViewMediaProp(1)}
 						thumbOnly={true}
 						uri={secondMediaURL}
 						style={style.fullWidthHeight}
@@ -70,7 +76,7 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 			<View style={style.postMediaContainerFullWidth}>
 				<View style={style.fullHeightHalfWidth}>
 					<MediaObjectViewer
-						onPress={() => viewMediaObjectAtIndex(0)}
+						{...getViewMediaProp(0)}
 						thumbOnly={true}
 						uri={mediaURLs[0]}
 						style={style.fullWidthHeight}
@@ -79,13 +85,13 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 				</View>
 				<View style={style.fullHeightHalfWidth}>
 					<MediaObjectViewer
-						onPress={() => viewMediaObjectAtIndex(1)}
+						{...getViewMediaProp(1)}
 						thumbOnly={true}
 						uri={mediaURLs[1]}
 						style={style.fullWidthHalfHeight}
 						extension={mediaObjects[1].type}
 					/>
-					<TouchableOpacity style={style.fullWidthHalfHeight} onPress={() => viewMediaObjectAtIndex(2)}>
+					<TouchableOpacity style={style.fullWidthHalfHeight} {...getViewMediaProp(2)}>
 						<MediaObjectViewer
 							thumbOnly={true}
 							uri={mediaURLs[2]}

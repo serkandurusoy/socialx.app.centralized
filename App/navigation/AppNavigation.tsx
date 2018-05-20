@@ -36,6 +36,7 @@ import UploadKeyScreen from '../screens/UploadKeyScreen';
 import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
 import UserRegularFeedScreen from '../screens/UserFeedScreen/regularUserFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
 import styles from './styles/NavigationStyles';
 
@@ -85,6 +86,7 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		CommentsStack: {screen: CommentsStackNavigator},
 		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
+		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
@@ -170,7 +172,7 @@ const MainScreenTabNavigation = TabNavigator(
 		},
 		lazy: true,
 		swipeEnabled: false,
-		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation}/>,
+		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
 	},
 );
 

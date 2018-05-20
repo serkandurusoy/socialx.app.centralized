@@ -8,7 +8,8 @@ import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
-import {IUserQuery} from 'types';
+import {IMediaProps, IUserQuery} from 'types';
+import {getUserAvatar, getUserFullName} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -16,8 +17,9 @@ import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
 
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
+const TITLE_MAX_LINES = 3;
 
-export interface IWallPostCardProp {
+export interface ISimpleWallPostCardProps {
 	id: string;
 	title?: string;
 	text?: string;
@@ -26,77 +28,118 @@ export interface IWallPostCardProp {
 		// TODO: should be an array of IUserQuery
 		fullName: string;
 	}>;
-	smallAvatar: string; // @deprecated, use instead owner!
-	fullName: string; // @deprecated, use instead owner!
 	timestamp: Date;
-	numberOfLikes: number;
-	numberOfSuperLikes: number;
-	numberOfComments: number;
-	numberOfWalletCoins: number;
-	onImageClick: (index: number) => void;
-	onLikeButtonClick: () => void;
-	onDeleteClick: (postId: string) => void;
-	onUserClick: () => void;
-	onCommentClick: () => void;
-	likedByMe?: boolean;
-	canDelete: boolean;
 	owner: IUserQuery;
-	media: any;
-	likes: any;
+}
+
+export interface IWallPostCardProp extends ISimpleWallPostCardProps {
+	governanceVersion?: boolean;
+	numberOfLikes?: number;
+	numberOfSuperLikes?: number;
+	numberOfComments?: number;
+	numberOfWalletCoins?: number;
+	onImageClick?: (index: number) => void;
+	onLikeButtonClick?: () => void;
+	onDeleteClick?: (postId: string) => void;
+	onUserClick?: () => void;
+	onCommentClick?: () => void;
+	likedByMe?: boolean;
+	canDelete?: boolean;
+	media: IMediaProps[];
+	likes?: any;
 }
 
 export interface IWallPostCardState {
+	fullTitleVisible: boolean;
 	fullDescriptionVisible: boolean;
 	modalVisibleReportProblem: boolean;
+	hideAdvancedMenu: boolean;
+	hideGoToUserProfile: boolean;
+	hidePostActionsAndComments: boolean;
+	disableMediaFullScreen: boolean;
 }
 
 export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
 	public static defaultProps: Partial<IWallPostCardProp> = {
 		canDelete: false,
+		likedByMe: false,
+		numberOfLikes: 0,
+		numberOfSuperLikes: 0,
+		numberOfComments: 0,
+		numberOfWalletCoins: 0,
+		onLikeButtonClick: () => Function,
+		onCommentClick: () => Function,
 	};
 
 	public state = {
+		fullTitleVisible: false,
 		fullDescriptionVisible: false,
 		modalVisibleReportProblem: false,
+		hideAdvancedMenu: this.props.governanceVersion || false,
+		hideGoToUserProfile: this.props.governanceVersion || false,
+		hidePostActionsAndComments: this.props.governanceVersion || false,
+		disableMediaFullScreen: this.props.governanceVersion || false,
 	};
 
+	public shouldComponentUpdate(
+		nextProps: Readonly<IWallPostCardProp>,
+		nextState: Readonly<IWallPostCardState>,
+	): boolean {
+		return (
+			this.props.id !== nextProps.id ||
+			this.props.numberOfLikes !== nextProps.numberOfLikes ||
+			this.props.numberOfComments !== nextProps.numberOfComments
+		);
+	}
+
 	public render() {
-		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
-		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
 		return (
 			<View style={style.container}>
+				{this.renderModalReportProblem()}
+				{this.renderUserDetails()}
+				{this.renderPostTitle()}
+				{this.renderPostDescription()}
+				{this.renderWallPostMedia()}
+				{this.renderWallPostActions()}
+			</View>
+		);
+	}
+
+	private renderModalReportProblem = () => {
+		if (!this.state.hideAdvancedMenu) {
+			return (
 				<ModalReportProblem
 					visible={this.state.modalVisibleReportProblem}
 					confirmHandler={this.reportProblemHandler}
 					declineHandler={this.toggleDeclineReportModal}
 				/>
-				<TouchableOpacity onPress={this.props.onUserClick} style={style.topContainer}>
-					<FastImage source={{uri: this.props.smallAvatar}} style={style.smallAvatarImage} />
-					<View style={style.topRightContainer}>
-						<Text style={style.fullName}>
-							{this.props.fullName}
-							{this.renderTaggedFriends()}
-							{this.renderLocation()}
-						</Text>
-						<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
-					</View>
-					<TooltipDots items={this.getTooltipItems()} />
-				</TouchableOpacity>
-				{this.renderPostTitle()}
-				{this.renderPostDescription()}
-				<WallPostMedia mediaObjects={this.props.media} onMediaObjectView={this.props.onImageClick} />
-				<WallPostActions
-					likedByMe={this.props.likedByMe}
-					numberOfLikes={this.props.numberOfLikes}
-					numberOfSuperLikes={this.props.numberOfSuperLikes}
-					numberOfComments={this.props.numberOfComments}
-					numberOfWalletCoins={this.props.numberOfWalletCoins}
-					likeButtonPressed={this.props.onLikeButtonClick}
-					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.props.onCommentClick}
-					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
-				/>
-			</View>
+			);
+		}
+		return null;
+	}
+
+	private renderUserDetails = () => {
+		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
+		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
+		const avatarURL = getUserAvatar(this.props.owner);
+		const fullName = getUserFullName(this.props.owner);
+		return (
+			<TouchableOpacity
+				onPress={this.props.onUserClick}
+				style={style.topContainer}
+				disabled={this.state.hideGoToUserProfile}
+			>
+				<FastImage source={{uri: avatarURL}} style={style.smallAvatarImage} />
+				<View style={style.topRightContainer}>
+					<Text style={style.fullName}>
+						{fullName}
+						{this.renderTaggedFriends()}
+						{this.renderLocation()}
+					</Text>
+					<Text style={style.timestamp}>{`${timeStampDate} at ${timeStampHour}`}</Text>
+				</View>
+				{!this.state.hideAdvancedMenu && <TooltipDots items={this.getTooltipItems()} />}
+			</TouchableOpacity>
 		);
 	}
 
@@ -156,6 +199,16 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		});
 	}
 
+	private renderWallPostMedia = () => {
+		return (
+			<WallPostMedia
+				mediaObjects={this.props.media}
+				onMediaObjectView={this.props.onImageClick}
+				noInteraction={this.state.disableMediaFullScreen}
+			/>
+		);
+	}
+
 	private renderPostDescription = () => {
 		const {text, title} = this.props;
 		if (text && title) {
@@ -184,23 +237,79 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	}
 
+	private renderPostTitle = () => {
+		const title = this.props.title ? this.props.title : this.props.text;
+		// if no title present use the text part as title!
+		if (title) {
+			const numberOfLines = title.split('\n').length;
+
+			const hasMore =
+				(title.length > DESCRIPTION_TEXT_LENGTH_SHORT || numberOfLines > TITLE_MAX_LINES) &&
+				!this.state.fullTitleVisible &&
+				Platform.OS === OS_TYPES.IOS;
+
+			let textToRender = title;
+
+			if (hasMore) {
+				if (numberOfLines > TITLE_MAX_LINES) {
+					textToRender = textToRender
+						.split('\n')
+						.slice(0, TITLE_MAX_LINES)
+						.join('\n');
+				}
+
+				if (title.length > DESCRIPTION_TEXT_LENGTH_SHORT) {
+					textToRender = textToRender.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT);
+				}
+
+				textToRender = textToRender + '...';
+			}
+
+			const showMoreButton = hasMore ? (
+				<TouchableOpacity onPress={this.toggleShowFullTitle}>
+					<Text style={style.showMoreText}>{'More'}</Text>
+				</TouchableOpacity>
+			) : null;
+
+			return (
+				<Text style={style.postTitle} numberOfLines={numberOfLines}>
+					{textToRender}
+					{showMoreButton}
+				</Text>
+			);
+		}
+		return null;
+	}
+
+	private renderWallPostActions = () => {
+		if (!this.state.hidePostActionsAndComments) {
+			return (
+				<WallPostActions
+					likedByMe={this.props.likedByMe}
+					numberOfLikes={this.props.numberOfLikes}
+					numberOfSuperLikes={this.props.numberOfSuperLikes}
+					numberOfComments={this.props.numberOfComments}
+					numberOfWalletCoins={this.props.numberOfWalletCoins}
+					likeButtonPressed={this.props.onLikeButtonClick}
+					superLikeButtonPressed={this.superLikeButtonPressedHandler}
+					commentsButtonPressed={this.props.onCommentClick}
+					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
+				/>
+			);
+		}
+		return null;
+	}
+
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
 	}
 
-	private renderPostTitle = () => {
-		const title = this.props.title ? this.props.title : this.props.text;
-		// if no title present use the text part as title!
-		if (title) {
-			return (
-				<Text style={style.postTitle} numberOfLines={1}>
-					{title}
-				</Text>
-			);
-		}
-		return null;
+	private toggleShowFullTitle = () => {
+		this.setState({
+			fullTitleVisible: true,
+		});
 	}
 
 	private toggleDeclineReportModal = () => {

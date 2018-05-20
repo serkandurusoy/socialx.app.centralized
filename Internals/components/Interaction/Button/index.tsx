@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
 
 import {Colors} from 'theme';
 import style from './style';
@@ -20,6 +20,7 @@ export interface ISXButtonProps {
 	autoWidth?: boolean;
 	borderColor?: string;
 	loading?: boolean;
+	containerStyle?: StyleProp<ViewStyle>;
 }
 
 export class SXButton extends Component<ISXButtonProps, any> {
@@ -60,7 +61,13 @@ export class SXButton extends Component<ISXButtonProps, any> {
 	}
 
 	protected getContainerStyles = () => {
-		const ret: any[] = [style.container, {borderColor: this.props.borderColor}, style['container' + this.props.size]];
+		const ret: any[] = [style.container, {borderColor: this.props.borderColor}];
+
+		if (this.props.containerStyle) {
+			ret.push(this.props.containerStyle);
+		} else {
+			ret.push(style['container' + this.props.size]);
+		}
 
 		if (this.isDisabled) {
 			ret.push(style.disabledButton);

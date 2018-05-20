@@ -71,11 +71,6 @@ export interface SearchResultCreateGroup {
 	avatarURL?: string;
 }
 
-export enum MediaTypes {
-	Image = 'image',
-	Video = 'video',
-}
-
 export interface WallPostPhotoOptimized extends PickerImage {
 	contentOptimizedPath?: string;
 	type: string;

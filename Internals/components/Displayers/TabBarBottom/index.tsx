@@ -11,7 +11,7 @@ import style from './style';
 import {updateTabBarBottomHeight} from 'backend/actions';
 import {getMyNotificationsHoc} from 'backend/graphql';
 import {connect} from 'react-redux';
-import {IAppUIStateProps, MediaTypes, WallPostPhotoOptimized} from 'types';
+import {IAppUIStateProps, MediaTypeImage, WallPostPhotoOptimized} from 'types';
 
 export enum MENU_BUTTON_TYPE {
 	MENU_BUTTON_SIMPLE = 'MENU_BUTTON_SIMPLE',
@@ -208,11 +208,18 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		);
 	}
 
+	// TODO: show the user that he has excceded the maximum file size
+	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
+
 	private showGalleryPhotoPicker = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
 			cropping: false,
 			mediaType: 'any',
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(image)) {
+			return;
+		}
 		this.useSelectedMediaObject(image as PickerImage);
 	}
 
@@ -221,13 +228,17 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 			cropping: false,
 			mediaType: 'any',
 		});
+		// check if the image is within the maximum size
+		if (!this.checkFileSize(image)) {
+			return;
+		}
 		this.useSelectedMediaObject(image as PickerImage);
 	}
 
 	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
 			let contentOptimizedPath;
-			if (retMedia.mime.startsWith(MediaTypes.Image)) {
+			if (retMedia.mime.startsWith(MediaTypeImage.key)) {
 				const optimized = await ImageResizer.createResizedImage(
 					retMedia.path,
 					retMedia.width,

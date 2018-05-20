@@ -1,13 +1,12 @@
 import {AnimatedText} from 'configuration/animations';
 import moment from 'moment';
 import React from 'react';
-import {Clipboard, Text, TouchableOpacity, View} from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
+import {Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
 import {IWallPostComment, IWallPostCommentReply} from 'types';
 import {AvatarImage} from '../../../Avatar/Image';
-import style, {DROPDOWN_ITEM_HEIGHT} from './style';
+import style from './style';
 
 enum COMMENT_ADVANCED_ACTIONS {
 	DELETE = 'Delete',
@@ -127,7 +126,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 					<View style={style.likesBorder}>
 						<Icon
 							name={'md-thumbs-up'}
-							size={Sizes.smartHorizontalScale(15)}
+							size={Sizes.smartHorizontalScale(25)}
 							color={this.state.likedByMe ? Colors.pink : Colors.fuchsiaBlue}
 						/>
 						<Text style={style.numberOfLikes}>{this.state.numberOfLikes}</Text>

@@ -18,6 +18,10 @@ import RootContainer from './containers/RootContainer';
 
 import createStore from './reducers';
 
+// TODO: find a proper suitable initilizers invoker that is high level and equivalent of this
+import Init from './initializers';
+Init();
+
 const reduxStage = createStore();
 
 export default class App extends Component<{}, {}> {

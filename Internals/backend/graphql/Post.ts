@@ -123,10 +123,8 @@ export const getPublicPostsHoc = (comp: any) =>
 						id: post.id,
 						text: post.text,
 						location: post.location,
-						smallAvatar: post.owner.avatar ? base.ipfs_URL + post.owner.avatar.hash : AvatarImagePlaceholder,
 						media: post.Media,
 						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
-						fullName: post.owner.name,
 						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 						numberOfLikes: post.likes.length,
 						numberOfSuperLikes: 0,
@@ -148,6 +146,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				refresh: async () => {
 					await refetch();
 				},
+				nextToken,
 				noPosts: !Items.length,
 				loadMore: () =>
 					fetchMore({

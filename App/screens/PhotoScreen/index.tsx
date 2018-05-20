@@ -157,7 +157,8 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 						startPostadd();
 						// create post
 						if (title) {
-							await createPost({variables: {text: title, Media: mediaId}});
+							const escapedTitle = title.replace(/\n/g, '\\n');
+							await createPost({variables: {text: escapedTitle, Media: mediaId}});
 						} else {
 							await createPost({variables: {Media: mediaId}});
 						}
