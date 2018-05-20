@@ -28,7 +28,7 @@ const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (prop
 		<Modal
 			onDismiss={props.onDismiss}
 			onModalHide={props.onModalHide}
-			isVisible={false}
+			isVisible={props.showActivityIndicator}
 			backdropOpacity={0.2}
 			animationIn={'slideInDown'}
 			animationOut={'slideOutUp'}
@@ -49,4 +49,4 @@ const mapStateToProps: any = (state: any): IModalActivityIndicatorProps => ({
 	...state.popups,
 });
 
-export const ModalActivityIndicator = connect<any>(mapStateToProps)(ManagedModalActivityIndicator);
+export const ModalActivityIndicator = connect<any>(mapStateToProps)(ManagedModalActivityIndicator as any);

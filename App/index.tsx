@@ -39,9 +39,7 @@ export default class App extends Component<{}, {}> {
 			<ApolloProvider client={AppsyncClient}>
 				<Rehydrated>
 					<Provider store={store}>
-						<PersistGate loading={null} persistor={persistor}>
-							<RootContainer />
-						</PersistGate>
+						<RootContainer />
 					</Provider>
 				</Rehydrated>
 			</ApolloProvider>
