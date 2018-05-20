@@ -97,7 +97,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "socialx.network"
@@ -111,7 +111,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
-        // multiDexEnabled true => appcenter might be causing issues
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -178,7 +178,7 @@ dependencies {
     compile project(':appcenter-crashes')
     compile project(':appcenter')
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.0.1"
+    compile "com.android.support:appcompat-v7:25.0.3"
     compile "com.facebook.react:react-native:+"  // From node_modules
 }
 
