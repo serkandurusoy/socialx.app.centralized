@@ -125,7 +125,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 						avatarURL: commentOwnerAv,
 						id: currentComment.owner.userId,
 					},
-					timestamp: new Date(currentComment.createdAt),
+					timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
 					likes: currentComment.likes,
 					numberOfLikes: currentComment.likes.length,
 					likedByMe: currentComment.likes.find((x) => x.userId === userId) ? true : false,

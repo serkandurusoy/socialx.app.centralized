@@ -44,10 +44,11 @@ const style: any = {
 		borderWidth: 1,
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		marginRight: Sizes.smartHorizontalScale(5),
+		alignItems: 'center',
 	},
 	numberOfLikes: {
 		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(12),
+		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postText,
 		paddingLeft: Sizes.smartHorizontalScale(5),
 	},
