@@ -12,7 +12,6 @@ import {
 	addMediaHoc,
 	createPostHoc,
 	deleteOwnPostHoc,
-	getPublicPostsHoc,
 	getUserPostsHoc,
 	likePostHoc,
 	removeLikePostHoc,
@@ -42,8 +41,6 @@ import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/scree
 import {IMediaRec} from './types';
 
 export interface IFeedProps {
-	Posts: IPaginatedPosts;
-	loadMore: any;
 	navigation: NavigationScreenProp<any>;
 	hideShareSection: boolean;
 }
@@ -62,11 +59,11 @@ interface IUserFeedScreenProps extends IFeedProps {
 	stopLoading: any;
 	deletePost: any;
 	loading: boolean;
-	noPosts: boolean;
-	refresh: () => void;
-	loadMore: () => void;
 	Items: any;
+	refresh: () => void;
 	nextToken: string | null;
+	noPosts: boolean;
+	loadMore: () => any;
 	hasMore: boolean;
 }
 
@@ -82,7 +79,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public render() {
-		const {Posts, data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
+		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
 
 		return (
 			<UserFeedScreenComponent
@@ -130,7 +127,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
-		const {Posts, data} = this.props;
+		const {data} = this.props;
 		if (!data.loading && data.user.avatar) {
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
