@@ -25,5 +25,9 @@ allprojects {
         maven {
             url "https://jitpack.io"
         }
+        // some of the new sdk tools, eg appcompat:27.+ and latest buildtools
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
