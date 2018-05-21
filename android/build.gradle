@@ -3,10 +3,10 @@
 buildscript {
     repositories {
         jcenter()
-        //google()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:3.1.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -24,6 +24,10 @@ allprojects {
         // jitpack repo is necessary to fetch ucrop dependency
         maven {
             url "https://jitpack.io"
+        }
+        // some of the new sdk tools, eg appcompat:27.+ and latest buildtools
+        maven {
+            url "https://maven.google.com"
         }
     }
 }
