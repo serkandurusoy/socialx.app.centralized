@@ -3,6 +3,7 @@ import '../shim.js';
 import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Platform, StatusBar} from 'react-native';
+import Orientation from 'react-native-orientation';
 
 import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
@@ -30,6 +31,7 @@ export default class App extends Component<{}, {}> {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
 		Animatable.initializeRegistryWithDefinitions(getAvailableAnimations());
+		Orientation.lockToPortrait();
 	}
 
 	public render() {

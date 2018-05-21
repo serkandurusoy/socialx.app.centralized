@@ -13,13 +13,7 @@ const withRegularUserFeed = (
 		private static navigationOptions = navOptions;
 
 		public render() {
-			return (
-				<BaseComponent
-					Posts={this.props.Posts}
-					navigation={this.props.navigation}
-					hideShareSection={false}
-				/>
-			);
+			return <BaseComponent Posts={this.props.Posts} navigation={this.props.navigation} hideShareSection={false} />;
 		}
 	};
 };
@@ -27,10 +21,18 @@ const withRegularUserFeed = (
 const navigationOptions = (props: any) => {
 	return {
 		title: 'FEED',
-		headerRight: (
-			<ScreenHeaderButton onPress={() => navigateToMessagingScreen(props)} iconSource={Icons.messagingIcon} />
+		// headerRight: (
+		// 	<ScreenHeaderButton onPress={() => navigateToMessagingScreen(props)} iconSource={Icons.messagingIcon} />
+		// ),
+		headerRight: null,
+		headerLeft: (
+			<ScreenHeaderButton
+				iconName={'md-flame'}
+				onPress={() => {
+					/* navigateToHotPosts(props) */
+				}}
+			/>
 		),
-		headerLeft: <ScreenHeaderButton iconName={'md-flame'} onPress={() => {/* navigateToHotPosts(props) */}} />,
 	};
 };
 
