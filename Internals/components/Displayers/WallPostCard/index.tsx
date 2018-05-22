@@ -88,7 +88,10 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return (
 			this.props.id !== nextProps.id ||
 			this.props.numberOfLikes !== nextProps.numberOfLikes ||
-			this.props.numberOfComments !== nextProps.numberOfComments
+			this.props.numberOfComments !== nextProps.numberOfComments ||
+			this.state.modalVisibleReportProblem !== nextState.modalVisibleReportProblem ||
+			this.state.fullTitleVisible !== nextState.fullTitleVisible ||
+			this.state.fullDescriptionVisible !== nextState.fullDescriptionVisible
 		);
 	}
 

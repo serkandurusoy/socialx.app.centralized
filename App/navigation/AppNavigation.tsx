@@ -34,7 +34,7 @@ import SocialXAccountScreen from '../screens/SocialXAccountScreen';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
-import UserRegularFeedScreen from '../screens/UserFeedScreen/regularUserFeed';
+import TabbedFeed from '../screens/UserFeedScreen/TabbedFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
@@ -148,7 +148,7 @@ const CommentsStackNavigator = StackNavigator(
 
 const UserFeedStackNavigator = StackNavigator(
 	{
-		UserRegularFeedScreen: {screen: UserRegularFeedScreen},
+		TabbedFeedScreen: {screen: TabbedFeed},
 		MessagingScreen: {screen: MessagingScreen},
 		ChatThreadScreen: {screen: ChatThreadScreen},
 	},

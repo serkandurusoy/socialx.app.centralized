@@ -2,23 +2,27 @@ import {getAllPostsHoc} from 'backend/graphql';
 import {ScreenHeaderButton} from 'components';
 import React from 'react';
 import {View} from 'react-native';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import UserFeedScreen, {IFeedProps} from './index';
+
+interface IWithHotPostsFeedProps {
+	navigation: NavigationScreenProp<any>;
+}
 
 const withHotPostsFeed = (
 	BaseComponent: React.ComponentType<IFeedProps>,
 	navOptions: Partial<NavigationStackScreenOptions> = {},
 ) => {
-	return class extends React.Component {
+	return class extends React.Component<IWithHotPostsFeedProps> {
 		private static navigationOptions = navOptions;
 
 		public render() {
-			return <BaseComponent Posts={this.props.Posts} navigation={this.props.navigation} hideShareSection={true} />;
+			return <BaseComponent navigation={this.props.navigation} hideShareSection={true} />;
 		}
 	};
 };
 
-const navigationOptions = (props: any) => {
+const navigationOptions = (props: any): Partial<NavigationStackScreenOptions> => {
 	return {
 		title: 'HOT POSTS NOW',
 		headerRight: <ScreenHeaderButton onPress={() => returnToRegularUserFeed(props)} iconName={'ios-arrow-forward'} />,
@@ -34,4 +38,4 @@ const returnToRegularUserFeed = (props: IFeedProps) => {
 
 // TODO @Jake: update posts hook here!
 const withHotPosts = getAllPostsHoc(UserFeedScreen);
-export default withHotPostsFeed(withHotPosts, navigationOptions as any);
+export default withHotPostsFeed(withHotPosts as any, navigationOptions as any);

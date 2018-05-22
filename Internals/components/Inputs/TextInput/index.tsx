@@ -50,6 +50,7 @@ export interface ISXTextInputProps {
 	size?: InputSizes;
 	borderWidth?: number;
 	multiline?: boolean;
+	focusUpdateHandler?: (hasFocus: boolean) => void;
 }
 
 export interface ISXTextInputState {
@@ -178,6 +179,9 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		this.setState({
 			hasFocus: value,
 		});
+		if (this.props.focusUpdateHandler) {
+			this.props.focusUpdateHandler(value);
+		}
 	}
 
 	private textChangedHandler = (value: string) => {
