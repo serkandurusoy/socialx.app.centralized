@@ -39,3 +39,8 @@ export interface IMediaPropsWithIndex extends IMediaProps {
 }
 
 export type IMediaViewerObject = IMediaPropsWithIndex | ISimpleMediaObject;
+
+export enum CallType {
+	Video = 'video',
+	Voice = 'voice',
+}

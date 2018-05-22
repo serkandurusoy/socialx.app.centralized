@@ -12,6 +12,7 @@ import CreateEventScreen from '../screens/CreateEventScreen';
 import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
+import IncomingCallScreen from '../screens/IncomingCallScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MaintenanceScreen from '../screens/Maintenance';
 import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
@@ -88,6 +89,7 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
+		IncomingCallScreen: {screen: IncomingCallScreen},
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
