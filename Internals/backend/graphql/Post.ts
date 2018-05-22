@@ -101,7 +101,7 @@ export const getPublicPostsHoc = (comp: any) =>
 		options: {fetchPolicy: 'network-only'},
 		props(pps) {
 			const {
-				Posts: {loading, error, getPublicPosts, fetchMore, refetch},
+				Posts: {loading, error, getPublicPosts, fetchMore, refetch, hasMore},
 			} = pps;
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
 			// const {nextToken, Items, rawItems} = getPublicPosts;
@@ -148,7 +148,8 @@ export const getPublicPostsHoc = (comp: any) =>
 				},
 				nextToken,
 				noPosts: !Items.length,
-				loadMore: () =>
+				hasMore: nextToken !== null,
+				loadMore: () => nextToken !== null ?
 					fetchMore({
 						variables: {next: nextToken},
 						updateQuery: (previousResult, {fetchMoreResult}) => {
@@ -165,12 +166,9 @@ export const getPublicPostsHoc = (comp: any) =>
 									__typename: 'PaginatedPosts',
 								},
 							};
-
-							const res = newNext ? newPosts : previousResult;
-
-							return res;
+							return newPosts;
 						},
-					}),
+					}) : {},
 			};
 		},
 	})(comp);

@@ -67,30 +67,29 @@ interface IUserFeedScreenProps extends IFeedProps {
 	loadMore: () => void;
 	Items: any;
 	nextToken: string | null;
+	hasMore: boolean;
 }
 
 interface IUserFeedScreenState {
 	refreshing: boolean;
 	loadingMore: boolean;
-	hasMore: boolean;
 }
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	public state = {
 		refreshing: false,
 		loadingMore: false,
-		hasMore: this.props.nextToken !== null,
 	};
 
 	public render() {
-		const {Posts, data, loading, noPosts, refresh, loadMore, Items} = this.props;
+		const {Posts, data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
 
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
 				isLoading={loading || data.loading}
 				loadingMore={this.state.loadingMore}
-				hasMore={this.state.hasMore}
+				hasMore={hasMore}
 				currentUser={data.user}
 				refreshing={this.state.refreshing}
 				refreshData={this.refreshWallPosts}
@@ -110,7 +109,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private onLoadMore = async () => {
-		if (this.state.hasMore && !this.state.loadingMore) {
+		if (!this.state.loadingMore) {
 			const {loadMore} = this.props;
 			try {
 				this.setState({
@@ -119,7 +118,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				const loadResult: any = await loadMore();
 				this.setState({
 					loadingMore: false,
-					hasMore: get(loadResult, 'data.getPublicPosts.nextToken', false),
 				});
 			} catch (ex) {
 				console.log(ex);
