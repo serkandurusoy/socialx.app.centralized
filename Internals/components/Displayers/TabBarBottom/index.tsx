@@ -212,27 +212,27 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
 
 	private showGalleryPhotoPicker = async () => {
-		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
-			cropping: false,
-			mediaType: 'any',
-		});
-		// check if the image is within the maximum size
-		if (!this.checkFileSize(image)) {
-			return;
+		try {
+			const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
+				cropping: false,
+				mediaType: 'any',
+			});
+			this.useSelectedMediaObject(image as PickerImage);
+		} catch (ex) {
+			console.log(ex);
 		}
-		this.useSelectedMediaObject(image as PickerImage);
 	}
 
 	private takeCameraPhoto = async () => {
-		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
-			cropping: false,
-			mediaType: 'any',
-		});
-		// check if the image is within the maximum size
-		if (!this.checkFileSize(image)) {
-			return;
+		try {
+			const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+				cropping: false,
+				mediaType: 'any',
+			});
+			this.useSelectedMediaObject(image as PickerImage);
+		} catch (ex) {
+			console.log(ex);
 		}
-		this.useSelectedMediaObject(image as PickerImage);
 	}
 
 	private useSelectedMediaObject = async (retMedia: PickerImage) => {

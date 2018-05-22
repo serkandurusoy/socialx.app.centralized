@@ -145,28 +145,28 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
 
 	private showGalleryPhotoPicker = async () => {
-		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
-			cropping: false,
-			mediaType: 'any',
-		});
-		// check if the image is within the maximum size
-		if (!this.checkFileSize(mediaObject)) {
-			return;
+		try {
+			const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
+				cropping: false,
+				mediaType: 'any',
+			});
+			this.addNewMediaObject(mediaObject as PickerImage);
+		} catch (ex) {
+			console.log(ex);
 		}
-		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
 	private takeCameraPhoto = async () => {
-		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
-			cropping: false,
-			mediaType: 'any',
-			useFrontCamera: false,
-		});
-		// check if the image is within the maximum size
-		if (!this.checkFileSize(mediaObject)) {
-			return;
+		try {
+			const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+				cropping: false,
+				mediaType: 'any',
+				useFrontCamera: false,
+			});
+			this.addNewMediaObject(mediaObject as PickerImage);
+		} catch (ex) {
+			console.log(ex);
 		}
-		this.addNewMediaObject(mediaObject as PickerImage);
 	}
 
 	private addNewMediaObject = async (mediaObject: PickerImage) => {

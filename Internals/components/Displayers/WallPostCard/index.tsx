@@ -192,6 +192,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	}
 
 	private tooltipsReportPressedHandler = () => {
+		// @ionut TODO not working?
 		ModalManager.safeRunAfterModalClosed(() => {
 			this.setState({
 				modalVisibleReportProblem: true,
@@ -325,7 +326,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				icon: Icons.redRoundCross,
 				actionHandler: () => {
 					ModalManager.safeRunAfterModalClosed(() => {
-						alert('Block user');
+						alert('Comming soon..');
 					});
 				},
 			},
