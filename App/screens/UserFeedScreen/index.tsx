@@ -148,8 +148,34 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	}
 
+	private create = async (Media: string[], text?: string) => {
+		const {createPost} = this.props;
+		if (Media.length > 0) {
+			if (text) {
+				await createPost({
+					variables: {
+						text,
+						Media,
+					},
+				});
+			} else {
+				await createPost({
+					variables: {
+						Media,
+					},
+				});
+			}
+		} else {
+			await createPost({
+				variables: {
+					text,
+				},
+			});
+		}
+	}
+
 	private addWallPostHandler = async (data: NewWallPostData) => {
-		const {createPost, addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
+		const {addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
 
 		const ipfsHashes: any = [];
 		const mediaIds: string[] = [];
@@ -170,20 +196,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				});
 				mediaIds.push(gqlResp.data.addMedia.id);
 			}
-			if (mediaIds.length > 0) {
-				await createPost({
-					variables: {
-						text: data.text,
-						Media: mediaIds,
-					},
-				});
-			} else {
-				await createPost({
-					variables: {
-						text: data.text,
-					},
-				});
-			}
+			await this.create(mediaIds, data.text);
 			// refresh the wall posts to append the new post
 			this.refreshWallPosts();
 		} catch (ex) {
@@ -195,7 +208,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private refreshWallPosts = async () => {
-		this.setState({refreshing: true, hasMore: true});
+		this.setState({refreshing: true});
 		try {
 			await this.props.data.refetch();
 			await this.props.refresh();

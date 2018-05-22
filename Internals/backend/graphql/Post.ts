@@ -143,9 +143,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				loading,
 				rawItems: Items,
 				Items: dataSpine(Items),
-				refresh: async () => {
-					await refetch();
-				},
+				refresh: refetch,
 				nextToken,
 				noPosts: !Items.length,
 				hasMore: nextToken !== null,
