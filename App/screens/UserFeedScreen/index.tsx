@@ -43,6 +43,7 @@ import {IMediaRec} from './types';
 export interface IFeedProps {
 	navigation: NavigationScreenProp<any>;
 	hideShareSection: boolean;
+	searchTerm: string;
 }
 
 interface IUserFeedScreenProps extends IFeedProps {
@@ -80,6 +81,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
+
+		console.log('TODO: Filter Items for search term', this.props.searchTerm);
 
 		return (
 			<UserFeedScreenComponent

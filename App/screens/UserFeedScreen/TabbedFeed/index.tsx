@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View} from 'react-native';
+import {InteractionManager, ScrollView, View} from 'react-native';
 import {
 	NavigationAction,
 	NavigationActions,
@@ -10,7 +10,7 @@ import {
 	TabNavigator,
 } from 'react-navigation';
 
-import {ScreenHeaderButton, SearchFilterButton} from 'components';
+import {ScreenHeaderButton, SearchFeedHeader, SearchFilterButton} from 'components';
 import {Icons} from 'theme';
 import FriendsFeed from '../friendsUserFeed';
 import GlobalFeed from '../globalUserFeed';
@@ -35,12 +35,20 @@ const FeedTabScreens = TabNavigator(tabsRouteConfig, {
 	},
 });
 
+export interface ITabbedScreenProps {
+	screenProps: {
+		topLevelNav: NavigationScreenProp<any>;
+		searchTerm: string;
+	};
+}
+
 interface ITabbedFeedProps {
 	navigation: NavigationScreenProp<any>;
 }
 
 interface ITabbedFeedState {
 	selectedTab: FeedTabs;
+	searchTerm: string;
 }
 
 export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbedFeedState> {
@@ -60,16 +68,31 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 					// onPress={() => props.navigation.navigate('HotPostsFeedScreenStack')}
 				/>
 			),
+			headerTitle: () => {
+				const params = props.navigation.state.params || {};
+				return <SearchFeedHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
+			},
 		};
 	}
 
 	public state = {
 		selectedTab: FeedTabs.Friends,
+		searchTerm: '',
 	};
 
 	private tabNavigator: NavigationContainer | null = null;
 
+	public componentDidMount() {
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
+		});
+	}
+
 	public render() {
+		const screenProps = {
+			topLevelNav: this.props.navigation,
+			searchTerm: this.state.searchTerm,
+		};
 		return (
 			<View style={style.container}>
 				<View>
@@ -95,7 +118,7 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 					</ScrollView>
 				</View>
 				<FeedTabScreens
-					screenProps={{topLevelNav: this.props.navigation}}
+					screenProps={screenProps}
 					ref={(nav: any) => (this.tabNavigator = nav)}
 					onNavigationStateChange={this.handleNavigationChange}
 				/>
@@ -119,5 +142,11 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 		if (!skipNavigation && this.tabNavigator) {
 			this.tabNavigator.dispatch(NavigationActions.navigate({routeName: newTab}));
 		}
+	}
+
+	private updateSearchTerm = async (term: string) => {
+		this.setState({
+			searchTerm: term,
+		});
 	}
 }

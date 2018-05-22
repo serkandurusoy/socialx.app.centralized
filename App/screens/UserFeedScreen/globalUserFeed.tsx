@@ -1,19 +1,20 @@
 import React from 'react';
-import {NavigationScreenProp} from 'react-navigation';
 
 import {getPublicPostsHoc} from 'backend/graphql';
 import UserFeedScreen, {IFeedProps} from './index';
-
-interface IWithRegularUserFeedProps {
-	screenProps: {
-		topLevelNav: NavigationScreenProp<any>;
-	};
-}
+import {ITabbedScreenProps} from './TabbedFeed';
 
 const withGlobalUserFeed = (BaseComponent: React.ComponentType<IFeedProps>) => {
-	return class extends React.Component<IWithRegularUserFeedProps> {
+	return class extends React.Component<ITabbedScreenProps> {
 		public render() {
-			return <BaseComponent navigation={this.props.screenProps.topLevelNav} hideShareSection={false} />;
+			const {screenProps} = this.props;
+			return (
+				<BaseComponent
+					navigation={screenProps.topLevelNav}
+					hideShareSection={true}
+					searchTerm={screenProps.searchTerm}
+				/>
+			);
 		}
 	};
 };

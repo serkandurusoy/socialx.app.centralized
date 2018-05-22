@@ -34,7 +34,7 @@ import SocialXAccountScreen from '../screens/SocialXAccountScreen';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
 import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
-import TabbedFeed from '../screens/UserFeedScreen/TabbedFeed/tabbedFeed';
+import TabbedFeed from '../screens/UserFeedScreen/TabbedFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
