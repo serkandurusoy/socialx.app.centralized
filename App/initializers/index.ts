@@ -9,6 +9,7 @@ export default () => {
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
 		// tslint:disable-next-line
-		console.log = () => {};
+		console.log = () => {
+		};
 	}
 };
