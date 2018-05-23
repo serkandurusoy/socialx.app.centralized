@@ -19,7 +19,9 @@ wget -q https://dl.google.com/android/repository/android-ndk-$ANDROID_NDK_VERSIO
 unzip -o android-ndk-$ANDROID_NDK_VERSION-darwin-x86_64.zip
 
 # move to its final location
-mv ./android-ndk-$ANDROID_NDK_VERSION $ANDROID_HOME/ndk-bundle
+cp -rf ./android-ndk-$ANDROID_NDK_VERSION $ANDROID_HOME/ndk-bundle
+
+ls -la $ANDROID_HOME/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/darwin-x86_64/bin
 
 # remove temp dir
 cd ..
