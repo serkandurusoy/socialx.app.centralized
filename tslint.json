@@ -26,7 +26,8 @@
     "prefer-for-of": false,
     "jsx-no-multiline-js": false,
     "no-bitwise": false,
-    "member-access": false
+    "member-access": false,
+    "no-console": false
   },
   "include": [
     "App/**/*.ts",
