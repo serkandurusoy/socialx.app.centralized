@@ -23,6 +23,7 @@ import MyEventsScreen from '../screens/MyEventsScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import OutgoingCallScreen from '../screens/OutgoingCallScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import ProfileAnalyticsScreen from '../screens/ProfileAnalyticsScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
@@ -90,6 +91,7 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
 		IncomingCallScreen: {screen: IncomingCallScreen},
+		OutgoingCallScreen: {screen: OutgoingCallScreen},
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
