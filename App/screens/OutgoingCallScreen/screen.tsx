@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, {Component} from 'react';
 import {Animated, Image, ImageRequireSource, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -20,12 +21,14 @@ interface IOutgoingCallComponentProps {
 	onMicrophoneToggle: (on: boolean) => void;
 	onSoundToggle: (on: boolean) => void;
 	onCameraToggle: (on: boolean) => void;
+	callStartTime: Date | null;
 }
 
 interface IOutgoingCallComponentState {
 	soundOn: boolean;
 	microphoneOn: boolean;
 	cameraOn: boolean;
+	currentCallTime: Date | null;
 }
 
 export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps, IOutgoingCallComponentState> {
@@ -33,9 +36,26 @@ export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps
 		soundOn: true,
 		microphoneOn: true,
 		cameraOn: false,
+		currentCallTime: null,
 	};
 
 	private pulseAnimation = new Animated.Value(0);
+	private animationRef: Animated.CompositeAnimation | null = null;
+
+	public shouldComponentUpdate(
+		nextProps: Readonly<IOutgoingCallComponentProps>,
+		nextState: Readonly<IOutgoingCallComponentState>,
+	): boolean {
+		if (nextProps.callStartTime !== this.props.callStartTime) {
+			this.updateConversationTime();
+			if (this.animationRef) {
+				this.pulseAnimation.setValue(0);
+				this.animationRef.stop();
+			}
+			setInterval(this.updateConversationTime, 1000);
+		}
+		return true;
+	}
 
 	public componentDidMount() {
 		this.pulseAnimation.setValue(0);
@@ -43,12 +63,12 @@ export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps
 			toValue: 1,
 			duration: ANIMATION_INTERVAL,
 		});
-		Animated.loop(compositeAnimation, {iterations: -1}).start();
+		this.animationRef = Animated.loop(compositeAnimation, {iterations: -1});
+		this.animationRef.start();
 	}
 
 	public render() {
 		const {user} = this.props;
-		const callText = `Calling...`;
 		const fullName = getUserFullName(user);
 		const avatarURL = getUserAvatar(user);
 
@@ -65,7 +85,7 @@ export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps
 						<View style={style.safeAreaContent}>
 							<View style={style.topContainer}>
 								<Text style={style.fullName}>{fullName}</Text>
-								<Text style={style.callText}>{callText.toUpperCase()}</Text>
+								<Text style={style.callText}>{this.getCallText()}</Text>
 								<View style={style.avatarContainer}>
 									{this.renderPulsatingAnimation()}
 									<Image source={{uri: avatarURL}} style={style.avatarPhoto} />
@@ -160,5 +180,26 @@ export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps
 			cameraOn: newState,
 		});
 		this.props.onCameraToggle(newState);
+	}
+
+	private updateConversationTime = () => {
+		this.setState({
+			currentCallTime: new Date(),
+		});
+	}
+
+	private getCallText = () => {
+		let callText = 'Calling...';
+		if (this.props.callStartTime !== null && this.state.currentCallTime !== null) {
+			const startMoment = this.props.callStartTime.getTime();
+			const momentNow = this.state.currentCallTime.getTime();
+			const callDuration = moment.duration(momentNow - startMoment, 'milliseconds');
+			const seconds = Math.floor(callDuration.asSeconds() % 60)
+				.toString()
+				.padStart(2, '0');
+			const minutes = Math.floor(callDuration.asMinutes()).toString();
+			callText = `${minutes}:${seconds}`;
+		}
+		return callText.toUpperCase();
 	}
 }

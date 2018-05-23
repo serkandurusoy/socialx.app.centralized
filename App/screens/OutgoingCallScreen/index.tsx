@@ -10,7 +10,23 @@ interface IOutgoingCallScreenProps {
 	navigation: NavigationScreenProp<any>;
 }
 
-class OutgoingCallScreen extends Component<IOutgoingCallScreenProps> {
+interface IOutgoingCallScreenState {
+	callStartTime: Date | null;
+}
+
+class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCallScreenState> {
+	public state = {
+		callStartTime: null,
+	};
+
+	public componentDidMount() {
+		setTimeout(() => {
+			this.setState({
+				callStartTime: new Date(),
+			});
+		}, 5000); // simulate call answer in 5 seconds
+	}
+
 	public render() {
 		return (
 			<OutgoingCallComponent
@@ -19,6 +35,7 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps> {
 				onCameraToggle={this.onCameraToggleHandler}
 				onMicrophoneToggle={this.onMicrophoneToggleHandler}
 				onSoundToggle={this.onSoundToggleHandler}
+				callStartTime={this.state.callStartTime}
 			/>
 		);
 	}
