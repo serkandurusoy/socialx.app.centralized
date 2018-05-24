@@ -17,11 +17,3 @@ export const Animations = {
 		},
 	},
 };
-
-export const getAvailableAnimations = () => {
-	const ret: any = {};
-	for (const key of Object.keys(Animations)) {
-		ret[key] = Animations[key];
-	}
-	return ret;
-};
