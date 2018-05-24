@@ -1164,6 +1164,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				9C9E91A12048202800B0BDF8 /* Embed Frameworks */,
 				B863C9D9E953B3B7BF02ECDD /* [CP] Copy Pods Resources */,
+				0F85E5A4A6BA85C34220D401 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1830,6 +1831,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		0F85E5A4A6BA85C34220D401 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SocialxTypeActress/Pods-SocialxTypeActress-frameworks.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-webrtc/ios/WebRTC.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SocialxTypeActress/Pods-SocialxTypeActress-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		16D02E3CA41F51C2349F4E6D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

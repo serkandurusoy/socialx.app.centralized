@@ -165,6 +165,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':WebRTCModule')
     compile project(':react-native-device-info')
     compile project(':react-native-restart')
     compile project(':react-native-spinkit')

@@ -33,6 +33,8 @@ import com.amazonaws.RNAWSCognitoPackage;
 import com.microsoft.appcenter.reactnative.analytics.AppCenterReactNativeAnalyticsPackage;
 import com.microsoft.appcenter.reactnative.appcenter.AppCenterReactNativePackage;
 
+import com.oney.WebRTCModule.WebRTCModulePackage;
+
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -55,6 +57,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new MainReactPackage(),
                 new ReactNativeRestartPackage(),
                 new LottiePackage(),
+                new WebRTCModulePackage(),
                 new UploaderReactPackage(),
                 new TcpSocketsModule(),
                 new ImageResizerPackage(),

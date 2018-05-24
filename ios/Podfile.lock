@@ -23,6 +23,8 @@ PODS:
     - React
   - react-native-spinkit (1.0.2):
     - React
+  - react-native-webrtc (1.58.3):
+    - React
   - React/Core (0.55.4):
     - yoga (= 0.55.4.React)
   - React/fishhook (0.55.4)
@@ -73,6 +75,7 @@ DEPENDENCIES:
   - react-native-fast-image (from `../node_modules/react-native-fast-image`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
+  - react-native-webrtc (from `../node_modules/react-native-webrtc`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
   - React/RCTAnimation (from `../node_modules/react-native`)
@@ -110,6 +113,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-resizer"
   react-native-spinkit:
     :path: "../node_modules/react-native-spinkit"
+  react-native-webrtc:
+    :path: "../node_modules/react-native-webrtc"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNImageCropPicker:
@@ -128,6 +133,7 @@ SPEC CHECKSUMS:
   react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
   react-native-image-resizer: 04a3409e7d4ad646c4468671c69dec490def139c
   react-native-spinkit: c9f5826e1a0bf0da889b3795278eb96ae15c1350
+  react-native-webrtc: 31b6d3f1e3e2ce373aa43fd682b04367250f807d
   RNDeviceInfo: 568c5641057313b4912d08a7742ff0b2f753ed5c
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
   RSKImageCropper: 50d5a3e4160f0309b14d75b89d5ae2f496d56e0d
