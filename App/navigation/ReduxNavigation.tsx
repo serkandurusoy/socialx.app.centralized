@@ -32,6 +32,7 @@ function ReduxNavigation(props: any) {
 		<Root>
 			<AppNavigation />
 			<OfflineOverlay />
+			{/* TODO: @serkan @jake there's no prop visiblePropName on that component! */}
 			<ModalActivityIndicator visiblePropName={'showActivityIndicator'} />
 			<ModalConfirmation visiblePropName={'confirmActive'} />
 		</Root>
