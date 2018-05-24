@@ -1,10 +1,11 @@
 import {AsyncStorage} from 'react-native';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 
 import {StartupActions} from '../../reducers/StartupReducers';
 import {Props, RootContainer} from './container';
 
-const mapDispatchToProps = (dispatch: any): Props => ({
+// TODO: @serkan ask @jake about typing redux actions and state
+const mapDispatchToProps = (dispatch: Dispatch<{type: 'startup'}>): Props => ({
 	startup: () => dispatch(StartupActions.startup()),
 });
 
