@@ -91,11 +91,12 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
 		IncomingCallScreen: {screen: IncomingCallScreen},
-		OutgoingCallScreen: {screen: OutgoingCallScreen},
+		// OutgoingCallScreen: {screen: OutgoingCallScreen},
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;
 	const updatedRouteConfig = {
+		OutgoingCallScreen: {screen: OutgoingCallScreen}, // TODO: delete this when done
 		...screenConfigMap,
 		...modalsConfigMap,
 	};

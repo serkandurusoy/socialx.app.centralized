@@ -44,3 +44,8 @@ export enum CallType {
 	Video = 'video',
 	Voice = 'voice',
 }
+
+export enum CameraMode {
+	Front = 'front',
+	Back = 'back',
+}

@@ -45,6 +45,8 @@
 	<string>Location access is required if you want to share it with your friends</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pick a profile photo from image gallery</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We are using microphone for the video calls</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
