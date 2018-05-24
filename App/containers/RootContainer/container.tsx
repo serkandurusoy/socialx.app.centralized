@@ -17,6 +17,7 @@ Amplify.configure(awsconfig);
 
 export class RootContainer extends Component<Props> {
 	public componentDidMount() {
+		// TODO: @serkan ask @jake why? this action does not even have a reducer!
 		this.props.startup();
 	}
 
