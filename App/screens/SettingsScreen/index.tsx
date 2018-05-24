@@ -83,8 +83,15 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		headerRight: <ScreenHeaderButton iconName={'md-log-out'} onPress={() => SettingsScreen.runLogoutHandler(props)} />,
 	})
 
-	private static runLogoutHandler = (props: ISettingsScreenProps) => {
-		props.navigation.state.params.logoutHandler();
+	private static runLogoutHandler = async (props: ISettingsScreenProps) => {
+		try {
+			await Signout();
+			await AsyncStorage.clear();
+			resetNavigationToRoute('PreAuthScreen', props.navigation);
+		} catch (ex) {
+			//
+			console.log(ex);
+		}
 	}
 
 	public state = {
@@ -96,12 +103,6 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 	};
 
 	private screenRef: any;
-
-	public componentDidMount() {
-		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({logoutHandler: this.performSignOut});
-		});
-	}
 
 	public render() {
 		const {data} = this.props;
@@ -118,17 +119,6 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				ref={(ref) => (this.screenRef = ref)}
 			/>
 		);
-	}
-
-	private performSignOut = async () => {
-		try {
-			await Signout();
-			await AsyncStorage.clear();
-			resetNavigationToRoute('PreAuthScreen', this.props.navigation);
-		} catch (ex) {
-			//
-			console.log(ex);
-		}
 	}
 
 	private handleImageChange = async (updatedAvatarImageBase64: string | null) => {
