@@ -1,4 +1,3 @@
-import moment from 'moment';
 import React, {Component} from 'react';
 import {Animated, Image, ImageRequireSource, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -26,6 +25,7 @@ interface IVoiceCallScreenProps {
 	microphoneIconSource: ImageRequireSource;
 	soundIconSource: ImageRequireSource;
 	cameraIconSource: ImageRequireSource;
+	callText: string;
 }
 
 export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
@@ -43,10 +43,6 @@ export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
 	}
 
 	public render() {
-		const {user} = this.props;
-		const fullName = getUserFullName(user);
-		const avatarURL = getUserAvatar(user);
-
 		return (
 			<View style={{flex: 1}}>
 				<LinearGradient
@@ -55,22 +51,12 @@ export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
 					colors={[Colors.fuchsiaBlue, Colors.pink]}
 					style={style.backgroundView}
 				/>
-				{user && (
-					<SafeAreaView style={style.safeView}>
-						<View style={style.safeAreaContent}>
-							<View style={style.topContainer}>
-								<Text style={style.fullName}>{fullName}</Text>
-								<Text style={style.callText}>{this.getCallText()}</Text>
-								<View style={style.avatarContainer}>
-									{this.renderPulsatingAnimation()}
-									<Image source={{uri: avatarURL}} style={style.avatarPhoto} />
-								</View>
-								{this.renderCallButtons()}
-							</View>
-							{this.renderCancelButton()}
-						</View>
-					</SafeAreaView>
-				)}
+				<SafeAreaView style={style.safeView}>
+					<View style={style.safeAreaContent}>
+						{this.renderTopContainer()}
+						{this.renderCancelButton()}
+					</View>
+				</SafeAreaView>
 			</View>
 		);
 	}
@@ -80,6 +66,26 @@ export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
 			this.pulseAnimation.setValue(0);
 			this.animationRef.stop();
 		}
+	}
+
+	private renderTopContainer = () => {
+		const {user} = this.props;
+		if (user) {
+			const fullName = getUserFullName(user);
+			const avatarURL = getUserAvatar(user);
+			return (
+				<View style={style.topContainer}>
+					<Text style={style.fullName}>{fullName}</Text>
+					<Text style={style.callText}>{this.props.callText}</Text>
+					<View style={style.avatarContainer}>
+						{this.renderPulsatingAnimation()}
+						<Image source={{uri: avatarURL}} style={style.avatarPhoto} />
+					</View>
+					{this.renderCallButtons()}
+				</View>
+			);
+		}
+		return <View style={style.topContainer} />;
 	}
 
 	private renderCallButtons = () => {
@@ -132,20 +138,5 @@ export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
 				<Image source={iconSource} />
 			</TouchableOpacity>
 		);
-	}
-
-	private getCallText = () => {
-		let callText = 'Calling...';
-		if (this.props.callStartTime !== null && this.props.currentCallTime !== null) {
-			const startMoment = this.props.callStartTime.getTime();
-			const momentNow = this.props.currentCallTime.getTime();
-			const callDuration = moment.duration(momentNow - startMoment, 'milliseconds');
-			const seconds = Math.floor(callDuration.asSeconds() % 60)
-				.toString()
-				.padStart(2, '0');
-			const minutes = Math.floor(callDuration.asMinutes()).toString();
-			callText = `${minutes}:${seconds}`;
-		}
-		return callText.toUpperCase();
 	}
 }

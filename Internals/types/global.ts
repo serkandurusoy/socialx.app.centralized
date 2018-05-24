@@ -46,6 +46,7 @@ export enum CallType {
 }
 
 export enum CameraMode {
-	Front = 'front',
-	Back = 'back',
+	// values here set to match 'facingMode' in react-native-webrtc
+	Front = 'user',
+	Back = 'environment',
 }

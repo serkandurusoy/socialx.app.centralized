@@ -11,42 +11,27 @@ interface IOutgoingCallComponentProps {
 	onCallCancel: () => void;
 	onMicrophoneToggle: (on: boolean) => void;
 	onSoundToggle: (on: boolean) => void;
-	onCameraToggle: (on: boolean) => void;
+	onCameraToggle: () => void;
 	onCameraSwitch: () => void;
 	callStartTime: Date | null;
 	mode: CallType;
+	selfVideoStreamSrc: string | null;
+	currentCallTime: Date | null;
+	callText: string;
 }
 
 interface IOutgoingCallComponentState {
 	soundOn: boolean;
 	microphoneOn: boolean;
-	cameraOn: boolean;
-	currentCallTime: Date | null;
 }
 
 export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps, IOutgoingCallComponentState> {
 	public state = {
 		soundOn: true,
 		microphoneOn: true,
-		cameraOn: false,
-		currentCallTime: null,
 	};
 
-	private voiceScreenRef: VoiceCallScreen | null = null;
-
-	public shouldComponentUpdate(
-		nextProps: Readonly<IOutgoingCallComponentProps>,
-		nextState: Readonly<IOutgoingCallComponentState>,
-	): boolean {
-		if (nextProps.callStartTime !== this.props.callStartTime) {
-			if (this.voiceScreenRef) {
-				this.voiceScreenRef.stopAnimation();
-			}
-			this.updateConversationTime();
-			setInterval(this.updateConversationTime, 1000);
-		}
-		return true;
-	}
+	public voiceScreenRef: VoiceCallScreen | null = null;
 
 	public render() {
 		return (
@@ -57,25 +42,24 @@ export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps
 					onCallCancel={this.props.onCallCancel}
 					onMicrophoneToggle={this.onMicrophoneToggleHandler}
 					onSoundToggle={this.onSoundToggleHandler}
-					onCameraToggle={this.onCameraToggleHandler}
+					onCameraToggle={this.props.onCameraToggle}
 					callStartTime={this.props.callStartTime}
-					currentCallTime={this.state.currentCallTime}
+					currentCallTime={this.props.currentCallTime}
 					microphoneIconSource={this.getMicrophoneIconSource()}
 					soundIconSource={this.getSoundIconSource()}
-					cameraIconSource={this.getCameraIconSource()}
+					cameraIconSource={Icons.videoCallCameraOn}
+					callText={this.props.callText}
 				/>
 				{this.props.mode === CallType.Video && (
 					<View style={{height: '100%', position: 'absolute', width: '100%'}}>
 						<VideoCallScreen
-							user={this.props.user}
 							onCameraSwitch={this.props.onCameraSwitch}
 							onCallCancel={this.props.onCallCancel}
 							onMicrophoneToggle={this.onMicrophoneToggleHandler}
-							onCameraToggle={this.onCameraToggleHandler}
-							callStartTime={this.props.callStartTime}
-							currentCallTime={this.state.currentCallTime}
+							onCameraToggle={this.props.onCameraToggle}
 							microphoneIconSource={this.getMicrophoneIconSource()}
-							cameraIconSource={this.getCameraIconSource()}
+							selfVideoStreamSrc={this.props.selfVideoStreamSrc}
+							callText={this.props.callText}
 						/>
 					</View>
 				)}
@@ -105,23 +89,5 @@ export class OutgoingCallComponent extends Component<IOutgoingCallComponentProps
 			soundOn: newState,
 		});
 		this.props.onSoundToggle(newState);
-	}
-
-	private getCameraIconSource = () => {
-		return this.state.cameraOn ? Icons.videoCallCameraOn : Icons.videoCallCameraOff;
-	}
-
-	private onCameraToggleHandler = () => {
-		const newState = !this.state.cameraOn;
-		this.setState({
-			cameraOn: newState,
-		});
-		this.props.onCameraToggle(newState);
-	}
-
-	private updateConversationTime = () => {
-		this.setState({
-			currentCallTime: new Date(),
-		});
 	}
 }

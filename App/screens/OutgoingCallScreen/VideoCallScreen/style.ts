@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, colorWithAlpha, Fonts, Sizes} from 'theme/';
+import {Colors, Fonts, Sizes} from 'theme/';
 
 const BUTTON_SIZE = Sizes.smartHorizontalScale(52);
 
@@ -17,7 +17,7 @@ const style: any = {
 		alignItems: 'center',
 	},
 	topContainer: {
-		alignItems: 'center',
+		alignItems: 'flex-end',
 		flex: 1,
 		width: '100%',
 	},
@@ -37,13 +37,27 @@ const style: any = {
 	},
 	callButtonsContainer: {
 		width: '100%',
-		alignItems: 'flex-end',
-		marginBottom: Sizes.smartVerticalScale(60),
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 	},
 	callButton: {
 		padding: Sizes.smartHorizontalScale(7),
+	},
+	localCameraView: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+	},
+	callText: {
+		...Fonts.centuryGothicBold,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.white,
+		paddingTop: Sizes.smartVerticalScale(10),
+		paddingBottom: Sizes.smartVerticalScale(16),
+		textAlign: 'center',
+	},
+	cameraToggleContainer: {
+		paddingTop: Sizes.smartVerticalScale(30),
 	},
 };
 

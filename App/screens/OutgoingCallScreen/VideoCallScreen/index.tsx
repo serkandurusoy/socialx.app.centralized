@@ -1,38 +1,39 @@
-import moment from 'moment';
 import React, {Component} from 'react';
-import {Image, ImageRequireSource, SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {Image, ImageRequireSource, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import WebRTC from 'react-native-webrtc';
 
 import {Icons} from 'theme';
-import {IUserQuery} from 'types';
 import style from './style';
 
 interface IVideoCallScreenProps {
-	user: IUserQuery;
 	onCameraSwitch: () => void;
 	onCallCancel: () => void;
 	onMicrophoneToggle: () => void;
 	onCameraToggle: () => void;
-	callStartTime: Date | null;
-	currentCallTime: Date | null;
 	microphoneIconSource: ImageRequireSource;
-	cameraIconSource: ImageRequireSource;
+	selfVideoStreamSrc: string | null;
+	callText: string;
 }
 
 export class VideoCallScreen extends Component<IVideoCallScreenProps> {
 	public render() {
-		const {user} = this.props;
-
 		return (
 			<View style={style.container}>
-				{user && (
-					<SafeAreaView style={style.safeView}>
-						<View style={style.safeAreaContent}>
-							<View style={style.topContainer} />
-							{this.renderCallButtons()}
-						</View>
-					</SafeAreaView>
+				{this.props.selfVideoStreamSrc && (
+					<WebRTC.RTCView streamURL={this.props.selfVideoStreamSrc} style={style.localCameraView} />
 				)}
+				<SafeAreaView style={style.safeView}>
+					<View style={style.safeAreaContent}>
+						<View style={style.topContainer}>
+							<View style={style.cameraToggleContainer}>
+								{this.renderCallButton(Icons.videoCallCameraOff, this.props.onCameraToggle)}
+							</View>
+						</View>
+						{this.renderCallButtons()}
+						<Text style={style.callText}>{this.props.callText}</Text>
+					</View>
+				</SafeAreaView>
 			</View>
 		);
 	}

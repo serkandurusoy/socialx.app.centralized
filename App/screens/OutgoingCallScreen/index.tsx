@@ -1,9 +1,24 @@
+import padStart from 'lodash/padStart';
+import moment from 'moment';
 import React, {Component} from 'react';
+import {Platform} from 'react-native';
+import WebRTC from 'react-native-webrtc';
 import {NavigationScreenProp} from 'react-navigation';
 
 import {userHoc} from 'backend/graphql';
+import {OS_TYPES} from 'consts';
 import {CallType, CameraMode, IUserDataResponse} from 'types';
 import {OutgoingCallComponent} from './screen';
+
+const {
+	RTCPeerConnection,
+	RTCIceCandidate,
+	RTCSessionDescription,
+	RTCView,
+	MediaStream,
+	MediaStreamTrack,
+	getUserMedia,
+} = WebRTC;
 
 interface IOutgoingCallScreenProps {
 	data: IUserDataResponse;
@@ -11,29 +26,43 @@ interface IOutgoingCallScreenProps {
 }
 
 interface IOutgoingCallScreenState {
-	callStartTime: Date | null;
 	callMode: CallType;
 	cameraInUse: CameraMode;
+	selfVideoStreamSrc: string | null;
+	callStartTime: Date | null;
+	currentCallTime: Date | null;
 }
 
 class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCallScreenState> {
 	public state = {
-		callStartTime: null,
 		callMode: CallType.Voice,
 		cameraInUse: CameraMode.Front,
+		selfVideoStreamSrc: null,
+		callStartTime: null,
+		currentCallTime: null,
 	};
 
+	private localVideoStream: any;
+	private screenComponentRef: OutgoingCallComponent | null = null;
+
 	public componentDidMount() {
+		this.getLocalStream(this.state.cameraInUse, (stream: any) => {
+			this.setState({selfVideoStreamSrc: stream.toURL()});
+		});
 		setTimeout(() => {
+			this.stopDialingAnimation();
 			this.setState({
 				callStartTime: new Date(),
+				currentCallTime: new Date(),
 			});
+			setInterval(this.updateConversationTime, 1000);
 		}, 5000); // simulate call answer in 5 seconds
 	}
 
 	public render() {
 		return (
 			<OutgoingCallComponent
+				ref={(ref) => (this.screenComponentRef = ref)}
 				user={this.props.data.user}
 				onCallCancel={this.onCallCancelHandler}
 				onCameraToggle={this.onCameraToggleHandler}
@@ -41,8 +70,11 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCa
 				onMicrophoneToggle={this.onMicrophoneToggleHandler}
 				onSoundToggle={this.onSoundToggleHandler}
 				callStartTime={this.state.callStartTime}
-				// mode={this.state.callMode}
-				mode={CallType.Video}
+				currentCallTime={this.state.currentCallTime}
+				selfVideoStreamSrc={this.state.selfVideoStreamSrc}
+				callText={this.getCallText()}
+				mode={this.state.callMode}
+				// mode={CallType.Video}
 			/>
 		);
 	}
@@ -52,10 +84,14 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCa
 		this.props.navigation.goBack();
 	}
 
-	private onCameraToggleHandler = (on: boolean) => {
+	private onCameraToggleHandler = () => {
 		// TODO: other stuff to switch from voice to video call and back
+		if (this.localVideoStream) {
+			this.localVideoStream.release();
+			this.localVideoStream = null;
+		}
 		this.setState({
-			callMode: on ? CallType.Video : CallType.Voice,
+			callMode: this.state.callMode === CallType.Voice ? CallType.Video : CallType.Voice,
 		});
 	}
 
@@ -69,10 +105,80 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCa
 
 	private onCameraSwitchHandler = () => {
 		const newCameraInUse = this.state.cameraInUse === CameraMode.Front ? CameraMode.Back : CameraMode.Front;
-		console.log('TODO: onCameraSwitchHandler', newCameraInUse);
-		this.setState({
-			cameraInUse: newCameraInUse,
+		this.getLocalStream(newCameraInUse, (stream: any) => {
+			this.setState({
+				selfVideoStreamSrc: stream.toURL(),
+				cameraInUse: newCameraInUse,
+			});
 		});
+	}
+
+	private async getLocalStream(cameraInUse: CameraMode, callback: any) {
+		const isFront = cameraInUse === CameraMode.Front;
+		let videoSourceId;
+		// on android, you don't have to specify sourceId manually, just use facingMode
+		if (Platform.OS === OS_TYPES.IOS) {
+			const sourceInfos = await MediaStreamTrack.getSources();
+			console.log('sourceInfos: ', sourceInfos);
+
+			for (let i = 0; i < sourceInfos.length; i++) {
+				const sourceInfo = sourceInfos[i];
+				if (sourceInfo.kind === 'video' && sourceInfo.facing === (isFront ? 'front' : 'back')) {
+					videoSourceId = sourceInfo.id;
+				}
+			}
+		}
+		console.log('getUserMedia START');
+		getUserMedia(
+			{
+				audio: true,
+				video: {
+					mandatory: {
+						minWidth: 1280,
+						minHeight: 720,
+						minFrameRate: 30,
+					},
+					facingMode: cameraInUse,
+					optional: videoSourceId ? [{sourceId: videoSourceId}] : [],
+				},
+			},
+			(stream: any) => {
+				console.log('getUserMedia success', stream);
+				if (this.localVideoStream) {
+					this.localVideoStream.release();
+				}
+				this.localVideoStream = stream;
+				callback(stream);
+			},
+			(error: any) => {
+				console.log('getUserMedia error', error);
+			},
+		);
+	}
+
+	private updateConversationTime = () => {
+		this.setState({
+			currentCallTime: new Date(),
+		});
+	}
+
+	private getCallText = () => {
+		let callText = 'Calling...';
+		if (this.state.callStartTime !== null && this.state.currentCallTime !== null) {
+			const startMoment = this.state.callStartTime.getTime();
+			const momentNow = this.state.currentCallTime.getTime();
+			const callDuration = moment.duration(momentNow - startMoment, 'milliseconds');
+			const seconds = padStart(Math.floor(callDuration.asSeconds() % 60).toString(), 2, '0');
+			const minutes = Math.floor(callDuration.asMinutes()).toString();
+			callText = `${minutes}:${seconds}`;
+		}
+		return callText.toUpperCase();
+	}
+
+	private stopDialingAnimation = () => {
+		if (this.screenComponentRef && this.screenComponentRef.voiceScreenRef) {
+			this.screenComponentRef.voiceScreenRef.stopAnimation();
+		}
 	}
 }
 
