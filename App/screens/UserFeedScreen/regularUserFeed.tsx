@@ -25,14 +25,14 @@ const navigationOptions = (props: any) => {
 		// 	<ScreenHeaderButton onPress={() => navigateToMessagingScreen(props)} iconSource={Icons.messagingIcon} />
 		// ),
 		headerRight: null,
-		headerLeft: (
-			<ScreenHeaderButton
-				iconName={'md-flame'}
-				onPress={() => {
-					/* navigateToHotPosts(props) */
-				}}
-			/>
-		),
+		// headerLeft: (
+		// 	<ScreenHeaderButton
+		// 		iconName={'md-flame'}
+		// 		onPress={() => {
+		// 			/* navigateToHotPosts(props) */
+		// 		}}
+		// 	/>
+		// ),
 	};
 };
 
