@@ -18,17 +18,18 @@ interface IVideoCallScreenProps {
 
 export class VideoCallScreen extends Component<IVideoCallScreenProps> {
 	public render() {
+		// TODO: replace dummy full screen image with remote video stream
+		const sampleImage = 'https://placeimg.com/720/1280/people';
 		return (
 			<View style={style.container}>
-				{this.props.selfVideoStreamSrc && (
-					<WebRTC.RTCView streamURL={this.props.selfVideoStreamSrc} style={style.localCameraView} />
-				)}
+				<Image source={{uri: sampleImage}} resizeMode={'cover'} style={style.remoteVideoStream} />
 				<SafeAreaView style={style.safeView}>
 					<View style={style.safeAreaContent}>
 						<View style={style.topContainer}>
 							<View style={style.cameraToggleContainer}>
 								{this.renderCallButton(Icons.videoCallCameraOff, this.props.onCameraToggle)}
 							</View>
+							{this.renderOwnCameraStream()}
 						</View>
 						{this.renderCallButtons()}
 						<Text style={style.callText}>{this.props.callText}</Text>
@@ -61,6 +62,18 @@ export class VideoCallScreen extends Component<IVideoCallScreenProps> {
 			<TouchableOpacity style={style.callButton} onPress={handler}>
 				<Image source={iconSource} />
 			</TouchableOpacity>
+		);
+	}
+
+	private renderOwnCameraStream = () => {
+		return (
+			<View style={style.ownCameraStreamContainer}>
+				{this.props.selfVideoStreamSrc && (
+					<View style={style.ownCameraRadius}>
+						<WebRTC.RTCView streamURL={this.props.selfVideoStreamSrc} style={style.localCameraView} />
+					</View>
+				)}
+			</View>
 		);
 	}
 }

@@ -6,7 +6,7 @@ import WebRTC from 'react-native-webrtc';
 import {NavigationScreenProp} from 'react-navigation';
 
 import {userHoc} from 'backend/graphql';
-import {OS_TYPES} from 'consts';
+import {LOCAL_VIDEO_STREAM, OS_TYPES} from 'consts';
 import {CallType, CameraMode, IUserDataResponse} from 'types';
 import {OutgoingCallComponent} from './screen';
 
@@ -46,9 +46,6 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCa
 	private screenComponentRef: OutgoingCallComponent | null = null;
 
 	public componentDidMount() {
-		this.getLocalStream(this.state.cameraInUse, (stream: any) => {
-			this.setState({selfVideoStreamSrc: stream.toURL()});
-		});
 		setTimeout(() => {
 			this.stopDialingAnimation();
 			this.setState({
@@ -86,21 +83,33 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCa
 
 	private onCameraToggleHandler = () => {
 		// TODO: other stuff to switch from voice to video call and back
-		if (this.localVideoStream) {
-			this.localVideoStream.release();
-			this.localVideoStream = null;
+		const newCallMode = this.state.callMode === CallType.Voice ? CallType.Video : CallType.Voice;
+		if (newCallMode === CallType.Voice) {
+			// canceling video call going to voice only mode
+			if (this.localVideoStream) {
+				this.localVideoStream.release();
+				this.localVideoStream = null;
+			}
+		} else if (newCallMode === CallType.Video) {
+			// entering video call mode
+			this.getLocalStream(CameraMode.Front, (stream: any) => {
+				this.setState({
+					selfVideoStreamSrc: stream.toURL(),
+					cameraInUse: CameraMode.Front,
+				});
+			});
 		}
 		this.setState({
-			callMode: this.state.callMode === CallType.Voice ? CallType.Video : CallType.Voice,
+			callMode: newCallMode,
 		});
 	}
 
 	private onMicrophoneToggleHandler = (on: boolean) => {
-		console.log('TODO: onMicrophoneToggleHandler ' + on);
+		// console.log('TODO: onMicrophoneToggleHandler ' + on);
 	}
 
 	private onSoundToggleHandler = (on: boolean) => {
-		console.log('TODO: onSoundToggleHandler ' + on);
+		// console.log('TODO: onSoundToggleHandler ' + on);
 	}
 
 	private onCameraSwitchHandler = () => {
@@ -118,32 +127,30 @@ class OutgoingCallScreen extends Component<IOutgoingCallScreenProps, IOutgoingCa
 		let videoSourceId;
 		// on android, you don't have to specify sourceId manually, just use facingMode
 		if (Platform.OS === OS_TYPES.IOS) {
-			const sourceInfos = await MediaStreamTrack.getSources();
-			console.log('sourceInfos: ', sourceInfos);
-
-			for (let i = 0; i < sourceInfos.length; i++) {
-				const sourceInfo = sourceInfos[i];
+			const streamTrackSources = await MediaStreamTrack.getSources();
+			for (let i = 0; i < streamTrackSources.length; i++) {
+				const sourceInfo = streamTrackSources[i];
 				if (sourceInfo.kind === 'video' && sourceInfo.facing === (isFront ? 'front' : 'back')) {
 					videoSourceId = sourceInfo.id;
 				}
 			}
 		}
-		console.log('getUserMedia START');
+		// console.log('getUserMedia START');
 		getUserMedia(
 			{
 				audio: true,
 				video: {
 					mandatory: {
-						minWidth: 1280,
-						minHeight: 720,
-						minFrameRate: 30,
+						minWidth: LOCAL_VIDEO_STREAM.width,
+						minHeight: LOCAL_VIDEO_STREAM.height,
+						minFrameRate: LOCAL_VIDEO_STREAM.frameRate,
 					},
 					facingMode: cameraInUse,
 					optional: videoSourceId ? [{sourceId: videoSourceId}] : [],
 				},
 			},
 			(stream: any) => {
-				console.log('getUserMedia success', stream);
+				// console.log('getUserMedia success', stream);
 				if (this.localVideoStream) {
 					this.localVideoStream.release();
 				}
