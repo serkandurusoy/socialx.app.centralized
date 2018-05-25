@@ -1,6 +1,6 @@
 import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
-import {Platform, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Platform, TextInput, TouchableOpacity, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
@@ -44,6 +44,7 @@ export class CommentTextInput extends Component<ICommentTextInputProps> {
 					autoCorrect={false}
 					underlineColorAndroid={Colors.transparent}
 					autoCapitalize='none'
+					value={this.state.commentText}
 				/>
 				{this.renderSendButton()}
 			</View>
@@ -77,6 +78,5 @@ export class CommentTextInput extends Component<ICommentTextInputProps> {
 			showSendButton: false,
 		});
 		this.textInput.blur();
-		this.textInput.clear(); // not working on iOS?! ..very strange
 	}
 }
