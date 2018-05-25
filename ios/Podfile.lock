@@ -53,7 +53,7 @@ PODS:
     - QBImagePickerController
     - React/Core
     - RSKImageCropper
-  - RSKImageCropper (2.0.0)
+  - RSKImageCropper (2.0.1)
   - SDWebImage/Core (4.3.3)
   - SDWebImage/GIF (4.3.3):
     - FLAnimatedImage (~> 1.0)
@@ -118,7 +118,7 @@ SPEC CHECKSUMS:
   react-native-spinkit: c9f5826e1a0bf0da889b3795278eb96ae15c1350
   RNDeviceInfo: 568c5641057313b4912d08a7742ff0b2f753ed5c
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
-  RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
+  RSKImageCropper: 50d5a3e4160f0309b14d75b89d5ae2f496d56e0d
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
