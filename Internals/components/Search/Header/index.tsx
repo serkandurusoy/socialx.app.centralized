@@ -32,6 +32,7 @@ export class SearchHeader extends Component<ISearchHeaderProps, any> {
 					borderColor={Colors.transparent}
 					iconColor={Colors.cadetBlue}
 					returnKeyType={TRKeyboardKeys.done}
+					autoCorrect={true}
 				/>
 			</View>
 		);

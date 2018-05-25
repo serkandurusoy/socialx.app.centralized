@@ -45,6 +45,7 @@ class ModalTagFriendsComponent extends Component<IModalTagFriendsProps, any> {
 							<View style={style.inputContainer}>
 								<SXTextInput
 									autoFocus={true}
+									autoCorrect={true}
 									onChangeText={this.props.onSearchUpdated}
 									placeholder={'Search'}
 									icon={'search'}
