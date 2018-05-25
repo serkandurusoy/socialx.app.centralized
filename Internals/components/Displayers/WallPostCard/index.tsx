@@ -245,42 +245,51 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		const title = this.props.title ? this.props.title : this.props.text;
 		// if no title present use the text part as title!
 		if (title) {
-			const numberOfLines = title.split('\n').length;
+			if (Platform.OS === OS_TYPES.Android) {
+				return (
+					<View style={style.postTitlePadding}>
+						<Text style={style.postTitle}>{title}</Text>
+					</View>
+				);
+			} else {
+				const numberOfLines = title.split('\n').length;
 
-			const hasMore =
-				(title.length > DESCRIPTION_TEXT_LENGTH_SHORT || numberOfLines > TITLE_MAX_LINES) &&
-				!this.state.fullTitleVisible &&
-				Platform.OS === OS_TYPES.IOS;
+				const hasMore =
+					(title.length > DESCRIPTION_TEXT_LENGTH_SHORT || numberOfLines > TITLE_MAX_LINES) &&
+					!this.state.fullTitleVisible;
 
-			let textToRender = title;
+				let textToRender = title;
 
-			if (hasMore) {
-				if (numberOfLines > TITLE_MAX_LINES) {
-					textToRender = textToRender
-						.split('\n')
-						.slice(0, TITLE_MAX_LINES)
-						.join('\n');
+				if (hasMore) {
+					if (numberOfLines > TITLE_MAX_LINES) {
+						textToRender = textToRender
+							.split('\n')
+							.slice(0, TITLE_MAX_LINES)
+							.join('\n');
+					}
+
+					if (title.length > DESCRIPTION_TEXT_LENGTH_SHORT) {
+						textToRender = textToRender.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT);
+					}
+
+					textToRender = textToRender + '...';
 				}
 
-				if (title.length > DESCRIPTION_TEXT_LENGTH_SHORT) {
-					textToRender = textToRender.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT);
-				}
+				const showMoreButton = hasMore ? (
+					<TouchableOpacity onPress={this.toggleShowFullTitle}>
+						<Text style={style.showMoreText}>{'More'}</Text>
+					</TouchableOpacity>
+				) : null;
 
-				textToRender = textToRender + '...';
+				return (
+					<View style={style.postTitlePadding}>
+						<Text style={style.postTitle}>
+							{textToRender}
+							{showMoreButton}
+						</Text>
+					</View>
+				);
 			}
-
-			const showMoreButton = hasMore ? (
-				<TouchableOpacity onPress={this.toggleShowFullTitle}>
-					<Text style={style.showMoreText}>{'More'}</Text>
-				</TouchableOpacity>
-			) : null;
-
-			return (
-				<Text style={style.postTitle} numberOfLines={numberOfLines}>
-					{textToRender}
-					{showMoreButton}
-				</Text>
-			);
 		}
 		return null;
 	}
