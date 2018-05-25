@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import {Colors} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import {ForgotPasswordConfirm} from 'utilities';
 
