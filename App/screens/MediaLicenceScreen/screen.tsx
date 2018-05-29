@@ -220,6 +220,7 @@ class MediaLicenceScreenComponent extends Component<
 		const splitSizes: IMediaSize[][] = [];
 		let sectionData: IMediaSize[] = [];
 
+		// TODO: @Serkan ask @Jake what???
 		orderedSizes.forEach((size) => {
 			if (currentSection !== size.section) {
 				if (sectionData.length > 0) {
@@ -393,6 +394,7 @@ class MediaLicenceScreenComponent extends Component<
 		const visibleSections = [...this.state.visibleSections];
 		const updatedState: Partial<IMediaLicenceScreenComponentState> = {};
 		const foundIndex = this.resolutionSectionIsActive(mediaResSection);
+		// TODO: @Serkan ask @Jake what??? and don't use splice in a react project! it directly mutates the original array!
 		if (foundIndex > -1) {
 			visibleSections.splice(foundIndex, 1);
 			const updatedSelectedItems: IMediaSize[] = [];
@@ -427,6 +429,7 @@ class MediaLicenceScreenComponent extends Component<
 		const foundIndex = this.mediaElementIsSelected(mediaElement);
 		const selectedItems = [...this.state.selectedItems];
 		if (foundIndex > -1) {
+			// TODO: @Serkan ask @Jake what??? and don't use splice in a react project! it directly mutates the original array!
 			selectedItems.splice(foundIndex, 1);
 		} else {
 			selectedItems.push(mediaElement);
@@ -441,10 +444,7 @@ class MediaLicenceScreenComponent extends Component<
 	private showDownloadModal = () => {
 		const {selectedItems} = this.state;
 		if (selectedItems.length > 0) {
-			let totalPrice = 0;
-			selectedItems.forEach((item: IMediaSize) => {
-				totalPrice += item.price;
-			});
+			const totalPrice = selectedItems.reduce((total, item) => total + item.price, 0);
 			this.setState({
 				modalVisible: true,
 				amountToSend: totalPrice,

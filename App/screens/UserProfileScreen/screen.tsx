@@ -206,7 +206,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 		const {gridMediaProvider} = this.state;
 		const loadedMedia = gridMediaProvider.getAllData();
 		const newMedia = this.props.loadMorePhotosHandler();
-		const allMedia = loadedMedia.concat(newMedia);
+		const allMedia = [...loadedMedia, ...newMedia];
 		this.setState({
 			gridMediaProvider: this.state.gridMediaProvider.cloneWithRows(allMedia),
 		});

@@ -54,21 +54,16 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 		);
 	}
 
-	private renderComments = () => {
-		const ret: any = [];
-		this.props.comments.forEach((comment, index) => {
-			ret.push(
-				<CommentCard
-					key={index}
-					comment={comment}
-					onCommentLike={() => this.props.onCommentLike(comment)}
-					onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
-					onCommentDelete={() => this.props.onCommentDelete(comment)}
-				/>,
-			);
-		});
-		return ret;
-	}
+	private renderComments = () =>
+		this.props.comments.map((comment, index) => (
+			<CommentCard
+				key={index}
+				comment={comment}
+				onCommentLike={() => this.props.onCommentLike(comment)}
+				onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
+				onCommentDelete={() => this.props.onCommentDelete(comment)}
+			/>
+		));
 
 	private renderNoComments = () => {
 		if (this.props.noComments) {
@@ -80,7 +75,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			);
 		}
 		return null;
-	}
+	};
 }
 
 const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent);

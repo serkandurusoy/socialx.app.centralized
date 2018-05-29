@@ -59,7 +59,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		title: 'MESSAGE',
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
 		headerLeft: <View />,
-	})
+	});
 
 	public state = {
 		marginBottom: DEFAULT_MARGIN_BOTTOM,
@@ -119,7 +119,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		this.setState({
 			marginBottom: event.endCoordinates.height + DEFAULT_MARGIN_BOTTOM / 2,
 		});
-	}
+	};
 
 	private addMediaHandler = () => {
 		ActionSheet.show(
@@ -139,7 +139,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				}
 			},
 		);
-	}
+	};
 
 	// TODO: show the user that he has excceded the maximum file size
 	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
@@ -154,7 +154,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private takeCameraPhoto = async () => {
 		try {
@@ -167,7 +167,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private addNewMediaObject = async (mediaObject: PickerImage) => {
 		const {mediaObjects} = this.state;
@@ -217,7 +217,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				}
 			}
 			this.setState({
-				mediaObjects: mediaObjects.concat([localMediaObject]),
+				mediaObjects: [...mediaObjects, localMediaObject],
 				isUploading: false,
 			});
 		};
@@ -230,7 +230,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 			};
 
 			this.setState({
-				mediaObjects: mediaObjects.concat([localMediaObject]),
+				mediaObjects: [...mediaObjects, localMediaObject],
 				isUploading: false,
 			});
 		};
@@ -258,23 +258,22 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
-	private renderPostMediaObjects = () => {
-		const ret: any = [];
-		this.state.mediaObjects.forEach((mediaObject: MediaObject, index) => {
-			ret.push(<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />);
-		});
-		if (this.state.isUploading) {
-			ret.push(
-				<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
-					<ActivityIndicator size={'large'} color={Colors.pink} />
-					<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
-				</View>,
-			);
-		}
-		return ret;
-	}
+	private renderPostMediaObjects = () => [
+		...this.state.mediaObjects.map((mediaObject: MediaObject, index) => (
+			<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />
+		)),
+		...(this.state.isUploading
+			? [
+					(
+						<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
+							<ActivityIndicator size={'large'} color={Colors.pink} />
+							<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
+						</View>
+					),
+			] : []),
+	]
 
 	private sendPostHandler = () => {
 		const escapedText = this.state.postText.replace(/\n/g, '\\n');
@@ -284,9 +283,9 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		};
 		this.props.navigation.state.params.postCreate(wallPostData);
 		this.props.navigation.goBack(null);
-	}
+	};
 
 	private updatePostText = (text: string) => {
 		this.setState({postText: text});
-	}
+	};
 }

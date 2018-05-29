@@ -65,6 +65,7 @@ export default class MyEventsScreenComponent extends Component<
 
 	private static getMarkedDates(events: IEventData[]) {
 		const ret: any = {};
+		// TODO: @Serkan ask @Jake what???
 		events.forEach((event) => {
 			const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
 			const markedDate = ret.hasOwnProperty(dateKey) ? ret[dateKey] : {dots: []};
@@ -192,6 +193,7 @@ export default class MyEventsScreenComponent extends Component<
 
 	private getAgendaItems = (events: IEventData[], currentDate: Date) => {
 		const ret: any = {};
+		// TODO: @Serkan ask @Jake what???
 		events.forEach((event) => {
 			const dateKey = moment(event.startDate).format(AGENDA_ITEM_KEY_FORMAT);
 			const dayEvents: IEventData[] = ret.hasOwnProperty(dateKey) ? ret[dateKey] : [];

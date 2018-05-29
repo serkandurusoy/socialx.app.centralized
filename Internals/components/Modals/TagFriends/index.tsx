@@ -62,7 +62,16 @@ class ModalTagFriendsComponent extends Component<IModalTagFriendsProps, any> {
 							alwaysBounceVertical={false}
 							keyboardShouldPersistTaps={'handled'}
 						>
-							{this.renderSearchResults()}
+							{
+								this.props.searchResults.map((searchResult: FriendsSearchResult, index: number) => (
+									<GroupCreateSearchResultEntry
+										key={index}
+										{...searchResult}
+										selected={this.props.selectedUsers.indexOf(searchResult) > -1}
+										addHandler={() => this.props.selectTagUserInModal(searchResult)}
+									/>
+								))
+							}
 						</ScrollView>
 						<View style={style.buttonsContainer}>
 							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.props.cancelHandler}>
@@ -78,6 +87,7 @@ class ModalTagFriendsComponent extends Component<IModalTagFriendsProps, any> {
 		);
 	}
 
+	// todo: @serkan @jake this looks like it is very similar to invite people component
 	private getResizableStyles = () => {
 		const ret = [style.keyboardView];
 		if (Platform.OS === OS_TYPES.IOS) {
@@ -86,21 +96,6 @@ class ModalTagFriendsComponent extends Component<IModalTagFriendsProps, any> {
 		return ret;
 	}
 
-	private renderSearchResults = () => {
-		const ret: any = [];
-		this.props.searchResults.forEach((searchResult: FriendsSearchResult, index: number) => {
-			const isSelected = this.props.selectedUsers.indexOf(searchResult) > -1;
-			ret.push(
-				<GroupCreateSearchResultEntry
-					key={index}
-					{...searchResult}
-					selected={isSelected}
-					addHandler={() => this.props.selectTagUserInModal(searchResult)}
-				/>,
-			);
-		});
-		return ret;
-	}
 }
 
 export const ModalTagFriends = withManagedTransitions(withResizeOnKeyboardShow(ModalTagFriendsComponent));

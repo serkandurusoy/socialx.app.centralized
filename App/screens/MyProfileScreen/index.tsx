@@ -73,15 +73,9 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const {user} = data;
 		const {posts, avatar} = user;
 
-		let userImages = 0;
-		if (posts) {
-			posts.forEach((x) => {
-				userImages += x.Media ? x.Media.length : 0;
-			});
-		}
+		const userImages = (posts || []).reduce((count, post) => count + (post.Media ? post.Media.length : 0), 0);
 
-		const userAvatar = avatar
-			? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
+		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
@@ -127,7 +121,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private preloadAllMediaObjects = () => {
 		const {data} = this.props;
@@ -150,7 +144,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		return Imgs;
-	}
+	};
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

@@ -241,7 +241,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		if (this.state.messages.length < TOTAL_NUMBER_OF_MESSAGES) {
 			this.setState({isLoadingEarlier: true});
 			setTimeout(() => {
-				const newMessages = this.state.messages.concat(getOnePageOfMessages());
+				const newMessages = [...this.state.messages, ...getOnePageOfMessages()];
 				this.setState({
 					isLoadingEarlier: false,
 					messages: newMessages,

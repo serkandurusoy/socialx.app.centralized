@@ -124,7 +124,7 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 		setTimeout(() => {
 			this.scrollRef.scrollToEnd();
 		}, 100); // this should not cause problems, it just does an animation!
-	}
+	};
 
 	private getMaxSeriesValue = (series: IDailyBarChartData[] | IMonthlyBarChartData[]) => {
 		let ret = 0;
@@ -134,7 +134,7 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 			}
 		}
 		return ret;
-	}
+	};
 
 	private renderBarChartDailyItem = (data: {item: IDailyBarChartData; index: number}) => {
 		const monthDate = moment(data.item.date).format('Do');
@@ -157,7 +157,7 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 				</View>
 			</View>
 		);
-	}
+	};
 
 	private renderBarChartMonthlyItem = (data: {item: IMonthlyBarChartData; index: number}) => {
 		const barChartColumnStyles = [style.barChartColumn];
@@ -174,7 +174,7 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 				<Text style={style.barCharItemLabel}>{data.item.monthShort}</Text>
 			</View>
 		);
-	}
+	};
 
 	private getDailyChartItemLayout = (data: any, index: number) => {
 		return {
@@ -182,30 +182,24 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 			offset: DAY_CHART_ITEM_WIDTH * index,
 			index,
 		};
-	}
+	};
 
-	private renderChartList = () => {
-		const ret: any[] = [];
-		this.props.pieChartData.forEach((pieChartItem, index) => {
-			const isLastItem = index === this.props.pieChartData.length - 1;
-			ret.push(
-				<ChartListDataRow
-					key={index}
-					{...pieChartItem}
-					isSelected={this.state.selectedPieChartSection === pieChartItem.badge}
-					selectHandler={() => this.updateSelectedListRow(pieChartItem.badge)}
-					hasBorder={!isLastItem}
-				/>,
-			);
-		});
-		return ret;
-	}
+	private renderChartList = () =>
+		this.props.pieChartData.map((pieChartItem, index) => (
+			<ChartListDataRow
+				key={index}
+				{...pieChartItem}
+				isSelected={this.state.selectedPieChartSection === pieChartItem.badge}
+				selectHandler={() => this.updateSelectedListRow(pieChartItem.badge)}
+				hasBorder={index !== this.props.pieChartData.length - 1}
+			/>
+		));
 
 	private updateSelectedListRow = (newRow: PieChartSections) => {
 		this.setState({
 			selectedPieChartSection: newRow,
 		});
-	}
+	};
 
 	private tabUpdatedHandler = (newTab: RewardsTabView) => {
 		if (newTab !== this.state.selectedView) {
@@ -214,7 +208,7 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 			});
 			this.runSlideTransition(newTab);
 		}
-	}
+	};
 
 	private runSlideTransition = (newTab: RewardsTabView) => {
 		const slideValue = newTab === RewardsTabView.MONTHLY ? -this.slideWidth : 0;
@@ -225,9 +219,9 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 			isInteraction: false,
 			useNativeDriver: true,
 		}).start();
-	}
+	};
 
 	private dailyChartContainerOnLayout = (event: LayoutEvent) => {
 		this.slideWidth = event.nativeEvent.layout.width;
-	}
+	};
 }

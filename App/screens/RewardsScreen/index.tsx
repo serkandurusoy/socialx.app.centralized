@@ -116,18 +116,13 @@ export class RewardsScreen extends Component<RewardsScreenProps, IRewardsScreenS
 		);
 	}
 
-	private getPieChartData = () => {
-		const ret: ChartListDataItem[] = [];
-		ChartListData.forEach((listItem) => {
-			ret.push({
-				...listItem,
-				percentValue: PIE_CHART_VALUES[listItem.badge],
-			});
-		});
-		return ret;
-	}
+	private getPieChartData = () =>
+		ChartListData.map((listItem) => ({
+			...listItem,
+			percentValue: PIE_CHART_VALUES[listItem.badge],
+		}));
 
 	private backToWalletHandler = () => {
 		alert('backToWalletHandler');
-	}
+	};
 }

@@ -53,6 +53,7 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 				isHidden: true,
 				marginBottom: 0,
 			});
+			// todo: @serkan @jake what???
 			this.onHideHandlers.forEach((handler) => {
 				handler();
 			});

@@ -37,7 +37,7 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 				animationOut={'slideOutUp'}
 				style={style.container}
 			>
-				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
+				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType="dark" blurAmount={2} />
 				<View style={this.getResizableStyles()}>
 					<View style={style.boxContainer}>
 						<View style={style.pinkContainer}>
@@ -62,7 +62,16 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 							alwaysBounceVertical={false}
 							keyboardShouldPersistTaps={'handled'}
 						>
-							{this.renderSearchResults()}
+							{
+								this.props.searchResults.map((searchResult: SearchResultCreateGroup, index: number) => (
+									<GroupCreateSearchResultEntry
+										key={index}
+										{...searchResult}
+										selected={this.props.selectedUsers.indexOf(searchResult.id) > -1}
+										addHandler={() => this.props.selectNewUserForGroup(searchResult.id)}
+									/>
+								))
+							}
 						</ScrollView>
 						<View style={style.buttonsContainer}>
 							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.props.cancelHandler}>
@@ -83,22 +92,6 @@ class ModalInvitePeopleComponent extends Component<IModalInvitePeopleProps, any>
 		if (Platform.OS === OS_TYPES.IOS) {
 			ret.push({marginBottom: this.props.marginBottom});
 		}
-		return ret;
-	}
-
-	private renderSearchResults = () => {
-		const ret: any = [];
-		this.props.searchResults.forEach((searchResult: SearchResultCreateGroup, index: number) => {
-			const isSelected = this.props.selectedUsers.indexOf(searchResult.id) > -1;
-			ret.push(
-				<GroupCreateSearchResultEntry
-					key={index}
-					{...searchResult}
-					selected={isSelected}
-					addHandler={() => this.props.selectNewUserForGroup(searchResult.id)}
-				/>,
-			);
-		});
 		return ret;
 	}
 }

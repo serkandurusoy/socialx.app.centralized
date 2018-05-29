@@ -163,7 +163,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	}
 
 	private selectNewUserForGroupHandler = (userId: string) => {
-		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
+		this.setState({selectedUsers: [...this.state.selectedUsers, userId]});
 	}
 
 	private toggleGroupInfoModal = (prepareNext = false) => {

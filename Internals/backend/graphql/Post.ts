@@ -160,7 +160,7 @@ export const getPublicPostsHoc = (comp: any) =>
 							const newPosts = {
 								getPublicPosts: {
 									nextToken: newNext,
-									Items: newNext ? previousItems.concat(newItems) : previousItems,
+									Items: newNext ? [...previousItems, ...newItems] : previousItems,
 									__typename: 'PaginatedPosts',
 								},
 							};

@@ -66,6 +66,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private inputRefs: any = {};
 	private countryList: string[] = [];
 
+	// TODO: @serkan @jake let's simplify this and eliminate needless reinitialization with all countries like this
 	constructor(props: ISignUpScreenProps) {
 		super(props);
 		const deviceCountry = DeviceInfo.getDeviceCountry();

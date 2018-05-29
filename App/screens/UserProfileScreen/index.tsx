@@ -91,17 +91,15 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				variables: {userId},
 				fetchPolicy: 'network-only',
 			});
-			const getUser = userProfileRes.data.getUser;
+			const { getUser } = userProfileRes.data;
 
+			// TODO: @serkan @jake this is unsafe!
 			const userPostsRes = await client.query({query: getUserPostsQ, variables: {userId}, fetchPolicy: 'network-only'});
 			const userPosts = userPostsRes.data.getPostsOwner.Items;
 
 			const mediaObjs = this.preloadAllMediaObjects(userPosts);
 
-			let numOfLikes = 0;
-			getUser.posts.forEach((post: any) => {
-				numOfLikes += post.likes.length;
-			});
+			const numOfLikes = getUser.posts.reduce((total: number, post: any) => total + post.likes.length, 0);
 
 			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
 			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);

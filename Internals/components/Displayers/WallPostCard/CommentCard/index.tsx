@@ -81,6 +81,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 		);
 	}
 
+	// todo @serkan @jake these should all be separate components
 	private renderReply = (reply: IWallPostCommentReply, index: number) => {
 		return (
 			<TouchableOpacity style={style.replyEntry} key={index} onPress={() => this.props.onCommentReply(false)}>
@@ -95,6 +96,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 		);
 	}
 
+	// todo @serkan @jake these should all be separate components
 	private renderReplies = () => {
 		if (!this.props.isReply) {
 			const replies = (this.props.comment as IWallPostComment).replies;
@@ -109,16 +111,13 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 					</View>
 				);
 			} else if (replies.length > 0) {
-				const repliesToRender: any = [];
-				replies.forEach((reply, index) => {
-					repliesToRender.push(this.renderReply(reply, index));
-				});
-				return <View>{repliesToRender}</View>;
+				return <View>{replies.map((reply, index) => this.renderReply(reply, index))}</View>;
 			}
 		}
 		return null;
 	}
 
+	// todo @serkan @jake these should all be separate components
 	private renderLikes = () => {
 		if (this.state.numberOfLikes > 0) {
 			return (
@@ -137,6 +136,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 		return null;
 	}
 
+	// todo @serkan @jake these should all be separate components
 	private renderReplyButton = () => {
 		if (!this.props.isReply) {
 			return (

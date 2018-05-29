@@ -136,6 +136,9 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 	}
 
 	private digitUpdatedHandler = (index: number, value: string) => {
+		// TODO @serkan @jake use of slice is generally confusing, prefer filter and also, here, why? are you simply
+		// trying to get a shallow copy? but then, you are mutating the state by assigning new value to that reference!
+		// let's refactor this together to achieve what you want to do
 		const inputValues = this.state.inputValues.slice();
 		inputValues[index] = value;
 		const inputHasValue = this.state.inputHasValue.slice();
@@ -151,6 +154,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 
 	private onKeyPress = (index: number, event: any) => {
 		if (event.nativeEvent.key.toLowerCase() === 'backspace') {
+			// todo @serkan @jake see above
 			const inputHasValue = this.state.inputHasValue.slice();
 			inputHasValue[index] = false;
 			const inputValues = this.state.inputValues.slice();
