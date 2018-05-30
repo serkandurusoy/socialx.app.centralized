@@ -105,6 +105,8 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 					/>
 					<View style={style.aboutContainer}>
 						<SXTextInput
+							autoCapitalize={'sentences'}
+							autoCorrect={true}
 							value={this.state.aboutText}
 							placeholder={'About you text'}
 							borderColor={Colors.dustWhite}
@@ -115,6 +117,8 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 					<Text style={style.personalDetails}>{'PERSONAL DETAILS'}</Text>
 					<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 						<SXTextInput
+							autoCapitalize={'words'}
+							autoCorrect={true}
 							value={this.state.firstName}
 							iconColor={Colors.iron}
 							placeholder={'First name'}
@@ -127,6 +131,8 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 					</View>
 					<View style={[style.textInputContainer]}>
 						<SXTextInput
+							autoCapitalize={'words'}
+							autoCorrect={true}
 							value={this.state.lastName}
 							iconColor={Colors.iron}
 							placeholder={'Last name'}
@@ -139,6 +145,8 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 					</View>
 					<View style={[style.textInputContainer]}>
 						<SXTextInput
+							autoCapitalize={'words'}
+							autoCorrect={true}
 							value={this.state.email}
 							iconColor={Colors.iron}
 							placeholder={'Email'}

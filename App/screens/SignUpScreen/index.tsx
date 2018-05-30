@@ -135,6 +135,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				</View>
 				<View style={style.textInputContainer}>
 					<SXTextInput
+						autoCapitalize={'words'}
+						autoCorrect={true}
 						iconColor={Colors.iron}
 						icon={'user'}
 						placeholder={'Name'}

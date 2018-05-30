@@ -50,6 +50,7 @@ class MessagingComponent extends Component<IMessagingComponentProps, IMessagingC
 							returnKeyType={TRKeyboardKeys.done}
 							size={InputSizes.Small}
 							borderWidth={1}
+							autoCorrect={true}
 						/>
 					</View>
 				</View>

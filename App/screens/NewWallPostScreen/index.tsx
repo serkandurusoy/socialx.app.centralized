@@ -95,6 +95,8 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 						autoFocus={true}
 						onChangeText={this.updatePostText}
 						multiline={true}
+						autoCorrect={true}
+						autoCapitalize={'sentences'}
 					/>
 				</View>
 				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler} disabled={this.state.isUploading}>
