@@ -82,7 +82,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
 
-		console.log('TODO: Filter Items for search term', this.props.searchTerm);
+		// console.log(this.props);
 
 		return (
 			<UserFeedScreenComponent
