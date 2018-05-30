@@ -60,12 +60,12 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		headerLeft: <View />,
 		headerRight: (
 			<View style={{flexDirection: 'row'}}>
-				<ToggleIconButton
+				{/* <ToggleIconButton
 					selectedSource={Icons.iconHeartWhiteFilled}
 					unselectedSource={Icons.iconHeartWhiteOutline}
 					onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}
 					selected={get(props, 'navigation.state.params.isFollowed', false)}
-				/>
+				/> */}
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
