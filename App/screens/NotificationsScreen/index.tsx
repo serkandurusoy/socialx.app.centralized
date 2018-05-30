@@ -144,7 +144,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 								fullName: current.owner.name,
 								username: current.owner.username,
 								requestId: current.id,
-								text: `${current.owner.username} has ${current.status} you\'r friend request.`,
+								text: `${current.owner.username} has ${current.status.toLocaleLowerCase()} your friend request.`,
 								status: current.status,
 							};
 							break;
