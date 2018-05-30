@@ -18,7 +18,7 @@ import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from 'backend/graphq
 import {createUserFunc} from 'types';
 
 import {ModalManager} from 'hoc/ManagedModal/manager';
-import {addBlob} from 'utilities/ipfs';
+import {addFileBN} from 'utilities/ipfs';
 
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
 import DeviceInfo from 'react-native-device-info';
@@ -37,7 +37,7 @@ export interface ISignUpScreenState {
 	confirmPassword: string;
 	avatarImage: any;
 	phone: string;
-	updatedAvatarImageBase64: string;
+	updatedAvatarImagePath: string;
 	showModalForSMSCode: boolean;
 	smsCodeErrorMessage: string | null;
 	countryCCA2: string;
@@ -85,7 +85,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			password: '',
 			confirmPassword: '',
 			avatarImage: Images.user_avatar_placeholder,
-			updatedAvatarImageBase64: '',
+			updatedAvatarImagePath: '',
 			showModalForSMSCode: false,
 			smsCodeErrorMessage: null,
 			countryCCA2: deviceCountry,
@@ -188,8 +188,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						ref={(ref: any) => this.updateInputRef(ref, 'phone')}
 						autoCorrect={false}
 						underlineColorAndroid={Colors.transparent}
-						autoCapitalize='none'
-						clearButtonMode='while-editing'
+						autoCapitalize="none"
+						clearButtonMode="while-editing"
 					/>
 				</View>
 				<View style={style.textInputContainer}>
@@ -228,6 +228,11 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						onPress={this.startRegister}
 						disabled={!this.state.termsAccepted}
 					/>
+					<SXButton
+						label={'Already have the code? Click here!'}
+						borderColor={Colors.transparent}
+						onPress={this.alreadyHaveCode}
+					/>
 				</View>
 				<View style={style.termContainer}>
 					<Text style={style.acceptText}>{'Accept our'}</Text>
@@ -245,25 +250,33 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		);
 	}
 
+	private alreadyHaveCode = async () => {
+		if (!this.state.username) {
+			alert("Please fill in the username you entered before inside the 'Username' field above and click this again!");
+		} else {
+			this.toggleVisibleModalSMS();
+		}
+	};
+
 	private showTermsAndConditionsHandler = () => {
 		this.props.navigation.navigate('TermsAndConditionsScreen');
-	}
+	};
 
 	private termsAcceptedUpdatedHandler = () => {
 		this.setState({
 			termsAccepted: !this.state.termsAccepted,
 		});
-	}
+	};
 
 	private updateInputRef = (inputRef: SXTextInput, fieldName: string) => {
 		this.inputRefs[fieldName] = inputRef;
-	}
+	};
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
 		const newState: any = {};
 		newState[fieldName] = value;
 		this.setState(newState);
-	}
+	};
 
 	private handleInputSubmitPressed = (nextInputRef: string) => {
 		if (nextInputRef in this.inputRefs) {
@@ -280,59 +293,24 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		this.setState({
 			showModalForSMSCode: visible,
 		});
-	}
+	};
 
 	private smsCodeConfirmedHandler = async (code: string) => {
-		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64} = this.state;
+		const {email, name, username, password, confirmPassword, updatedAvatarImagePath} = this.state;
 		const {createUser, addMedia} = this.props;
-
-		let mediaId: string | undefined;
 
 		try {
 			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
 
+			if (!this.state.password) {
+				Keyboard.dismiss();
+				this.toggleVisibleModalSMS(false);
+				resetNavigationToRoute('LoginScreen', this.props.navigation);
+			}
+
 			// signin to get access to appsync
 			await Signin(username, password);
-
-			if (updatedAvatarImageBase64 !== '') {
-				// do ipfs
-				const ipfsResp: any = await addBlob([
-					{
-						name: 'avatar',
-						filename: 'avatar.jpg',
-						data: updatedAvatarImageBase64,
-					},
-				]);
-				const {Hash, Size} = JSON.parse(ipfsResp.data);
-
-				// do addMedia
-				const mediaObj = await addMedia({
-					variables: {
-						type: 'ProfileImage',
-						size: parseInt(Size, undefined),
-						hash: Hash,
-					},
-				});
-				mediaId = mediaObj.data.addMedia.id;
-
-				await createUser({
-					variables: {
-						username,
-						name,
-						avatar: mediaId,
-						email,
-					},
-				});
-			} else {
-				await createUser({
-					variables: {
-						username,
-						name,
-						email,
-					},
-				});
-			}
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
@@ -345,13 +323,13 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			});
 		}
 		this.props.HideLoader();
-	}
+	};
 
 	private smsCodeDeclinedHandler = () => {
 		// TODO: do something here.. (remove user data?)
 		this.toggleVisibleModalSMS(false);
 		// console.log('TODO: smsCodeDeclinedHandler');
-	}
+	};
 
 	private smsCodeResendHandler = async () => {
 		try {
@@ -363,14 +341,14 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			});
 		}
 		this.props.HideLoader();
-	}
+	};
 
 	private getPhoneNumber = () => {
 		return '+' + this.state.countryCallingCode + this.state.phone;
-	}
+	};
 
 	private startRegister = async () => {
-		const {email, name, username, password, confirmPassword, updatedAvatarImageBase64} = this.state;
+		const {email, name, username, password, confirmPassword, updatedAvatarImagePath} = this.state;
 		const {createUser, addMedia, checkUsername} = this.props;
 
 		// closing the modla when using alerts, issue MD-163
@@ -392,17 +370,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			return;
 		}
 
-		// try {
-		// 	const checkUser = await checkUsername({variables: {username}});
-		// 	if (checkUser.data.checkUsername.userId) {
-		// 		Alert.alert('Validation error', 'This username is taken');
-		// 		return;
-		// 	}
-		// } catch (e) {
-		// 	// --
-		// 	console.log(e);
-		// }
-
 		try {
 			this.props.SignupLoading();
 
@@ -416,6 +383,47 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				},
 			};
 			const res = await Signup(signupParams);
+
+			let mediaId: string | undefined;
+			if (updatedAvatarImagePath) {
+				// do ipfs
+				const placeholderFunc = () => {};
+				await addFileBN(
+					updatedAvatarImagePath,
+					placeholderFunc,
+					placeholderFunc,
+					placeholderFunc,
+					async (rest) => {
+						const {Hash, Size} = JSON.parse(rest.responseBody);
+						// do addMedia
+						const mediaObj = await addMedia({
+							variables: {
+								type: 'ProfileImage',
+								size: parseInt(Size, undefined),
+								hash: Hash,
+							},
+						});
+						mediaId = mediaObj.data.addMedia.id;
+
+						await createUser({
+							variables: {
+								username,
+								name,
+								avatar: mediaId,
+								email,
+							},
+						});
+					},
+				);
+			} else {
+				await createUser({
+					variables: {
+						username,
+						name,
+						email,
+					},
+				});
+			}
 
 			ModalManager.safeRunAfterModalClosed(() => {
 				this.toggleVisibleModalSMS();
@@ -433,7 +441,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private updateAvatarImage = (base64Photo: string) => {
 		this.setState({
-			updatedAvatarImageBase64: base64Photo,
+			updatedAvatarImagePath: base64Photo,
 			avatarImage: {uri: base64Photo},
 		});
 	}
