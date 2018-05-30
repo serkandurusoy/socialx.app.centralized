@@ -51,6 +51,7 @@ PIE_CHART_VALUES[PieChartSections.REFERRALS] = 22;
 PIE_CHART_VALUES[PieChartSections.POSTS] = 35;
 PIE_CHART_VALUES[PieChartSections.BOUNTIES] = 43;
 
+// todo: @serkan @jake we can replace moment with a nonmutating lib
 const getRandomValuesForCurrentYear = () => {
 	const ret: IDailyBarChartData[] = [];
 	const indexDate = moment().startOf('year');
@@ -66,6 +67,7 @@ const getRandomValuesForCurrentYear = () => {
 	return ret;
 };
 
+// todo: @serkan @jake we can replace moment with a nonmutating lib
 const getRandomMonthlyValuesForLastTwelveMonths = () => {
 	const ret: IMonthlyBarChartData[] = [];
 	const indexDate = moment().add(-11, 'months');

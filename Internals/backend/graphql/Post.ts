@@ -115,30 +115,24 @@ export const getPublicPostsHoc = (comp: any) =>
 				return cres;
 			};
 
-			const dataSpine = (pItems: any) => {
-				const rets = [];
-				for (let i = 0; i < pItems.length; i++) {
-					const post = pItems[i];
-					rets.push({
-						id: post.id,
-						text: post.text,
-						location: post.location,
-						media: post.Media,
-						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
-						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
-						numberOfLikes: post.likes.length,
-						numberOfSuperLikes: 0,
-						numberOfComments: numberOfComments(post),
-						numberOfWalletCoins: 0,
-						onLikeButtonClick: () => null,
-						canDelete: false,
-						owner: post.owner,
-						onDeleteClick: null,
-						likes: post.likes,
-					});
-				}
-				return rets;
-			};
+			const dataSpine = (pItems: any) => pItems.map((post: any) => ({
+				id: post.id,
+				text: post.text,
+				location: post.location,
+				media: post.Media,
+				// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+				numberOfLikes: post.likes.length,
+				numberOfSuperLikes: 0,
+				numberOfComments: numberOfComments(post),
+				numberOfWalletCoins: 0,
+				onLikeButtonClick: () => null,
+				canDelete: false,
+				owner: post.owner,
+				onDeleteClick: null,
+				likes: post.likes,
+			}));
+
 			return {
 				loading,
 				rawItems: Items,
@@ -157,14 +151,13 @@ export const getPublicPostsHoc = (comp: any) =>
 							const newItems = fetchMoreResult.getPublicPosts.Items;
 							const newNext = fetchMoreResult.getPublicPosts.nextToken;
 
-							const newPosts = {
+							return{
 								getPublicPosts: {
 									nextToken: newNext,
 									Items: newNext ? [...previousItems, ...newItems] : previousItems,
 									__typename: 'PaginatedPosts',
 								},
 							};
-							return newPosts;
 						},
 					}) : {},
 			};

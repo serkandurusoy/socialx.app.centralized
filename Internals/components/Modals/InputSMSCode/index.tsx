@@ -39,6 +39,11 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 
 	public render() {
 		const okDisabled = this.state.inputValues.join('').length < 4;
+		const modalStyles = [
+			style.container,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
+		];
+
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -48,15 +53,28 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 				animationIn={'zoomIn'}
 				animationOut={'zoomOut'}
 				onBackdropPress={this.actionCanceled}
-				style={this.getModalStyles()}
+				style={modalStyles}
 			>
 				<View style={style.boxContainer}>
 					<Text style={style.title}>{'Verification Code'}</Text>
 					<View style={style.borderContainer}>
 						<Text style={style.message}>{'Please type the verification code sent to ' + this.props.phoneNumber}</Text>
-						<View style={style.inputCellsContainer}>{this.renderInputCells()}</View>
+						<View style={style.inputCellsContainer}>
+							{[...Array(NUMBER_OF_DIGITS).keys()].map((i) => (
+								<TextInput
+									key={i}
+									onChangeText={(value: string) => this.digitUpdatedHandler(i, value)}
+									onKeyPress={(event: any) => this.onKeyPress(i, event)}
+									ref={(component: any) => (this.inputRefs[i] = component)}
+									maxLength={1}
+									style={this.getDigitInputStyles(i)}
+									keyboardType={TKeyboardKeys.numeric}
+									underlineColorAndroid={Colors.transparent}
+								/>
+							))}
+						</View>
 					</View>
-					{this.renderErrorMessage()}
+					{this.props.errorMessage && <Text style={style.errorMessage}>{this.props.errorMessage}</Text>}
 					<View style={style.buttonsContainer}>
 						<TouchableOpacity style={[style.button]} onPress={this.actionResend}>
 							<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Resend Code'}</Text>
@@ -77,63 +95,26 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 		);
 	}
 
-	private renderErrorMessage = () => {
-		if (this.props.errorMessage) {
-			return <Text style={style.errorMessage}>{this.props.errorMessage}</Text>;
-		}
-		return null;
-	}
-
-	private getModalStyles = () => {
-		const ret = [style.container];
-		if (Platform.OS === OS_TYPES.IOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
-
 	private actionConfirmed = () => {
 		const smsCode = this.state.inputValues.join('');
 		this.props.confirmHandler(smsCode);
 		this.setState(INITIAL_STATE);
-	}
+	};
 
 	private actionCanceled = () => {
 		this.props.declineHandler();
 		this.setState(INITIAL_STATE);
-	}
+	};
 
 	private actionResend = () => {
 		this.props.resendHandler();
 		this.setState(INITIAL_STATE);
-	}
+	};
 
-	private renderInputCells = () => {
-		const ret = [];
-		for (let i = 0; i < NUMBER_OF_DIGITS; i++) {
-			ret.push(
-				<TextInput
-					key={i}
-					onChangeText={(value: string) => this.digitUpdatedHandler(i, value)}
-					onKeyPress={(event: any) => this.onKeyPress(i, event)}
-					ref={(component: any) => (this.inputRefs[i] = component)}
-					maxLength={1}
-					style={this.getDigitInputStyles(i)}
-					keyboardType={TKeyboardKeys.numeric}
-					underlineColorAndroid={Colors.transparent}
-				/>,
-			);
-		}
-		return ret;
-	}
-
-	private getDigitInputStyles = (index: number) => {
-		const ret = [style.digitInput];
-		if (this.state.inputHasValue[index]) {
-			ret.push(style.digitInputWithValue);
-		}
-		return ret;
-	}
+	private getDigitInputStyles = (index: number) => [
+		style.digitInput,
+		...(this.state.inputHasValue[index] ? [style.digitInputWithValue] : []),
+	];
 
 	private digitUpdatedHandler = (index: number, value: string) => {
 		// TODO @serkan @jake use of slice is generally confusing, prefer filter and also, here, why? are you simply
@@ -150,7 +131,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 			}
 		}
 		this.setState({inputValues, inputHasValue});
-	}
+	};
 
 	private onKeyPress = (index: number, event: any) => {
 		if (event.nativeEvent.key.toLowerCase() === 'backspace') {
@@ -169,7 +150,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 			}
 			this.setState({inputValues, inputHasValue});
 		}
-	}
+	};
 }
 
 export const ModalInputSMSCode: any = withManagedTransitions(withResizeOnKeyboardShow(ModalInputSMSCodeComponent));

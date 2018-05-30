@@ -48,27 +48,20 @@ interface IChatThreadScreenProps {
 const TOTAL_NUMBER_OF_MESSAGES = 44;
 const ONE_PAGE_NUMBER_OF_MESSAGES = 10;
 
-const getOnePageOfMessages = () => {
-	const ret = [];
-	for (let i = 0; i < ONE_PAGE_NUMBER_OF_MESSAGES; i++) {
+const getOnePageOfMessages = () =>
+	[...Array(ONE_PAGE_NUMBER_OF_MESSAGES).keys()].map(() => {
 		const isImageMessage = Math.random() >= 0.7;
 		const imageWidth = Math.round(Math.random() * 2000);
 		const imageHeight = Math.round(Math.random() * 1125);
-		const newMessage: MessageData = {
+		return {
 			_id: uuidv4(),
 			createdAt: new Date(),
 			ownMessage: Math.random() >= 0.5,
 			user: {},
+			...(isImageMessage ? {imageURL: `https://placeimg.com/${imageWidth}/${imageHeight}/any`} : {}),
+			...(isImageMessage ? {} : {text: 'hey'}),
 		};
-		if (isImageMessage) {
-			newMessage.imageURL = `https://placeimg.com/${imageWidth}/${imageHeight}/any`;
-		} else {
-			newMessage.text = 'hey';
-		}
-		ret.push(newMessage);
-	}
-	return ret;
-};
+	});
 
 export default class ChatThreadScreen extends Component<IChatThreadScreenProps, IChatThreadScreenState> {
 	private static navigationOptions = (props: IChatThreadScreenProps) => ({
@@ -163,7 +156,6 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// const bufferDate = this.state.timeframeBuffer;
 		// const nowDate = new Date(Date.now());
 		// const secondsBuffer = (nowDate.getTime() - bufferDate) / 1000;
-
 		// if (text === '') {
 		// 	const sendData: IExtraData = {
 		// 		isTyping: false,
@@ -172,7 +164,6 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 	this.setState({text});
 		// 	return;
 		// }
-
 		// if (text.length === 1) {
 		// 	const sendData: IExtraData = {
 		// 		isTyping: true,
@@ -180,7 +171,6 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 	this.friendTcpClient.write(JSON.stringify(sendData));
 		// 	this.setState({timeframeBuffer: nowDate.getTime()});
 		// }
-
 		// if (secondsBuffer > 5) {
 		// 	const sendData: IExtraData = {
 		// 		isTyping: true,

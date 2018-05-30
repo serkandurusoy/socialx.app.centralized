@@ -32,10 +32,11 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 	private scrollRef: ScrollView;
 
 	public render() {
-		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.IOS) {
-			containerStyles.push({marginBottom: this.props.marginBottom});
-		}
+		const containerStyles = [
+			style.container,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : [])
+		];
+
 		return (
 			<SafeAreaView style={containerStyles}>
 				<ScrollView

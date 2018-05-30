@@ -56,6 +56,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 
 	public state = INITIAL_STATE;
 
+	// todo @serkan @jake why?
 	private lastLoadedPhotoIndex = 0;
 
 	public async componentDidMount() {
@@ -111,6 +112,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		);
 	}
 
+	// todo @serkan @jake what?
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
 		const ret: IMediaProps[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
@@ -133,6 +135,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			return [];
 		}
 
+		// todo @serkan @jake this looks like an unwrap/flatten, let's review
 		const Imgs: IMediaProps[] = [];
 		for (let y = 0; y < posts.length; y++) {
 			const currentMedia = posts[y].Media;

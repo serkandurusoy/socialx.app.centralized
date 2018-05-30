@@ -166,6 +166,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 		const recentPosts: any = [];
 		for (let i = 0; i < posts.length; i++) {
+			// todo @serkan @jake what???
 			if (i > 2) {
 				return recentPosts;
 			}
@@ -193,6 +194,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			return [];
 		}
 
+		// todo @serkan @jake I think I saw a similar unwrap/flatten approach somewhere else hmm
 		const Imgs: IMediaProps[] = [];
 		for (let y = 0; y < posts.length; y++) {
 			const currentMedia = posts[y].Media;
@@ -214,6 +216,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	}
 
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaViewerObject[] => {
+		// todo @serkan @jake I think I've something similar to this somewhere else
 		const ret: ISimpleMediaObject[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {

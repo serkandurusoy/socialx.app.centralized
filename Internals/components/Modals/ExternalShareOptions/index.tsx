@@ -62,7 +62,7 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 		if (Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableWithoutFeedback onPress={props.closeHandler}>
-					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
+					<BlurView style={style.blurView} blurType="dark" blurAmount={2} />
 				</TouchableWithoutFeedback>
 			);
 		}
@@ -93,6 +93,7 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 
 	const layoutProps = getLayoutProps();
 
+	// todo @serkan @jake what?
 	const renderOneRowWithButtons = (rowNumber: number) => {
 		const ret = [];
 		for (let i = 0; i < layoutProps.itemsInRow; i++) {
@@ -112,18 +113,6 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 		return ret;
 	};
 
-	const renderButtonsInRows = () => {
-		const ret = [];
-		for (let i = 0; i < layoutProps.numberOfRows; i++) {
-			ret.push(
-				<View style={style.rowContainer} key={i}>
-					{renderOneRowWithButtons(i)}
-				</View>,
-			);
-		}
-		return ret;
-	};
-
 	return (
 		<Modal
 			onDismiss={props.onDismiss}
@@ -135,7 +124,13 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 			onBackdropPress={props.closeHandler}
 		>
 			{renderOSBlurView()}
-			<View style={style.boxContainer}>{renderButtonsInRows()}</View>
+			<View style={style.boxContainer}>
+				{[...Array(layoutProps.numberOfRows).keys()].map((i) => (
+					<View style={style.rowContainer} key={i}>
+						{renderOneRowWithButtons(i)}
+					</View>
+				))}
+			</View>
 		</Modal>
 	);
 };

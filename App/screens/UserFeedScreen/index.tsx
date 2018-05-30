@@ -183,6 +183,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		// start creating post loading
 		startPostadd();
 
+		// todo @serkan @jake let's discuss parallel/series async execution
+		// for await of vs await Promise.all
 		try {
 			for (let i = 0; i < data.mediaObjects.length; i++) {
 				const currentData = data.mediaObjects[i];

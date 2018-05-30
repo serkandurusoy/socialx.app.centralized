@@ -34,10 +34,11 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 	private scrollRef: ScrollView;
 
 	public render() {
-		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.IOS) {
-			containerStyles.push({marginBottom: this.props.marginBottom});
-		}
+		const containerStyles = [
+			style.container,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : [])
+		];
+
 		return this.props.renderWithLoader(
 			<SafeAreaView style={containerStyles}>
 				<ScrollView

@@ -146,6 +146,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		);
 	}
 
+	// todo @serkan @jake what???
 	private renderTaggedFriends = () => {
 		if (this.props.taggedFriends && this.props.taggedFriends.length > 0) {
 			// prettier-ignore
@@ -322,32 +323,31 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		});
 	}
 
-	private getTooltipItems = (): TooltipItem[] => {
-		const ret = [
-			{
-				label: 'Block',
-				icon: Icons.redRoundCross,
-				actionHandler: () => {
-					ModalManager.safeRunAfterModalClosed(() => {
-						alert('Comming soon..');
-					});
-				},
+	private getTooltipItems = (): TooltipItem[] => [
+		{
+			label: 'Block',
+			icon: Icons.redRoundCross,
+			actionHandler: () => {
+				ModalManager.safeRunAfterModalClosed(() => {
+					alert('Comming soon..');
+				});
 			},
-			{
-				label: 'Report a Problem',
-				icon: Icons.iconReport,
-				actionHandler: this.tooltipsReportPressedHandler,
-			},
-		];
-		if (this.props.canDelete) {
-			ret.push({
-				label: 'Delete Post',
-				icon: Icons.iconDelete,
-				actionHandler: this.tooltipsDeletePressedHandler,
-			});
-		}
-		return ret;
-	}
+		},
+		{
+			label: 'Report a Problem',
+			icon: Icons.iconReport,
+			actionHandler: this.tooltipsReportPressedHandler,
+		},
+		...(
+			this.props.canDelete
+				? [{
+					label: 'Delete Post',
+					icon: Icons.iconDelete,
+					actionHandler: this.tooltipsDeletePressedHandler,
+				}]
+				: []
+		),
+	]
 
 	private tooltipsDeletePressedHandler = () => {
 		this.props.onDeleteClick(this.props.id);

@@ -35,61 +35,59 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 	private isScrolled = false;
 
 	public render() {
-		return <View style={style.container}>{this.renderWithLoading()}</View>;
-	}
+		const gridPhotosStyles = [
+			style.gridPhotosContainer,
+			...(this.props.totalNumberOfPhotos > this.props.gridPageSize
+				? [
+						{
+							height: SCREEN_HEIGHT - Metrics.navBarHeight,
+						},
+				  ]
+				: []),
+		];
 
-	private renderWithLoading = () => {
-		return this.props.renderWithLoader(
-			<ScrollView
-				scrollEnabled={true}
-				contentContainerStyle={style.scrollContainer}
-				showsVerticalScrollIndicator={false}
-				ref={(ref: any) => (this.scrollView = ref)}
-			>
-				<View style={style.topContainer}>
-					<UserAvatar
-						avatarURL={{uri: this.props.avatarURL}}
-						fullName={this.props.fullName}
-						username={this.props.username}
-					/>
-					<View style={style.dotsContainer}>
-						<TooltipDots items={this.getTooltipItems()} />
-					</View>
-					<ProfileStatistics
-						numberOfPhotos={this.props.numberOfPhotos}
-						numberOfLikes={this.props.numberOfLikes}
-						numberOfFollowers={this.props.numberOfFollowers}
-						numberOfFollowing={this.props.numberOfFollowing}
-					/>
-				</View>
-				{this.renderUserPhotoGallery()}
-			</ScrollView>,
-		);
-	}
-
-	private renderUserPhotoGallery = () => {
-		if (this.props.getAllPhotos.length === 0) {
-			return (
-				<View style={style.noPhotosContainer}>
-					<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
-					<Text style={style.noPhotosText}>{'Your photo gallery is empty.'}</Text>
-				</View>
-			);
-		}
-		const gridPhotosStyles = [style.gridPhotosContainer];
-		if (this.props.totalNumberOfPhotos > this.props.gridPageSize) {
-			const recyclerHeight = SCREEN_HEIGHT - Metrics.navBarHeight;
-			gridPhotosStyles.push({
-				height: recyclerHeight,
-			});
-		}
+		// todo @serkan @jake let's revisit renderWithLoader, why? why not canonical react with component composition?
 		return (
-			<View style={gridPhotosStyles}>
-				<GridPhotos
-					onScroll={this.scrollUpdated}
-					loadMorePhotos={this.props.loadMorePhotosHandler}
-					itemPressed={this.onPhotoPressHandler}
-				/>
+			<View style={style.container}>
+				{this.props.renderWithLoader(
+					<ScrollView
+						scrollEnabled={true}
+						contentContainerStyle={style.scrollContainer}
+						showsVerticalScrollIndicator={false}
+						ref={(ref: any) => (this.scrollView = ref)}
+					>
+						<View style={style.topContainer}>
+							<UserAvatar
+								avatarURL={{uri: this.props.avatarURL}}
+								fullName={this.props.fullName}
+								username={this.props.username}
+							/>
+							<View style={style.dotsContainer}>
+								<TooltipDots items={this.getTooltipItems()} />
+							</View>
+							<ProfileStatistics
+								numberOfPhotos={this.props.numberOfPhotos}
+								numberOfLikes={this.props.numberOfLikes}
+								numberOfFollowers={this.props.numberOfFollowers}
+								numberOfFollowing={this.props.numberOfFollowing}
+							/>
+						</View>
+						{this.props.getAllPhotos.length === 0 ? (
+							<View style={style.noPhotosContainer}>
+								<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+								<Text style={style.noPhotosText}>{'Your photo gallery is empty.'}</Text>
+							</View>
+						) : (
+							<View style={gridPhotosStyles}>
+								<GridPhotos
+									onScroll={this.scrollUpdated}
+									loadMorePhotos={this.props.loadMorePhotosHandler}
+									itemPressed={this.onPhotoPressHandler}
+								/>
+							</View>
+						)}
+					</ScrollView>,
+				)}
 			</View>
 		);
 	}
@@ -103,14 +101,14 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
 			this.isScrolled = false;
 		}
-	}
+	};
 
 	private onPhotoPressHandler = (index: number) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: this.props.getAllPhotos,
 			startIndex: index,
 		});
-	}
+	};
 
 	private getTooltipItems = () => {
 		return [
@@ -130,19 +128,19 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 				actionHandler: this.goToSettingsPage,
 			},
 		];
-	}
+	};
 
 	private goToProfileAnalyticsPage = () => {
 		this.props.navigation.navigate('ProfileAnalyticsScreen');
-	}
+	};
 
 	private goToWalletActivityPage = () => {
 		this.props.navigation.navigate('WalletActivityScreen');
-	}
+	};
 
 	private goToSettingsPage = () => {
 		this.props.navigation.navigate('SettingsScreen');
-	}
+	};
 }
 
 export default withInlineLoader(MyProfileScreenComponent);

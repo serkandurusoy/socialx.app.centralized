@@ -53,7 +53,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private static navigationOptions = (props: IWallPostCommentsProps) => ({
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
 		headerLeft: <View />,
-	})
+	});
 
 	public state = {
 		allComments: [],
@@ -83,7 +83,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const {userId} = this.props.navigation.state.params;
 		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
-	}
+	};
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
 		const {likeComment, removeCommentLike} = this.props;
@@ -98,11 +98,11 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
 		// console.log('TODO: delete comment with ID', comment.id);
-	}
+	};
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;
@@ -120,7 +120,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		}
 		hideLoader();
 		// console.log('onCommentSendHandler', commentText);
-	}
+	};
 
 	private preFetchComments = async () => {
 		const {postId, userId} = this.props.navigation.state.params;
@@ -132,73 +132,68 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		if (getResp.data.getComments.length <= 0) {
 			this.setState({noComments: true});
-			return;
-		}
+		} else {
+			const comments: IComments[] = getResp.data.getComments;
 
-		const comments: IComments[] = getResp.data.getComments;
-		const resComments: IWallPostComment[] = [];
+			const resComments: IWallPostComment[] = comments.map((currentComment) => {
+				const ownerAv = currentComment.owner.avatar
+					? base.ipfs_URL + currentComment.owner.avatar.hash
+					: AvatarImagePlaceholder;
+				const allReplies: IWallPostComment[] =
+					currentComment.comments.length > 0
+						? currentComment.comments.map((currentReply) => {
+								const replyOwnerAv = currentReply.owner.avatar
+									? base.ipfs_URL + currentReply.owner.avatar.hash
+									: AvatarImagePlaceholder;
 
-		for (let i = 0; i < comments.length; i++) {
-			const currentComment = comments[i];
-			const ownerAv = currentComment.owner.avatar
-				? base.ipfs_URL + currentComment.owner.avatar.hash
-				: AvatarImagePlaceholder;
-			const allReplies: IWallPostComment[] = [];
+								return {
+									id: currentReply.id,
+									text: currentReply.text,
+									user: {
+										fullName: currentReply.owner.name,
+										avatarURL: replyOwnerAv,
+										id: currentReply.owner.userId,
+									},
+									timestamp: new Date(parseInt(currentReply.createdAt, 10) * 1000),
+									numberOfLikes: currentReply.likes.length,
+									likes: currentReply.likes,
+									replies: [],
+									likedByMe: currentReply.likes.some((x) => x.userId === userId),
+								};
+						  })
+						: [];
 
-			if (currentComment.comments.length > 0) {
-				for (let y = 0; y < currentComment.comments.length; y++) {
-					const currentReply = currentComment.comments[y];
-					const replyOwnerAv = currentReply.owner.avatar
-						? base.ipfs_URL + currentReply.owner.avatar.hash
-						: AvatarImagePlaceholder;
+				return {
+					id: currentComment.id,
+					text: currentComment.text,
+					user: {
+						fullName: currentComment.owner.name,
+						avatarURL: ownerAv,
+						id: currentComment.owner.userId,
+					},
+					timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
+					numberOfLikes: currentComment.likes.length,
+					likes: currentComment.likes,
+					replies: allReplies,
+					likedByMe: currentComment.likes.some((x) => x.userId === userId),
+				};
+			});
 
-					allReplies.push({
-						id: currentReply.id,
-						text: currentReply.text,
-						user: {
-							fullName: currentReply.owner.name,
-							avatarURL: replyOwnerAv,
-							id: currentReply.owner.userId,
-						},
-						timestamp: new Date(parseInt(currentReply.createdAt, 10) * 1000),
-						numberOfLikes: currentReply.likes.length,
-						likes: currentReply.likes,
-						replies: [],
-						likedByMe: currentReply.likes.find((x) => x.userId === userId) ? true : false,
-					});
-				}
-			}
-
-			resComments.push({
-				id: currentComment.id,
-				text: currentComment.text,
-				user: {
-					fullName: currentComment.owner.name,
-					avatarURL: ownerAv,
-					id: currentComment.owner.userId,
-				},
-				timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
-				numberOfLikes: currentComment.likes.length,
-				likes: currentComment.likes,
-				replies: allReplies,
-				likedByMe: currentComment.likes.find((x) => x.userId === userId) ? true : false,
+			this.setState({
+				noComments: resComments.length === 0,
+				allComments: resComments.sort((a: any, b: any) => {
+					if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
+						a = a.numberOfLikes;
+						b = b.numberOfLikes;
+						return a > b ? -1 : a < b ? 1 : 0;
+					}
+					a = a.timestamp;
+					b = b.timestamp;
+					return a > b ? -1 : a < b ? 1 : 0;
+				}),
 			});
 		}
-
-		this.setState({
-			noComments: resComments.length === 0,
-			allComments: resComments.sort((a: any, b: any) => {
-				if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
-					a = a.numberOfLikes;
-					b = b.numberOfLikes;
-					return a > b ? -1 : a < b ? 1 : 0;
-				}
-				a = a.timestamp;
-				b = b.timestamp;
-				return a > b ? -1 : a < b ? 1 : 0;
-			}),
-		});
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({

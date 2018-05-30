@@ -140,12 +140,10 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 		const monthDate = moment(data.item.date).format('Do');
 		const monthDateNumber = parseInt(monthDate, 10);
 		const monthDateSuffix = monthDate.substr(monthDateNumber.toString().length);
-		const barChartColumnStyles = [style.barChartColumn];
-		const valueAsPercentage = Math.round(data.item.value * 100 / this.maxDailyValue);
-		barChartColumnStyles.push({
+		const barChartColumnStyles = [style.barChartColumn, {
 			backgroundColor: data.index % 2 === 0 ? Colors.pink : colorWithAlpha(Colors.pink, 0.5),
-			height: valueAsPercentage + '%',
-		});
+			height: Math.round(data.item.value * 100 / this.maxDailyValue) + '%',
+		}];
 		return (
 			<View style={style.dayChartItem}>
 				<View style={style.barChartColumnContainer}>
@@ -160,12 +158,10 @@ export class RewardsScreenComponent extends Component<IRewardsScreenComponentPro
 	};
 
 	private renderBarChartMonthlyItem = (data: {item: IMonthlyBarChartData; index: number}) => {
-		const barChartColumnStyles = [style.barChartColumn];
-		const valueAsPercentage = Math.round(data.item.value * 100 / this.maxMonthValue);
-		barChartColumnStyles.push({
+		const barChartColumnStyles = [style.barChartColumn, {
 			backgroundColor: data.index % 2 === 0 ? Colors.pink : colorWithAlpha(Colors.pink, 0.5),
-			height: valueAsPercentage + '%',
-		});
+			height: Math.round(data.item.value * 100 / this.maxMonthValue) + '%',
+		}];
 		return (
 			<View style={style.monthChartItem}>
 				<View style={style.barChartColumnContainer}>
