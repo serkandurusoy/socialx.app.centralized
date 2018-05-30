@@ -40,12 +40,20 @@ const style: any = {
 		color: Colors.postText,
 		paddingTop: Sizes.smartVerticalScale(3),
 	},
+	postTitlePadding: {
+		marginHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		paddingBottom: Sizes.smartHorizontalScale(6),
+	},
 	postTitle: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postFullName,
-		marginHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
-		paddingBottom: Sizes.smartHorizontalScale(6),
+	},
+	showMoreText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(15),
+		color: Colors.postHour,
+		paddingLeft: Sizes.smartHorizontalScale(5),
 	},
 	postTextContainer: {
 		flexDirection: 'row',
@@ -76,12 +84,6 @@ const style: any = {
 	},
 	locationPin: {
 		height: Sizes.smartHorizontalScale(14),
-	},
-	showMoreText: {
-		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
-		color: Colors.postHour,
-		paddingLeft: Sizes.smartHorizontalScale(5),
 	},
 };
 
