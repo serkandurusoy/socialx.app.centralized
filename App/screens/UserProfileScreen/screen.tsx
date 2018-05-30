@@ -38,6 +38,9 @@ interface IUserProfileScreenProps extends IWithLoaderProps {
 	gridPageSize: number;
 	navigation: NavigationScreenProp<any>;
 	allMediaObjects: IMediaProps[];
+	onCommentClick: any;
+	onImageClick: any;
+	onLikeClick: any;
 }
 
 interface IUserProfileScreenComponentState {
@@ -178,9 +181,16 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 	private renderRecentPosts = () => {
 		const ret = [];
 		for (let i = 0; i < this.props.recentPosts.length; i++) {
+			const current = this.props.recentPosts[i];
 			ret.push(
 				<View style={style.wallPostContainer} key={i}>
-					<WallPostCard {...this.props.recentPosts[i]} canDelete={false} navigation={this.props.navigation} />
+					<WallPostCard
+						{...this.props.recentPosts[i]}
+						canDelete={false}
+						onCommentClick={() => this.props.onCommentClick(current.id, null)}
+						onImageClick={(index) => this.props.onImageClick(index, current.media)}
+						onLikeButtonClick={() => this.props.onLikeClick(current.likedByMe, current.id)}
+					/>
 				</View>,
 			);
 		}

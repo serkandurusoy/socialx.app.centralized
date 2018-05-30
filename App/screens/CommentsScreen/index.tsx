@@ -6,10 +6,10 @@ import {connect} from 'react-redux';
 import {getRandomImage} from 'utilities';
 import CommentsScreenComponent from './screen';
 
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
+import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
 
 import {ipfsConfig as base} from 'configuration';
-import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
+import {CommentType, IComments, ICommentsResponse, IUserDataResponse, IUserQuery} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {AvatarImagePlaceholder} from 'consts';
@@ -47,6 +47,8 @@ export interface IWallPostCommentsProps {
 
 	commentingLoader: () => void;
 	hideLoader: () => void;
+
+	data: IUserDataResponse;
 }
 
 class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostCommentsState> {
@@ -69,7 +71,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		return (
 			<CommentsScreenComponent
-				isLoading={allComments.length < 0}
+				isLoading={allComments.length < 0 || this.props.data.loading}
 				comments={allComments}
 				noComments={noComments}
 				onCommentLike={this.onCommentLikeHandler}
@@ -124,7 +126,9 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 	private preFetchComments = async () => {
 		const {postId, userId} = this.props.navigation.state.params;
-		const {getComments} = this.props;
+		const {getComments, data} = this.props;
+
+		const thisUserId = data.user.userId;
 
 		const qVar = {variables: {targetPost: postId}};
 
@@ -164,7 +168,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 						numberOfLikes: currentReply.likes.length,
 						likes: currentReply.likes,
 						replies: [],
-						likedByMe: currentReply.likes.find((x) => x.userId === userId) ? true : false,
+						likedByMe: currentReply.likes.find((x) => x.userId === thisUserId) ? true : false,
 					});
 				}
 			}
@@ -181,7 +185,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				numberOfLikes: currentComment.likes.length,
 				likes: currentComment.likes,
 				replies: allReplies,
-				likedByMe: currentComment.likes.find((x) => x.userId === userId) ? true : false,
+				likedByMe: currentComment.likes.find((x) => x.userId === thisUserId) ? true : false,
 			});
 		}
 
@@ -208,7 +212,9 @@ const MapDispatchToProps = (dispatch: any) => ({
 
 const reduxWrapper = connect(null, MapDispatchToProps)(CommentsScreen as any);
 
-const getCommentsWrapper = getCommentsHoc(reduxWrapper);
+const currentUserDataWrapper = userHoc(reduxWrapper);
+
+const getCommentsWrapper = getCommentsHoc(currentUserDataWrapper);
 const commentWrapper = commentHoc(getCommentsWrapper);
 
 const likeCommentWrapper = likeCommentHoc(commentWrapper);

@@ -1,6 +1,6 @@
 import {ModalCloseButton} from 'components';
 import {IWallPostCardProp} from 'components/Displayers';
-import {ToggleIconButton} from 'components/Interaction';
+import {IconButton, ToggleIconButton} from 'components/Interaction';
 import get from 'lodash/get';
 import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
@@ -66,6 +66,8 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 					onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}
 					selected={get(props, 'navigation.state.params.isFollowed', false)}
 				/> */}
+				{/* @ionut TODO: create a refresh button here? */}
+				{/* <IconButton ex={true} iconSource={'sync-alt'} /> */}
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
@@ -76,6 +78,37 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	private lastLoadedPhotoIndex = 0;
 
 	public async componentDidMount() {
+		await this.preFetch();
+	}
+
+	public render() {
+		return (
+			<UserProfileScreenComponent
+				isLoading={this.state.isLoading}
+				totalNumberOfPhotos={GRID_MAX_RESULTS}
+				gridPageSize={GRID_PAGE_SIZE}
+				numberOfPhotos={this.state.numberOfPhotos}
+				numberOfLikes={this.state.numberOfLikes}
+				numberOfFollowers={this.state.numberOfFollowers}
+				numberOfFollowing={this.state.numberOfFollowing}
+				isFollowed={this.state.isFollowed}
+				avatarURL={this.state.avatarURL}
+				fullName={this.state.fullName}
+				username={this.state.username}
+				aboutMeText={this.state.aboutMeText}
+				recentPosts={this.state.recentPosts}
+				loadMorePhotosHandler={this.loadMorePhotosHandler}
+				navigation={this.props.navigation}
+				allMediaObjects={this.state.mediaObjects}
+
+				onCommentClick={this.onCommentsButtonClickHandler}
+				onImageClick={this.onMediaObjectPressHandler}
+				onLikeClick={null}
+			/>
+		);
+	}
+
+	private preFetch = async () => {
 		const {client} = this.props;
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({
@@ -121,29 +154,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
-
-	public render() {
-		return (
-			<UserProfileScreenComponent
-				isLoading={this.state.isLoading}
-				totalNumberOfPhotos={GRID_MAX_RESULTS}
-				gridPageSize={GRID_PAGE_SIZE}
-				numberOfPhotos={this.state.numberOfPhotos}
-				numberOfLikes={this.state.numberOfLikes}
-				numberOfFollowers={this.state.numberOfFollowers}
-				numberOfFollowing={this.state.numberOfFollowing}
-				isFollowed={this.state.isFollowed}
-				avatarURL={this.state.avatarURL}
-				fullName={this.state.fullName}
-				username={this.state.username}
-				aboutMeText={this.state.aboutMeText}
-				recentPosts={this.state.recentPosts}
-				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, GRID_MAX_RESULTS)}
-				navigation={this.props.navigation}
-				allMediaObjects={this.state.mediaObjects}
-			/>
-		);
 	}
 
 	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
@@ -229,6 +239,31 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			}
 		}
 		return ret;
+	}
+
+	private onMediaObjectPressHandler = (index: number, media: any) => {
+		this.props.navigation.navigate('MediaViewerScreen', {
+			mediaObjects: media,
+			startIndex: index,
+		});
+	}
+
+	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
+		this.props.navigation.navigate('CommentsStack', {postId, userId});
+	}
+
+	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
+		// const {client} = this.props;
+
+		// const likeQuery = {variables: {postId}};
+
+		// const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
+		// console.log('result:', result);
+
+		// if (result.error) {
+		// 	console.log(result.error);
+		// 	return;
+		// }
 	}
 }
 

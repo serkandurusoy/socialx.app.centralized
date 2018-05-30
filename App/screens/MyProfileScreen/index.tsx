@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {InteractionManager, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
+
+import {IconButton} from 'components';
 
 import {ipfsConfig as base} from 'configuration';
 
@@ -9,6 +11,7 @@ import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {IMediaProps, IUserDataResponse} from 'types';
 
 import {AvatarImagePlaceholder} from 'consts';
+import {Icon} from 'native-base';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
@@ -50,18 +53,23 @@ interface IMyProfileScreenState {
 }
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
-	private static navigationOptions = {
+	private static navigationOptions = (props: any) => ({
 		title: 'PROFILE',
-	};
+		headerRight: (
+			<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.refreshScreen} />
+		),
+	})
 
 	public state = INITIAL_STATE;
 
 	private lastLoadedPhotoIndex = 0;
 
 	public async componentDidMount() {
-		if (!this.props.data.loading) {
-			this.props.data.refetch();
-		}
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				refreshScreen: this.props.data.refetch,
+			});
+		});
 	}
 
 	public componentWillReceiveProps(nextProps: IMyProfileScreenProps) {
@@ -80,8 +88,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			});
 		}
 
-		const userAvatar = avatar
-			? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
+		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
