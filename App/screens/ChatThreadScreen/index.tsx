@@ -63,6 +63,8 @@ const getOnePageOfMessages = () =>
 		};
 	});
 
+
+// todo @serkan @jake this needs lots of refactoring but it is hard to tell what's used/abandoned/incomplete etc
 export default class ChatThreadScreen extends Component<IChatThreadScreenProps, IChatThreadScreenState> {
 	private static navigationOptions = (props: IChatThreadScreenProps) => ({
 		headerTitle: () => {
