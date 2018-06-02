@@ -51,6 +51,8 @@ export interface ISXTextInputProps {
 	borderWidth?: number;
 	multiline?: boolean;
 	focusUpdateHandler?: (hasFocus: boolean) => void;
+	autoCorrect?: boolean;
+	autoCapitalize?: 'none' | 'sentences' | 'characters' | 'words';
 }
 
 export interface ISXTextInputState {
@@ -80,6 +82,8 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		size: InputSizes.Normal,
 		borderWidth: Sizes.smartHorizontalScale(2),
 		multiline: false,
+		autoCorrect: false,
+		autoCapitalize: 'none',
 	};
 
 	public state = {
@@ -128,9 +132,9 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 						style={textInputStyles}
 						placeholder={this.props.placeholder}
 						placeholderTextColor={this.props.placeholderColor}
-						autoCorrect={false}
+						autoCorrect={this.props.autoCorrect}
 						underlineColorAndroid={Colors.transparent}
-						autoCapitalize='none'
+						autoCapitalize={this.props.autoCapitalize}
 						clearButtonMode='while-editing' // only works on iOS
 						blurOnSubmit={this.props.blurOnSubmit}
 						numberOfLines={this.props.numberOfLines}

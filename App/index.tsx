@@ -7,7 +7,6 @@ import Orientation from 'react-native-orientation';
 
 import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
 
 // refactoring
 import { Animations } from 'configuration/animations';
@@ -17,23 +16,20 @@ import {Colors} from 'theme';
 import {AppsyncClient, Rehydrated} from 'backend/appsync';
 import RootContainer from './containers/RootContainer';
 
-import createStore from './reducers/createStore';
+import createStore from './reducers';
 
-// TODO: find a proper suitable initializers invoker that is high level and equivalent of this
 import Init from './initializers';
-// TODO: @serkan ask @jake why here, why not in the component?
-// TODO: besides this won't always work because languageInit is async so it should be "await"ed in componentDidMount
-Init();
 
-const { store, persistor } = createStore();
+const store = createStore();
 
 export default class App extends Component<{}, {}> {
-	public componentDidMount(): void {
+	public async componentDidMount(): Promise<void> {
 		if (Platform.OS === OS_TYPES.Android) {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
 		Animatable.initializeRegistryWithDefinitions(Animations);
 		Orientation.lockToPortrait();
+		await Init();
 	}
 
 	public render() {

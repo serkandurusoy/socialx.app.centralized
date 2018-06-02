@@ -41,11 +41,9 @@ export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
 			cropping: true,
 			mediaType: 'photo',
 			useFrontCamera: true,
-			includeBase64: true,
 		});
 		const retImage = image as Image;
-		const base64Image = `data:${retImage.mime};base64,${retImage.data}`;
-		props.afterImagePick(base64Image);
+		props.afterImagePick(retImage.path);
 	};
 
 	const pickUserAvatar = () => {

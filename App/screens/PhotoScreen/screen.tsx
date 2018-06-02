@@ -65,9 +65,8 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 					<View style={style.captionContainer}>
 						<TextInput
 							autoFocus={true}
-							autoCorrect={false}
+							autoCorrect={true}
 							underlineColorAndroid={Colors.transparent}
-							autoCapitalize='none'
 							numberOfLines={1}
 							multiline={true}
 							placeholder={'Write a caption...'}
@@ -111,9 +110,8 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 					<View style={style.withMaxHeight}>
 						<TextInput
 							autoFocus={true}
-							autoCorrect={false}
+							autoCorrect={true}
 							underlineColorAndroid={Colors.transparent}
-							autoCapitalize='none'
 							numberOfLines={2}
 							multiline={true}
 							style={style.multilineTextInput}
@@ -184,9 +182,8 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 					<View style={style.withMaxHeight}>
 						<TextInput
 							autoFocus={true}
-							autoCorrect={false}
+							autoCorrect={true}
 							underlineColorAndroid={Colors.transparent}
-							autoCapitalize='none'
 							numberOfLines={2}
 							multiline={true}
 							style={style.multilineTextInput}

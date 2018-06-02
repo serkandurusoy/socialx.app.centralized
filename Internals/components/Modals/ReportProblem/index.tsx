@@ -87,6 +87,8 @@ class ModalReportProblemComponent extends Component<
 
 							<View style={style.descriptionContainer}>
 								<SXTextInput
+									autoCapitalize={'sentences'}
+									autoCorrect={true}
 									numberOfLines={3}
 									borderColor={Colors.dustWhite}
 									placeholder={'Describe your Report'}

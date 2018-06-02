@@ -130,7 +130,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 										username,
 										requestId,
 										status,
-								  }
+								}
 								: type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE
 									? {
 											type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
@@ -140,7 +140,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 											username,
 											requestId,
 											status,
-									  }
+									}
 									: null,
 					)
 					.filter((n) => n !== null);
@@ -179,15 +179,15 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			console.log(ex);
 			this.setState({refreshing: false});
 		}
-	};
+	}
 
 	private postThumbPressedHandler = (postId: string) => {
 		alert('postThumbPressedHandler: ' + postId);
-	};
+	}
 
 	private superLikedPhotoPressedHandler = (postId: string) => {
 		alert('superLikedPhotoPressedHandler: ' + postId);
-	};
+	}
 
 	private friendRequestApprovedHandler = async (requestId: string) => {
 		const {acceptFriendRequest} = this.props;
@@ -197,7 +197,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			},
 		});
 		await this.refreshNotifications();
-	};
+	}
 
 	private friendRequestDeclinedHandler = async (requestId: string) => {
 		const {declineFriendRequest} = this.props;
@@ -207,21 +207,21 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			},
 		});
 		await this.refreshNotifications();
-	};
+	}
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
-	};
+	}
 
 	private onGroupRequestDeclinedHandler = (requestId: string) => {
 		alert('onGroupRequestDeclinedHandler: ' + requestId);
-	};
+	}
 
 	private checkNotification = async (requestId: string) => {
 		const {checkNotification} = this.props;
 		await checkNotification({variables: {request: requestId}});
 		await this.refreshNotifications();
-	};
+	}
 }
 
 const notificationsWrapper = getMyNotificationsHoc(NotificationsScreen);

@@ -89,6 +89,44 @@ const getPublicPostsQ = gql`
 	}
 `;
 
+const getFriendsPostsQ = gql`
+	query getFriendsPosts($next: String) {
+		getFriendsPosts(next: $next) {
+			Items {
+				id
+				text
+				createdAt
+				location
+				likes {
+					userId
+				}
+				Media {
+					id
+					hash
+					optimizedHash
+					type
+				}
+				owner {
+					userId
+					username
+					name
+					avatar {
+						id
+						hash
+					}
+				}
+				comments {
+					id
+					comments {
+						id
+					}
+				}
+			}
+			nextToken
+		}
+	}
+`;
+
 export const likePostHoc = (comp: any) => graphql(likePost, {name: 'likePost'})(comp);
 export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: 'removeLikePost'})(comp);
 
@@ -162,4 +200,80 @@ export const getPublicPostsHoc = (comp: any) =>
 					}) : {},
 			};
 		},
-	})(comp);
+})(comp);
+
+export const getFriendsPostsHoc = (comp: any) =>
+	graphql(getFriendsPostsQ, {
+		name: 'Posts',
+		options: {fetchPolicy: 'network-only'},
+		props(pps) {
+			const {
+				Posts: {loading, error, getFriendsPosts, fetchMore, refetch, hasMore},
+			} = pps;
+			console.log(pps);
+			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
+			// const {nextToken, Items, rawItems} = getPublicPosts;
+			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
+			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
+			const numberOfComments = (post: any) => {
+				let cres = 0;
+				for (let x = 0; x < post.comments.length; x++) {
+					cres += post.comments[x].comments.length + 1;
+				}
+				return cres;
+			};
+
+			const dataSpine = (pItems: any) => {
+				const rets = [];
+				for (let i = 0; i < pItems.length; i++) {
+					const post = pItems[i];
+					rets.push({
+						id: post.id,
+						text: post.text,
+						location: post.location,
+						media: post.Media,
+						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+						numberOfLikes: post.likes.length,
+						numberOfSuperLikes: 0,
+						numberOfComments: numberOfComments(post),
+						numberOfWalletCoins: 0,
+						onLikeButtonClick: () => null,
+						canDelete: false,
+						owner: post.owner,
+						onDeleteClick: null,
+						likes: post.likes,
+					});
+				}
+				return rets;
+			};
+			return {
+				loading,
+				rawItems: Items,
+				Items: dataSpine(Items),
+				refresh: refetch,
+				nextToken,
+				noPosts: !Items.length,
+				hasMore: nextToken !== null,
+				loadMore: () => nextToken !== null ?
+					fetchMore({
+						variables: {next: nextToken},
+						updateQuery: (previousResult, {fetchMoreResult}) => {
+							const previousEntry = previousResult.getFriendsPosts;
+							const previousItems = previousEntry ? previousEntry.Items : [];
+							const newItems = fetchMoreResult.getFriendsPosts.Items || [];
+							const newNext = fetchMoreResult.getFriendsPosts.nextToken;
+
+							const newPosts = {
+								getFriendsPosts: {
+									nextToken: newNext,
+									Items: newNext ? previousItems.concat(newItems) : previousItems,
+									__typename: 'PaginatedPosts',
+								},
+							};
+							return newPosts;
+						},
+					}) : {},
+			};
+		},
+})(comp);

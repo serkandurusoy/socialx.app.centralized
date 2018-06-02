@@ -11,6 +11,7 @@ const SEARCH_DEBOUNCE_TIME_MS = 300;
 
 interface ISearchFeedHeaderProps {
 	searchInputUpdated: (value: string) => void;
+	onPress: () => void;
 }
 
 interface ISearchFeedHeaderState {
@@ -65,6 +66,7 @@ export class SearchFeedHeader extends Component<ISearchFeedHeaderProps, ISearchF
 	}
 
 	private focusInputHandler = () => {
+		this.props.onPress();
 		this.setState({
 			hasFocus: true,
 		});

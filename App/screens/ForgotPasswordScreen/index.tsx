@@ -82,6 +82,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 			ModalManager.safeRunAfterModalClosed(() => {
 				Alert.alert('Something wrong, Bad username/Servers down');
 			});
+			console.log(ex);
 		}
 		hideLoader();
 	}

@@ -6,10 +6,10 @@ import {connect} from 'react-redux';
 import {getRandomImage} from 'utilities';
 import CommentsScreenComponent from './screen';
 
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
+import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
 
 import {ipfsConfig as base} from 'configuration';
-import {CommentType, IComments, ICommentsResponse, IUserQuery} from 'types';
+import {CommentType, IComments, ICommentsResponse, IUserDataResponse, IUserQuery} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {AvatarImagePlaceholder} from 'consts';
@@ -47,13 +47,15 @@ export interface IWallPostCommentsProps {
 
 	commentingLoader: () => void;
 	hideLoader: () => void;
+
+	data: IUserDataResponse;
 }
 
 class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostCommentsState> {
 	private static navigationOptions = (props: IWallPostCommentsProps) => ({
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
 		headerLeft: <View />,
-	});
+	})
 
 	public state = {
 		allComments: [],
@@ -69,7 +71,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		return (
 			<CommentsScreenComponent
-				isLoading={allComments.length < 0}
+				isLoading={allComments.length < 0 || this.props.data.loading}
 				comments={allComments}
 				noComments={noComments}
 				onCommentLike={this.onCommentLikeHandler}
@@ -83,7 +85,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const {userId} = this.props.navigation.state.params;
 		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
-	};
+	}
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
 		const {likeComment, removeCommentLike} = this.props;
@@ -98,11 +100,11 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		} catch (ex) {
 			console.log(ex);
 		}
-	};
+	}
 
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
 		// console.log('TODO: delete comment with ID', comment.id);
-	};
+	}
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;
@@ -120,11 +122,13 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		}
 		hideLoader();
 		// console.log('onCommentSendHandler', commentText);
-	};
+	}
 
 	private preFetchComments = async () => {
 		const {postId, userId} = this.props.navigation.state.params;
-		const {getComments} = this.props;
+		const {getComments, data} = this.props;
+
+		const thisUserId = data.user.userId;
 
 		const qVar = {variables: {targetPost: postId}};
 
@@ -160,7 +164,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 									replies: [],
 									likedByMe: currentReply.likes.some((x) => x.userId === userId),
 								};
-						  })
+						})
 						: [];
 
 				return {
@@ -193,7 +197,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				}),
 			});
 		}
-	};
+	}
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -203,7 +207,9 @@ const MapDispatchToProps = (dispatch: any) => ({
 
 const reduxWrapper = connect(null, MapDispatchToProps)(CommentsScreen as any);
 
-const getCommentsWrapper = getCommentsHoc(reduxWrapper);
+const currentUserDataWrapper = userHoc(reduxWrapper);
+
+const getCommentsWrapper = getCommentsHoc(currentUserDataWrapper);
 const commentWrapper = commentHoc(getCommentsWrapper);
 
 const likeCommentWrapper = likeCommentHoc(commentWrapper);

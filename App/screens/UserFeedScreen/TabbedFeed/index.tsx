@@ -62,15 +62,15 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 			// 	/>
 			// ),
 			headerRight: <View />,
-			headerLeft: (
-				<ScreenHeaderButton
-					iconName={'md-flame'}
-					// onPress={() => props.navigation.navigate('HotPostsFeedScreenStack')}
-				/>
-			),
+			headerLeft: <ScreenHeaderButton iconName={'md-flame'} onPress={() => alert('Hot Posts.. Comming soon..')} />,
 			headerTitle: () => {
 				const params = props.navigation.state.params || {};
-				return <SearchFeedHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
+				return (
+					<SearchFeedHeader
+						onPress={() => alert('Search for #\'s or @\'s or even a relavent keyword.. Comming soon..')}
+						searchInputUpdated={params.searchInputUpdatedHandler}
+					/>
+				);
 			},
 		};
 	}
