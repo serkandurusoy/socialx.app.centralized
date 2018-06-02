@@ -111,6 +111,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		);
 	}
 
+	// todo @serkan @jake let's discuss this
 	private doSearch = async (query: string) => {
 		const {search} = this.props;
 		const results: SearchResultPeople[] = [];
@@ -123,17 +124,13 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			if (resp.length === 0) {
 				return results;
 			}
-			for (let i = 0; i < resp.length; i++) {
-				const current = resp[i].user;
-				results.push({
-					id: current.userId,
-					kind: resp[i].connection,
-					fullName: current.name,
-					username: current.username,
-					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
-				});
-			}
-			return results;
+			return resp.map(({connection, user: current}) => ({
+				id: current.userId,
+				kind: connection,
+				fullName: current.name,
+				username: current.username,
+				avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
+			}));
 		} catch (ex) {
 			return results;
 		}
@@ -163,7 +160,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	}
 
 	private selectNewUserForGroupHandler = (userId: string) => {
-		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
+		this.setState({selectedUsers: [...this.state.selectedUsers, userId]});
 	}
 
 	private toggleGroupInfoModal = (prepareNext = false) => {

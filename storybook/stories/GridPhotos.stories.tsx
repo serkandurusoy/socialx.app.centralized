@@ -11,6 +11,7 @@ const containerStyle = {
 };
 
 const getPhotosStartingWithIndex = (numberOfResults: number, maxResults: number) => {
+	// todo @serkan @jake what?
 	const ret = [];
 	const endIndex = currentIndex + numberOfResults;
 	for (let i = currentIndex; i < endIndex; i++) {

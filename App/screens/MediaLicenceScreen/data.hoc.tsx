@@ -235,6 +235,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 			};
 		}
 
+		// todo: @serkan @jake what?
 		private getMoreSimilarMedia = (refMediaData: IMediaLicenceData) => {
 			const ret: IMediaLicenceData[] = [];
 			for (let i = 0; i < SIMILAR_PAGE_SIZE; i++) {
@@ -264,7 +265,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 
 		private onLoadMoreSimilarMediaHandler = () => {
 			this.setState({
-				similarMedia: this.state.similarMedia.concat(this.getMoreSimilarMedia(this.state.mediaData)),
+				similarMedia: [...this.state.similarMedia, ...this.getMoreSimilarMedia(this.state.mediaData)],
 			});
 		}
 

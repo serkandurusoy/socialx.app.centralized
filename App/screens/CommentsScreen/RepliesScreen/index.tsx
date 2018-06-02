@@ -73,11 +73,11 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private onReplyDeleteHandler = (reply: IWallPostCommentReply) => {
 		// console.log('TODO: onReplyDeleteHandler', reply.id);
-	}
+	};
 
 	private onSendReplyHandler = async (replyText: string) => {
 		const {loadCommenting, hideLoader, comment, navigation} = this.props;
@@ -93,7 +93,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		}
 		hideLoader();
 		// console.log('onSendReplyHandler', replyText);
-	}
+	};
 
 	private preFetchComments = async () => {
 		const commentId = this.props.navigation.state.params.commentId;
@@ -109,15 +109,12 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			}
 
 			const comments: IComments[] = getResp.data.getComments;
-			const resComments: IWallPostCommentReply[] = [];
-
-			for (let i = 0; i < comments.length; i++) {
-				const currentComment = comments[i];
+			const resComments: IWallPostCommentReply[] = comments.map((currentComment) => {
 				const commentOwnerAv = currentComment.owner.avatar
 					? base.ipfs_URL + currentComment.owner.avatar.hash
 					: AvatarImagePlaceholder;
 
-				resComments.push({
+				return {
 					id: currentComment.id,
 					text: currentComment.text,
 					user: {
@@ -128,9 +125,9 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 					timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
 					likes: currentComment.likes,
 					numberOfLikes: currentComment.likes.length,
-					likedByMe: currentComment.likes.find((x) => x.userId === userId) ? true : false,
-				});
-			}
+					likedByMe: currentComment.likes.some((x) => x.userId === userId),
+				};
+			});
 
 			this.setState({
 				replies: resComments.sort((a: any, b: any) => {
@@ -147,7 +144,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		} catch (ex) {
 			return;
 		}
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({

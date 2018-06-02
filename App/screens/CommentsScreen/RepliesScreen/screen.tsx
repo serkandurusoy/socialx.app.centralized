@@ -3,7 +3,7 @@ import {CommentTextInput} from 'components/Inputs/CommentTextInput';
 import {OS_TYPES} from 'consts';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
-import {Platform, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
+import {Platform, SafeAreaView, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
 import {IWallPostCommentReply} from '../index';
 import style from './style';
 
@@ -32,10 +32,11 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 	private scrollRef: ScrollView;
 
 	public render() {
-		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.IOS) {
-			containerStyles.push({marginBottom: this.props.marginBottom});
-		}
+		const containerStyles = [
+			style.container,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : [])
+		];
+
 		return (
 			<SafeAreaView style={containerStyles}>
 				<ScrollView
@@ -51,22 +52,14 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 		);
 	}
 
-	private renderReplies = () => {
-		const ret: any = [];
-		this.props.replies.forEach((reply, index) => {
-			ret.push(
-				<CommentCard
-					key={index}
-					comment={reply}
-					onCommentLike={() => this.props.onReplyLike(reply)}
-					onCommentReply={() => Function()}
-					isReply={true}
-					onCommentDelete={() => this.props.onReplyDelete(reply)}
-				/>,
-			);
-		});
-		return ret;
-	}
+	private renderReplies = () => this.props.replies.map((reply, index) => <CommentCard
+		key={index}
+		comment={reply}
+		onCommentLike={() => this.props.onReplyLike(reply)}
+		onCommentReply={() => Function()}
+		isReply={true}
+		onCommentDelete={() => this.props.onReplyDelete(reply)}
+	/>)
 }
 
 export default withResizeOnKeyboardShow(RepliesScreenComponent);

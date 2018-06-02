@@ -141,6 +141,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 
 	private renderAddTagFriends = () => {
 		if (this.state.tagFriends) {
+			// todo @serkan @jake this is unused???
 			const taggedFriendsForRender = [];
 			for (const taggedFriend of this.props.taggedFriends) {
 				taggedFriendsForRender.push(

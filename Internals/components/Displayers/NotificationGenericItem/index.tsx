@@ -83,8 +83,7 @@ class NotificationGIComp extends React.Component<INotificationGIProps, INotifica
 	}
 
 	private getLeftContent = () => {
-		const swiperStyles = [style.leftSwipeContainer];
-		swiperStyles.push({height: this.state.swipeOutHeight});
+		const swiperStyles = [style.leftSwipeContainer, {height: this.state.swipeOutHeight}];
 		return (
 			<View style={swiperStyles}>
 				<Text style={style.leftText}>{'Dismiss'}</Text>

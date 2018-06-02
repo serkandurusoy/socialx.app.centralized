@@ -84,7 +84,7 @@ export const withModalForAddFriends = (
 		}
 
 		private tagFriendHandler = (friend: FriendsSearchResult) => {
-			this.setState({taggedFriendsInModal: this.state.taggedFriendsInModal.concat([friend])});
+			this.setState({taggedFriendsInModal: [...this.state.taggedFriendsInModal, friend]});
 		}
 
 		private friendsSearchUpdatedHandler = (term: string) => {

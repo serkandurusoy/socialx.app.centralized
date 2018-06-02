@@ -9,7 +9,7 @@ import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
 
 // refactoring
-import {getAvailableAnimations} from 'configuration/animations';
+import { Animations } from 'configuration/animations';
 import {OS_TYPES} from 'consts';
 import {Colors} from 'theme';
 
@@ -18,24 +18,25 @@ import RootContainer from './containers/RootContainer';
 
 import createStore from './reducers';
 
-// TODO: find a proper suitable initilizers invoker that is high level and equivalent of this
 import Init from './initializers';
-Init();
 
 const store = createStore();
 
 export default class App extends Component<{}, {}> {
-	public componentDidMount(): void {
+	public async componentDidMount(): Promise<void> {
 		if (Platform.OS === OS_TYPES.Android) {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
-		Animatable.initializeRegistryWithDefinitions(getAvailableAnimations());
+		Animatable.initializeRegistryWithDefinitions(Animations);
 		Orientation.lockToPortrait();
+		await Init();
 	}
 
 	public render() {
 		return (
 			<ApolloProvider client={AppsyncClient}>
+				{/* // TODO: @serkan ask @jake why not use PersistGate? */}
+				{/* // TODO: and looks like aws-appsync-react is an "exotic" module, not officially installed from npm */}
 				<Rehydrated>
 					<Provider store={store}>
 						<RootContainer />

@@ -53,6 +53,7 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 				isHidden: true,
 				marginBottom: 0,
 			});
+			// todo: @serkan @jake what???
 			this.onHideHandlers.forEach((handler) => {
 				handler();
 			});
@@ -63,6 +64,7 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 			if (this.state.isHidden) {
 				handler(); // Keyboard is already hidden run the handler right away
 			} else {
+				// todo: @serkan @jake what???
 				this.onHideHandlers.push(handler); // Added handler to run after keyboard hide
 			}
 		}

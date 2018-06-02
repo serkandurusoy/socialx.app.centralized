@@ -23,8 +23,7 @@ export const EventDetailScreenComponent: React.SFC<IEventDetailScreenComponentPr
 	};
 
 	const renderTitleSection = () => {
-		const titleStyles = [style.titleColorContainer];
-		titleStyles.push({backgroundColor: eventData.color});
+		const titleStyles = [style.titleColorContainer, {backgroundColor: eventData.color}];
 
 		return (
 			<View style={titleStyles}>

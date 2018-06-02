@@ -134,7 +134,8 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 				loadingMore: true,
 			});
 			setTimeout(() => {
-				const allGovPosts = this.state.govPosts.concat(JSON.parse(JSON.stringify(GOVERNANCE_POSTS)));
+				// todo @serkan @jake why stringify and parse????
+				const allGovPosts = [...this.state.govPosts, ...JSON.parse(JSON.stringify(GOVERNANCE_POSTS))];
 				this.updateIdsForNewGovPosts(allGovPosts);
 				this.setState({
 					loadingMore: false,
@@ -145,12 +146,11 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 		}
 	}
 
-	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) => {
-		// TODO: can be deleted when we have data with unique IDs
-		allGovPosts.forEach((govPost, index) => {
-			govPost.id = index.toString();
-		});
-	}
+	// TODO: can be deleted when we have data with unique IDs
+	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) => allGovPosts.map((govPost, index) => ({
+		...govPost,
+		id: index.toString(),
+	}))
 
 	private onVoteUpHandler = (govPost: IGovPostData) => {
 		// TODO: network call to update upVotes, maybe hide this card?

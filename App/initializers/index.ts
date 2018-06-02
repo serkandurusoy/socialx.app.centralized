@@ -1,9 +1,9 @@
 import {languageInit} from 'utilities/amplify';
 
-export default () => {
+export default async () => {
 	// init I18n language set
 	removeConsoleLogs();
-	languageInit();
+	await languageInit();
 };
 
 const removeConsoleLogs = () => {

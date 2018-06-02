@@ -12,6 +12,8 @@ interface IWallPostMediaProps {
 	noInteraction?: boolean;
 }
 
+// todo @serkan @jake SFC's should not create internal new function instances to do stuff, we should take
+// all of these out and do the same for all such things throughout the codebase
 export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 	const {mediaObjects} = props;
 
@@ -67,10 +69,7 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 	};
 
 	const renderMultiMediaPost = () => {
-		const mediaURLs: string[] = [];
-		mediaObjects.forEach((mediaObject) => {
-			mediaURLs.push(getURLForMediaViewerObject(mediaObject));
-		});
+		const mediaURLs: string[] = mediaObjects.map((mediaObject) => getURLForMediaViewerObject(mediaObject));
 		const numberOfMoreMediaObjects = mediaObjects.length - 3;
 		return (
 			<View style={style.postMediaContainerFullWidth}>
