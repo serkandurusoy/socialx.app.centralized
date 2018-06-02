@@ -6,6 +6,12 @@ export enum FormTypes {
 	Checkbox,
 }
 
+export enum FriendTypes {
+	NotFriend = 'NOT_FRIEND',
+	FriendRequestSent = 'FRIEND_REQUEST_SENT',
+	Friend = 'FRIEND',
+}
+
 export enum DeviceOrientations {
 	Portrait = 'PORTRAIT',
 	Landscape = 'LANDSCAPE',

@@ -12,9 +12,9 @@ import UserProfileScreenComponent from './screen';
 import {ApolloClient} from 'apollo-client';
 import {withApollo} from 'react-apollo';
 
-import {getUserPostsQ, getUserProfileQ} from 'backend/graphql';
+import {addFriendHoc, getUserProfileHoc, getUserPostHoc} from 'backend/graphql';
 import {ipfsConfig as base} from 'configuration';
-import {AvatarImagePlaceholder} from 'consts';
+import {AvatarImagePlaceholder, FriendTypes} from 'consts';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
@@ -36,7 +36,9 @@ const INITIAL_STATE = {
 
 interface IUserProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
-	client: ApolloClient<any>;
+	addFriend: any;
+	getUserQuery: any;
+	getUserPosts: any;
 }
 
 interface IUserProfileScreenState {
@@ -68,6 +70,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				/> */}
 				{/* @ionut TODO: create a refresh button here? */}
 				{/* <IconButton ex={true} iconSource={'sync-alt'} /> */}
+				<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.addFriend} />
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
@@ -77,145 +80,41 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 	private lastLoadedPhotoIndex = 0;
 
-	public async componentDidMount() {
-		await this.preFetch();
-	}
-
-	public render() {
-		return (
-			<UserProfileScreenComponent
-				isLoading={this.state.isLoading}
-				totalNumberOfPhotos={GRID_MAX_RESULTS}
-				gridPageSize={GRID_PAGE_SIZE}
-				numberOfPhotos={this.state.numberOfPhotos}
-				numberOfLikes={this.state.numberOfLikes}
-				numberOfFollowers={this.state.numberOfFollowers}
-				numberOfFollowing={this.state.numberOfFollowing}
-				isFollowed={this.state.isFollowed}
-				avatarURL={this.state.avatarURL}
-				fullName={this.state.fullName}
-				username={this.state.username}
-				aboutMeText={this.state.aboutMeText}
-				recentPosts={this.state.recentPosts}
-				loadMorePhotosHandler={this.loadMorePhotosHandler}
-				navigation={this.props.navigation}
-				allMediaObjects={this.state.mediaObjects}
-
-				onCommentClick={this.onCommentsButtonClickHandler}
-				onImageClick={this.onMediaObjectPressHandler}
-				onLikeClick={null}
-			/>
-		);
-	}
-
-	private preFetch = async () => {
-		const {client} = this.props;
+	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({
 				isFollowed: this.state.isFollowed,
 				toggleFollow: this.toggleFollowHandler,
 			});
 		});
-
-		try {
-			const userId = this.props.navigation.state.params.userId;
-			const userProfileRes = await client.query({
-				query: getUserProfileQ,
-				variables: {userId},
-				fetchPolicy: 'network-only',
-			});
-			const getUser = userProfileRes.data.getUser;
-
-			const userPostsRes = await client.query({query: getUserPostsQ, variables: {userId}, fetchPolicy: 'network-only'});
-			const userPosts = userPostsRes.data.getPostsOwner.Items;
-
-			const mediaObjs = this.preloadAllMediaObjects(userPosts);
-
-			let numOfLikes = 0;
-			getUser.posts.forEach((post: any) => {
-				numOfLikes += post.likes.length;
-			});
-
-			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
-			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);
-
-			console.log(preLoadPosts);
-			this.setState({
-				isLoading: false,
-				avatarURL: avatar,
-				fullName: getUser.name,
-				username: getUser.username,
-				aboutMeText: getUser.bio,
-				mediaObjects: mediaObjs,
-				numberOfPhotos: mediaObjs.length,
-				numberOfLikes: numOfLikes,
-				recentPosts: preLoadPosts,
-			});
-		} catch (ex) {
-			console.log(ex);
-		}
 	}
 
-	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
-		if (!posts) {
-			return [];
-		}
+	public render() {
+		const {getUserQuery, getUserPosts} = this.props;
+		return (
+			<UserProfileScreenComponent
+				isLoading={getUserQuery.loading || getUserPosts.loading}
+				totalNumberOfPhotos={GRID_MAX_RESULTS}
+				gridPageSize={GRID_PAGE_SIZE}
+				numberOfPhotos={getUserQuery.getUser.numberOfPhotos}
+				numberOfLikes={getUserQuery.getUser.numberOfLikes}
+				numberOfFollowers={this.state.numberOfFollowers}
+				numberOfFollowing={this.state.numberOfFollowing}
+				isFollowed={this.state.isFollowed}
+				avatarURL={getUserQuery.getUser.avatarURL}
+				fullName={getUserQuery.getUser.fullName}
+				username={getUserQuery.getUser.username}
+				aboutMeText={getUserQuery.getUser.aboutMeText}
+				recentPosts={getUserPosts.Items}
+				loadMorePhotosHandler={this.loadMorePhotosHandler}
+				navigation={this.props.navigation}
+				allMediaObjects={getUserQuery.getUser.mediaObjects}
 
-		const ownerName = user.name;
-		const ownerId = user.userId;
-
-		const getCommentsNum = (comments: any) => {
-			if (!comments.length) {
-				return 0;
-			}
-
-			let res = 0;
-			for (res; res < comments.length; res++) {
-				res += comments[res].comments.length > 0 ? comments[res].comments.length : 0;
-			}
-			return res;
-		};
-
-		const recentPosts: any = [];
-		for (let i = 0; i < posts.length; i++) {
-			if (i > 2) {
-				return recentPosts;
-			}
-			const currentPost = posts[i];
-			recentPosts.push({
-				id: currentPost.id,
-				title: null,
-				text: currentPost.text,
-				location: currentPost.location,
-				smallAvatar: ownerAvatar,
-				fullName: ownerName,
-				timestamp: new Date(parseInt(currentPost.createdAt, 10) * 1000),
-				numberOfLikes: currentPost.likes.length,
-				numberOfComments: getCommentsNum(currentPost.comments),
-				canDelete: currentPost.owner.userId === ownerId,
-				media: currentPost.Media,
-				owner: user,
-			});
-		}
-		return recentPosts;
-	}
-
-	private preloadAllMediaObjects = (posts: any) => {
-		if (!posts) {
-			return [];
-		}
-
-		const Imgs: IMediaProps[] = [];
-		for (let y = 0; y < posts.length; y++) {
-			const currentMedia = posts[y].Media;
-			if (currentMedia) {
-				for (let x = 0; x < currentMedia.length; x++) {
-					Imgs.push(currentMedia[x]);
-				}
-			}
-		}
-
-		return Imgs;
+				onCommentClick={this.onCommentsButtonClickHandler}
+				onImageClick={this.onMediaObjectPressHandler}
+				onLikeClick={null}
+			/>
+		);
 	}
 
 	private toggleFollowHandler = () => {
@@ -239,6 +138,21 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			}
 		}
 		return ret;
+	}
+
+	private addFriendHandler = async () => {
+		const {addFriend, navigation, getUserQuery} = this.props;
+		const userId = navigation.state.params.userId;
+
+		try {
+			if (getUserQuery.relationship === FriendTypes.NotFriend) {
+				await addFriend({variables: { userId }});
+			} else {
+				alert('You are already friends with this user.');
+			}
+		} catch (ex) {
+			console.log(ex);
+		}
 	}
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {
@@ -267,6 +181,8 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	}
 }
 
-const ApolloWrapper = withApollo(UserProfileScreen);
+const getUserQueryWrapper = getUserProfileHoc(UserProfileScreen);
+const getUserPostsWrapper = getUserPostHoc(getUserQueryWrapper);
+const addFriendWrapper = addFriendHoc(getUserPostsWrapper);
 
-export default ApolloWrapper;
+export default addFriendWrapper;
