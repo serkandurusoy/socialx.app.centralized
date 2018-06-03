@@ -153,12 +153,12 @@ const getFriendsPostsQ = gql`
 const getNumberOfComments = (comments: any, holder: number = 0) => {
 	if (!comments) { return 0 };
 	if (comments.length > 0) {
-		const rt = holder += comments.length;
+		holder += comments.length;
 		return comments.map((com: any) => {
 			if (com.comments.length > 0) {
-				return getNumberOfComments(com.comments, rt);
+				return getNumberOfComments(com.comments, holder);
 			} else {
-				return rt;
+				return holder;
 			}
 		});
 	} else {
@@ -184,6 +184,13 @@ export const getPublicPostsHoc = (comp: any) =>
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
 			const Items = getPublicPosts ? getPublicPosts.Items : [];
+			const numberOfComments = (post: any) => {
+				let cres = 0;
+				for (let x = 0; x < post.comments.length; x++) {
+					cres += post.comments[x].comments.length + 1;
+				}
+				return cres;
+			};
 
 			const dataSpine = (pItems: any) => pItems.map((post: any) => ({
 				id: post.id,
@@ -194,7 +201,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
-				numberOfComments: getNumberOfComments(post.comments),
+				numberOfComments: numberOfComments(post),
 				numberOfWalletCoins: 0,
 				onLikeButtonClick: () => null,
 				canDelete: false,
@@ -247,6 +254,13 @@ export const getFriendsPostsHoc = (comp: any) =>
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
 			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
+			const numberOfComments = (post: any) => {
+				let cres = 0;
+				for (let x = 0; x < post.comments.length; x++) {
+					cres += post.comments[x].comments.length + 1;
+				}
+				return cres;
+			};
 
 			const dataSpine = (pItems: any) => {
 				const rets = [];
@@ -261,7 +275,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 						numberOfLikes: post.likes.length,
 						numberOfSuperLikes: 0,
-						numberOfComments: getNumberOfComments(post.comments),
+						numberOfComments: numberOfComments(post),
 						numberOfWalletCoins: 0,
 						onLikeButtonClick: () => null,
 						canDelete: false,

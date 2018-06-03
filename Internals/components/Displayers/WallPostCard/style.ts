@@ -85,6 +85,14 @@ const style: any = {
 	locationPin: {
 		height: Sizes.smartHorizontalScale(14),
 	},
+	hashtag: {
+		color: 'rgba(98, 162, 225, 0.8)',
+		textDecorationLine: 'underline',
+	},
+	tag: {
+		color: 'black',
+		fontWeight: 'bold',
+	},
 };
 
 export default StyleSheet.create(style);

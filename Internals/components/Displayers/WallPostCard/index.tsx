@@ -16,6 +16,8 @@ import style from './style';
 import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
 
+import ParsedText from 'lib/textParser';
+
 const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
 const TITLE_MAX_LINES = 3;
 
@@ -119,7 +121,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderUserDetails = () => {
 		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
@@ -144,7 +146,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				{!this.state.hideAdvancedMenu && <TooltipDots items={this.getTooltipItems()} />}
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	// todo @serkan @jake what???
 	private renderTaggedFriends = () => {
@@ -169,7 +171,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			return ret;
 		}
 		return null;
-	}
+	};
 
 	private renderLocation = () => {
 		if (this.props.location) {
@@ -193,7 +195,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			];
 		}
 		return null;
-	}
+	};
 
 	private tooltipsReportPressedHandler = () => {
 		// @ionut TODO not working?
@@ -202,7 +204,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				modalVisibleReportProblem: true,
 			});
 		});
-	}
+	};
 
 	private renderWallPostMedia = () => {
 		return (
@@ -212,7 +214,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				noInteraction={this.state.disableMediaFullScreen}
 			/>
 		);
-	}
+	};
 
 	private renderPostDescription = () => {
 		const {text, title} = this.props;
@@ -240,7 +242,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderPostTitle = () => {
 		const title = this.props.title ? this.props.title : this.props.text;
@@ -249,7 +251,16 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			if (Platform.OS === OS_TYPES.Android) {
 				return (
 					<View style={style.postTitlePadding}>
-						<Text style={style.postTitle}>{title}</Text>
+						<ParsedText
+							style={style.postTitle}
+							childrenProps={{allowFontScaling: false}}
+							parse={[
+								{type: 'hashtag', style: style.hashtag, onPress: () => {alert('Hashtags!! Coming soon..')}},
+								{type: 'tags', style: style.tag, onPress: () => {alert('Tags!!! Coming soon..')}},
+							]}
+						>
+							{title}
+						</ParsedText>
 					</View>
 				);
 			} else {
@@ -284,16 +295,23 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 				return (
 					<View style={style.postTitlePadding}>
-						<Text style={style.postTitle}>
+						<ParsedText
+							style={style.postTitle}
+							childrenProps={{allowFontScaling: false}}
+							parse={[
+								{type: 'hashtag', style: style.hashtag, onPress: alert('Hashtags!! Coming soon..')},
+								{type: 'tag', style: style.tag, onPress: alert('Tags!!! Coming soon..')},
+							]}
+						>
 							{textToRender}
 							{showMoreButton}
-						</Text>
+						</ParsedText>
 					</View>
 				);
 			}
 		}
 		return null;
-	}
+	};
 
 	private renderWallPostActions = () => {
 		if (!this.state.hidePostActionsAndComments) {
@@ -312,25 +330,25 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
-	}
+	};
 
 	private toggleShowFullDescription = () => {
 		this.setState({
 			fullDescriptionVisible: true,
 		});
-	}
+	};
 
 	private toggleShowFullTitle = () => {
 		this.setState({
 			fullTitleVisible: true,
 		});
-	}
+	};
 
 	private toggleDeclineReportModal = () => {
 		this.setState({
 			modalVisibleReportProblem: !this.state.modalVisibleReportProblem,
 		});
-	}
+	};
 
 	private getTooltipItems = (): TooltipItem[] => [
 		{
@@ -347,32 +365,32 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			icon: Icons.iconReport,
 			actionHandler: this.tooltipsReportPressedHandler,
 		},
-		...(
-			this.props.canDelete
-				? [{
-					label: 'Delete Post',
-					icon: Icons.iconDelete,
-					actionHandler: this.tooltipsDeletePressedHandler,
-				}]
-				: []
-		),
-	]
+		...(this.props.canDelete
+			? [
+					{
+						label: 'Delete Post',
+						icon: Icons.iconDelete,
+						actionHandler: this.tooltipsDeletePressedHandler,
+					},
+			  ]
+			: []),
+	];
 
 	private tooltipsDeletePressedHandler = () => {
 		this.props.onDeleteClick(this.props.id);
 		// console.log('Delete this post');
-	}
+	};
 
 	private reportProblemHandler = (data: IReportData) => {
 		this.toggleDeclineReportModal();
 		// console.log('Report a problem', data);
-	}
+	};
 
 	private superLikeButtonPressedHandler = () => {
 		alert('Super-Like this post');
-	}
+	};
 
 	private walletCoinsButtonPressedHandler = () => {
 		alert('Go to my wallet');
-	}
+	};
 }
