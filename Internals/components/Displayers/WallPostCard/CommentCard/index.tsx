@@ -100,6 +100,9 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 	private renderReplies = () => {
 		if (!this.props.isReply) {
 			const replies = (this.props.comment as IWallPostComment).replies;
+			if (!replies) {
+				return <View />;
+			}
 			if (replies.length > 3) {
 				const lastReply = replies[replies.length - 1];
 				return (

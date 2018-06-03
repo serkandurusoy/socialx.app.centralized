@@ -6,13 +6,12 @@ import RepliesScreenComponent from './screen';
 
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
 
-import {IComments, ICommentsResponse} from 'types';
+import {IComments, ICommentsResponse, IUserQuery} from 'types';
 import {IWallPostCommentReply} from '../index';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import {ipfsConfig as base} from 'configuration';
-import {AvatarImagePlaceholder} from 'consts';
+import {getUserAvatar} from 'utilities';
 
 interface IRepliesScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -29,6 +28,8 @@ interface IRepliesScreenProps {
 
 interface IRepliesScreenState {
 	replies: IWallPostCommentReply[];
+	noReplies: boolean;
+	loading: boolean;
 }
 
 class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> {
@@ -39,6 +40,8 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 
 	public state = {
 		replies: [],
+		noReplies: false,
+		loading: true,
 	};
 
 	public async componentDidMount() {
@@ -49,11 +52,14 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		const {replies} = this.state;
 		return (
 			<RepliesScreenComponent
+				isLoading={this.state.loading}
+				noReplies={this.state.noReplies}
 				replies={replies}
 				startReply={this.props.navigation.state.params.startReply}
 				onReplyLike={this.onReplyLikeHandler}
 				onSendReply={this.onSendReplyHandler}
 				onReplyDelete={this.onReplyDeleteHandler}
+				onReplyComment={this.onCommentReplyHandler}
 			/>
 		);
 	}
@@ -61,7 +67,6 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 	private onReplyLikeHandler = async (comment: IWallPostCommentReply) => {
 		const {likeComment, removeCommentLike} = this.props;
 
-		console.log('cmt', comment);
 		const mVar = {variables: {commentId: comment.id}};
 		try {
 			if (comment.likedByMe) {
@@ -95,6 +100,32 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		// console.log('onSendReplyHandler', replyText);
 	};
 
+	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
+		const {userId} = this.props.navigation.state.params;
+		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
+	};
+
+	private loadMoreComments = (comments: IComments[]): IWallPostCommentReply[] => {
+		const userId = this.props.navigation.state.params.userId;
+		return comments.map((comment: IComments) => {
+			const userAvatar = getUserAvatar(comment.owner);
+			return {
+				id: comment.id,
+				text: comment.text,
+				user: {
+					fullName: comment.owner.name,
+					avatarURL: userAvatar,
+					id: comment.id,
+				},
+				timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
+				numberOfLikes: comment.likes ? comment.likes.length : 0,
+				likes: comment.likes,
+				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
+				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
+			}
+		});
+	}
+
 	private preFetchComments = async () => {
 		const commentId = this.props.navigation.state.params.commentId;
 		const userId = this.props.navigation.state.params.userId;
@@ -105,31 +136,16 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			const getResp: ICommentsResponse = await getComments(qVar);
 
 			if (getResp.data.getComments.length <= 0) {
+				this.setState({noReplies: true, loading: false});
 				return;
 			}
 
 			const comments: IComments[] = getResp.data.getComments;
-			const resComments: IWallPostCommentReply[] = comments.map((currentComment) => {
-				const commentOwnerAv = currentComment.owner.avatar
-					? base.ipfs_URL + currentComment.owner.avatar.hash
-					: AvatarImagePlaceholder;
-
-				return {
-					id: currentComment.id,
-					text: currentComment.text,
-					user: {
-						fullName: currentComment.owner.name,
-						avatarURL: commentOwnerAv,
-						id: currentComment.owner.userId,
-					},
-					timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
-					likes: currentComment.likes,
-					numberOfLikes: currentComment.likes.length,
-					likedByMe: currentComment.likes.some((x) => x.userId === userId),
-				};
-			});
+			const resComments: IWallPostCommentReply[] = this.loadMoreComments(comments);
 
 			this.setState({
+				noReplies: resComments.length === 0,
+				loading: false,
 				replies: resComments.sort((a: any, b: any) => {
 					if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
 						a = a.numberOfLikes;
@@ -142,7 +158,8 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				}),
 			});
 		} catch (ex) {
-			return;
+			this.setState({noReplies: true, loading: false});
+			console.log(ex);
 		}
 	};
 }

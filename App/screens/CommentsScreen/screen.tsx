@@ -79,6 +79,6 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 	};
 }
 
-const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent);
+const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent as any);
 
 export default withResizeOnKeyboardShow(inlineLoaderWrapper);

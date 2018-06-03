@@ -81,6 +81,18 @@ const getPublicPostsQ = gql`
 					id
 					comments {
 						id
+						comments {
+							id
+							comments {
+								id
+								comments {
+									id
+									comments {
+										id
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -119,6 +131,18 @@ const getFriendsPostsQ = gql`
 					id
 					comments {
 						id
+						comments {
+							id
+							comments {
+								id
+								comments {
+									id
+									comments {
+										id
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -126,6 +150,21 @@ const getFriendsPostsQ = gql`
 		}
 	}
 `;
+const getNumberOfComments = (comments: any, holder: number = 0) => {
+	if (!comments) { return 0 };
+	if (comments.length > 0) {
+		const rt = holder += comments.length;
+		return comments.map((com: any) => {
+			if (com.comments.length > 0) {
+				return getNumberOfComments(com.comments, rt);
+			} else {
+				return rt;
+			}
+		});
+	} else {
+		return 0;
+	}
+}
 
 export const likePostHoc = (comp: any) => graphql(likePost, {name: 'likePost'})(comp);
 export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: 'removeLikePost'})(comp);
@@ -145,13 +184,6 @@ export const getPublicPostsHoc = (comp: any) =>
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
 			const Items = getPublicPosts ? getPublicPosts.Items : [];
-			const numberOfComments = (post: any) => {
-				let cres = 0;
-				for (let x = 0; x < post.comments.length; x++) {
-					cres += post.comments[x].comments.length + 1;
-				}
-				return cres;
-			};
 
 			const dataSpine = (pItems: any) => pItems.map((post: any) => ({
 				id: post.id,
@@ -162,7 +194,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 				numberOfLikes: post.likes.length,
 				numberOfSuperLikes: 0,
-				numberOfComments: numberOfComments(post),
+				numberOfComments: getNumberOfComments(post.comments),
 				numberOfWalletCoins: 0,
 				onLikeButtonClick: () => null,
 				canDelete: false,
@@ -215,13 +247,6 @@ export const getFriendsPostsHoc = (comp: any) =>
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
 			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
-			const numberOfComments = (post: any) => {
-				let cres = 0;
-				for (let x = 0; x < post.comments.length; x++) {
-					cres += post.comments[x].comments.length + 1;
-				}
-				return cres;
-			};
 
 			const dataSpine = (pItems: any) => {
 				const rets = [];
@@ -236,7 +261,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 						numberOfLikes: post.likes.length,
 						numberOfSuperLikes: 0,
-						numberOfComments: numberOfComments(post),
+						numberOfComments: getNumberOfComments(post.comments),
 						numberOfWalletCoins: 0,
 						onLikeButtonClick: () => null,
 						canDelete: false,

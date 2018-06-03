@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {getRandomImage} from 'utilities';
+import {getRandomImage, getUserAvatar} from 'utilities';
 import CommentsScreenComponent from './screen';
 
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
@@ -12,7 +12,6 @@ import {ipfsConfig as base} from 'configuration';
 import {CommentType, IComments, ICommentsResponse, IUserDataResponse, IUserQuery} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-import {AvatarImagePlaceholder} from 'consts';
 
 export interface IWallPostCommentReply {
 	id: string;
@@ -35,6 +34,7 @@ export interface IWallPostComment extends IWallPostCommentReply {
 export interface IWallPostCommentsState {
 	allComments: IWallPostComment[];
 	noComments: boolean;
+	loading: boolean;
 }
 
 export interface IWallPostCommentsProps {
@@ -60,6 +60,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	public state = {
 		allComments: [],
 		noComments: false,
+		loading: true,
 	};
 
 	public async componentDidMount() {
@@ -71,7 +72,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 		return (
 			<CommentsScreenComponent
-				isLoading={allComments.length < 0 || this.props.data.loading}
+				isLoading={this.state.loading}
 				comments={allComments}
 				noComments={noComments}
 				onCommentLike={this.onCommentLikeHandler}
@@ -83,7 +84,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	}
 
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
-		const {userId} = this.props.navigation.state.params;
+		const userId = this.props.data.user.userId;
 		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
 	};
 
@@ -105,6 +106,27 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
 		// console.log('TODO: delete comment with ID', comment.id);
 	};
+
+	private loadMoreComments = (comments: IComments[]): IWallPostComment[] => {
+		const userId = this.props.data.user.userId;
+		return comments.map((comment: IComments) => {
+			const userAvatar = getUserAvatar(comment.owner);
+			return {
+				id: comment.id,
+				text: comment.text,
+				user: {
+					fullName: comment.owner.name,
+					avatarURL: userAvatar,
+					id: comment.id,
+				},
+				timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
+				numberOfLikes: comment.likes ? comment.likes.length : 0,
+				likes: comment.likes,
+				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
+				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
+			}
+		});
+	}
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;
@@ -135,56 +157,15 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		const getResp: ICommentsResponse = await getComments(qVar);
 
 		if (getResp.data.getComments.length <= 0) {
-			this.setState({noComments: true});
+			this.setState({noComments: true, loading: false});
 		} else {
 			const comments: IComments[] = getResp.data.getComments;
 
-			const resComments: IWallPostComment[] = comments.map((currentComment) => {
-				const ownerAv = currentComment.owner.avatar
-					? base.ipfs_URL + currentComment.owner.avatar.hash
-					: AvatarImagePlaceholder;
-				const allReplies: IWallPostComment[] =
-					currentComment.comments.length > 0
-						? currentComment.comments.map((currentReply) => {
-								const replyOwnerAv = currentReply.owner.avatar
-									? base.ipfs_URL + currentReply.owner.avatar.hash
-									: AvatarImagePlaceholder;
-
-								return {
-									id: currentReply.id,
-									text: currentReply.text,
-									user: {
-										fullName: currentReply.owner.name,
-										avatarURL: replyOwnerAv,
-										id: currentReply.owner.userId,
-									},
-									timestamp: new Date(parseInt(currentReply.createdAt, 10) * 1000),
-									numberOfLikes: currentReply.likes.length,
-									likes: currentReply.likes,
-									replies: [],
-									likedByMe: currentReply.likes.some((x) => x.userId === userId),
-								};
-						  })
-						: [];
-
-				return {
-					id: currentComment.id,
-					text: currentComment.text,
-					user: {
-						fullName: currentComment.owner.name,
-						avatarURL: ownerAv,
-						id: currentComment.owner.userId,
-					},
-					timestamp: new Date(parseInt(currentComment.createdAt, 10) * 1000),
-					numberOfLikes: currentComment.likes.length,
-					likes: currentComment.likes,
-					replies: allReplies,
-					likedByMe: currentComment.likes.some((x) => x.userId === userId),
-				};
-			});
+			const resComments: IWallPostComment[] = this.loadMoreComments(comments);
 
 			this.setState({
 				noComments: resComments.length === 0,
+				loading: false,
 				allComments: resComments.sort((a: any, b: any) => {
 					if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
 						a = a.numberOfLikes;
