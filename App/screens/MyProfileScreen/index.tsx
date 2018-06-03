@@ -58,10 +58,11 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		headerRight: (
 			<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.refreshScreen} />
 		),
-	})
+	});
 
 	public state = INITIAL_STATE;
 
+	// todo @serkan @jake why?
 	private lastLoadedPhotoIndex = 0;
 
 	public async componentDidMount() {
@@ -81,18 +82,17 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const {user} = data;
 		const {posts, avatar} = user;
 
-		let userImages = 0;
-		if (posts) {
-			posts.forEach((x) => {
-				userImages += x.Media ? x.Media.length : 0;
-			});
-		}
+		const userImages = (posts || []).reduce(
+			(count: number, post: any) => count + (post.Media ? post.Media.length : 0),
+			0,
+		);
+		const numOfLikes = posts.reduce((total: number, post: any) => total + post.likes.length, 0);
 
 		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
-			numberOfLikes: 0,
+			numberOfLikes: numOfLikes,
 			numberOfFollowers: 0,
 			numberOfFollowing: 0,
 			avatarURL: userAvatar,
@@ -124,6 +124,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		);
 	}
 
+	// todo @serkan @jake what?
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
 		const ret: IMediaProps[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
@@ -134,7 +135,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private preloadAllMediaObjects = () => {
 		const {data} = this.props;
@@ -146,6 +147,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			return [];
 		}
 
+		// todo @serkan @jake this looks like an unwrap/flatten, let's review
 		const Imgs: IMediaProps[] = [];
 		for (let y = 0; y < posts.length; y++) {
 			const currentMedia = posts[y].Media;
@@ -157,7 +159,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		return Imgs;
-	}
+	};
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

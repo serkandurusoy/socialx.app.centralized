@@ -85,6 +85,7 @@ export class ContactsList extends React.Component<IContactsListProps> {
 
 	private getFormattedData = () => {
 		const ret: any = {};
+		// todo: @serkan @jake what???
 		this.sortContactsList().forEach((contact: IContactListItem) => {
 			const nameInitial = contact.name.substr(0, 1).toUpperCase() + '.' + this.state.sideLetterLineHeight;
 			if (!ret.hasOwnProperty(nameInitial)) {
@@ -96,6 +97,7 @@ export class ContactsList extends React.Component<IContactsListProps> {
 	}
 
 	private getNumberOfUniqueLetters = () => {
+		// todo: @serkan @jake what???
 		const letterSet = new Set();
 		this.sortContactsList().forEach((contact: IContactListItem) => {
 			const nameInitial = contact.name.substr(0, 1).toUpperCase();

@@ -51,7 +51,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 			ret.text = this.state.text;
 		}
 		return ret;
-	}
+	};
 
 	public render() {
 		return this.props.renderWithLoader(
@@ -100,7 +100,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 				{this.renderAddLocation()}
 			</View>
 		);
-	}
+	};
 
 	private renderAddLocation = () => {
 		if (this.state.locationEnabled) {
@@ -123,7 +123,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderTagFriendsSection = () => {
 		return (
@@ -137,10 +137,11 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 				{this.renderAddTagFriends()}
 			</View>
 		);
-	}
+	};
 
 	private renderAddTagFriends = () => {
 		if (this.state.tagFriends) {
+			// todo @serkan @jake this is unused???
 			const taggedFriendsForRender = [];
 			for (const taggedFriend of this.props.taggedFriends) {
 				taggedFriendsForRender.push(
@@ -157,7 +158,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderDescriptionSection = () => {
 		return (
@@ -171,7 +172,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 				{this.renderAddDescription()}
 			</View>
 		);
-	}
+	};
 
 	private renderAddDescription = () => {
 		if (this.state.textEnabled) {
@@ -194,31 +195,31 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 			);
 		}
 		return null;
-	}
+	};
 
 	private toggleLocationHandler = () => {
 		this.setState({
 			locationEnabled: !this.state.locationEnabled,
 		});
-	}
+	};
 
 	private toggleTagFriendsHandler = () => {
 		this.setState({
 			tagFriends: !this.state.tagFriends,
 		});
-	}
+	};
 
 	private toggleDescriptionEnabledHandler = () => {
 		this.setState({
 			textEnabled: !this.state.textEnabled,
 		});
-	}
+	};
 
 	private textChangedHandler = (inputStateVar: string, value: string) => {
 		const newState: any = {};
 		newState[inputStateVar] = value;
 		this.setState(newState);
-	}
+	};
 }
 
 export default withInlineLoader(PhotoScreenComponent, true);

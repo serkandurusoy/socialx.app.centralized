@@ -114,19 +114,19 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 	private updateInputRef = (inputRef: SXTextInput, fieldName: string) => {
 		this.inputRefs[fieldName] = inputRef;
-	}
+	};
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
 		const newState: any = {};
 		newState[fieldName] = value;
 		this.setState(newState);
-	}
+	};
 
 	private moveToNextInput = (nextInputRef: string) => {
 		if (nextInputRef in this.inputRefs) {
 			this.inputRefs[nextInputRef].focusInput();
 		}
-	}
+	};
 
 	private setNewPasswordHandler = async () => {
 		const {resetCode, password, confirmPassword} = this.state;
@@ -138,7 +138,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 		try {
 			if (password !== confirmPassword) {
 				ModalManager.safeRunAfterModalClosed(() => {
-					Alert.alert('You\'r passwords do\'nt match');
+					Alert.alert("You'r passwords do'nt match");
 				});
 				return;
 			}
@@ -153,7 +153,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 			const resetRes = await ForgotPasswordConfirm(params.username, resetCode, password);
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('You\'r password has been successfully reseted!');
+				Alert.alert("You'r password has been successfully reseted!");
 			});
 			resetNavigationToRoute('MainScreen', this.props.navigation);
 		} catch (ex) {
@@ -163,7 +163,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 			console.log(ex);
 		}
 		hideLoader();
-	}
+	};
 }
 
 const MapDispatchToState = (dispatch: any) => ({
@@ -171,4 +171,7 @@ const MapDispatchToState = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(null, MapDispatchToState)(ResetPasswordScreen as any);
+export default connect(
+	null,
+	MapDispatchToState,
+)(ResetPasswordScreen as any);

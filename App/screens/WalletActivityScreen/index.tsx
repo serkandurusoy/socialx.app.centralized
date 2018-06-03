@@ -52,7 +52,8 @@ let ONE_PAGE_TRANSACTIONS: TransactionData[] = [
 	},
 ];
 // from tests it looks like scrolling is smoother if page size is bigger!
-ONE_PAGE_TRANSACTIONS = ONE_PAGE_TRANSACTIONS.concat(ONE_PAGE_TRANSACTIONS);
+// todo @serkan @jake I don't get this?
+ONE_PAGE_TRANSACTIONS = [...ONE_PAGE_TRANSACTIONS, ...ONE_PAGE_TRANSACTIONS];
 
 const TOTAL_NUMBER_OF_TRANSACTIONS = 100;
 
@@ -101,7 +102,7 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 
 	private onViewAccountHandler = () => {
 		this.props.navigation.navigate('SocialXAccountScreen');
-	}
+	};
 
 	private refreshDataHandler = () => {
 		this.setState({
@@ -113,7 +114,7 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 				transactions: ONE_PAGE_TRANSACTIONS,
 			});
 		}, 1500);
-	}
+	};
 
 	private getFirstPlaceholderIndex = (transactions: TransactionData[]): number => {
 		let ret = -1;
@@ -125,18 +126,19 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 			return true;
 		});
 		return ret;
-	}
+	};
 
 	private loadMoreTransactionsHandler = () => {
 		const pageSize = ONE_PAGE_TRANSACTIONS.length;
 		if (this.state.transactions.length < TOTAL_NUMBER_OF_TRANSACTIONS) {
 			const placeholderTransactions = Array(pageSize).fill({isLoading: true});
-			const transactionsWithPlaceholders = this.state.transactions.concat(placeholderTransactions);
+			const transactionsWithPlaceholders = [...this.state.transactions, ...placeholderTransactions];
 			this.setState({transactions: transactionsWithPlaceholders});
 			setTimeout(() => {
-				const newTransactions = [].concat(this.state.transactions);
+				const newTransactions = [...this.state.transactions];
 				const toDelete = placeholderTransactions.length;
 				const spliceIndex = this.getFirstPlaceholderIndex(newTransactions);
+				// TODO: @Serkan ask @Jake what??? and don't use splice in a react project! it directly mutates the original array!
 				newTransactions.splice(spliceIndex, toDelete);
 				newTransactions.splice(spliceIndex, 0, ...ONE_PAGE_TRANSACTIONS);
 				this.setState({transactions: newTransactions});
@@ -144,5 +146,5 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 		} else {
 			this.setState({hasMore: false});
 		}
-	}
+	};
 }

@@ -52,9 +52,9 @@ export default class SocialXAccountScreen extends Component<any, ISocialXAccount
 
 	private onSendHandler = () => {
 		alert('onSendHandler');
-	}
+	};
 
 	private onReceiveHandler = () => {
 		alert('onReceiveHandler');
-	}
+	};
 }

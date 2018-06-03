@@ -102,6 +102,12 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 	public render() {
 		const myCoinsWithFormat = numeral(this.props.socXInWallet).format(SOCX_WALLET_AMOUNT_FORMAT);
 		const amountToSendWithFormat = numeral(this.props.sendSocXAmount).format(SOCX_WALLET_AMOUNT_FORMAT);
+
+		const resizableStyles = [
+			style.keyboardView,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
+		];
+
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -110,8 +116,8 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 				backdropOpacity={0}
 				style={style.container}
 			>
-				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
-				<View style={this.getResizableStyles()}>
+				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType="dark" blurAmount={2} />
+				<View style={resizableStyles}>
 					<View style={style.boxContainer}>
 						<TouchableOpacity style={style.closeModalButtonContainer} onPress={this.props.onCloseButton}>
 							<Image source={Icons.iconModalClose} />
@@ -156,21 +162,21 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 		return (
 			<Animatable.View
 				animation={IN_ANIMATION_NAME}
-				easing='ease-out'
+				easing="ease-out"
 				iterationCount={1}
 				duration={IN_ANIMATION_DURATION}
 			>
 				<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isSent} />
 			</Animatable.View>
 		);
-	}
+	};
 
 	private sendButtonPressedHandler = async () => {
 		this.setState({
 			sendInProgress: true,
 		});
 		this.props.onSend(parseInt(this.state.gas, 10));
-	}
+	};
 
 	private renderSend = () => {
 		return (
@@ -184,23 +190,15 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 				/>
 			</Animatable.View>
 		);
-	}
+	};
 
 	private conditionalRendering = () => {
 		return this.state.tokensSent ? this.renderIsSent() : this.renderSend();
-	}
-
-	private getResizableStyles = () => {
-		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.IOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
+	};
 
 	private updateFeeText = (text: string) => {
 		this.setState({gas: text});
-	}
+	};
 }
 
 export const ModalWallet = withManagedTransitions(withResizeOnKeyboardShow(ModalWalletComponent));

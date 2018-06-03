@@ -48,28 +48,22 @@ interface IChatThreadScreenProps {
 const TOTAL_NUMBER_OF_MESSAGES = 44;
 const ONE_PAGE_NUMBER_OF_MESSAGES = 10;
 
-const getOnePageOfMessages = () => {
-	const ret = [];
-	for (let i = 0; i < ONE_PAGE_NUMBER_OF_MESSAGES; i++) {
+const getOnePageOfMessages = () =>
+	[...Array(ONE_PAGE_NUMBER_OF_MESSAGES).keys()].map(() => {
 		const isImageMessage = Math.random() >= 0.7;
 		const imageWidth = Math.round(Math.random() * 2000);
 		const imageHeight = Math.round(Math.random() * 1125);
-		const newMessage: MessageData = {
+		return {
 			_id: uuidv4(),
 			createdAt: new Date(),
 			ownMessage: Math.random() >= 0.5,
 			user: {},
+			...(isImageMessage ? {imageURL: `https://placeimg.com/${imageWidth}/${imageHeight}/any`} : {}),
+			...(isImageMessage ? {} : {text: 'hey'}),
 		};
-		if (isImageMessage) {
-			newMessage.imageURL = `https://placeimg.com/${imageWidth}/${imageHeight}/any`;
-		} else {
-			newMessage.text = 'hey';
-		}
-		ret.push(newMessage);
-	}
-	return ret;
-};
+	});
 
+// todo @serkan @jake this needs lots of refactoring but it is hard to tell what's used/abandoned/incomplete etc
 export default class ChatThreadScreen extends Component<IChatThreadScreenProps, IChatThreadScreenState> {
 	private static navigationOptions = (props: IChatThreadScreenProps) => ({
 		headerTitle: () => {
@@ -86,7 +80,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 			return null;
 		},
 		headerRight: <ScreenHeaderButton iconName={'md-call'} onPress={() => ChatThreadScreen.runMakeCallHandler(props)} />,
-	})
+	});
 
 	private static runMakeCallHandler(props: any) {
 		const params = props.navigation.state.params || {};
@@ -135,7 +129,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 				</View>
 			);
 		}
-	}
+	};
 
 	public render() {
 		return (
@@ -156,14 +150,13 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		const port = parseInt(text, undefined);
 		console.log('connecting to', port);
 		// this.friendTcpClient = new TCPClient(port, '10.0.2.2');
-	}
+	};
 
 	private setText = (text: string) => {
 		// // create time buffer to prevent bulky socket data
 		// const bufferDate = this.state.timeframeBuffer;
 		// const nowDate = new Date(Date.now());
 		// const secondsBuffer = (nowDate.getTime() - bufferDate) / 1000;
-
 		// if (text === '') {
 		// 	const sendData: IExtraData = {
 		// 		isTyping: false,
@@ -172,7 +165,6 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 	this.setState({text});
 		// 	return;
 		// }
-
 		// if (text.length === 1) {
 		// 	const sendData: IExtraData = {
 		// 		isTyping: true,
@@ -180,7 +172,6 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 	this.friendTcpClient.write(JSON.stringify(sendData));
 		// 	this.setState({timeframeBuffer: nowDate.getTime()});
 		// }
-
 		// if (secondsBuffer > 5) {
 		// 	const sendData: IExtraData = {
 		// 		isTyping: true,
@@ -189,7 +180,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 	this.setState({timeframeBuffer: nowDate.getTime()});
 		// }
 		// this.setState({text});
-	}
+	};
 
 	// each time the server gets a message, it gets parsed and passed here.
 	private socketOnGetData = (data: MessageData | IExtraData) => {
@@ -206,7 +197,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 		this.setState({isTyping: false});
 		// 	}, 50000);
 		// }
-	}
+	};
 
 	private sendOwnMessageHandler = (message: MessageData) => {
 		// // TODO: Network send message
@@ -223,25 +214,25 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// this.friendTcpClient.write(JSON.stringify(message));
 		// this.addNewMessageToTheChat(message);
 		// this.setText('');
-	}
+	};
 
 	private addNewMessageToTheChat = (message: MessageData) => {
 		message.user = {};
 		this.setState({
 			messages: GiftedChat.append(this.state.messages, [message]),
 		});
-	}
+	};
 
 	private makeCallHandler = () => {
 		alert('TODO: makeCallHandler');
-	}
+	};
 
 	// todo: get all recent messages with the socket client? database? storage?
 	private loadEarlierMessagesHandler = () => {
 		if (this.state.messages.length < TOTAL_NUMBER_OF_MESSAGES) {
 			this.setState({isLoadingEarlier: true});
 			setTimeout(() => {
-				const newMessages = this.state.messages.concat(getOnePageOfMessages());
+				const newMessages = [...this.state.messages, ...getOnePageOfMessages()];
 				this.setState({
 					isLoadingEarlier: false,
 					messages: newMessages,
@@ -249,5 +240,5 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 				});
 			}, 1500);
 		}
-	}
+	};
 }

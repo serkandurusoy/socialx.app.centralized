@@ -60,6 +60,9 @@ export const user = gql`
 						hash
 					}
 				}
+				likes {
+					userId
+				}
 				createdAt
 				Media {
 					id

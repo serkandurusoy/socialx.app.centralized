@@ -18,34 +18,27 @@ export interface IPieChartComponentProps {
 	selectedSection: PieChartSections;
 }
 
-export const PieChartComponent: React.SFC<IPieChartComponentProps> = (props) => {
-	const getSelectedPercent = (): string | undefined => {
-		for (const dataItem of props.data) {
-			if (props.selectedSection === dataItem.badge) {
-				return dataItem.percentValue + '%';
-			}
+const getSelectedPercent = (props: IPieChartComponentProps): string | undefined => {
+	// TODO: @serkan @jake what???
+	for (const dataItem of props.data) {
+		if (props.selectedSection === dataItem.badge) {
+			return dataItem.percentValue + '%';
 		}
-	};
-
-	const getFormattedPieChartData = (): SvgChartData[] => {
-		const ret: SvgChartData[] = [];
-		props.data.forEach((dataItem, index) => {
-			const sectionFillColor = props.selectedSection === dataItem.badge ? Colors.pink : Colors.geyser;
-			ret.push({
-				value: dataItem.percentValue,
-				key: index,
-				svg: {
-					fill: sectionFillColor,
-				},
-			});
-		});
-		return ret;
-	};
-
-	return (
-		<View style={style.container}>
-			<PieChart data={getFormattedPieChartData()} innerRadius={'55%'} outerRadius={'85%'} style={style.chart} />
-			<Text style={style.percentageText}>{getSelectedPercent()}</Text>
-		</View>
-	);
+	}
 };
+
+const getFormattedPieChartData = (props: IPieChartComponentProps): SvgChartData[] =>
+	props.data.map((dataItem, index) => ({
+		value: dataItem.percentValue,
+		key: index,
+		svg: {
+			fill: props.selectedSection === dataItem.badge ? Colors.pink : Colors.geyser,
+		},
+	}));
+
+export const PieChartComponent: React.SFC<IPieChartComponentProps> = (props) => (
+	<View style={style.container}>
+		<PieChart data={getFormattedPieChartData(props)} innerRadius={'55%'} outerRadius={'85%'} style={style.chart} />
+		<Text style={style.percentageText}>{getSelectedPercent(props)}</Text>
+	</View>
+);

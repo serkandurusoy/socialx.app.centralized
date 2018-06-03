@@ -84,13 +84,13 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 			avatarImage: Images.user_avatar_placeholder,
 			postCreate: this.addGroupPostHandler,
 		});
-	}
+	};
 
 	private loadMorePostsHandler = () => {
 		this.setState({
-			groupPosts: this.state.groupPosts.concat(INITIAL_USER_POSTS),
+			groupPosts: [...this.state.groupPosts, ...INITIAL_USER_POSTS],
 		});
-	}
+	};
 
 	private addGroupPostHandler = (data: NewWallPostData) => {
 		const newPost: IWallPostCardProp = {
@@ -104,9 +104,9 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 			numberOfWalletCoins: 0,
 		};
 		this.setState({
-			groupPosts: [newPost].concat(this.state.groupPosts),
+			groupPosts: [newPost, ...this.state.groupPosts],
 		});
-	}
+	};
 
 	private refreshGroupPosts = () => {
 		this.setState({
@@ -118,5 +118,5 @@ export default class GroupScreen extends Component<IGroupFeedScreenProps, IGroup
 				groupPosts: INITIAL_USER_POSTS,
 			});
 		}, 1500);
-	}
+	};
 }

@@ -32,7 +32,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 		} else {
 			return this.renderNoNotifications();
 		}
-	}
+	};
 
 	private renderNoNotifications = () => {
 		return (
@@ -46,7 +46,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				showsVerticalScrollIndicator={false}
 			/>
 		);
-	}
+	};
 
 	private renderOneItemList = () => {
 		return (
@@ -55,7 +55,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				<Text style={style.noNotificationsText}>{'You have no notifications!'}</Text>
 			</View>
 		);
-	}
+	};
 
 	private renderWithNotifications = () => {
 		return (
@@ -67,7 +67,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 				onRefresh={this.props.refreshData}
 			/>
 		);
-	}
+	};
 
 	private keyExtractor = (item: any, index: string) => index.toString(); // TODO: use an ID here
 
@@ -101,7 +101,7 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 					/>
 				);
 		}
-	}
+	};
 }
 
 export default withInlineLoader(NotificationsScreenComponent as any);

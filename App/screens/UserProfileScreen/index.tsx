@@ -71,7 +71,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
-	})
+	});
 
 	public state = INITIAL_STATE;
 
@@ -100,7 +100,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
 				allMediaObjects={this.state.mediaObjects}
-
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={null}
@@ -124,17 +123,15 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				variables: {userId},
 				fetchPolicy: 'network-only',
 			});
-			const getUser = userProfileRes.data.getUser;
+			const {getUser} = userProfileRes.data;
 
+			// TODO: @serkan @jake this is unsafe!
 			const userPostsRes = await client.query({query: getUserPostsQ, variables: {userId}, fetchPolicy: 'network-only'});
 			const userPosts = userPostsRes.data.getPostsOwner.Items;
 
 			const mediaObjs = this.preloadAllMediaObjects(userPosts);
 
-			let numOfLikes = 0;
-			getUser.posts.forEach((post: any) => {
-				numOfLikes += post.likes.length;
-			});
+			const numOfLikes = getUser.posts.reduce((total: number, post: any) => total + post.likes.length, 0);
 
 			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
 			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);
@@ -154,7 +151,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
 		if (!posts) {
@@ -178,6 +175,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 		const recentPosts: any = [];
 		for (let i = 0; i < posts.length; i++) {
+			// todo @serkan @jake what???
 			if (i > 2) {
 				return recentPosts;
 			}
@@ -198,13 +196,14 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			});
 		}
 		return recentPosts;
-	}
+	};
 
 	private preloadAllMediaObjects = (posts: any) => {
 		if (!posts) {
 			return [];
 		}
 
+		// todo @serkan @jake I think I saw a similar unwrap/flatten approach somewhere else hmm
 		const Imgs: IMediaProps[] = [];
 		for (let y = 0; y < posts.length; y++) {
 			const currentMedia = posts[y].Media;
@@ -216,16 +215,17 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		}
 
 		return Imgs;
-	}
+	};
 
 	private toggleFollowHandler = () => {
 		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
 		this.setState({
 			isFollowed: !this.state.isFollowed,
 		});
-	}
+	};
 
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaViewerObject[] => {
+		// todo @serkan @jake I think I've something similar to this somewhere else
 		const ret: ISimpleMediaObject[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
@@ -239,32 +239,29 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: media,
 			startIndex: index,
 		});
-	}
+	};
 
 	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
 		this.props.navigation.navigate('CommentsStack', {postId, userId});
-	}
+	};
 
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		// const {client} = this.props;
-
 		// const likeQuery = {variables: {postId}};
-
 		// const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 		// console.log('result:', result);
-
 		// if (result.error) {
 		// 	console.log(result.error);
 		// 	return;
 		// }
-	}
+	};
 }
 
 const ApolloWrapper = withApollo(UserProfileScreen);

@@ -14,37 +14,29 @@ export interface IModalActivityIndicatorProps {
 	onModalHide: () => void;
 }
 
-const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (props) => {
-	const renderMessage = () => {
-		if (props.activityIndicatorMessage) {
-			return <Text style={style.message}>{props.activityIndicatorMessage}</Text>;
-		}
-		return null;
-	};
-
-	const title = props.activityIndicatorTitle || 'Please wait';
-
-	return (
-		<Modal
-			onDismiss={props.onDismiss}
-			onModalHide={props.onModalHide}
-			isVisible={props.showActivityIndicator}
-			backdropOpacity={0.2}
-			animationIn={'slideInDown'}
-			animationOut={'slideOutUp'}
-			style={style.container}
-		>
-			<View style={style.boxContainer}>
-				<Text style={style.title}>{title}</Text>
-				{renderMessage()}
-				<ActivityIndicator size='large' color={Colors.pink} />
-			</View>
-		</Modal>
-	);
-};
+// TODO: @serkan @jake an example to simplify and also marginally improve performance of a component
+// TODO: in this one, the big one is the extra render function! that was creating a new function instance per render!
+const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (props) => (
+	<Modal
+		// onDismiss={props.onDismiss} TODO: @serkan @jake there is no such prop on Modal's prop types
+		onModalHide={props.onModalHide}
+		isVisible={props.showActivityIndicator}
+		backdropOpacity={0.2}
+		animationIn={'slideInDown'}
+		animationOut={'slideOutUp'}
+		style={style.container}
+	>
+		<View style={style.boxContainer}>
+			<Text style={style.title}>{props.activityIndicatorTitle || 'Please wait'}</Text>
+			{props.activityIndicatorMessage ? <Text style={style.message}>{props.activityIndicatorMessage}</Text> : null}
+			<ActivityIndicator size='large' color={Colors.pink} />
+		</View>
+	</Modal>
+);
 
 const ManagedModalActivityIndicator = withManagedTransitions(ModalActivityIndicatorSFC);
 
+// TODO: @serkan @jake we should use a combined redux State type for this
 const mapStateToProps: any = (state: any): IModalActivityIndicatorProps => ({
 	...state.popups,
 });

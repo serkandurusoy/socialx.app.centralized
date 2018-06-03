@@ -47,13 +47,13 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 		this.setState({
 			paddingBottom: event.endCoordinates.height - this.props.tabBarBottomHeight,
 		});
-	}
+	};
 
 	private keyboardDidHide = () => {
 		this.setState({
 			paddingBottom: 0,
 		});
-	}
+	};
 
 	private conditionalRender = () => {
 		let ret = null;
@@ -67,7 +67,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 			}
 		}
 		return ret;
-	}
+	};
 
 	private renderEmptyState = () => {
 		return (
@@ -76,7 +76,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 				<Text style={style.startSearchText}>{'Start searching now'}</Text>
 			</View>
 		);
-	}
+	};
 
 	private renderNoResults = () => {
 		return (
@@ -86,7 +86,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 				{this.renderCreateNewGroup()}
 			</View>
 		);
-	}
+	};
 
 	private renderPeopleNoResults = () => {
 		if (this.props.selectedFilter === SearchFilterValues.People) {
@@ -97,7 +97,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderSearchResults = () => {
 		return (
@@ -107,23 +107,17 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 				{this.renderCreateNewGroup()}
 			</View>
 		);
-	}
+	};
 
-	private renderPeopleResults = () => {
-		const ret = [];
-		for (let i = 0; i < this.props.searchResults.length; i++) {
-			const searchResult = this.props.searchResults[i];
-			ret.push(
-				<SearchResultEntry
-					key={i}
-					{...searchResult}
-					addFriendHandler={() => this.props.addFriendHandler(searchResult.id)}
-					onEntrySelect={() => this.props.onSearchResultSelect(searchResult)}
-				/>,
-			);
-		}
-		return ret;
-	}
+	private renderPeopleResults = () =>
+		this.props.searchResults.map((searchResult, i) => (
+			<SearchResultEntry
+				key={i}
+				{...searchResult}
+				addFriendHandler={() => this.props.addFriendHandler(searchResult.id)}
+				onEntrySelect={() => this.props.onSearchResultSelect(searchResult)}
+			/>
+		));
 
 	private renderFilterButtons = () => {
 		return (
@@ -140,7 +134,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 				{/*/>*/}
 			</View>
 		);
-	}
+	};
 
 	private renderCreateNewGroup = () => {
 		if (this.props.selectedFilter === SearchFilterValues.Groups) {
@@ -154,7 +148,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 			);
 		}
 		return null;
-	}
+	};
 }
 
 const mapStateToProps: any = (state: any): IAppUIStateProps => ({

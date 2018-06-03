@@ -64,11 +64,11 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 
 	private navigateToLoginScreen = () => {
 		this.props.navigation.navigate('LoginScreen');
-	}
+	};
 
 	private navigateToSignUpScreen = () => {
 		this.props.navigation.navigate('SignUpScreen');
-	}
+	};
 
 	private closeSplashScreen = () => {
 		SplashScreen.close({
@@ -76,5 +76,5 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 			duration: 1000,
 			delay: 100,
 		});
-	}
+	};
 }
