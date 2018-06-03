@@ -67,13 +67,13 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 				const params = props.navigation.state.params || {};
 				return (
 					<SearchFeedHeader
-						onPress={() => alert('Search for #\'s or @\'s or even a relavent keyword.. Comming soon..')}
+						onPress={() => alert("Search for #'s or @'s or even a relavent keyword.. Comming soon..")}
 						searchInputUpdated={params.searchInputUpdatedHandler}
 					/>
 				);
 			},
 		};
-	}
+	};
 
 	public state = {
 		selectedTab: FeedTabs.Friends,
@@ -133,7 +133,7 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 	) => {
 		action = action as NavigationNavigateAction;
 		this.changeTabTo(action.routeName as FeedTabs);
-	}
+	};
 
 	private changeTabTo = (newTab: FeedTabs, skipNavigation = false) => {
 		this.setState({
@@ -142,11 +142,11 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 		if (!skipNavigation && this.tabNavigator) {
 			this.tabNavigator.dispatch(NavigationActions.navigate({routeName: newTab}));
 		}
-	}
+	};
 
 	private updateSearchTerm = async (term: string) => {
 		this.setState({
 			searchTerm: term,
 		});
-	}
+	};
 }

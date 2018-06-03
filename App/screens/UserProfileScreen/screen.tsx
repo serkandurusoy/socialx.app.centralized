@@ -168,7 +168,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				<MediaObjectViewer {...mediaTypeProps} uri={mediaURL} style={style.userMediaThumb} thumbOnly={true} />
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	private renderNotFollowedState = () => {
 		return (
@@ -181,7 +181,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				{this.renderRecentPosts()}
 			</View>
 		);
-	}
+	};
 
 	private renderRecentPosts = () =>
 		this.props.recentPosts.map((post, i) => (
@@ -194,7 +194,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 					onLikeButtonClick={() => this.props.onLikeClick(post.likedByMe, post.id)}
 				/>
 			</View>
-		))
+		));
 
 	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
 		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.state.isScrolled) {
@@ -209,7 +209,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				isScrolled: false,
 			});
 		}
-	}
+	};
 
 	private initLoadMorePhotosHandler = () => {
 		const {gridMediaProvider} = this.state;
@@ -219,7 +219,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 		this.setState({
 			gridMediaProvider: this.state.gridMediaProvider.cloneWithRows(allMedia),
 		});
-	}
+	};
 
 	private onViewMediaFullScreen = (index: number) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
@@ -227,7 +227,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 			// mediaObjects: this.state.gridMediaProvider.getAllData(),
 			startIndex: index,
 		});
-	}
+	};
 }
 
 export default withInlineLoader(UserProfileScreenComponent);

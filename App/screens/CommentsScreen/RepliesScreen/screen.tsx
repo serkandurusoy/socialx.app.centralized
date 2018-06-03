@@ -34,7 +34,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 	public render() {
 		const containerStyles = [
 			style.container,
-			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : [])
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
 		];
 
 		return (
@@ -52,14 +52,17 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 		);
 	}
 
-	private renderReplies = () => this.props.replies.map((reply, index) => <CommentCard
-		key={index}
-		comment={reply}
-		onCommentLike={() => this.props.onReplyLike(reply)}
-		onCommentReply={() => Function()}
-		isReply={true}
-		onCommentDelete={() => this.props.onReplyDelete(reply)}
-	/>)
+	private renderReplies = () =>
+		this.props.replies.map((reply, index) => (
+			<CommentCard
+				key={index}
+				comment={reply}
+				onCommentLike={() => this.props.onReplyLike(reply)}
+				onCommentReply={() => Function()}
+				isReply={true}
+				onCommentDelete={() => this.props.onReplyDelete(reply)}
+			/>
+		));
 }
 
 export default withResizeOnKeyboardShow(RepliesScreenComponent);

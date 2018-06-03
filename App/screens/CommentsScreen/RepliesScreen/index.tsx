@@ -152,7 +152,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(RepliesScreen as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(RepliesScreen as any);
 
 const getCommentsWrapper = getCommentsHoc(reduxWrapper);
 const commentWrapper = commentHoc(getCommentsWrapper);

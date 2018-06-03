@@ -38,5 +38,5 @@ export default class SocialXAccountScreenComponent extends Component<ISocialXAcc
 	}
 
 	private renderMyCurrencyItems = () =>
-		this.props.myDigitalCoins.map((coin, i) => <SocialXAccountCurrencyItem key={i} {...coin} />)
+		this.props.myDigitalCoins.map((coin, i) => <SocialXAccountCurrencyItem key={i} {...coin} />);
 }

@@ -128,11 +128,11 @@ export default class MyEventsScreenComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderItem = (item: IEventData) => {
 		return <EventListItem {...item} navigateToEventDetailPage={() => this.props.openEventDetailPage(item)} />;
-	}
+	};
 
 	private renderEmptyDateHandler = (day: XDate) => {
 		return (
@@ -140,7 +140,7 @@ export default class MyEventsScreenComponent extends Component<
 				<Text style={style.noEventsText}>{'No events'}</Text>
 			</View>
 		);
-	}
+	};
 
 	private renderKnobHandler = () => {
 		return (
@@ -148,22 +148,22 @@ export default class MyEventsScreenComponent extends Component<
 				<Icon name={'ios-arrow-down'} size={Sizes.smartHorizontalScale(20)} color={Colors.postText} />
 			</View>
 		);
-	}
+	};
 
 	private rowHasChanged = (firstItem: IEventData, secondItem: IEventData) => {
 		return !isEqual(firstItem, secondItem);
-	}
+	};
 
 	private loadItemsForMonth = (month: IDayObject) => {
 		// console.log('loadItemsForMonth', month.dateString);
-	}
+	};
 
 	private dayUpdatedHandler = (day: IDayObject) => {
 		this.setState({
 			currentMonth: moment(day.timestamp).format(CURRENT_MONTH_FORMAT),
 			currentDate: new Date(day.timestamp),
 		});
-	}
+	};
 
 	private getDayTextPrefix = (day: IDayObject) => {
 		const today = moment()
@@ -189,7 +189,7 @@ export default class MyEventsScreenComponent extends Component<
 			ret = 'YESTERDAY, ';
 		}
 		return ret;
-	}
+	};
 
 	private getAgendaItems = (events: IEventData[], currentDate: Date) => {
 		const ret: any = {};
@@ -205,5 +205,5 @@ export default class MyEventsScreenComponent extends Component<
 			ret[currentDateWithFormat] = [];
 		}
 		return ret;
-	}
+	};
 }

@@ -63,7 +63,6 @@ const getOnePageOfMessages = () =>
 		};
 	});
 
-
 // todo @serkan @jake this needs lots of refactoring but it is hard to tell what's used/abandoned/incomplete etc
 export default class ChatThreadScreen extends Component<IChatThreadScreenProps, IChatThreadScreenState> {
 	private static navigationOptions = (props: IChatThreadScreenProps) => ({
@@ -81,7 +80,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 			return null;
 		},
 		headerRight: <ScreenHeaderButton iconName={'md-call'} onPress={() => ChatThreadScreen.runMakeCallHandler(props)} />,
-	})
+	});
 
 	private static runMakeCallHandler(props: any) {
 		const params = props.navigation.state.params || {};
@@ -130,7 +129,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 				</View>
 			);
 		}
-	}
+	};
 
 	public render() {
 		return (
@@ -151,7 +150,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		const port = parseInt(text, undefined);
 		console.log('connecting to', port);
 		// this.friendTcpClient = new TCPClient(port, '10.0.2.2');
-	}
+	};
 
 	private setText = (text: string) => {
 		// // create time buffer to prevent bulky socket data
@@ -181,7 +180,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 	this.setState({timeframeBuffer: nowDate.getTime()});
 		// }
 		// this.setState({text});
-	}
+	};
 
 	// each time the server gets a message, it gets parsed and passed here.
 	private socketOnGetData = (data: MessageData | IExtraData) => {
@@ -198,7 +197,7 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// 		this.setState({isTyping: false});
 		// 	}, 50000);
 		// }
-	}
+	};
 
 	private sendOwnMessageHandler = (message: MessageData) => {
 		// // TODO: Network send message
@@ -215,18 +214,18 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 		// this.friendTcpClient.write(JSON.stringify(message));
 		// this.addNewMessageToTheChat(message);
 		// this.setText('');
-	}
+	};
 
 	private addNewMessageToTheChat = (message: MessageData) => {
 		message.user = {};
 		this.setState({
 			messages: GiftedChat.append(this.state.messages, [message]),
 		});
-	}
+	};
 
 	private makeCallHandler = () => {
 		alert('TODO: makeCallHandler');
-	}
+	};
 
 	// todo: get all recent messages with the socket client? database? storage?
 	private loadEarlierMessagesHandler = () => {
@@ -241,5 +240,5 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 				});
 			}, 1500);
 		}
-	}
+	};
 }

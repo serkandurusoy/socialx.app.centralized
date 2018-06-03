@@ -58,7 +58,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		headerRight: (
 			<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.refreshScreen} />
 		),
-	})
+	});
 
 	public state = INITIAL_STATE;
 
@@ -131,7 +131,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private preloadAllMediaObjects = () => {
 		const {data} = this.props;
@@ -155,7 +155,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		return Imgs;
-	}
+	};
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

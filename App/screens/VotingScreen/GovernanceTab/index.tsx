@@ -116,7 +116,7 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 			mediaObjects: [media],
 			startIndex: 0,
 		});
-	}
+	};
 
 	private onRefreshHandler = () => {
 		this.setState({refreshing: true, hasMore: true});
@@ -126,7 +126,7 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 				govPosts: [...GOVERNANCE_POSTS],
 			});
 		}, 2000);
-	}
+	};
 
 	private onLoadMoreHandler = () => {
 		if (this.state.hasMore && !this.state.loadingMore) {
@@ -144,13 +144,14 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 				});
 			}, 2000);
 		}
-	}
+	};
 
 	// TODO: can be deleted when we have data with unique IDs
-	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) => allGovPosts.map((govPost, index) => ({
-		...govPost,
-		id: index.toString(),
-	}))
+	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) =>
+		allGovPosts.map((govPost, index) => ({
+			...govPost,
+			id: index.toString(),
+		}));
 
 	private onVoteUpHandler = (govPost: IGovPostData) => {
 		// TODO: network call to update upVotes, maybe hide this card?
@@ -160,7 +161,7 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 		this.setState({
 			govPosts: updatedGovPosts,
 		});
-	}
+	};
 
 	private onVoteDownHandler = (govPost: IGovPostData) => {
 		// TODO: network call to update downVotes, maybe hide this card?
@@ -170,5 +171,5 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 		this.setState({
 			govPosts: updatedGovPosts,
 		});
-	}
+	};
 }

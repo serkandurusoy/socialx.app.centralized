@@ -102,7 +102,7 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 
 	private onViewAccountHandler = () => {
 		this.props.navigation.navigate('SocialXAccountScreen');
-	}
+	};
 
 	private refreshDataHandler = () => {
 		this.setState({
@@ -114,7 +114,7 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 				transactions: ONE_PAGE_TRANSACTIONS,
 			});
 		}, 1500);
-	}
+	};
 
 	private getFirstPlaceholderIndex = (transactions: TransactionData[]): number => {
 		let ret = -1;
@@ -126,7 +126,7 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 			return true;
 		});
 		return ret;
-	}
+	};
 
 	private loadMoreTransactionsHandler = () => {
 		const pageSize = ONE_PAGE_TRANSACTIONS.length;
@@ -146,5 +146,5 @@ export default class WalletActivityScreen extends Component<IWalletActivityScree
 		} else {
 			this.setState({hasMore: false});
 		}
-	}
+	};
 }

@@ -14,5 +14,5 @@ export default class SendCoinsScreen extends Component {
 
 	private onContinueHandler = (userId: string, amount: number, currency: CoinSymbol) => {
 		// console.log('onContinueHandler: ' + userId + ' ' + amount + ' ' + currency);
-	}
+	};
 }

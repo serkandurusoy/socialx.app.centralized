@@ -81,11 +81,11 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 	private static navigationOptions = (props: ISettingsScreenProps) => ({
 		title: 'SETTINGS',
 		headerRight: <ScreenHeaderButton iconName={'md-log-out'} onPress={() => SettingsScreen.runLogoutHandler(props)} />,
-	})
+	});
 
 	private static runLogoutHandler = (props: ISettingsScreenProps) => {
 		props.navigation.state.params.logoutHandler();
-	}
+	};
 
 	public state = {
 		avatarImage: null,
@@ -129,7 +129,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			//
 			console.log(ex);
 		}
-	}
+	};
 
 	private handleImageChange = async (updatedAvatarImageBase64: string | null) => {
 		const {addMedia} = this.props;
@@ -158,7 +158,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			//
 			console.log(e);
 		}
-	}
+	};
 
 	private saveChanges = async (saveData: SettingsData) => {
 		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
@@ -197,7 +197,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		}
 
 		hideLoader();
-	}
+	};
 }
 
 const MapDispatchToProp = (dispatch: any) => ({
@@ -205,7 +205,10 @@ const MapDispatchToProp = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProp)(SettingsScreen as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProp,
+)(SettingsScreen as any);
 const userDataWrapper = userHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(userDataWrapper);
 // const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);

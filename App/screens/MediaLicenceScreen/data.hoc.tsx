@@ -225,7 +225,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 
 		private getMediaOwner = (): Partial<IUserQuery> => {
 			return this.state.mediaData.owner;
-		}
+		};
 
 		private getMediaPreviewObject = (): ISimpleMediaObject => {
 			const {mediaData} = this.state;
@@ -233,7 +233,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 				url: mediaData.mediaPreviewURI,
 				type: mediaData.type,
 			};
-		}
+		};
 
 		// todo: @serkan @jake what?
 		private getMoreSimilarMedia = (refMediaData: IMediaLicenceData) => {
@@ -261,13 +261,13 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 				}
 			}
 			return ret;
-		}
+		};
 
 		private onLoadMoreSimilarMediaHandler = () => {
 			this.setState({
 				similarMedia: [...this.state.similarMedia, ...this.getMoreSimilarMedia(this.state.mediaData)],
 			});
-		}
+		};
 
 		private onSimilarMediaLikeHandler = (similarMedia: IMediaLicenceData) => {
 			const updatedSimilarMedia = [...this.state.similarMedia];
@@ -280,18 +280,18 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 					likeToggleCounter: this.state.likeToggleCounter + 1,
 				});
 			}
-		}
+		};
 
 		private onMediaLikeHandler = () => {
 			// TODO: GQL call
 			this.setState({
 				mediaData: {...this.state.mediaData, likedByMe: !this.state.mediaData.likedByMe},
 			});
-		}
+		};
 
 		private onMediaShareHandler = (option: IShareOption) => {
 			// console.log('TODO: Share option selected ' + option.key);
-		}
+		};
 
 		private onMediaDownloadPreviewHandler = async () => {
 			const {mediaData} = this.state;
@@ -306,7 +306,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 			ModalManager.safeRunAfterModalClosed(() => {
 				Alert.alert('Success', saveRes);
 			});
-		}
+		};
 
 		// private mediaPreviewDownloadProgress = (progressPercentage: number) => {
 		// 	// server should provide header Content-Length for this to work!
@@ -320,7 +320,7 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 					transactionCompleted: true,
 				});
 			}, 2000);
-		}
+		};
 
 		private onStartDownloadHandler = async (selectedItems: IMediaSize[]) => {
 			this.setState({
@@ -349,6 +349,6 @@ export const mediaLicenceWithDataHooks = (BaseComponent: React.ComponentType<IMe
 						: 'All media object were saved to your photo library';
 				Alert.alert('Success', confirmMessage);
 			});
-		}
+		};
 	};
 };

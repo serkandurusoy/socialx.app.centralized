@@ -287,7 +287,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				this.inputRefs[nextInputRef].focus();
 			}
 		}
-	}
+	};
 
 	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
@@ -355,7 +355,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		// closing the modla when using alerts, issue MD-163
 		if (password !== confirmPassword) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Your passwords don\'t match');
+			Alert.alert('Validation error', "Your passwords don't match");
 			return;
 		}
 
@@ -389,33 +389,27 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			if (updatedAvatarImagePath) {
 				// do ipfs
 				const placeholderFunc = () => {};
-				await addFileBN(
-					updatedAvatarImagePath,
-					placeholderFunc,
-					placeholderFunc,
-					placeholderFunc,
-					async (rest) => {
-						const {Hash, Size} = JSON.parse(rest.responseBody);
-						// do addMedia
-						const mediaObj = await addMedia({
-							variables: {
-								type: 'ProfileImage',
-								size: parseInt(Size, undefined),
-								hash: Hash,
-							},
-						});
-						mediaId = mediaObj.data.addMedia.id;
+				await addFileBN(updatedAvatarImagePath, placeholderFunc, placeholderFunc, placeholderFunc, async (rest) => {
+					const {Hash, Size} = JSON.parse(rest.responseBody);
+					// do addMedia
+					const mediaObj = await addMedia({
+						variables: {
+							type: 'ProfileImage',
+							size: parseInt(Size, undefined),
+							hash: Hash,
+						},
+					});
+					mediaId = mediaObj.data.addMedia.id;
 
-						await createUser({
-							variables: {
-								username,
-								name,
-								avatar: mediaId,
-								email,
-							},
-						});
-					},
-				);
+					await createUser({
+						variables: {
+							username,
+							name,
+							avatar: mediaId,
+							email,
+						},
+					});
+				});
 			} else {
 				await createUser({
 					variables: {
@@ -438,21 +432,21 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		}
 		Keyboard.dismiss();
 		this.props.HideLoader();
-	}
+	};
 
 	private updateAvatarImage = (base64Photo: string) => {
 		this.setState({
 			updatedAvatarImagePath: base64Photo,
 			avatarImage: {uri: base64Photo},
 		});
-	}
+	};
 
 	private updatedSelectedCountryHandler = (country: ICountryData) => {
 		this.setState({
 			countryCCA2: country.cca2,
 			countryCallingCode: country.callingCode,
 		});
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -462,7 +456,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(SignUpScreen as any);
 const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
 

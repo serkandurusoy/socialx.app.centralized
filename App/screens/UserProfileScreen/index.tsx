@@ -71,7 +71,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
-	})
+	});
 
 	public state = INITIAL_STATE;
 
@@ -100,7 +100,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
 				allMediaObjects={this.state.mediaObjects}
-
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={null}
@@ -124,7 +123,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				variables: {userId},
 				fetchPolicy: 'network-only',
 			});
-			const { getUser } = userProfileRes.data;
+			const {getUser} = userProfileRes.data;
 
 			// TODO: @serkan @jake this is unsafe!
 			const userPostsRes = await client.query({query: getUserPostsQ, variables: {userId}, fetchPolicy: 'network-only'});
@@ -152,7 +151,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
 		if (!posts) {
@@ -197,7 +196,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			});
 		}
 		return recentPosts;
-	}
+	};
 
 	private preloadAllMediaObjects = (posts: any) => {
 		if (!posts) {
@@ -216,14 +215,14 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		}
 
 		return Imgs;
-	}
+	};
 
 	private toggleFollowHandler = () => {
 		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
 		this.setState({
 			isFollowed: !this.state.isFollowed,
 		});
-	}
+	};
 
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaViewerObject[] => {
 		// todo @serkan @jake I think I've something similar to this somewhere else
@@ -240,32 +239,29 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: media,
 			startIndex: index,
 		});
-	}
+	};
 
 	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
 		this.props.navigation.navigate('CommentsStack', {postId, userId});
-	}
+	};
 
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		// const {client} = this.props;
-
 		// const likeQuery = {variables: {postId}};
-
 		// const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 		// console.log('result:', result);
-
 		// if (result.error) {
 		// 	console.log(result.error);
 		// 	return;
 		// }
-	}
+	};
 }
 
 const ApolloWrapper = withApollo(UserProfileScreen);

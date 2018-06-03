@@ -268,14 +268,13 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		)),
 		...(this.state.isUploading
 			? [
-					(
-						<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
-							<ActivityIndicator size={'large'} color={Colors.pink} />
-							<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
-						</View>
-					),
-			] : []),
-	]
+					<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
+						<ActivityIndicator size={'large'} color={Colors.pink} />
+						<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
+					</View>,
+			  ]
+			: []),
+	];
 
 	private sendPostHandler = () => {
 		const escapedText = this.state.postText.replace(/\n/g, '\\n');

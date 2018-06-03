@@ -36,7 +36,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 	public render() {
 		const containerStyles = [
 			style.container,
-			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : [])
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
 		];
 
 		return this.props.renderWithLoader(

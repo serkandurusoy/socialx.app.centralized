@@ -67,7 +67,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 		this.setState({
 			username: value,
 		});
-	}
+	};
 
 	private sendResetCodeHandler = async () => {
 		const {username} = this.state;
@@ -85,7 +85,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 			console.log(ex);
 		}
 		hideLoader();
-	}
+	};
 }
 
 const MapDispatchToState = (dispatch: any) => ({
@@ -93,4 +93,7 @@ const MapDispatchToState = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(null, MapDispatchToState)(ForgotPasswordScreen as any);
+export default connect(
+	null,
+	MapDispatchToState,
+)(ForgotPasswordScreen as any);

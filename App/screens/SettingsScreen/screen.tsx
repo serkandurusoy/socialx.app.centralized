@@ -77,7 +77,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 			hasChanges: false,
 			localAvatarBase64: null,
 		});
-	}
+	};
 
 	public render() {
 		// @ionut: todo -> add location-age fields
@@ -184,11 +184,11 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 			);
 		}
 		return null;
-	}
+	};
 
 	private getFullName = () => {
 		return this.state.firstName + ' ' + this.state.lastName;
-	}
+	};
 
 	private updateAvatarImage = (base64Photo: string) => {
 		const base64 = base64Photo.substring(base64Photo.indexOf(',') + 1, base64Photo.length);
@@ -198,21 +198,21 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 			selectedImage: true,
 			localAvatarBase64: base64,
 		});
-	}
+	};
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
 		const newState: any = {};
 		newState[fieldName] = value;
 		newState.hasChanges = true;
 		this.setState(newState);
-	}
+	};
 
 	private toggleMiningSetting = (value: boolean) => {
 		this.setState({
 			hasChanges: true,
 			miningEnabled: value,
 		});
-	}
+	};
 
 	private saveChanges = () => {
 		const saveData: SettingsData = {
@@ -224,7 +224,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 			miningEnabled: this.state.miningEnabled,
 		};
 		this.props.saveChanges(saveData);
-	}
+	};
 }
 
 export default withInlineLoader(SettingsScreenComponent as any, true);

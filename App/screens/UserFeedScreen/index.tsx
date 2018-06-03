@@ -126,7 +126,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				});
 			}
 		}
-	}
+	};
 
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
@@ -135,7 +135,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
 		return ret;
-	}
+	};
 
 	private showNewWallPostPage = () => {
 		const avatarUri = this.props.data.user.avatar
@@ -146,7 +146,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			avatarImage: avatarUri,
 			postCreate: this.addWallPostHandler,
 		});
-	}
+	};
 
 	private create = async (Media: string[], text?: string) => {
 		const {createPost} = this.props;
@@ -172,7 +172,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				},
 			});
 		}
-	}
+	};
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
 		const {addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
@@ -207,7 +207,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		stopLoading();
-	}
+	};
 
 	private refreshWallPosts = async () => {
 		this.setState({refreshing: true});
@@ -221,7 +221,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			this.setState({refreshing: false});
 			console.log('ex', Ex);
 		}
-	}
+	};
 
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		const {likePost, removeLikePost, Items, refresh} = this.props;
@@ -237,7 +237,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		// await refresh();
-	}
+	};
 
 	private onPostDeleteClickHandler = async (postId: string) => {
 		const {deletingPostLoad, deletePost, stopLoading} = this.props;
@@ -251,22 +251,22 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// user doesnt own the post, thus cant delete, or server issues
 		}
 		stopLoading();
-	}
+	};
 
 	private gotoUserProfile = (userId: string) => {
 		this.props.navigation.navigate('UserProfileScreen', {userId});
-	}
+	};
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: media,
 			startIndex: index,
 		});
-	}
+	};
 
 	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
 		this.props.navigation.navigate('CommentsStack', {postId, userId});
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -276,7 +276,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(UserFeedScreen);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(UserFeedScreen);
 
 const userWrapper = userHoc(reduxWrapper);
 const createPostWrapper = createPostHoc(userWrapper);

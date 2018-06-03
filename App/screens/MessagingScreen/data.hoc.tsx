@@ -115,7 +115,7 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 			this.setState({
 				contactsList: updatedContactsList,
 			});
-		}
+		};
 
 		private onSearchTermUpdatedHandler = (term: string) => {
 			// TODO: just a dummy condition here; update with real logic
@@ -126,7 +126,7 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 				chatListData: hasSearchResults ? FILTERED_CHAT_MESSAGES : SAMPLE_CHAT_MESSAGES,
 				contactsList: hasSearchResults ? filteredContactsList : DUMMY_CONTACTS_LIST,
 			});
-		}
+		};
 
 		private refreshChatListDataHandler = () => {
 			// TODO: update here chat list data on pull to refresh
@@ -140,7 +140,7 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 					chatListData: SAMPLE_CHAT_MESSAGES,
 				});
 			}, 1500);
-		}
+		};
 
 		private loadMoreChatEntriesHandler = () => {
 			// TODO: update here chat list data, load more handler
@@ -157,6 +157,6 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 			} else {
 				this.setState({hasMoreChatListEntries: false});
 			}
-		}
+		};
 	};
 };

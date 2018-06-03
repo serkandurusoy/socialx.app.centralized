@@ -140,7 +140,7 @@ class MediaLicenceScreenComponent extends Component<
 				/>
 			</View>
 		);
-	}
+	};
 
 	private renderScreenWithScroll = () => {
 		return (
@@ -160,7 +160,7 @@ class MediaLicenceScreenComponent extends Component<
 				{this.renderSimilarMedia()}
 			</ScrollView>
 		);
-	}
+	};
 
 	private renderMediaPreviewAndActions = () => {
 		const {title, type, mediaPreviewURI, likedByMe} = this.props.mediaData;
@@ -187,7 +187,7 @@ class MediaLicenceScreenComponent extends Component<
 				</View>
 			</View>
 		);
-	}
+	};
 
 	private renderMediaDescriptionSection = () => {
 		const {type, imageID, owner} = this.props.mediaData;
@@ -209,7 +209,7 @@ class MediaLicenceScreenComponent extends Component<
 				</View>
 			</View>
 		);
-	}
+	};
 
 	private renderResolutionsSection = () => {
 		const {sizes} = this.props.mediaData;
@@ -246,12 +246,12 @@ class MediaLicenceScreenComponent extends Component<
 				})}
 			</View>
 		);
-	}
+	};
 
 	private renderResolutionSectionItems = (sectionData: IMediaSize[]) => {
 		if (this.resolutionSectionIsActive(sectionData[0].section) > -1) {
 			return (
-				<Animatable.View animation={'fadeIn'} easing='ease-out' iterationCount={1} duration={1000}>
+				<Animatable.View animation={'fadeIn'} easing="ease-out" iterationCount={1} duration={1000}>
 					{sectionData.map((mediaElement, index) => {
 						const isLast = index === sectionData.length - 1;
 						return this.renderListItemWithSelectButton(mediaElement, index, isLast);
@@ -260,7 +260,7 @@ class MediaLicenceScreenComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderBottomButtonsSection = () => {
 		return (
@@ -275,7 +275,7 @@ class MediaLicenceScreenComponent extends Component<
 				</View>
 			</View>
 		);
-	}
+	};
 
 	private renderSimilarMedia = () => {
 		return (
@@ -296,7 +296,7 @@ class MediaLicenceScreenComponent extends Component<
 				</View>
 			</View>
 		);
-	}
+	};
 
 	private gridScrollUpdatedHandler = (rawEvent: any, offsetX: number, offsetY: number) => {
 		if (offsetY <= 0 && !this.state.scrollEnabled) {
@@ -304,7 +304,7 @@ class MediaLicenceScreenComponent extends Component<
 				scrollEnabled: true,
 			});
 		}
-	}
+	};
 
 	private scrollUpdatedHandler = (event?: NativeSyntheticEvent<NativeScrollEvent>) => {
 		// TODO: scroll enable/disable logic can be improved later...
@@ -320,7 +320,7 @@ class MediaLicenceScreenComponent extends Component<
 				});
 			}
 		}
-	}
+	};
 
 	private renderGridItemHandler = (type: ReactText, item: IMediaLicenceData) => {
 		const likeIconSource = item.likedByMe ? Icons.likeIconBlueFilled : Icons.likeIconBlueOutline;
@@ -334,7 +334,7 @@ class MediaLicenceScreenComponent extends Component<
 				</TouchableOpacity>
 			</View>
 		);
-	}
+	};
 
 	private renderActionButton = (title: string, icon: ImagePropertiesSourceOptions, onPress: () => void) => {
 		return (
@@ -343,7 +343,7 @@ class MediaLicenceScreenComponent extends Component<
 				<Text style={style.actionButtonText}>{title}</Text>
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	private renderListSection = (mediaSizes: IMediaSize[], sectionIndex: number) => {
 		const title = mediaSizes[0].section.title;
@@ -362,7 +362,7 @@ class MediaLicenceScreenComponent extends Component<
 				{this.renderResolutionSectionItems(mediaSizes)}
 			</View>
 		);
-	}
+	};
 
 	private renderListItemWithSelectButton = (mediaElement: IMediaSize, index: number, isLast = false) => {
 		const itemContainerStyles = [
@@ -388,7 +388,7 @@ class MediaLicenceScreenComponent extends Component<
 				<Text style={style.mediaPrice}>{mediaElement.price}</Text>
 			</View>
 		);
-	}
+	};
 
 	private toggleResolutionSection = (mediaResSection: MediaResolutionSection) => {
 		const visibleSections = [...this.state.visibleSections];
@@ -409,11 +409,11 @@ class MediaLicenceScreenComponent extends Component<
 		}
 		updatedState.visibleSections = visibleSections;
 		this.setState(updatedState);
-	}
+	};
 
 	private resolutionSectionIsActive = (mediaResSection: MediaResolutionSection) => {
 		return findIndex(this.state.visibleSections, mediaResSection);
-	}
+	};
 
 	private getNewGridPhotosHeight = () => {
 		const screenHeight = Dimensions.get('window').height;
@@ -423,7 +423,7 @@ class MediaLicenceScreenComponent extends Component<
 		// const gridHeight = Math.min(maxHeight, screenHeight);
 		// console.log('Gird photos height', gridHeight);
 		// return gridHeight;
-	}
+	};
 
 	private mediaItemSelectedHandler = (mediaElement: IMediaSize) => {
 		const foundIndex = this.mediaElementIsSelected(mediaElement);
@@ -435,11 +435,11 @@ class MediaLicenceScreenComponent extends Component<
 			selectedItems.push(mediaElement);
 		}
 		this.setState({selectedItems});
-	}
+	};
 
 	private mediaElementIsSelected = (mediaElement: IMediaSize) => {
 		return findIndex(this.state.selectedItems, (mElement: IMediaSize) => mElement.id === mediaElement.id);
-	}
+	};
 
 	private showDownloadModal = () => {
 		const {selectedItems} = this.state;
@@ -452,45 +452,45 @@ class MediaLicenceScreenComponent extends Component<
 		} else {
 			alert('No media selected');
 		}
-	}
+	};
 
 	private toggleShareOptionsModal = () => {
 		this.setState({
 			shareModalVisible: !this.state.shareModalVisible,
 		});
-	}
+	};
 
 	private toggleModalHandler = () => {
 		this.setState({
 			modalVisible: !this.state.modalVisible,
 		});
-	}
+	};
 
 	private onShareOptionSelectedHandler = (option: IShareOption) => {
 		this.toggleShareOptionsModal();
 		this.props.onMediaShare(option);
-	}
+	};
 
 	private onSendTokensHandler = (gas: number) => {
 		this.props.onSendTokens(gas, this.state.amountToSend);
-	}
+	};
 
 	private onStartDownloadHandler = () => {
 		this.toggleModalHandler();
 		ModalManager.safeRunAfterModalClosed(() => {
 			this.props.onStartDownload(this.state.selectedItems);
 		});
-	}
+	};
 
 	private prepareMediaFullScreenPreview = () => {
 		const newMediaObject = this.props.getMediaPreviewObject();
 		this.props.onShowPreviewFullScreen(newMediaObject);
-	}
+	};
 
 	private prepareShowOwnerScreen = () => {
 		const mediaOwner = this.props.getMediaOwner();
 		this.props.onNavigateToUserProfileScreen(mediaOwner);
-	}
+	};
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -502,4 +502,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const withDataHooks = mediaLicenceWithDataHooks(MediaLicenceScreenComponent as any);
 
-export default connect(null, mapDispatchToProps)(withDataHooks);
+export default connect(
+	null,
+	mapDispatchToProps,
+)(withDataHooks);

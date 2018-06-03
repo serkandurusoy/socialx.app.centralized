@@ -48,12 +48,12 @@ class SaveKeyScreen extends Component<ISaveKeyScreenProps> {
 			confirmHandler: this.confirmKeySaved,
 			declineHandler: this.props.hideConfirm,
 		});
-	}
+	};
 
 	private confirmKeySaved = () => {
 		this.props.hideConfirm();
 		resetNavigationToRoute('MainScreen', this.props.navigation);
-	}
+	};
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -61,4 +61,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 	hideConfirm: () => dispatch(hideModalConfirmation()),
 });
 
-export default connect(null, mapDispatchToProps)(SaveKeyScreen as any);
+export default connect(
+	null,
+	mapDispatchToProps,
+)(SaveKeyScreen as any);

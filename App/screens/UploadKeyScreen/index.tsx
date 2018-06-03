@@ -35,5 +35,5 @@ export default class UploadKeyScreen extends Component<IUploadKeyScreenProps, an
 
 	private navigateToMainScreen = () => {
 		resetNavigationToRoute('MainScreen', this.props.navigation);
-	}
+	};
 }

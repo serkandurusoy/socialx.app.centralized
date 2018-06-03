@@ -69,7 +69,7 @@ export default class GovernanceTabScreen extends Component<IGovernanceTabScreenP
 				onShowFullScreen={() => this.props.showFullScreenMedia(govPost.media)}
 			/>
 		);
-	}
+	};
 
 	private renderFooterWhenLoading = (): ReactElement<any> => {
 		if (this.props.loadingMore && this.props.hasMore) {
@@ -80,28 +80,28 @@ export default class GovernanceTabScreen extends Component<IGovernanceTabScreenP
 			);
 		}
 		return null;
-	}
+	};
 
 	private onStartVoteHandler = (govPost: IGovPostData) => {
 		this.setState({
 			showVoteModal: true,
 			selectedPost: {...govPost, media: [govPost.media]},
 		});
-	}
+	};
 
 	private closeVoteModalHandler = () => {
 		this.setState({
 			showVoteModal: false,
 		});
-	}
+	};
 
 	private voteDownHandler = () => {
 		this.closeVoteModalHandler();
 		this.props.onVoteDown(this.state.selectedPost);
-	}
+	};
 
 	private voteUpHandler = () => {
 		this.closeVoteModalHandler();
 		this.props.onVoteUp(this.state.selectedPost);
-	}
+	};
 }

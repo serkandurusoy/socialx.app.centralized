@@ -55,7 +55,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private static navigationOptions = (props: IWallPostCommentsProps) => ({
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
 		headerLeft: <View />,
-	})
+	});
 
 	public state = {
 		allComments: [],
@@ -85,7 +85,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const {userId} = this.props.navigation.state.params;
 		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
-	}
+	};
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
 		const {likeComment, removeCommentLike} = this.props;
@@ -100,11 +100,11 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
 		// console.log('TODO: delete comment with ID', comment.id);
-	}
+	};
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;
@@ -122,7 +122,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		}
 		hideLoader();
 		// console.log('onCommentSendHandler', commentText);
-	}
+	};
 
 	private preFetchComments = async () => {
 		const {postId, userId} = this.props.navigation.state.params;
@@ -164,7 +164,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 									replies: [],
 									likedByMe: currentReply.likes.some((x) => x.userId === userId),
 								};
-						})
+						  })
 						: [];
 
 				return {
@@ -197,7 +197,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				}),
 			});
 		}
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -205,7 +205,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(CommentsScreen as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(CommentsScreen as any);
 
 const currentUserDataWrapper = userHoc(reduxWrapper);
 

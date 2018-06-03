@@ -32,7 +32,7 @@
     "lint": "tslint --project . -e '**/*.js' -t verbose | snazzy",
     "lintdiff": "git diff --name-only --cached --relative | grep '\\.tsx?$' | xargs tslint | snazzy",
     "fixcode": "tslint --project . -e '**/*.js' --fix",
-    "fixdiff": "git diff --name-only --cached --relative | grep '\\.tsx?$' | xargs tslint -v --fix -p . ",
+    "fixdiff": "git diff --name-only HEAD | grep '\\.tsx?$' | xargs tslint -v --fix -p . ",
     "pretty": "git diff --name-only HEAD | grep '.*\\.ts.*' | xargs node_modules/.bin/prettier --write --config .prettierrc",
     "prettyWin": "where /r .\\App *.ts *.tsx | xargswin -I{} \"npm run prettier {}\"",
     "prettier": "node_modules/.bin/prettier --write --config .prettierrc",

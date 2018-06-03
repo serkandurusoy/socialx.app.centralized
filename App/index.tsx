@@ -9,7 +9,7 @@ import * as Animatable from 'react-native-animatable';
 import {Provider} from 'react-redux';
 
 // refactoring
-import { Animations } from 'configuration/animations';
+import {Animations} from 'configuration/animations';
 import {OS_TYPES} from 'consts';
 import {Colors} from 'theme';
 

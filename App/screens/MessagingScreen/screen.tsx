@@ -91,7 +91,7 @@ class MessagingComponent extends Component<IMessagingComponentProps, IMessagingC
 
 	private chatScreenViewOnLayout = (event: LayoutEvent) => {
 		this.slideWidth = event.nativeEvent.layout.width;
-	}
+	};
 
 	private updatedSelectedTab = (nextTab: MessagingTabValues) => {
 		this.setState({
@@ -99,7 +99,7 @@ class MessagingComponent extends Component<IMessagingComponentProps, IMessagingC
 		});
 		const slideValue = nextTab === MessagingTabValues.Contacts ? -this.slideWidth : 0;
 		this.runSlideTransition(slideValue);
-	}
+	};
 
 	private runSlideTransition = (endValue: number) => {
 		Animated.timing(this.state.translateX, {
@@ -109,7 +109,7 @@ class MessagingComponent extends Component<IMessagingComponentProps, IMessagingC
 			isInteraction: false,
 			useNativeDriver: true,
 		}).start();
-	}
+	};
 }
 
 export default messagingWithDataHooks(MessagingComponent as any);
