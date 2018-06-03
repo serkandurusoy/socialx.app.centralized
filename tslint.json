@@ -28,7 +28,7 @@
     "no-bitwise": false,
     "member-access": false,
     "no-console": false,
-    "semicolon": true
+    "semicolon": false
   },
   "include": [
     "App/**/*.ts",

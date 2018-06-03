@@ -338,7 +338,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			icon: Icons.redRoundCross,
 			actionHandler: () => {
 				ModalManager.safeRunAfterModalClosed(() => {
-					alert('Comming soon..');
+					alert('Coming soon..');
 				});
 			},
 		},

@@ -82,13 +82,17 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const {user} = data;
 		const {posts, avatar} = user;
 
-		const userImages = (posts || []).reduce((count, post) => count + (post.Media ? post.Media.length : 0), 0);
+		const userImages = (posts || []).reduce(
+			(count: number, post: any) => count + (post.Media ? post.Media.length : 0),
+			0,
+		);
+		const numOfLikes = posts.reduce((total: number, post: any) => total + post.likes.length, 0);
 
 		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
-			numberOfLikes: 0,
+			numberOfLikes: numOfLikes,
 			numberOfFollowers: 0,
 			numberOfFollowing: 0,
 			avatarURL: userAvatar,
