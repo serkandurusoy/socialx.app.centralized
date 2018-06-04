@@ -7,14 +7,23 @@ import RepliesScreenComponent from './screen';
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
 
 import {IComments, ICommentsResponse, IUserQuery} from 'types';
-import {IWallPostCommentReply} from '../index';
+import {IWallPostComment, IWallPostCommentReply} from '../index';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 import {getUserAvatar} from 'utilities';
 
+interface IRepliesScreenNavScreenProps {
+	params: {
+		commentId: string;
+		afterAddReply: () => void;
+		startReply: boolean;
+		userId: string;
+	};
+}
+
 interface IRepliesScreenProps {
-	navigation: NavigationScreenProp<any>;
+	navigation: NavigationScreenProp<IRepliesScreenNavScreenProps>;
 
 	getComments: any;
 	comment: any;
@@ -86,13 +95,14 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 
 	private onSendReplyHandler = async (replyText: string) => {
 		const {loadCommenting, hideLoader, comment, navigation} = this.props;
-		const commentId = navigation.state.params.commentId;
+		const {commentId, afterAddReply} = navigation.state.params;
 
 		const mVar = {variables: {targetComment: commentId, text: replyText}};
 		loadCommenting();
 		try {
 			await comment(mVar);
 			await this.preFetchComments();
+			afterAddReply();
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -102,7 +112,12 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const {userId} = this.props.navigation.state.params;
-		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
+		this.props.navigation.navigate('RepliesScreen', {
+			commentId: comment.id,
+			startReply,
+			userId,
+			afterAddReply: this.preFetchComments,
+		});
 	};
 
 	private loadMoreComments = (comments: IComments[]): IWallPostCommentReply[] => {
@@ -122,9 +137,9 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				likes: comment.likes,
 				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
 				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
-			}
+			};
 		});
-	}
+	};
 
 	private preFetchComments = async () => {
 		const commentId = this.props.navigation.state.params.commentId;
