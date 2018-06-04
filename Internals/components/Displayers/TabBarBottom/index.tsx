@@ -194,7 +194,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 					this.setState({
 						changeInProgress: false,
 					});
-				}, 500);
+				}, 200);
 			}
 		}
 	};
