@@ -116,7 +116,7 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 			mediaObjects: [media],
 			startIndex: 0,
 		});
-	}
+	};
 
 	private onRefreshHandler = () => {
 		this.setState({refreshing: true, hasMore: true});
@@ -126,7 +126,7 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 				govPosts: [...GOVERNANCE_POSTS],
 			});
 		}, 2000);
-	}
+	};
 
 	private onLoadMoreHandler = () => {
 		if (this.state.hasMore && !this.state.loadingMore) {
@@ -134,7 +134,8 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 				loadingMore: true,
 			});
 			setTimeout(() => {
-				const allGovPosts = this.state.govPosts.concat(JSON.parse(JSON.stringify(GOVERNANCE_POSTS)));
+				// todo @serkan @jake why stringify and parse????
+				const allGovPosts = [...this.state.govPosts, ...JSON.parse(JSON.stringify(GOVERNANCE_POSTS))];
 				this.updateIdsForNewGovPosts(allGovPosts);
 				this.setState({
 					loadingMore: false,
@@ -143,14 +144,14 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 				});
 			}, 2000);
 		}
-	}
+	};
 
-	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) => {
-		// TODO: can be deleted when we have data with unique IDs
-		allGovPosts.forEach((govPost, index) => {
-			govPost.id = index.toString();
-		});
-	}
+	// TODO: can be deleted when we have data with unique IDs
+	private updateIdsForNewGovPosts = (allGovPosts: IGovPostData[]) =>
+		allGovPosts.map((govPost, index) => ({
+			...govPost,
+			id: index.toString(),
+		}));
 
 	private onVoteUpHandler = (govPost: IGovPostData) => {
 		// TODO: network call to update upVotes, maybe hide this card?
@@ -160,7 +161,7 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 		this.setState({
 			govPosts: updatedGovPosts,
 		});
-	}
+	};
 
 	private onVoteDownHandler = (govPost: IGovPostData) => {
 		// TODO: network call to update downVotes, maybe hide this card?
@@ -170,5 +171,5 @@ export default class GovernanceTab extends React.Component<IGovernanceTabProps, 
 		this.setState({
 			govPosts: updatedGovPosts,
 		});
-	}
+	};
 }

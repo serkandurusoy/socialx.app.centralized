@@ -45,24 +45,25 @@ export class MessagingFilterSection extends React.Component<
 	};
 
 	public render() {
-		return <View style={style.container}>{this.renderFilterButtons()}</View>;
-	}
-
-	private renderFilterButtons = () => {
-		const ret: any = [];
-		FILTER_BUTTONS_DATA.forEach((buttonData, index) => {
-			const isButtonInactive = buttonData.value !== this.state.selectedOption;
-			const textStyles = [style.buttonLabel, isButtonInactive ? style.buttonLabelInactive : {}];
-			ret.push(
-				<View style={style.buttonContainer} key={index}>
-					<TouchableOpacity style={style.button} onPress={() => this.onNewFilterSelectedHandler(buttonData.value)}>
-						<Image source={buttonData.icon} resizeMode={'contain'} style={style.buttonIcon} />
-						<Text style={textStyles}>{buttonData.label}</Text>
-					</TouchableOpacity>
-				</View>,
-			);
-		});
-		return ret;
+		return (
+			<View style={style.container}>
+				{FILTER_BUTTONS_DATA.map((buttonData, index) => (
+					<View style={style.buttonContainer} key={index}>
+						<TouchableOpacity style={style.button} onPress={() => this.onNewFilterSelectedHandler(buttonData.value)}>
+							<Image source={buttonData.icon} resizeMode={'contain'} style={style.buttonIcon} />
+							<Text
+								style={[
+									style.buttonLabel,
+									buttonData.value !== this.state.selectedOption ? style.buttonLabelInactive : {},
+								]}
+							>
+								{buttonData.label}
+							</Text>
+						</TouchableOpacity>
+					</View>
+				))}
+			</View>
+		);
 	}
 
 	private onNewFilterSelectedHandler = (filterValue: MessagingFilterValues) => {
@@ -70,5 +71,5 @@ export class MessagingFilterSection extends React.Component<
 			selectedOption: filterValue,
 		});
 		this.props.onSelectionChange(filterValue);
-	}
+	};
 }

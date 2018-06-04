@@ -178,7 +178,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				this.showErrorMessage(ex);
 			}
 		}
-	}
+	};
 
 	private showErrorMessage = (ex: any) => {
 		this.props.stopLoading();
@@ -186,7 +186,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 			Alert.alert('Something went wrong, try again');
 		});
 		console.log(ex);
-	}
+	};
 }
 
 const navigationOptions = (props: IPhotoScreenProps) => ({
@@ -204,7 +204,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(withAddFriends as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(withAddFriends as any);
 
 const addMediaWrapper = addMediaHoc(reduxWrapper);
 const createPostWrapper = createPostHoc(addMediaWrapper);

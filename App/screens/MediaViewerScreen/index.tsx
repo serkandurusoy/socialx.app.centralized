@@ -35,7 +35,7 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 			ret.header = null;
 		}
 		return ret;
-	}
+	};
 
 	public state = {
 		orientation: DeviceOrientations.Portrait,
@@ -70,5 +70,5 @@ export default class MediaViewerScreen extends Component<IMediaViewerScreenProps
 	private orientationDidChange = (orient: orientation) => {
 		this.props.navigation.setParams({hideHeader: orient === DeviceOrientations.Landscape});
 		this.setState({orientation: orient});
-	}
+	};
 }

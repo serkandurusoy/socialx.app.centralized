@@ -18,45 +18,40 @@ export interface IActivityRecentCommentCardProps {
 	onThumbPress: (postId: string) => void;
 }
 
-export const ActivityRecentCommentCard: React.SFC<IActivityRecentCommentCardProps> = (props) => {
-	const renderWallPostThumbs = () => {
-		const ret: any = [];
-		props.wallPosts.forEach((wallPost: ActivityRecentCommentCardPosts, index: number) => {
-			ret.push(
-				<TouchableOpacity
-					key={index}
-					style={style.postThumbTouchContainer}
-					onPress={() => props.onThumbPress(wallPost.postId)}
-				>
-					<Image source={{uri: wallPost.postThumbURL}} resizeMode={'contain'} style={style.postThumbImage} />
-				</TouchableOpacity>,
-			);
-		});
-		return ret;
-	};
+export interface IWallPostsProps {
+	wallPosts: ActivityRecentCommentCardPosts[];
+	onThumbPress: (postId: string) => void;
+}
 
-	return (
-		<View style={style.container}>
-			<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
-			<View style={style.rightContainer}>
-				<View style={style.topRightRow}>
-					<Text style={style.fullName}>{props.fullName}</Text>
-					<Text style={style.notificationTimestamp}>{moment(props.timestamp).fromNow()}</Text>
-				</View>
-				<Text style={style.activityActionText}>
-					{'Commented on '}
-					{props.wallPosts.length}
-					{' recent posts'}
-				</Text>
-				<ScrollView
-					horizontal={true}
-					alwaysBounceHorizontal={false}
-					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={style.wallPostsThumbsContainer}
-				>
-					{renderWallPostThumbs()}
-				</ScrollView>
+const WallPostThumbs: React.SFC<IWallPostsProps> = ({wallPosts, onThumbPress}) => (
+	<ScrollView
+		horizontal={true}
+		alwaysBounceHorizontal={false}
+		showsHorizontalScrollIndicator={false}
+		contentContainerStyle={style.wallPostsThumbsContainer}
+	>
+		{wallPosts.map((wallPost: ActivityRecentCommentCardPosts, index: number) => (
+			<TouchableOpacity key={index} style={style.postThumbTouchContainer} onPress={() => onThumbPress(wallPost.postId)}>
+				<Image source={{uri: wallPost.postThumbURL}} resizeMode={'contain'} style={style.postThumbImage} />
+			</TouchableOpacity>
+		))}
+	</ScrollView>
+);
+
+export const ActivityRecentCommentCard: React.SFC<IActivityRecentCommentCardProps> = (props) => (
+	<View style={style.container}>
+		<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
+		<View style={style.rightContainer}>
+			<View style={style.topRightRow}>
+				<Text style={style.fullName}>{props.fullName}</Text>
+				<Text style={style.notificationTimestamp}>{moment(props.timestamp).fromNow()}</Text>
 			</View>
+			<Text style={style.activityActionText}>
+				{'Commented on '}
+				{props.wallPosts.length}
+				{' recent posts'}
+			</Text>
+			<WallPostThumbs wallPosts={props.wallPosts} onThumbPress={props.onThumbPress}/>
 		</View>
-	);
-};
+	</View>
+);

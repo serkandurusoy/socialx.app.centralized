@@ -33,7 +33,7 @@ export default class ChatScreenTab extends Component<IChatScreenTabProps, any> {
 
 	private renderUserWithLastMessage = (data: {item: IChatListEntry; index: number}) => {
 		return <MessagingChatListEntry {...data.item} onPress={() => this.props.onChatItemPress(data.item)} />;
-	}
+	};
 
 	private renderFooterWhenLoading = () => {
 		if (this.props.hasMore) {
@@ -44,5 +44,5 @@ export default class ChatScreenTab extends Component<IChatScreenTabProps, any> {
 			);
 		}
 		return null;
-	}
+	};
 }

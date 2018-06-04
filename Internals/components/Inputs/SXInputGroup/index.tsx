@@ -20,6 +20,7 @@ export interface ISXGroupProps {
 	Comps: IFormSx[];
 }
 
+// todo: @serkan @jake let's refactor this together for some react best practices without creating so many instances
 export const InputGroup: React.SFC<ISXGroupProps> = (props) => {
 	const Components: any = [];
 

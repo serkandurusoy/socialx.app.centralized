@@ -44,7 +44,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				style={style.keyboardView}
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
-				keyboardDismissMode='interactive'
+				keyboardDismissMode="interactive"
 				keyboardShouldPersistTaps={'handled'}
 			>
 				<ModalInputSMSCode
@@ -97,7 +97,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				{/*disabled={false}*/}
 				{/*/>*/}
 				<View style={style.noAccountContainer}>
-					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
+					<Text style={style.noAccountQuestion}>{"Don't have an account?"}</Text>
 					<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
 						<Text style={style.signUpText}>{'Sign up'}</Text>
 					</TouchableOpacity>
@@ -109,18 +109,18 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	private safeNavigateToScreen = (screenName: string) => {
 		Keyboard.dismiss();
 		this.props.navigation.navigate(screenName);
-	}
+	};
 
 	private navigateToMainScreen = () => {
 		Keyboard.dismiss();
 		resetNavigationToRoute('MainScreen', this.props.navigation);
-	}
+	};
 
 	private usernameSubmitPressedHandler = () => {
 		if (this.passwordInput && this.state.usernameValue) {
 			this.passwordInput.focusInput();
 		}
-	}
+	};
 
 	private handleUsernameInputKeyPressed = (value: string) => this.setState({usernameValue: value});
 
@@ -131,7 +131,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		this.setState({
 			showModalForSMSCode: visible,
 		});
-	}
+	};
 
 	private fireSignin = () => {
 		const {usernameValue, passwordValue} = this.state;
@@ -157,7 +157,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			}
 			this.props.HideLoader();
 		});
-	}
+	};
 
 	private smsCodeConfirmedHandler = (code: string) => {
 		const {usernameValue} = this.state;
@@ -176,17 +176,17 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			}
 			this.props.HideLoader();
 		});
-	}
+	};
 
 	private smsCodeDeclinedHandler = () => {
 		this.toggleVisibleModalSMS(false);
 		// console.log('TODO: smsCodeDeclinedHandler');
-	}
+	};
 
 	private smsCodeResendHandler = () => {
 		this.toggleVisibleModalSMS(false);
 		// console.log('TODO: smsCodeResendHandler');
-	}
+	};
 }
 
 const navigationOptions = {
@@ -201,5 +201,8 @@ const MapDispatchToProps = (dispatch: any) => ({
 });
 
 const loginScreenWithResize = withResizeOnKeyboardShow(LoginScreen, navigationOptions);
-const reduxWrapper = connect(null, MapDispatchToProps)(loginScreenWithResize as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(loginScreenWithResize as any);
 export default reduxWrapper;

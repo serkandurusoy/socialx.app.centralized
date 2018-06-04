@@ -35,7 +35,7 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 			ret.headerLeft = <View />;
 		}
 		return ret;
-	}
+	};
 
 	public state = {
 		videoPaused: false,
@@ -81,38 +81,38 @@ export default class MediaLicenceScreen extends Component<IMediaLicenceScreenPro
 			mediaObjects: [newMediaObject],
 			startIndex: 0,
 		});
-	}
+	};
 
 	private onNavigateToUserProfileScreenHandler = (mediaOwner: Partial<IUserQuery>) => {
 		this.props.navigation.navigate('UserProfileScreen', {user: mediaOwner});
-	}
+	};
 
 	private onNavigateToMediaIDScreenHandler = () => {
 		alert('Decide later what screen will this link');
-	}
+	};
 
 	private onCloseAllMediaScreensHandler = () => {
 		this.props.navigation.popToTop();
 		this.props.navigation.goBack(null);
-	}
+	};
 
 	private onSimilarMediaSelectHandler = (similarMedia: IMediaLicenceData) => {
 		this.props.navigation.navigate('MediaLicenceScreen', {mediaLicence: similarMedia});
-	}
+	};
 
 	private onNavigateToFAQScreenHandler = () => {
 		this.props.navigation.navigate('MediaLicenceFAQScreen');
-	}
+	};
 
 	private screenDidFocusHandler = () => {
 		this.setState({
 			videoPaused: false,
 		});
-	}
+	};
 
 	private screenDidBlurHandler = () => {
 		this.setState({
 			videoPaused: true,
 		});
-	}
+	};
 }

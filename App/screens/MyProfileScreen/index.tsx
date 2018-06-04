@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {InteractionManager, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
+
+import {IconButton} from 'components';
 
 import {ipfsConfig as base} from 'configuration';
 
@@ -9,6 +11,7 @@ import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {IMediaProps, IUserDataResponse} from 'types';
 
 import {AvatarImagePlaceholder} from 'consts';
+import {Icon} from 'native-base';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
@@ -50,18 +53,24 @@ interface IMyProfileScreenState {
 }
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
-	private static navigationOptions = {
+	private static navigationOptions = (props: any) => ({
 		title: 'PROFILE',
-	};
+		headerRight: (
+			<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.refreshScreen} />
+		),
+	});
 
 	public state = INITIAL_STATE;
 
+	// todo @serkan @jake why?
 	private lastLoadedPhotoIndex = 0;
 
 	public async componentDidMount() {
-		if (!this.props.data.loading) {
-			this.props.data.refetch();
-		}
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				refreshScreen: this.props.data.refetch,
+			});
+		});
 	}
 
 	public componentWillReceiveProps(nextProps: IMyProfileScreenProps) {
@@ -73,19 +82,17 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const {user} = data;
 		const {posts, avatar} = user;
 
-		let userImages = 0;
-		if (posts) {
-			posts.forEach((x) => {
-				userImages += x.Media ? x.Media.length : 0;
-			});
-		}
+		const userImages = (posts || []).reduce(
+			(count: number, post: any) => count + (post.Media ? post.Media.length : 0),
+			0,
+		);
+		const numOfLikes = posts.reduce((total: number, post: any) => total + post.likes.length, 0);
 
-		const userAvatar = avatar
-			? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
+		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
 
 		this.setState({
 			numberOfPhotos: userImages,
-			numberOfLikes: 0,
+			numberOfLikes: numOfLikes,
 			numberOfFollowers: 0,
 			numberOfFollowing: 0,
 			avatarURL: userAvatar,
@@ -117,6 +124,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		);
 	}
 
+	// todo @serkan @jake what?
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
 		const ret: IMediaProps[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
@@ -127,7 +135,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private preloadAllMediaObjects = () => {
 		const {data} = this.props;
@@ -139,6 +147,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			return [];
 		}
 
+		// todo @serkan @jake this looks like an unwrap/flatten, let's review
 		const Imgs: IMediaProps[] = [];
 		for (let y = 0; y < posts.length; y++) {
 			const currentMedia = posts[y].Media;
@@ -150,7 +159,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		return Imgs;
-	}
+	};
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

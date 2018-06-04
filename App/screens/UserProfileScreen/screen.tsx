@@ -38,6 +38,9 @@ interface IUserProfileScreenProps extends IWithLoaderProps {
 	gridPageSize: number;
 	navigation: NavigationScreenProp<any>;
 	allMediaObjects: IMediaProps[];
+	onCommentClick: any;
+	onImageClick: any;
+	onLikeClick: any;
 }
 
 interface IUserProfileScreenComponentState {
@@ -47,6 +50,7 @@ interface IUserProfileScreenComponentState {
 	gridMediaProvider: DataProvider;
 }
 
+// todo @serkan @jake let's refactor this togetgher as an example of react component composition
 class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUserProfileScreenComponentState> {
 	public static getDerivedStateFromProps(
 		nextProps: Readonly<IUserProfileScreenProps>,
@@ -113,13 +117,13 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 			mediaObjects: [{type: 'jpg', hash: avatarURL.replace(base.ipfs_URL, '')}],
 			startIndex: 0,
 		});
-	}
+	};
 
 	private setScrollView = (ref: any) => {
 		this.setState({
 			scrollView: ref,
 		});
-	}
+	};
 
 	private conditionalRendering = () => {
 		if (this.state.isFollowed) {
@@ -127,16 +131,20 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 		} else {
 			return this.renderNotFollowedState();
 		}
-	}
+	};
 
 	private renderFollowedState = () => {
-		const gridPhotosStyles = [style.gridPhotosContainer];
-		if (this.props.totalNumberOfPhotos > this.props.gridPageSize) {
-			const recyclerHeight = SCREEN_HEIGHT - Metrics.navBarHeight;
-			gridPhotosStyles.push({
-				height: recyclerHeight,
-			});
-		}
+		const gridPhotosStyles = [
+			style.gridPhotosContainer,
+			...(this.props.totalNumberOfPhotos > this.props.gridPageSize
+				? [
+						{
+							height: SCREEN_HEIGHT - Metrics.navBarHeight,
+						},
+				  ]
+				: []),
+		];
+
 		return (
 			<View style={gridPhotosStyles}>
 				<NewGridPhotos
@@ -150,7 +158,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				/>
 			</View>
 		);
-	}
+	};
 
 	private renderGridItemHandler = (type: ReactText, mediaData: IMediaViewerObject) => {
 		const mediaURL = getURLForMediaViewerObject(mediaData);
@@ -160,7 +168,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				<MediaObjectViewer {...mediaTypeProps} uri={mediaURL} style={style.userMediaThumb} thumbOnly={true} />
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	private renderNotFollowedState = () => {
 		return (
@@ -173,19 +181,20 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				{this.renderRecentPosts()}
 			</View>
 		);
-	}
+	};
 
-	private renderRecentPosts = () => {
-		const ret = [];
-		for (let i = 0; i < this.props.recentPosts.length; i++) {
-			ret.push(
-				<View style={style.wallPostContainer} key={i}>
-					<WallPostCard {...this.props.recentPosts[i]} canDelete={false} navigation={this.props.navigation} />
-				</View>,
-			);
-		}
-		return ret;
-	}
+	private renderRecentPosts = () =>
+		this.props.recentPosts.map((post, i) => (
+			<View style={style.wallPostContainer} key={i}>
+				<WallPostCard
+					{...post}
+					canDelete={false}
+					onCommentClick={() => this.props.onCommentClick(post.id, null)}
+					onImageClick={(index) => this.props.onImageClick(index, post.media)}
+					onLikeButtonClick={() => this.props.onLikeClick(post.likedByMe, post.id)}
+				/>
+			</View>
+		));
 
 	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
 		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.state.isScrolled) {
@@ -200,17 +209,17 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 				isScrolled: false,
 			});
 		}
-	}
+	};
 
 	private initLoadMorePhotosHandler = () => {
 		const {gridMediaProvider} = this.state;
 		const loadedMedia = gridMediaProvider.getAllData();
 		const newMedia = this.props.loadMorePhotosHandler();
-		const allMedia = loadedMedia.concat(newMedia);
+		const allMedia = [...loadedMedia, ...newMedia];
 		this.setState({
 			gridMediaProvider: this.state.gridMediaProvider.cloneWithRows(allMedia),
 		});
-	}
+	};
 
 	private onViewMediaFullScreen = (index: number) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
@@ -218,7 +227,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 			// mediaObjects: this.state.gridMediaProvider.getAllData(),
 			startIndex: index,
 		});
-	}
+	};
 }
 
 export default withInlineLoader(UserProfileScreenComponent);

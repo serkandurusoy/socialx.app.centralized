@@ -15,6 +15,8 @@ export interface IBlobData {
 	data: string;
 }
 
+// todo @serkan @jake let's revisit this thing from the ground up. if anything, the libs are not maintained, there are
+// better alternatives. furthermore, we can maybe improve the structure of this class
 export default class Ipfslib {
 	private config: IProviderParams = {host: '0.0.0.0', port: '8080', protocol: 'http', root: '/api/v0'};
 	private responseData: any;

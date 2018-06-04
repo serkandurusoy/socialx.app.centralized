@@ -1,11 +1,19 @@
-import {AsyncStorage} from 'react-native';
-import {connect} from 'react-redux';
+import React from 'react';
+import {StatusBar, View} from 'react-native';
 
-import {StartupActions} from '../../reducers/StartupReducers';
-import {Props, RootContainer} from './container';
+import Amplify from 'aws-amplify';
 
-const mapDispatchToProps = (dispatch: any): Props => ({
-	startup: () => dispatch(StartupActions.startup()),
-});
+import {awsconfig} from 'configuration';
+import ReduxNavigation from '../../navigation/ReduxNavigation';
 
-export default connect(null, mapDispatchToProps)(RootContainer);
+// Styles
+import styles from './styles';
+
+Amplify.configure(awsconfig);
+
+export default () => (
+	<View style={styles.applicationView}>
+		<StatusBar barStyle={'light-content'} />
+		<ReduxNavigation />
+	</View>
+);

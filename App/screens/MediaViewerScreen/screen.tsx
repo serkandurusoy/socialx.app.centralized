@@ -81,7 +81,7 @@ export default class MediaViewerScreenComponent extends Component<
 				width: event.nativeEvent.layout.width,
 			},
 		});
-	}
+	};
 
 	private getIOSCarouselProps = () => {
 		const ret: any = {};
@@ -98,7 +98,7 @@ export default class MediaViewerScreenComponent extends Component<
 			// https://github.com/archriss/react-native-snap-carousel/blob/master/doc/
 		}
 		return ret;
-	}
+	};
 
 	private renderPagination = () => {
 		if (this.props.mediaObjects.length > 1) {
@@ -113,7 +113,7 @@ export default class MediaViewerScreenComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderCloseButton = () => {
 		if (!this.isPortrait) {
@@ -124,7 +124,7 @@ export default class MediaViewerScreenComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private exitFullScreenMode = () => {
 		const timeoutBeforeAllowAgainAllOrientation = Platform.OS === OS_TYPES.IOS ? 100 : 5000;
@@ -132,11 +132,11 @@ export default class MediaViewerScreenComponent extends Component<
 		setTimeout(() => {
 			Orientation.unlockAllOrientations();
 		}, timeoutBeforeAllowAgainAllOrientation);
-	}
+	};
 
 	private handleSlideChanged = (index: number) => {
 		this.setState({activeSlide: index});
-	}
+	};
 
 	private renderCarouselItem = (itemData: {item: IMediaViewerObject; index: number}) => {
 		const carouselImageStyles = [style.carouselMediaObject, {width: this.state.viewport.width}];
@@ -153,5 +153,5 @@ export default class MediaViewerScreenComponent extends Component<
 				resizeToChangeAspectRatio={true}
 			/>
 		);
-	}
+	};
 }

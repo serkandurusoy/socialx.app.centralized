@@ -145,7 +145,7 @@ export default class CreateEventScreenComponent extends Component<
 			ret = {...ret, invitedFriends: this.props.invitedFriends};
 		}
 		return ret;
-	}
+	};
 
 	private renderAddTitleAndColor = () => {
 		const selectedColorStyle = {backgroundColor: this.state.selectedColor};
@@ -180,7 +180,7 @@ export default class CreateEventScreenComponent extends Component<
 				</ModalDropdown>
 			</View>
 		);
-	}
+	};
 
 	private renderStartEndDateSection = () => {
 		const startDateWithFormat = moment(this.state.startDate).format(DATE_FORMAT);
@@ -217,7 +217,7 @@ export default class CreateEventScreenComponent extends Component<
 				</TouchableOpacity>
 			</View>
 		);
-	}
+	};
 
 	private renderStartEndTimeSection = () => {
 		if (!this.state.allDayEvent) {
@@ -257,7 +257,7 @@ export default class CreateEventScreenComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderAllDayEvent = () => {
 		return (
@@ -269,7 +269,7 @@ export default class CreateEventScreenComponent extends Component<
 				/>
 			</View>
 		);
-	}
+	};
 
 	private renderInviteFriends = () => {
 		return (
@@ -292,7 +292,7 @@ export default class CreateEventScreenComponent extends Component<
 				) : null}
 			</View>
 		);
-	}
+	};
 
 	private renderInputWithCheckboxItem = (
 		label: string,
@@ -327,14 +327,14 @@ export default class CreateEventScreenComponent extends Component<
 				) : null}
 			</View>
 		);
-	}
+	};
 
 	private getPickerMode = (): 'date' | 'time' => {
 		if (this.state.datePickerMode === PICKER_MODE.START_DATE || this.state.datePickerMode === PICKER_MODE.END_DATE) {
 			return 'date';
 		}
 		return 'time';
-	}
+	};
 
 	private showStartDayPicker = () => {
 		this.setState({
@@ -344,7 +344,7 @@ export default class CreateEventScreenComponent extends Component<
 			iosTitle: PICKER_IOS_TITLE.START_DATE,
 			minimumDate: new Date(),
 		});
-	}
+	};
 
 	private showEndDayPicker = () => {
 		this.setState({
@@ -354,7 +354,7 @@ export default class CreateEventScreenComponent extends Component<
 			iosTitle: PICKER_IOS_TITLE.END_DATE,
 			minimumDate: this.state.startDate,
 		});
-	}
+	};
 
 	private showStartTimePicker = () => {
 		this.setState({
@@ -364,7 +364,7 @@ export default class CreateEventScreenComponent extends Component<
 			iosTitle: PICKER_IOS_TITLE.START_TIME,
 			minimumDate: undefined,
 		});
-	}
+	};
 
 	private showEndTimePicker = () => {
 		let initDate: Date | undefined = this.state.endTime;
@@ -379,7 +379,7 @@ export default class CreateEventScreenComponent extends Component<
 			iosTitle: PICKER_IOS_TITLE.END_TIME,
 			minimumDate: undefined,
 		});
-	}
+	};
 
 	private datePickedHandler = (date: Date) => {
 		const updatedState: Partial<ICreateEventScreenComponentState> = {};
@@ -412,7 +412,7 @@ export default class CreateEventScreenComponent extends Component<
 		}
 		this.setState(updatedState);
 		this.dismissDatePicker();
-	}
+	};
 
 	private syncEndTime = (
 		updatedState: Partial<ICreateEventScreenComponentState>,
@@ -427,38 +427,38 @@ export default class CreateEventScreenComponent extends Component<
 				.add(1, 'day')
 				.toDate();
 		}
-	}
+	};
 
 	private dismissDatePicker = () => {
 		this.setState({
 			datePickerVisible: false,
 		});
-	}
+	};
 
 	private newColorSelectedHandler = (index: number, value: string) => {
 		this.setState({
 			selectedColor: value,
 		});
-	}
+	};
 
 	private renderColorItem = (color: string) => {
 		const colorStyle = {backgroundColor: color};
 		return <View style={[style.colorRoundButton, colorStyle]} />;
-	}
+	};
 
 	private colorPickerUpdateSize = (sizes: any) => {
 		return {...sizes, height: EVENT_COLORS.length * COLOR_BUTTON_HEIGHT};
-	}
+	};
 
 	private toggleCheckbox = (stateItemKey: string) => {
 		const updatedState = {};
 		updatedState[stateItemKey] = !this.state[stateItemKey];
 		this.setState(updatedState);
-	}
+	};
 
 	private textInputChanged = (value: string, stateItemKey) => {
 		const updatedState = {};
 		updatedState[stateItemKey] = value;
 		this.setState(updatedState);
-	}
+	};
 }

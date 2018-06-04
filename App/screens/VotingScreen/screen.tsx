@@ -99,7 +99,7 @@ export class VotingScreenComponent extends React.Component<IVotingScreenComponen
 	) => {
 		action = action as NavigationNavigateAction;
 		this.changeTabTo(action.routeName as VotingTabs);
-	}
+	};
 
 	private changeTabTo = (newTab: VotingTabs, skipNavigation = false) => {
 		this.setState({
@@ -108,5 +108,5 @@ export class VotingScreenComponent extends React.Component<IVotingScreenComponen
 		if (!skipNavigation && this.tabNavigator) {
 			this.tabNavigator.dispatch(NavigationActions.navigate({routeName: newTab}));
 		}
-	}
+	};
 }

@@ -3,6 +3,8 @@
 
 // @flow
 
+// todo @serkan @jake FLOW??? wtf???
+
 import type {
     StyleObj,
 } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
@@ -242,14 +244,17 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         };
 
         const items = this.props.items.map((item, index) => {
-            const classes = [this.props.labelContainerStyle];
-
-            if (index !== this.props.items.length - 1) {
-                classes.push([
-                    styles.tooltipMargin,
-                    {borderBottomColor: this.props.labelSeparatorColor},
-                ]);
-            }
+            const classes = [
+              this.props.labelContainerStyle,
+              ...(
+								index !== this.props.items.length - 1
+                    ? [[
+										styles.tooltipMargin,
+										{borderBottomColor: this.props.labelSeparatorColor},
+									]]
+                  : []
+              )
+            ];
 
             return (
                 <PopoverTooltipItem

@@ -50,6 +50,7 @@ export interface ISXTextInputProps {
 	size?: InputSizes;
 	borderWidth?: number;
 	multiline?: boolean;
+	focusUpdateHandler?: (hasFocus: boolean) => void;
 	autoCorrect?: boolean;
 	autoCapitalize?: 'none' | 'sentences' | 'characters' | 'words';
 }
@@ -101,10 +102,16 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 				borderWidth: this.props.borderWidth,
 			},
 		];
-		const textInputStyles = [style.textInput, style['textInput' + this.props.size]];
-		if (isMultiline) {
-			textInputStyles.push(style.multilineTextInput);
-		}
+		const textInputStyles = [
+			style.textInput,
+			style['textInput' + this.props.size],
+			...(
+				isMultiline
+					? [style.multilineTextInput]
+					: []
+			),
+		];
+
 		return (
 			<View style={this.getContainerStyles()}>
 				<View style={inputContainerStyles}>
@@ -145,16 +152,20 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		}
 	}
 
-	private getContainerStyles = () => {
-		const ret: any = [style.container];
-		if (this.props.width) {
-			ret.push({width: this.props.width});
-		}
-		if (this.props.disabled) {
-			ret.push(style.disabledInput);
-		}
-		return ret;
-	}
+	// todo @serkan @jake is this worth creating a function instance per mount?
+	private getContainerStyles = () => [
+		style.container,
+		...(
+			this.props.width
+				? [{width: this.props.width}]
+				: []
+		),
+		...(
+			this.props.disabled
+				? [style.disabledInput]
+				: []
+		),
+	]
 
 	private renderInputIcon = () => {
 		if (this.props.icon) {
@@ -182,6 +193,9 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		this.setState({
 			hasFocus: value,
 		});
+		if (this.props.focusUpdateHandler) {
+			this.props.focusUpdateHandler(value);
+		}
 	}
 
 	private textChangedHandler = (value: string) => {

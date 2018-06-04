@@ -45,23 +45,26 @@ export const addFilesBN = async (
 };
 
 export const addBlobFiles = async (mediaObjects: MediaObject[]): Promise<any> => {
-	const blobSource: IBlobData[] = [];
-	const blobOptimized: IBlobData[] = [];
 	const ipfsHashes: object[] = [];
 	if (mediaObjects.length <= 0) {
 		return ipfsHashes;
 	}
 
-	mediaObjects.forEach((media: MediaObject) => {
-		const sourceContent = {filename: media.name, data: media.content, name: media.name.split('.')[0]};
-		const optimizedContent = {
-			filename: media.name,
-			data: media.contentOptimized || media.content,
-			name: media.name.split('.')[0] + '-optimized',
-		};
-		blobSource.push(sourceContent);
-		blobOptimized.push(optimizedContent);
-	});
+	// todo @serkan @jake let's test this
+	const {source: blobSource, optimized: blobOptimized} = mediaObjects.reduce(
+		({source, optimized}, media: MediaObject) => ({
+			source: [...source, {filename: media.name, data: media.content, name: media.name.split('.')[0]}],
+			optimized: [
+				...optimized,
+				{
+					filename: media.name,
+					data: media.contentOptimized || media.content,
+					name: media.name.split('.')[0] + '-optimized',
+				},
+			],
+		}),
+		{source: [] as IBlobData[], optimized: [] as IBlobData[]},
+	);
 
 	try {
 		let ipfsSourceResp = await addBlob(blobSource);
@@ -72,6 +75,8 @@ export const addBlobFiles = async (mediaObjects: MediaObject[]): Promise<any> =>
 
 		console.log('sourceResp', ipfsSourceResp);
 		console.log('optimizedResp', ipfsOptimizedResp);
+
+		// todo @serkan @jake I think we can optimize this iteration
 		ipfsSourceResp.forEach((sourceResp: string) => {
 			if (sourceResp !== '') {
 				const parsedSource = JSON.parse(sourceResp);

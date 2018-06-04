@@ -34,9 +34,9 @@ export default class MessagingScreen extends Component<IMessagingScreenProps> {
 				avatarURL: data.avatarURL,
 			},
 		});
-	}
+	};
 
 	private onChatItemPressHandler = (item: IChatListEntry) => {
 		this.props.navigation.navigate('ChatThreadScreen', {user: item});
-	}
+	};
 }

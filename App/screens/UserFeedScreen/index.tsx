@@ -12,7 +12,6 @@ import {
 	addMediaHoc,
 	createPostHoc,
 	deleteOwnPostHoc,
-	getPublicPostsHoc,
 	getUserPostsHoc,
 	likePostHoc,
 	removeLikePostHoc,
@@ -42,10 +41,9 @@ import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/scree
 import {IMediaRec} from './types';
 
 export interface IFeedProps {
-	Posts: IPaginatedPosts;
-	loadMore: any;
 	navigation: NavigationScreenProp<any>;
 	hideShareSection: boolean;
+	searchTerm: string;
 }
 
 interface IUserFeedScreenProps extends IFeedProps {
@@ -62,11 +60,11 @@ interface IUserFeedScreenProps extends IFeedProps {
 	stopLoading: any;
 	deletePost: any;
 	loading: boolean;
-	noPosts: boolean;
-	refresh: () => void;
-	loadMore: () => void;
 	Items: any;
+	refresh: () => void;
 	nextToken: string | null;
+	noPosts: boolean;
+	loadMore: () => any;
 	hasMore: boolean;
 }
 
@@ -82,7 +80,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public render() {
-		const {Posts, data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
+		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
+
+		// console.log(this.props);
 
 		return (
 			<UserFeedScreenComponent
@@ -126,16 +126,16 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				});
 			}
 		}
-	}
+	};
 
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
-		const {Posts, data} = this.props;
+		const {data} = this.props;
 		if (!data.loading && data.user.avatar) {
 			ret = {uri: base.ipfs_URL + data.user.avatar.hash};
 		}
 		return ret;
-	}
+	};
 
 	private showNewWallPostPage = () => {
 		const avatarUri = this.props.data.user.avatar
@@ -146,7 +146,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			avatarImage: avatarUri,
 			postCreate: this.addWallPostHandler,
 		});
-	}
+	};
 
 	private create = async (Media: string[], text?: string) => {
 		const {createPost} = this.props;
@@ -172,7 +172,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				},
 			});
 		}
-	}
+	};
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
 		const {addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
@@ -183,6 +183,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		// start creating post loading
 		startPostadd();
 
+		// todo @serkan @jake let's discuss parallel/series async execution
+		// for await of vs await Promise.all
 		try {
 			for (let i = 0; i < data.mediaObjects.length; i++) {
 				const currentData = data.mediaObjects[i];
@@ -205,7 +207,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		stopLoading();
-	}
+	};
 
 	private refreshWallPosts = async () => {
 		this.setState({refreshing: true});
@@ -219,7 +221,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			this.setState({refreshing: false});
 			console.log('ex', Ex);
 		}
-	}
+	};
 
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		const {likePost, removeLikePost, Items, refresh} = this.props;
@@ -235,7 +237,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 
 		// await refresh();
-	}
+	};
 
 	private onPostDeleteClickHandler = async (postId: string) => {
 		const {deletingPostLoad, deletePost, stopLoading} = this.props;
@@ -249,22 +251,22 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			// user doesnt own the post, thus cant delete, or server issues
 		}
 		stopLoading();
-	}
+	};
 
 	private gotoUserProfile = (userId: string) => {
 		this.props.navigation.navigate('UserProfileScreen', {userId});
-	}
+	};
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: media,
 			startIndex: index,
 		});
-	}
+	};
 
 	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
 		this.props.navigation.navigate('CommentsStack', {postId, userId});
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -274,7 +276,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(UserFeedScreen);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(UserFeedScreen);
 
 const userWrapper = userHoc(reduxWrapper);
 const createPostWrapper = createPostHoc(userWrapper);

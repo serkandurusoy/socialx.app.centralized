@@ -46,6 +46,11 @@ class ModalReportProblemComponent extends Component<
 
 	public render() {
 		const backDropOpacity = Platform.OS === OS_TYPES.IOS ? 0 : 0.7;
+		const resizableStyles = [
+			style.keyboardView,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
+		];
+
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -57,7 +62,7 @@ class ModalReportProblemComponent extends Component<
 				style={style.container}
 			>
 				{this.renderOSBlurView()}
-				<View style={this.getResizableStyles()}>
+				<View style={resizableStyles}>
 					<View style={style.boxContainer}>
 						<View style={style.titleContainer}>
 							<Text style={style.title}>{'Report a Problem'}</Text>
@@ -82,6 +87,8 @@ class ModalReportProblemComponent extends Component<
 
 							<View style={style.descriptionContainer}>
 								<SXTextInput
+									autoCapitalize={'sentences'}
+									autoCorrect={true}
 									numberOfLines={3}
 									borderColor={Colors.dustWhite}
 									placeholder={'Describe your Report'}
@@ -111,30 +118,22 @@ class ModalReportProblemComponent extends Component<
 		if (Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableWithoutFeedback onPress={this.props.declineHandler}>
-					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
+					<BlurView style={style.blurView} blurType="dark" blurAmount={2} />
 				</TouchableWithoutFeedback>
 			);
 		}
 		return null;
-	}
+	};
 
 	private setNewSelection = (index: number, value: string) => {
 		this.setState({
 			reportReason: value,
 		});
-	}
-
-	private getResizableStyles = () => {
-		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.IOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
+	};
 
 	private updateReportDescription = (text: string) => {
 		this.setState({description: text});
-	}
+	};
 }
 
 export const ModalReportProblem = withResizeOnKeyboardShow(withManagedTransitions(ModalReportProblemComponent));
