@@ -245,9 +245,14 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	private renderPostTitle = () => {
-		const title = this.props.title || this.props.text;
+		let title = this.props.title || this.props.text;
 		// if no title present use the text part as title!
 		if (title) {
+			try {
+				title = atob(title);
+			} catch (ex) {
+				// console.log('Base64 decode failed', ex);
+			}
 			if (Platform.OS === OS_TYPES.Android) {
 				return (
 					<View style={style.postTitlePadding}>
@@ -259,14 +264,14 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 									type: 'hashtag',
 									style: style.hashtag,
 									onPress: () => {
-										alert('Hashtags!! Coming soon..');
+										console.log('Hashtags!! Coming soon..');
 									},
 								},
 								{
 									type: 'tags',
 									style: style.tag,
 									onPress: () => {
-										alert('Tags!!! Coming soon..');
+										console.log('Tags!!! Coming soon..');
 									},
 								},
 							]}
@@ -314,16 +319,12 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 								{
 									type: 'hashtag',
 									style: style.hashtag,
-									onPress: () => {
-										alert('Hashtags!! Coming soon..');
-									},
+									onPress: console.log('Hashtags!! Coming soon..'),
 								},
 								{
-									type: 'tags',
+									type: 'tag',
 									style: style.tag,
-									onPress: () => {
-										alert('Tags!!! Coming soon..');
-									},
+									onPress: console.log('Tags!!! Coming soon..'),
 								},
 							]}
 						>
@@ -389,13 +390,14 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			icon: Icons.iconReport,
 			actionHandler: this.tooltipsReportPressedHandler,
 		},
-		...(this.props.canDelete ? [
+		...(this.props.canDelete
+			? [
 					{
 						label: 'Delete Post',
 						icon: Icons.iconDelete,
 						actionHandler: this.tooltipsDeletePressedHandler,
 					},
-				]
+			  ]
 			: []),
 	];
 
