@@ -60,20 +60,12 @@ export class SXButton extends Component<ISXButtonProps, any> {
 			ret = {};
 		}
 		return ret;
-	}
+	};
 
 	protected getContainerStyles = () => [
 		style.container,
 		{borderColor: this.props.borderColor},
-		...(
-			this.props.containerStyle
-				? [this.props.containerStyle]
-				: [style['container' + this.props.size]]
-		),
-		...(
-			this.isDisabled
-				? [style.disabledButton]
-				: []
-		),
-	]
+		...(this.props.containerStyle ? [this.props.containerStyle] : [style['container' + this.props.size]]),
+		...(this.isDisabled ? [style.disabledButton] : []),
+	];
 }

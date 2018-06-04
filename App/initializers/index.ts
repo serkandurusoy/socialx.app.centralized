@@ -1,14 +1,15 @@
 import {languageInit} from 'utilities/amplify';
 
-export default async () => {
-	// init I18n language set
+export default () => {
 	removeConsoleLogs();
-	await languageInit();
+	// init I18n language set
+	languageInit();
 };
 
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
 		// tslint:disable-next-line
-		console.log = () => {};
+		console.log = () => {
+		};
 	}
 };

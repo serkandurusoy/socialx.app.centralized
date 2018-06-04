@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import {Colors} from 'theme';
 import style from './style';
 
-import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator } from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
 import {ForgotPasswordConfirm} from 'utilities';
 
@@ -114,19 +114,19 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 	private updateInputRef = (inputRef: SXTextInput, fieldName: string) => {
 		this.inputRefs[fieldName] = inputRef;
-	};
+	}
 
 	private handleInputChangeText = (value: string, fieldName: string) => {
 		const newState: any = {};
 		newState[fieldName] = value;
 		this.setState(newState);
-	};
+	}
 
 	private moveToNextInput = (nextInputRef: string) => {
 		if (nextInputRef in this.inputRefs) {
 			this.inputRefs[nextInputRef].focusInput();
 		}
-	};
+	}
 
 	private setNewPasswordHandler = async () => {
 		const {resetCode, password, confirmPassword} = this.state;
@@ -163,7 +163,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 			console.log(ex);
 		}
 		hideLoader();
-	};
+	}
 }
 
 const MapDispatchToState = (dispatch: any) => ({
@@ -171,7 +171,4 @@ const MapDispatchToState = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(
-	null,
-	MapDispatchToState,
-)(ResetPasswordScreen as any);
+export default connect(null, MapDispatchToState)(ResetPasswordScreen as any);

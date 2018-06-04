@@ -43,16 +43,12 @@ export class SXGradientButton extends Component<ISXButtonGProps> {
 			ret = {};
 		}
 		return ret;
-	}
+	};
 
 	protected getContainerStyles = (): any => [
 		style.container,
 		{borderColor: this.props.borderColor},
 		style['container' + this.props.size],
-		...(
-			this.props.disabled
-				? [style.disabledButton]
-				: []
-		),
-	]
+		...(this.props.disabled ? [style.disabledButton] : []),
+	];
 }

@@ -94,6 +94,8 @@ class ModalReportProblemComponent extends Component<
 									placeholder={'Describe your Report'}
 									onChangeText={this.updateReportDescription}
 									blurOnSubmit={false}
+									autoCapitalize={'sentences'}
+									autoCorrect={true}
 								/>
 							</View>
 						</View>

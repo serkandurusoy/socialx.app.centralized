@@ -61,7 +61,7 @@ class TextExtraction {
 		parsedTexts.forEach((parsedText) => delete parsedText._matched);
 
 		return parsedTexts.filter((t) => !!t.children);
-	}
+	};
 
 	/**
 	 * @param {Object} matchedPattern - pattern configuration of the pattern used to match the text
@@ -95,7 +95,7 @@ class TextExtraction {
 			children,
 			_matched: true,
 		};
-	}
+	};
 }
 
 export default TextExtraction;

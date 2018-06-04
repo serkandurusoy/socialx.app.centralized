@@ -46,7 +46,7 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 				isHidden: false,
 				marginBottom: event.endCoordinates.height,
 			});
-		}
+		};
 
 		private keyboardDidHide = () => {
 			this.setState({
@@ -58,7 +58,7 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 				handler();
 			});
 			this.onHideHandlers = [];
-		}
+		};
 
 		private safeRunAfterKeyboardHideHandler = (handler: () => void) => {
 			if (this.state.isHidden) {
@@ -67,6 +67,6 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 				// todo: @serkan @jake what???
 				this.onHideHandlers.push(handler); // Added handler to run after keyboard hide
 			}
-		}
+		};
 	};
 };

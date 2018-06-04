@@ -90,7 +90,7 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 		if (this.props.onPress) {
 			this.props.onPress();
 		}
-	}
+	};
 
 	private onAnimationEndHandler = () => {
 		if (this.state.animating) {
@@ -101,5 +101,5 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 				touchDisabled: false,
 			});
 		}
-	}
+	};
 }

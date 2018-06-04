@@ -1,7 +1,7 @@
 import {OS_TYPES} from 'consts';
 import {withManagedTransitions} from 'hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
-import React, {Component} from 'react';
+import React from 'react';
 import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
@@ -49,6 +49,7 @@ const ModalTagFriendsComponent = (props: IModalTagFriendsProps) => {
 						<View style={style.inputContainer}>
 							<SXTextInput
 								autoFocus={true}
+								autoCorrect={true}
 								onChangeText={props.onSearchUpdated}
 								placeholder={'Search'}
 								icon={'search'}

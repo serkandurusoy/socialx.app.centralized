@@ -51,7 +51,7 @@ export const ActivityRecentCommentCard: React.SFC<IActivityRecentCommentCardProp
 				{props.wallPosts.length}
 				{' recent posts'}
 			</Text>
-			<WallPostThumbs wallPosts={props.wallPosts} onThumbPress={props.onThumbPress}/>
+			<WallPostThumbs wallPosts={props.wallPosts} onThumbPress={props.onThumbPress} />
 		</View>
 	</View>
 );
