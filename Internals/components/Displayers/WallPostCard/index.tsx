@@ -264,14 +264,14 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 									type: 'hashtag',
 									style: style.hashtag,
 									onPress: () => {
-										console.log('Hashtags!! Coming soon..');
+										alert('Hashtags!! Coming soon..');
 									},
 								},
 								{
 									type: 'tags',
 									style: style.tag,
 									onPress: () => {
-										console.log('Tags!!! Coming soon..');
+										alert('Tags!!! Coming soon..');
 									},
 								},
 							]}
@@ -319,12 +319,16 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 								{
 									type: 'hashtag',
 									style: style.hashtag,
-									onPress: console.log('Hashtags!! Coming soon..'),
+									onPress: () => {
+										alert('Hashtags!! Coming soon..');
+									},
 								},
 								{
-									type: 'tag',
+									type: 'tags',
 									style: style.tag,
-									onPress: console.log('Tags!!! Coming soon..'),
+									onPress: () => {
+										alert('Tags!!! Coming soon..');
+									},
 								},
 							]}
 						>
