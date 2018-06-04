@@ -105,11 +105,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		const textInputStyles = [
 			style.textInput,
 			style['textInput' + this.props.size],
-			...(
-				isMultiline
-					? [style.multilineTextInput]
-					: []
-			),
+			...(isMultiline ? [style.multilineTextInput] : []),
 		];
 
 		return (
@@ -150,22 +146,14 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		if (this.inputComponent) {
 			this.inputComponent.focus();
 		}
-	}
+	};
 
 	// todo @serkan @jake is this worth creating a function instance per mount?
 	private getContainerStyles = () => [
 		style.container,
-		...(
-			this.props.width
-				? [{width: this.props.width}]
-				: []
-		),
-		...(
-			this.props.disabled
-				? [style.disabledInput]
-				: []
-		),
-	]
+		...(this.props.width ? [{width: this.props.width}] : []),
+		...(this.props.disabled ? [style.disabledInput] : []),
+	];
 
 	private renderInputIcon = () => {
 		if (this.props.icon) {
@@ -176,7 +164,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderCancelButton = () => {
 		if (this.state.hasFocus && this.props.canCancel) {
@@ -187,7 +175,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			);
 		}
 		return null;
-	}
+	};
 
 	private updateFocusHandler = (value: boolean) => {
 		this.setState({
@@ -196,14 +184,14 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		if (this.props.focusUpdateHandler) {
 			this.props.focusUpdateHandler(value);
 		}
-	}
+	};
 
 	private textChangedHandler = (value: string) => {
 		this.setState({textValue: value});
 		if (this.props.onChangeText) {
 			this.props.onChangeText(value);
 		}
-	}
+	};
 
 	private getIconHeight = () => {
 		let ret = Sizes.smartHorizontalScale(30);
@@ -213,5 +201,5 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			ret = Sizes.smartHorizontalScale(40);
 		}
 		return ret;
-	}
+	};
 }

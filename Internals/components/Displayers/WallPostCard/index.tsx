@@ -245,7 +245,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	private renderPostTitle = () => {
-		const title = this.props.title ? this.props.title : this.props.text;
+		const title = this.props.title || this.props.text;
 		// if no title present use the text part as title!
 		if (title) {
 			if (Platform.OS === OS_TYPES.Android) {
@@ -255,8 +255,20 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 							style={style.postTitle}
 							childrenProps={{allowFontScaling: false}}
 							parse={[
-								{type: 'hashtag', style: style.hashtag, onPress: () => {alert('Hashtags!! Coming soon..')}},
-								{type: 'tags', style: style.tag, onPress: () => {alert('Tags!!! Coming soon..')}},
+								{
+									type: 'hashtag',
+									style: style.hashtag,
+									onPress: () => {
+										alert('Hashtags!! Coming soon..');
+									},
+								},
+								{
+									type: 'tags',
+									style: style.tag,
+									onPress: () => {
+										alert('Tags!!! Coming soon..');
+									},
+								},
 							]}
 						>
 							{title}
@@ -299,8 +311,20 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 							style={style.postTitle}
 							childrenProps={{allowFontScaling: false}}
 							parse={[
-								{type: 'hashtag', style: style.hashtag, onPress: alert('Hashtags!! Coming soon..')},
-								{type: 'tag', style: style.tag, onPress: alert('Tags!!! Coming soon..')},
+								{
+									type: 'hashtag',
+									style: style.hashtag,
+									onPress: () => {
+										alert('Hashtags!! Coming soon..');
+									},
+								},
+								{
+									type: 'tags',
+									style: style.tag,
+									onPress: () => {
+										alert('Tags!!! Coming soon..');
+									},
+								},
 							]}
 						>
 							{textToRender}

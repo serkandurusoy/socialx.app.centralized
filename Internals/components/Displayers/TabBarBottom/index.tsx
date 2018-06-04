@@ -88,6 +88,7 @@ const MENU_ITEMS: TabMenuItem[] = [
 
 interface ITabBarBottomState {
 	selectedTab: string;
+	changeInProgress: boolean;
 }
 
 interface ITabBarBottomProps extends IAppUIStateProps {
@@ -99,6 +100,7 @@ interface ITabBarBottomProps extends IAppUIStateProps {
 class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomState> {
 	public state: any = {
 		selectedTab: MENU_ITEMS[0].screenName,
+		changeInProgress: false,
 	};
 
 	public render() {
@@ -112,7 +114,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	private layoutHandler = (event: LayoutEvent) => {
 		const viewHeight = event.nativeEvent.layout.height;
 		this.props.TabBarBottomHeight(viewHeight);
-	}
+	};
 
 	private getMenuItemComponent = (menuItem: TabMenuItem, index: number) => {
 		if (menuItem.type === MENU_BUTTON_TYPE.MENU_BUTTON_CAMERA) {
@@ -138,7 +140,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				</View>
 			);
 		}
-	}
+	};
 
 	private renderSimpleTabButton = (menuItem: TabMenuItem) => {
 		const tabIsSelected = this.state.selectedTab === menuItem.screenName;
@@ -158,7 +160,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				</View>
 			</TouchableWithoutFeedback>
 		);
-	}
+	};
 
 	private renderNotificationsIconWithBadge = (menuItem: TabMenuItem) => {
 		const {notifications} = this.props;
@@ -177,16 +179,25 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				{!loading && notificationsRender()}
 			</View>
 		);
-	}
+	};
 
 	private handleTabChange = (screenName: string) => {
-		if (this.state.selectedTab !== screenName) {
-			this.props.navigation.navigate(screenName);
-			this.setState({
-				selectedTab: screenName,
-			});
+		if (this.state.selectedTab !== screenName && !this.state.changeInProgress) {
+			const navSuccess = this.props.navigation.navigate(screenName);
+			if (navSuccess) {
+				this.setState({
+					changeInProgress: true,
+					selectedTab: screenName,
+				});
+				// no better solution here... just disable fast tab switching while sliding in progress
+				setTimeout(() => {
+					this.setState({
+						changeInProgress: false,
+					});
+				}, 200);
+			}
 		}
-	}
+	};
 
 	private showPhotoOptionsMenu = () => {
 		ActionSheet.show(
@@ -206,7 +217,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				}
 			},
 		);
-	}
+	};
 
 	// TODO: show the user that he has excceded the maximum file size
 	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
@@ -221,7 +232,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private takeCameraPhoto = async () => {
 		try {
@@ -233,7 +244,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		} catch (ex) {
 			console.log(ex);
 		}
-	}
+	};
 
 	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
@@ -258,7 +269,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		} catch (ex) {
 			//
 		}
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -271,4 +282,7 @@ const mapStateToProps: any = (state: any): IAppUIStateProps => ({
 
 const notificationsWrapper = getMyNotificationsHoc(TabBarBottomComponent);
 
-export const TabBarBottom = connect(mapStateToProps, MapDispatchToProps)(notificationsWrapper);
+export const TabBarBottom = connect(
+	mapStateToProps,
+	MapDispatchToProps,
+)(notificationsWrapper);

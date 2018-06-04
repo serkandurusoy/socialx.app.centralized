@@ -22,7 +22,7 @@ const SAMPLE_EVENTS: IEventData[] = [
 		allDay: false,
 		startTime: new Date(2018, 3, 16, 10, 15),
 		endTime: new Date(2018, 3, 17, 15, 30),
-		location: "Junior's Cafe",
+		location: 'Junior\'s Cafe',
 	},
 	{
 		title: 'Call David',
@@ -32,7 +32,7 @@ const SAMPLE_EVENTS: IEventData[] = [
 		allDay: false,
 		startTime: new Date(2018, 3, 16, 10, 15),
 		endTime: new Date(2018, 3, 16, 10, 45),
-		location: "Junior's Cafe",
+		location: 'Junior\'s Cafe',
 	},
 	{
 		title: 'Luci birthday',

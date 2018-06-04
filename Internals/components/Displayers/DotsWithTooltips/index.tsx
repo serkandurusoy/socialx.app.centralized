@@ -43,5 +43,5 @@ export class TooltipDots extends Component<ITooltipDotsProps> {
 				</View>
 			),
 			onPress: item.actionHandler,
-		}))
+		}));
 }
