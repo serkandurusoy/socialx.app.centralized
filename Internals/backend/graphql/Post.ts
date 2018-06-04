@@ -5,6 +5,8 @@ import {IAllPostsDataResponse, IPaginatedPosts} from 'types';
 
 import {AvatarImagePlaceholder} from 'consts';
 
+import {decodeBase64Text} from 'utilities';
+
 import {ipfsConfig as base} from 'configuration';
 
 const likePost = gql`
@@ -197,7 +199,7 @@ export const getPublicPostsHoc = (comp: any) =>
 			const dataSpine = (pItems: any) =>
 				pItems.map((post: any) => ({
 					id: post.id,
-					text: post.text,
+					text: decodeBase64Text(post.text),
 					location: post.location,
 					media: post.Media,
 					// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
@@ -273,7 +275,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 					const post = pItems[i];
 					rets.push({
 						id: post.id,
-						text: post.text,
+						text: decodeBase64Text(post.text),
 						location: post.location,
 						media: post.Media,
 						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates

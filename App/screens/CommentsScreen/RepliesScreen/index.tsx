@@ -11,7 +11,7 @@ import {IWallPostComment, IWallPostCommentReply} from '../index';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-import {getUserAvatar} from 'utilities';
+import {decodeBase64Text, getUserAvatar} from 'utilities';
 
 interface IRepliesScreenNavScreenProps {
 	params: {
@@ -126,7 +126,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			const userAvatar = getUserAvatar(comment.owner);
 			return {
 				id: comment.id,
-				text: comment.text,
+				text: decodeBase64Text(comment.text),
 				user: {
 					fullName: comment.owner.name,
 					avatarURL: userAvatar,

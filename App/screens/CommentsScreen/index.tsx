@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {getRandomImage, getUserAvatar} from 'utilities';
+import {decodeBase64Text, getRandomImage, getUserAvatar} from 'utilities';
 import CommentsScreenComponent from './screen';
 
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
@@ -118,7 +118,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 			const userAvatar = getUserAvatar(comment.owner);
 			return {
 				id: comment.id,
-				text: comment.text,
+				text: decodeBase64Text(comment.text),
 				user: {
 					fullName: comment.owner.name,
 					avatarURL: userAvatar,

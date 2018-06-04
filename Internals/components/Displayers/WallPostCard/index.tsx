@@ -245,16 +245,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	private renderPostTitle = () => {
-		let title = this.props.title || this.props.text;
+		const title = this.props.title || this.props.text;
 		// if no title present use the text part as title!
 		if (title) {
-			if (title.substr(title.length - 1, title.length) === '=') {
-				try {
-					title = atob(title);
-				} catch (ex) {
-					console.log('Base64 decode failed', ex);
-				}
-			}
 			if (Platform.OS === OS_TYPES.Android) {
 				return (
 					<View style={style.postTitlePadding}>
