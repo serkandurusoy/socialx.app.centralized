@@ -124,9 +124,9 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				likes: comment.likes,
 				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
 				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
-			}
+			};
 		});
-	}
+	};
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;

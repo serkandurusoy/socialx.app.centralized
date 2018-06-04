@@ -62,7 +62,7 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 		if (Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableWithoutFeedback onPress={props.closeHandler}>
-					<BlurView style={style.blurView} blurType="dark" blurAmount={2} />
+					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
 				</TouchableWithoutFeedback>
 			);
 		}

@@ -5,26 +5,25 @@ import {Text, TextProps} from 'react-native';
 import TextExtraction from './Parser';
 
 const PATS = {
-    url: /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/i,
+	url: /(https?:\/\/|www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/i,
 	phone: /[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,7}/,
 	email: /\S+@\S+\.\S+/,
 	hashtag: /#(\w+)/,
 	tags: /@(\w+)/,
-}
+};
 
 interface IDefaultParseShape {
 	type: 'url' | 'phone' | 'email' | 'hashtag' | 'tags';
 }
 
 interface ICustomeParsedShape {
-    pattern: RegExp | string;
+	pattern: RegExp | string;
 }
 
 interface ITextParserProps extends TextProps {
-    parse: any;// IDefaultParseShape[] | ICustomeParsedShape[];
-    childrenProps: TextProps;
+	parse: any; // IDefaultParseShape[] | ICustomeParsedShape[];
+	childrenProps: TextProps;
 }
-
 
 export default class textParser extends Component<ITextParserProps> {
 	private root: any = null;

@@ -94,7 +94,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 				</Text>
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	// todo @serkan @jake these should all be separate components
 	private renderReplies = () => {
@@ -118,7 +118,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 			}
 		}
 		return null;
-	}
+	};
 
 	// todo @serkan @jake these should all be separate components
 	private renderLikes = () => {
@@ -137,7 +137,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 			);
 		}
 		return null;
-	}
+	};
 
 	// todo @serkan @jake these should all be separate components
 	private renderReplyButton = () => {
@@ -149,7 +149,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 			);
 		}
 		return null;
-	}
+	};
 
 	private onCommentLikeHandler = () => {
 		this.animatedText.animate('pulsate', PULSATE_PERIOD).then(this.onAnimationEndHandler);
@@ -158,7 +158,7 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 			touchDisabled: true,
 		});
 		this.props.onCommentLike();
-	}
+	};
 
 	private onAnimationEndHandler = () => {
 		if (this.state.animating) {
@@ -170,5 +170,5 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 				touchDisabled: false,
 			});
 		}
-	}
+	};
 }

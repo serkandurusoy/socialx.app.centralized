@@ -81,7 +81,7 @@ export class ContactsList extends React.Component<IContactsListProps> {
 			}
 			return ret;
 		});
-	}
+	};
 
 	private getFormattedData = () => {
 		const ret: any = {};
@@ -94,7 +94,7 @@ export class ContactsList extends React.Component<IContactsListProps> {
 			ret[nameInitial].push(contact);
 		});
 		return ret;
-	}
+	};
 
 	private getNumberOfUniqueLetters = () => {
 		// todo: @serkan @jake what???
@@ -104,12 +104,12 @@ export class ContactsList extends React.Component<IContactsListProps> {
 			letterSet.add(nameInitial);
 		});
 		return letterSet.size;
-	}
+	};
 
 	private layoutHandler = (event: LayoutEvent) => {
 		const newLineHeight = Math.floor(event.nativeEvent.layout.height / this.getNumberOfUniqueLetters());
 		this.setState({
 			sideLetterLineHeight: newLineHeight,
 		});
-	}
+	};
 }

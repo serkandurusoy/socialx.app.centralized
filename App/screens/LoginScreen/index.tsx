@@ -44,7 +44,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				style={style.keyboardView}
 				contentContainerStyle={style.container}
 				alwaysBounceVertical={false}
-				keyboardDismissMode="interactive"
+				keyboardDismissMode='interactive'
 				keyboardShouldPersistTaps={'handled'}
 			>
 				<ModalInputSMSCode
@@ -97,7 +97,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				{/*disabled={false}*/}
 				{/*/>*/}
 				<View style={style.noAccountContainer}>
-					<Text style={style.noAccountQuestion}>{"Don't have an account?"}</Text>
+					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
 					<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
 						<Text style={style.signUpText}>{'Sign up'}</Text>
 					</TouchableOpacity>

@@ -44,7 +44,7 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 				style={style.container}
 				afterDismiss={this.props.afterDismiss}
 			>
-				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType="dark" blurAmount={2} />
+				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
 				<View style={resizableStyles}>
 					<View style={style.boxContainer}>
 						<View style={style.titleContainer}>

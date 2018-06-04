@@ -41,7 +41,7 @@ const ModalTagFriendsComponent = (props: IModalTagFriendsProps) => {
 			animationOut={'slideOutUp'}
 			style={style.container}
 		>
-			<BlurView style={style.blurView} viewRef={props.blurViewRef} blurType="dark" blurAmount={2} />
+			<BlurView style={style.blurView} viewRef={props.blurViewRef} blurType='dark' blurAmount={2} />
 			<View style={resizableStyles}>
 				<View style={style.boxContainer}>
 					<View style={style.pinkContainer}>

@@ -255,8 +255,20 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 							style={style.postTitle}
 							childrenProps={{allowFontScaling: false}}
 							parse={[
-								{type: 'hashtag', style: style.hashtag, onPress: () => {alert('Hashtags!! Coming soon..')}},
-								{type: 'tags', style: style.tag, onPress: () => {alert('Tags!!! Coming soon..')}},
+								{
+									type: 'hashtag',
+									style: style.hashtag,
+									onPress: () => {
+										alert('Hashtags!! Coming soon..');
+									},
+								},
+								{
+									type: 'tags',
+									style: style.tag,
+									onPress: () => {
+										alert('Tags!!! Coming soon..');
+									},
+								},
 							]}
 						>
 							{title}

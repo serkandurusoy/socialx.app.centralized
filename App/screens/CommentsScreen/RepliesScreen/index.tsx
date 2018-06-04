@@ -122,9 +122,9 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				likes: comment.likes,
 				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
 				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
-			}
+			};
 		});
-	}
+	};
 
 	private preFetchComments = async () => {
 		const commentId = this.props.navigation.state.params.commentId;
