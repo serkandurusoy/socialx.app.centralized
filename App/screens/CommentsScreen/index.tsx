@@ -85,7 +85,12 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const userId = this.props.data.user.userId;
-		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
+		this.props.navigation.navigate('RepliesScreen', {
+			commentId: comment.id,
+			startReply,
+			userId,
+			afterAddReply: this.preFetchComments,
+		});
 	};
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
