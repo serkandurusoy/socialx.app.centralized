@@ -1,9 +1,10 @@
 import React from 'react';
-import {Image, StyleProp, Text, TouchableOpacity, ViewStyle} from 'react-native';
+import {Image, Platform, StyleProp, Text, TouchableOpacity, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import * as mime from 'react-native-mime-types';
 
 import {IVideoOptions, VideoPlayer} from 'components';
+import {OS_TYPES} from 'consts';
 import {MediaTypeImage, MediaTypes, MediaTypeVideo} from 'types';
 import style from './style';
 
@@ -28,7 +29,7 @@ export const MediaObjectViewer: React.SFC<IMediaObjectViewerProps> = (props) => 
 		return mime.lookup(props.uri);
 	};
 
-	const ImageComponent = props.uri.startsWith('https://') ? FastImage : Image;
+	const ImageComponent = Platform.OS === OS_TYPES.Android && props.uri.startsWith('https://') ? FastImage : Image;
 
 	const renderForMediaType = () => {
 		let ret = null;

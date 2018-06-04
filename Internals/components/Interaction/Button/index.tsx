@@ -74,6 +74,6 @@ export class SXButton extends Component<ISXButtonProps, any> {
 			this.isDisabled
 				? [style.disabledButton]
 				: []
-		)
+		),
 	]
 }

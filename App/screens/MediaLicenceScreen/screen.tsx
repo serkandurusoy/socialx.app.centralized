@@ -251,7 +251,7 @@ class MediaLicenceScreenComponent extends Component<
 	private renderResolutionSectionItems = (sectionData: IMediaSize[]) => {
 		if (this.resolutionSectionIsActive(sectionData[0].section) > -1) {
 			return (
-				<Animatable.View animation={'fadeIn'} easing="ease-out" iterationCount={1} duration={1000}>
+				<Animatable.View animation={'fadeIn'} easing='ease-out' iterationCount={1} duration={1000}>
 					{sectionData.map((mediaElement, index) => {
 						const isLast = index === sectionData.length - 1;
 						return this.renderListItemWithSelectButton(mediaElement, index, isLast);

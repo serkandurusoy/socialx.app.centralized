@@ -56,7 +56,7 @@ const SendCoinsScreenComponent: React.SFC<ISendCoinsScreenComponentProps> = (pro
 								autoCorrect={false}
 								autoComplete={false}
 								underlineColorAndroid={Colors.transparent}
-								autoCapitalize="none"
+								autoCapitalize='none'
 								blurOnSubmit={false}
 							/>
 							<Text style={style.inputLabel}>{'User'}</Text>
@@ -71,7 +71,7 @@ const SendCoinsScreenComponent: React.SFC<ISendCoinsScreenComponentProps> = (pro
 								autoCorrect={false}
 								autoComplete={false}
 								underlineColorAndroid={Colors.transparent}
-								autoCapitalize="none"
+								autoCapitalize='none'
 								blurOnSubmit={true}
 							/>
 							<Text style={style.inputLabel}>{'SOCX'}</Text>

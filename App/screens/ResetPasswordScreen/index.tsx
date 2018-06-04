@@ -138,7 +138,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 		try {
 			if (password !== confirmPassword) {
 				ModalManager.safeRunAfterModalClosed(() => {
-					Alert.alert("You'r passwords do'nt match");
+					Alert.alert('You\'r passwords do\'nt match');
 				});
 				return;
 			}
@@ -153,7 +153,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 			const resetRes = await ForgotPasswordConfirm(params.username, resetCode, password);
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert("You'r password has been successfully reseted!");
+				Alert.alert('You\'r password has been successfully reseted!');
 			});
 			resetNavigationToRoute('MainScreen', this.props.navigation);
 		} catch (ex) {

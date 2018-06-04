@@ -189,8 +189,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						ref={(ref: any) => this.updateInputRef(ref, 'phone')}
 						autoCorrect={false}
 						underlineColorAndroid={Colors.transparent}
-						autoCapitalize="none"
-						clearButtonMode="while-editing"
+						autoCapitalize='none'
+						clearButtonMode='while-editing'
 					/>
 				</View>
 				<View style={style.textInputContainer}>
@@ -253,7 +253,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private alreadyHaveCode = async () => {
 		if (!this.state.username) {
-			alert("Please fill in the username you entered before inside the 'Username' field above and click this again!");
+			alert('Please fill in the username you entered before inside the \'Username\' field above and click this again!');
 		} else {
 			this.toggleVisibleModalSMS();
 		}
@@ -355,7 +355,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		// closing the modla when using alerts, issue MD-163
 		if (password !== confirmPassword) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', "Your passwords don't match");
+			Alert.alert('Validation error', 'Your passwords don\'t match');
 			return;
 		}
 
