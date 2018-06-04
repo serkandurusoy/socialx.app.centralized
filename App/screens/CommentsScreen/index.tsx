@@ -85,7 +85,12 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const userId = this.props.data.user.userId;
-		this.props.navigation.navigate('RepliesScreen', {commentId: comment.id, startReply, userId});
+		this.props.navigation.navigate('RepliesScreen', {
+			commentId: comment.id,
+			startReply,
+			userId,
+			afterAddReply: this.preFetchComments,
+		});
 	};
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
@@ -124,9 +129,9 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				likes: comment.likes,
 				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
 				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
-			}
+			};
 		});
-	}
+	};
 
 	private onCommentSendHandler = async (commentText: string) => {
 		const {comment, commentingLoader, hideLoader} = this.props;

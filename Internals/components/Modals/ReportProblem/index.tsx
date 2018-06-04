@@ -116,7 +116,7 @@ class ModalReportProblemComponent extends Component<
 		if (Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableWithoutFeedback onPress={this.props.declineHandler}>
-					<BlurView style={style.blurView} blurType="dark" blurAmount={2} />
+					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
 				</TouchableWithoutFeedback>
 			);
 		}

@@ -71,7 +71,7 @@ class TextExtraction {
 	 * @return {Object} props for the matched text
 	 */
 	private getMatchedPart = (matchedPattern: any, text: string, matches: any) => {
-		let props = {};
+		const props = {};
 
 		Object.keys(matchedPattern).forEach((key) => {
 			if (key === 'pattern' || key === 'renderText') {

@@ -116,7 +116,7 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 				backdropOpacity={0}
 				style={style.container}
 			>
-				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType="dark" blurAmount={2} />
+				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
 				<View style={resizableStyles}>
 					<View style={style.boxContainer}>
 						<TouchableOpacity style={style.closeModalButtonContainer} onPress={this.props.onCloseButton}>
@@ -162,7 +162,7 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 		return (
 			<Animatable.View
 				animation={IN_ANIMATION_NAME}
-				easing="ease-out"
+				easing='ease-out'
 				iterationCount={1}
 				duration={IN_ANIMATION_DURATION}
 			>
