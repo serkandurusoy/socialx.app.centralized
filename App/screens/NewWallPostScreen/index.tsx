@@ -277,8 +277,10 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	];
 
 	private sendPostHandler = () => {
+		// TODO: get rid of this after we sort out SOC-148
+		const escapedText = this.state.postText.replace(/\n/g, '\\n');
 		const wallPostData: NewWallPostData = {
-			text: this.state.postText,
+			text: escapedText,
 			mediaObjects: this.state.mediaObjects,
 		};
 		this.props.navigation.state.params.postCreate(wallPostData);
