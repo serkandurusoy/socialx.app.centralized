@@ -93,6 +93,20 @@ const style: any = {
 		color: 'black',
 		fontWeight: 'bold',
 	},
+	recentLikesContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		flexDirection: 'row',
+		marginTop: -Sizes.smartVerticalScale(5),
+		marginBottom: Sizes.smartVerticalScale(5),
+	},
+	likedText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postText,
+	},
+	likeTextBold: {
+		...Fonts.centuryGothicBold,
+	},
 };
 
 export default StyleSheet.create(style);

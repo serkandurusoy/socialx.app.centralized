@@ -63,6 +63,7 @@ const getPublicPostsQ = gql`
 				location
 				likes {
 					userId
+					username
 				}
 				Media {
 					id
@@ -113,6 +114,7 @@ const getFriendsPostsQ = gql`
 				location
 				likes {
 					userId
+					username
 				}
 				Media {
 					id

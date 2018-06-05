@@ -106,6 +106,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				{this.renderPostDescription()}
 				{this.renderWallPostMedia()}
 				{this.renderWallPostActions()}
+				{this.renderRecentLikes()}
 			</View>
 		);
 	}
@@ -351,6 +352,36 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 					commentsButtonPressed={this.props.onCommentClick}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
+			);
+		}
+		return null;
+	};
+
+	private renderRecentLikes = () => {
+		if (this.props.numberOfLikes && this.props.numberOfLikes > 0) {
+			const lastLikeUsername = this.props.likes[this.props.numberOfLikes - 1].username;
+			const numberOfOtherLikes = this.props.numberOfLikes - 1;
+			const secondLastLikeUsername =
+				this.props.numberOfLikes >= 2 ? this.props.likes[this.props.numberOfLikes - 2].username : null;
+			return (
+				<View style={style.recentLikesContainer}>
+					<Text style={style.likedText}>
+						{'Liked by '}
+						<Text style={style.likeTextBold}>{lastLikeUsername}</Text>
+					</Text>
+					{numberOfOtherLikes === 1 && (
+						<Text style={style.likedText}>
+							{' and '}
+							<Text style={style.likeTextBold}>{secondLastLikeUsername}</Text>
+						</Text>
+					)}
+					{numberOfOtherLikes > 1 && (
+						<Text style={style.likedText}>
+							{' and '}
+							<Text style={style.likeTextBold}>{numberOfOtherLikes + ' others'}</Text>
+						</Text>
+					)}
+				</View>
 			);
 		}
 		return null;
