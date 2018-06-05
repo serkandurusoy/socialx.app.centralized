@@ -1,7 +1,4 @@
-import {Auth, I18n} from 'aws-amplify';
-import dictionary from './dictionary';
-
-import {AsyncStorage} from 'react-native';
+import {Auth} from 'aws-amplify';
 
 // <============= Auth =============>
 export interface ISignup {
@@ -44,18 +41,3 @@ export const updateUserAttr = async (attr: any): Promise<any> =>
 	Auth.updateUserAttributes(await Auth.currentAuthenticatedUser(), attr);
 
 export const essentialCreds = async (): Promise<any> => Auth.essentialCredentials(await Auth.currentUserCredentials());
-
-// <============= I18n =============>
-export const languageInit = async () => {
-	I18n.putVocabularies(dictionary);
-
-	const savedLang = await AsyncStorage.getItem('lang');
-	I18n.setLanguage(savedLang || 'en'); // if there is saved language, set it, otherwise use default -> english
-};
-
-export const setLanguage = (lang: string) => {
-	AsyncStorage.setItem('lang', lang);
-	I18n.setLanguage(lang);
-};
-
-export const getText = (key: string, defVal?: any) => I18n.get(key, defVal);

@@ -1,4 +1,4 @@
-import {languageInit} from 'utilities/amplify';
+import {languageInit} from 'utilities';
 
 export default () => {
 	removeConsoleLogs();
@@ -9,7 +9,6 @@ export default () => {
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
 		// tslint:disable-next-line
-		console.log = () => {
-		};
+		console.log = () => {};
 	}
 };
