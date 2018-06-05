@@ -20,9 +20,7 @@ const loadSavedLanguageOrDeviceDefault = async () => {
 	// 2. otherwise read device locale and if we support that language -> set it
 	// 3. use english as default for any other scenario
 	const savedLang = await AsyncStorage.getItem('lang');
-	const deviceLocale = DeviceInfo.getDeviceLocale()
-		.substr(0, 2)
-		.toLocaleLowerCase();
+	const deviceLocale = DeviceInfo.getDeviceLocale().substr(0, 2).toLowerCase();
 	const localeLanguage = SUPPORTED_LANGUAGES.indexOf(deviceLocale) >= 0 ? deviceLocale : null;
 	I18n.setLanguage(savedLang || localeLanguage || LANGUAGE_EN);
 };
