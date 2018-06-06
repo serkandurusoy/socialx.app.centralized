@@ -113,7 +113,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 
 	private navigateToMainScreen = () => {
 		Keyboard.dismiss();
-		resetNavigationToRoute('PreAuthScreen', this.props.navigation);
+		resetNavigationToRoute('MainScreen', this.props.navigation);
 	};
 
 	private usernameSubmitPressedHandler = () => {

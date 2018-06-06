@@ -1,3 +1,4 @@
+import get from 'lodash/get';
 import React, {Component} from 'react';
 import {InteractionManager, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
@@ -10,7 +11,7 @@ import {getUserAvatar} from 'utilities';
 
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
 import {Icon} from 'native-base';
-import {IMediaProps, IUserDataResponse, IPostsProps} from 'types';
+import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
@@ -81,14 +82,10 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const {user} = data;
 		const {posts, avatar} = user;
 
-		const userImages = posts ? posts.reduce(
-			(count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0),
-			0,
-		) : 0;
-		const numOfLikes = posts ? posts.reduce(
-			(total: number, post: IPostsProps) => total + post.likes.length,
-			0,
-		) : 0;
+		const userImages = posts
+			? posts.reduce((count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0), 0)
+			: 0;
+		const numOfLikes = posts ? posts.reduce((total: number, post: IPostsProps) => total + post.likes.length, 0) : 0;
 
 		const userAvatar = getUserAvatar(user);
 
@@ -140,21 +137,22 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	};
 
 	private preloadAllMediaObjects = () => {
-		const {data} = this.props;
-		const {user} = data;
-
-		const {posts} = user;
+		const posts = get(this.props.data, 'user.posts', null);
 
 		if (!posts) {
 			return [];
 		}
 
-		// todo @serkan @jake this looks like an unwrap/flatten, let's review
-		return posts.reduce((Images: any, post: IPostsProps) => {
+		const images: IMediaProps[] = [];
+		posts.forEach((post: IPostsProps) => {
+			const medias = post.Media;
 			if (post.Media) {
-				return Images.concat.apply(post.Media)
+				medias.forEach((media) => {
+					images.push(media);
+				});
 			}
-		}, []);
+		});
+		return images;
 	};
 }
 
