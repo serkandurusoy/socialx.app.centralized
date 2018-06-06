@@ -139,6 +139,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 	hideConfirm: () => dispatch(hideModalConfirmation()),
 });
 
-const reduxWrapper = connect(null, mapDispatchToProps)(LaunchScreen as any);
+const reduxWrapper = connect(
+	null,
+	mapDispatchToProps,
+)(LaunchScreen as any);
 
 export default withApollo(reduxWrapper as any);

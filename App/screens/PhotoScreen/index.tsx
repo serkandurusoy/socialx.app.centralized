@@ -102,6 +102,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
 				delete wallPostData.includeTaggedFriends;
 
+				// TODO @Aaron: send location when creating a post.
 				const {title, location, taggedFriends, media} = wallPostData;
 				const {mime, pathx, contentOptimizedPath} = media;
 

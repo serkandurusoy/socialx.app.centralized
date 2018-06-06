@@ -62,7 +62,8 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 				</View>
 				<View style={style.paddingContainer}>
 					{this.renderLocationSection()}
-					{this.renderTagFriendsSection()}
+					{/*{this.renderTagFriendsSection()}*/}
+					{this.renderDescriptionSection()}
 				</View>
 			</KeyboardAwareScrollView>,
 		);
