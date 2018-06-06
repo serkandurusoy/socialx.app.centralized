@@ -80,9 +80,8 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 			this.props.navigation.navigate('ResetPasswordScreen', {username});
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('Something wrong, Bad username/Servers down');
+				Alert.alert(`Something went wrong, ${ex.message}`);
 			});
-			console.log(ex);
 		}
 		hideLoader();
 	};
