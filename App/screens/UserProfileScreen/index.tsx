@@ -108,12 +108,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				recentPosts={getUserPosts.Items}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
-<<<<<<< HEAD
-				allMediaObjects={getUserQuery.getUser.mediaObjects}
-
-=======
 				allMediaObjects={this.state.mediaObjects}
->>>>>>> 036c7fc247408d7d17d01b17e1b7c577cc061ac8
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={null}
@@ -121,8 +116,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		);
 	}
 
-<<<<<<< HEAD
-=======
 	private preFetch = async () => {
 		const {client} = this.props;
 		InteractionManager.runAfterInteractions(() => {
@@ -231,7 +224,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		// return Imgs;
 	};
 
->>>>>>> 036c7fc247408d7d17d01b17e1b7c577cc061ac8
 	private toggleFollowHandler = () => {
 		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
 		this.setState({
