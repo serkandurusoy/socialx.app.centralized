@@ -1,3 +1,4 @@
+import {TKeyboardKeys} from 'components';
 import {OS_TYPES} from 'consts';
 import {withManagedTransitions} from 'hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
@@ -5,14 +6,12 @@ import React, {Component} from 'react';
 import {Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {Colors} from 'theme';
-import {TKeyboardKeys} from '../../Inputs';
 import style from './style';
 
 const NUMBER_OF_DIGITS = 6;
 
 const INITIAL_STATE = {
-	inputHasValue: new Array(NUMBER_OF_DIGITS).fill(false),
-	inputValues: new Array(NUMBER_OF_DIGITS).fill(''),
+	inputValue: '',
 };
 
 export interface IModalInputSMSCodeComponentProps {
@@ -28,17 +27,15 @@ export interface IModalInputSMSCodeComponentProps {
 }
 
 export interface IModalInputSMSCodeComponentState {
-	inputHasValue: boolean[];
-	inputValues: string[];
+	inputValue: string;
 }
 
 class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentProps, IModalInputSMSCodeComponentState> {
 	public state = INITIAL_STATE;
 
-	private inputRefs: any[] = [];
-
 	public render() {
-		const okDisabled = this.state.inputValues.join('').length < 4;
+		const numericCode = parseInt(this.state.inputValue, 10);
+		const okDisabled = isNaN(numericCode) || numericCode < Math.pow(10, NUMBER_OF_DIGITS - 1);
 		const modalStyles = [
 			style.container,
 			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
@@ -60,18 +57,16 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 					<View style={style.borderContainer}>
 						<Text style={style.message}>{'Please type the verification code sent to ' + this.props.phoneNumber}</Text>
 						<View style={style.inputCellsContainer}>
-							{[...Array(NUMBER_OF_DIGITS).keys()].map((i) => (
-								<TextInput
-									key={i}
-									onChangeText={(value: string) => this.digitUpdatedHandler(i, value)}
-									onKeyPress={(event: any) => this.onKeyPress(i, event)}
-									ref={(component: any) => (this.inputRefs[i] = component)}
-									maxLength={1}
-									style={this.getDigitInputStyles(i)}
-									keyboardType={TKeyboardKeys.numeric}
-									underlineColorAndroid={Colors.transparent}
-								/>
-							))}
+							<TextInput
+								style={[style.codeInput, style.inputText]}
+								placeholder={'123456'}
+								keyboardType={TKeyboardKeys.numeric}
+								maxLength={6}
+								onChangeText={this.handleTextChange}
+								underlineColorAndroid={Colors.transparent}
+							>
+								<Text style={style.inputText}>{this.state.inputValue}</Text>
+							</TextInput>
 						</View>
 					</View>
 					{this.props.errorMessage && <Text style={style.errorMessage}>{this.props.errorMessage}</Text>}
@@ -96,8 +91,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 	}
 
 	private actionConfirmed = () => {
-		const smsCode = this.state.inputValues.join('');
-		this.props.confirmHandler(smsCode);
+		this.props.confirmHandler(this.state.inputValue);
 		this.setState(INITIAL_STATE);
 	};
 
@@ -111,45 +105,10 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 		this.setState(INITIAL_STATE);
 	};
 
-	private getDigitInputStyles = (index: number) => [
-		style.digitInput,
-		...(this.state.inputHasValue[index] ? [style.digitInputWithValue] : []),
-	];
-
-	private digitUpdatedHandler = (index: number, value: string) => {
-		// TODO @serkan @jake use of slice is generally confusing, prefer filter and also, here, why? are you simply
-		// trying to get a shallow copy? but then, you are mutating the state by assigning new value to that reference!
-		// let's refactor this together to achieve what you want to do
-		const inputValues = this.state.inputValues.slice();
-		inputValues[index] = value;
-		const inputHasValue = this.state.inputHasValue.slice();
-		const hasNextToFocus = index < NUMBER_OF_DIGITS - 1;
-		if (value.length > 0) {
-			inputHasValue[index] = true;
-			if (hasNextToFocus) {
-				this.inputRefs[index + 1].focus();
-			}
-		}
-		this.setState({inputValues, inputHasValue});
-	};
-
-	private onKeyPress = (index: number, event: any) => {
-		if (event.nativeEvent.key.toLowerCase() === 'backspace') {
-			// todo @serkan @jake see above
-			const inputHasValue = this.state.inputHasValue.slice();
-			inputHasValue[index] = false;
-			const inputValues = this.state.inputValues.slice();
-			const hasPreviousToFocus = index > 0;
-			const isEmpty = inputValues[index].length === 0;
-			if (hasPreviousToFocus && isEmpty) {
-				const previousIndex = index - 1;
-				this.inputRefs[previousIndex].focus();
-				this.inputRefs[previousIndex].clear();
-				inputValues[previousIndex] = '';
-				inputHasValue[previousIndex] = false;
-			}
-			this.setState({inputValues, inputHasValue});
-		}
+	private handleTextChange = (value: string) => {
+		this.setState({
+			inputValue: value,
+		});
 	};
 }
 

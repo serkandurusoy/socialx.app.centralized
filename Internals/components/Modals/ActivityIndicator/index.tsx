@@ -18,7 +18,10 @@ export interface IModalActivityIndicatorProps {
 // TODO: in this one, the big one is the extra render function! that was creating a new function instance per render!
 const ModalActivityIndicatorSFC: React.SFC<IModalActivityIndicatorProps> = (props) => (
 	<Modal
-		// onDismiss={props.onDismiss} TODO: @serkan @jake there is no such prop on Modal's prop types
+		// TODO: @serkan @jake there is no such prop on Modal's prop types.
+		// Ionut: onDismiss prop is required by HOC withManagedTransitions.
+		// Happy if we can improve this to get rid of the IDE warning..
+		onDismiss={props.onDismiss}
 		onModalHide={props.onModalHide}
 		isVisible={props.showActivityIndicator}
 		backdropOpacity={0.2}

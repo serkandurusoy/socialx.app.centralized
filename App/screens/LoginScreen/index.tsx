@@ -11,7 +11,7 @@ import style from './style';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
-import {ConfirmSignin, CurrentUserInfo, Signin} from 'utilities';
+import {ConfirmSignin, CurrentUserInfo, getText, Signin} from 'utilities';
 
 const PHONE_NUMBER = '+40721205279';
 
@@ -54,9 +54,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 					resendHandler={this.smsCodeResendHandler}
 					phoneNumber={PHONE_NUMBER}
 				/>
-				<Text style={style.welcomeText}>{'Welcome Back!'}</Text>
+				<Text style={style.welcomeText}>{getText('loginWelcomeMessage')}</Text>
 				<SXTextInput
-					placeholder={'Username'}
+					placeholder={getText('loginUsernameInput')}
 					placeholderColor={Colors.postText}
 					returnKeyType={TRKeyboardKeys.next}
 					onSubmitPressed={this.usernameSubmitPressedHandler}
@@ -66,7 +66,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				/>
 				<View style={style.passwordContainer}>
 					<SXTextInput
-						placeholder={'Password'}
+						placeholder={getText('loginPasswordInput')}
 						placeholderColor={Colors.postText}
 						returnKeyType={TRKeyboardKeys.go}
 						onSubmitPressed={this.fireSignin}
@@ -78,7 +78,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				</View>
 				<View style={style.fullWidth}>
 					<SXButton
-						label={'LOGIN'}
+						label={getText('loginLoginButton')}
 						onPress={this.fireSignin}
 						disabled={!this.state.passwordValue || !this.state.usernameValue}
 						borderColor={Colors.transparent}
@@ -88,7 +88,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 					onPress={() => this.safeNavigateToScreen('ForgotPasswordScreen')}
 					style={style.forgotPassword}
 				>
-					<Text style={style.forgotPasswordText}>{'Forgot your password'}</Text>
+					<Text style={style.forgotPasswordText}>{getText('loginForgotPassword')}</Text>
 				</TouchableOpacity>
 				{/*<SXButton*/}
 				{/*label={'Or use unlock file'}*/}
@@ -97,9 +97,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				{/*disabled={false}*/}
 				{/*/>*/}
 				<View style={style.noAccountContainer}>
-					<Text style={style.noAccountQuestion}>{'Don\'t have an account?'}</Text>
+					<Text style={style.noAccountQuestion}>{getText('loginNoAccountText')}</Text>
 					<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
-						<Text style={style.signUpText}>{'Sign up'}</Text>
+						<Text style={style.signUpText}>{getText('loginSignUpButton')}</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAwareScrollView>
@@ -113,7 +113,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 
 	private navigateToMainScreen = () => {
 		Keyboard.dismiss();
-		resetNavigationToRoute('PreAuthScreen', this.props.navigation);
+		resetNavigationToRoute('MainScreen', this.props.navigation);
 	};
 
 	private usernameSubmitPressedHandler = () => {
@@ -149,10 +149,16 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				console.log(ex);
 				ModalManager.safeRunAfterModalClosed(() => {
 					// better alert here
-					Alert.alert('Wrong username/password');
-					if (this.usernameInput) {
-						this.usernameInput.focusInput();
-					}
+					Alert.alert(getText('loginWrongCredentials'), undefined, [
+						{
+							text: getText('buttonOK'),
+							onPress: () => {
+								if (this.usernameInput) {
+									this.usernameInput.focusInput();
+								}
+							},
+						},
+					]);
 				});
 			}
 			this.props.HideLoader();
@@ -171,7 +177,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 			} catch (ex) {
 				ModalManager.safeRunAfterModalClosed(() => {
 					// better alert here
-					Alert.alert('Wrong confirmation code'); // TODO: update here!
+					Alert.alert(getText('loginWrongConfirmationCode')); // TODO: update here!
 				});
 			}
 			this.props.HideLoader();
@@ -195,8 +201,8 @@ const navigationOptions = {
 };
 
 const MapDispatchToProps = (dispatch: any) => ({
-	SigninLoader: () => dispatch(showActivityIndicator('Signing in..')),
-	ConfirmLoader: () => dispatch(showActivityIndicator('Confirming code..')),
+	SigninLoader: () => dispatch(showActivityIndicator(getText('loginProgressMessage'))),
+	ConfirmLoader: () => dispatch(showActivityIndicator(getText('loginCodeConfirmWait'))),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
