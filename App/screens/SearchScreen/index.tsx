@@ -49,7 +49,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			const params = props.navigation.state.params || {};
 			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
 		},
-	})
+	});
 
 	public state = {
 		invitePeopleModalVisible: false,
@@ -111,6 +111,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		);
 	}
 
+	// todo @serkan @jake let's discuss this
 	private doSearch = async (query: string) => {
 		const {search} = this.props;
 		const results: SearchResultPeople[] = [];
@@ -123,21 +124,17 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			if (resp.length === 0) {
 				return results;
 			}
-			for (let i = 0; i < resp.length; i++) {
-				const current = resp[i].user;
-				results.push({
-					id: current.userId,
-					kind: resp[i].connection,
-					fullName: current.name,
-					username: current.username,
-					avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
-				});
-			}
-			return results;
+			return resp.map(({connection, user: current}) => ({
+				id: current.userId,
+				kind: connection,
+				fullName: current.name,
+				username: current.username,
+				avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
+			}));
 		} catch (ex) {
 			return results;
 		}
-	}
+	};
 
 	private updateSearchTerm = async (term: string) => {
 		const {search} = this.props;
@@ -145,14 +142,14 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			searchTerm: term,
 			searchResults: await this.doSearch(term),
 		});
-	}
+	};
 
 	private updateSelectedFilter = async (value: SearchFilterValues) => {
 		this.setState({
 			selectedFilter: value,
 			searchResults: await this.doSearch(this.state.searchTerm),
 		});
-	}
+	};
 
 	private toggleInvitePeopleModal = () => {
 		this.setState({
@@ -160,11 +157,11 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			createGroupSearchResults: [],
 			selectedUsers: [],
 		});
-	}
+	};
 
 	private selectNewUserForGroupHandler = (userId: string) => {
-		this.setState({selectedUsers: this.state.selectedUsers.concat([userId])});
-	}
+		this.setState({selectedUsers: [...this.state.selectedUsers, userId]});
+	};
 
 	private toggleGroupInfoModal = (prepareNext = false) => {
 		this.setState({
@@ -173,22 +170,22 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			groupDescription: '',
 			nextShowInvitePeople: prepareNext,
 		});
-	}
+	};
 
 	private updateGroupNameHanlder = (text: string) => {
 		this.setState({groupName: text});
-	}
+	};
 
 	private updateGroupDescriptionHandler = (text: string) => {
 		this.setState({groupDescription: text});
-	}
+	};
 
 	private onGroupInfoModalHide = () => {
 		if (this.state.nextShowInvitePeople) {
 			this.toggleInvitePeopleModal();
 			this.setState({nextShowInvitePeople: false});
 		}
-	}
+	};
 
 	private addFriendHandler = async (friendId: string) => {
 		const {addFriend} = this.props;
@@ -198,12 +195,12 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 				user: friendId,
 			},
 		});
-	}
+	};
 
 	private handleCreateNewGroup = () => {
 		this.toggleInvitePeopleModal();
 		// TODO: check state variables: groupName, groupDescription, selectedUsers
-	}
+	};
 
 	private createGroupSearchUpdated = (term: string) => {
 		// let createGroupSearchResults: SearchResultCreateGroup[] = [];
@@ -211,7 +208,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		// 	createGroupSearchResults = SEARCH_RESULTS_CREATE_GROUP;
 		// }
 		// this.setState({createGroupSearchResults});
-	}
+	};
 
 	private onSearchResultSelectHandler = (result: SearchResultData) => {
 		if (
@@ -222,7 +219,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			this.props.navigation.navigate('UserProfileScreen', {userId: result.id});
 		}
 		// later add other user cases!
-	}
+	};
 }
 
 const searchUsersWrapper = searchUsersHoc(SearchScreen);

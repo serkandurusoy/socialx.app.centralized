@@ -33,6 +33,7 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 		bounces: true,
 	};
 
+	// todo: @serkan @jake shouldn't this be in the constructor?
 	private girdProvider = new LayoutProvider(
 		(index: any) => {
 			return 0; // use different values if we need to render object with different types
@@ -43,6 +44,7 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 		},
 	);
 
+	// todo: @serkan @jake shouldn't this be in the constructor?
 	private dataProvider = new DataProvider((row1: any, row2: any) => {
 		return row1.id !== row2.id;
 	});
@@ -89,28 +91,26 @@ export class GridPhotos extends Component<IGridPhotosProps, IGridPhotosState> {
 		} else {
 			return this.props.renderGridItem(mediaData);
 		}
-	}
+	};
 
-	private loadInitialPhotos = () => {
-		const initialPhotos = [].concat(this.props.loadMorePhotos());
-		initialPhotos.forEach((photoData: Partial<IMediaViewerObject>, index: number) => {
-			initialPhotos[index] = {...photoData, index};
-		});
-		return initialPhotos;
-	}
+	private loadInitialPhotos = () =>
+		[...this.props.loadMorePhotos()].map((photoData: Partial<IMediaViewerObject>, index: number) => ({
+			...photoData,
+			index,
+		}));
 
 	private loadMorePhotos = () => {
 		const {dataProvider} = this.state;
 		const nextPhotos = this.props.loadMorePhotos();
 		if (nextPhotos.length > 0) {
 			const loadedPhotos = dataProvider.getAllData();
-			const allPhotos = loadedPhotos.concat(nextPhotos);
-			allPhotos.forEach((photoData: IMediaViewerObject, index: number) => {
-				photoData.index = index;
-			});
+			const allPhotos = [...loadedPhotos, ...nextPhotos].map((photoData: IMediaViewerObject, index: number) => ({
+				...photoData,
+				index,
+			}));
 			this.setState({
 				dataProvider: dataProvider.cloneWithRows(allPhotos),
 			});
 		}
-	}
+	};
 }

@@ -104,7 +104,7 @@ export default class ChatThreadScreenComponent extends Component<
 	private addOwnMessage = (newMessages: MessageData[] = []) => {
 		newMessages[0].ownMessage = true;
 		this.props.sendOwnMessage(newMessages[0]);
-	}
+	};
 
 	private renderText = (text: string) => {};
 
@@ -116,12 +116,14 @@ export default class ChatThreadScreenComponent extends Component<
 		} else {
 			return this.renderFriendMessage(currentMessage, messageDateWithFormat);
 		}
-	}
+	};
 
 	private renderOwnMessage = (currentMessage: MessageData, messageDateWithFormat: string) => {
 		const messageContent = this.renderMessageContent(currentMessage, style.ownMessageText);
-		const shadowStyles = [style.ownMessageShadow];
-		shadowStyles.push(currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH});
+		const shadowStyles = [
+			style.ownMessageShadow,
+			currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH},
+		];
 		return (
 			<View style={style.messageContainer}>
 				<View style={{flex: 1}} />
@@ -138,12 +140,14 @@ export default class ChatThreadScreenComponent extends Component<
 				</View>
 			</View>
 		);
-	}
+	};
 
 	private renderFriendMessage = (currentMessage: MessageData, messageDateWithFormat: string) => {
 		const messageContent = this.renderMessageContent(currentMessage, style.friendMessageText);
-		const borderStyles = [style.friendMessageBorder];
-		borderStyles.push(currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH});
+		const borderStyles = [
+			style.friendMessageBorder,
+			currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH},
+		];
 		return (
 			<View style={style.messageContainer}>
 				<View style={borderStyles}>
@@ -153,7 +157,7 @@ export default class ChatThreadScreenComponent extends Component<
 				<View style={{flex: 1}} />
 			</View>
 		);
-	}
+	};
 
 	private renderMessageContent = (currentMessage: MessageData, textStyle: number) => {
 		if (currentMessage.text) {
@@ -177,7 +181,7 @@ export default class ChatThreadScreenComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderSendButton = (props: any) => {
 		return (
@@ -185,7 +189,7 @@ export default class ChatThreadScreenComponent extends Component<
 				<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue} />
 			</Send>
 		);
-	}
+	};
 
 	private renderShareButton = () => {
 		return (
@@ -193,13 +197,13 @@ export default class ChatThreadScreenComponent extends Component<
 				<Icon name={'md-add'} size={Sizes.smartHorizontalScale(30)} color={Colors.tundora} />
 			</TouchableOpacity>
 		);
-	}
+	};
 
 	private toggleShareOptionsModal = () => {
 		this.setState({
 			modalVisible: !this.state.modalVisible,
 		});
-	}
+	};
 
 	private onShareButtonPressed = (selectedOption: SHARE_OPTIONS) => {
 		this.toggleShareOptionsModal();
@@ -212,7 +216,7 @@ export default class ChatThreadScreenComponent extends Component<
 		} else {
 			ModalManager.safeRunAfterModalClosed(this.shareOptionNotImplementedHandler);
 		}
-	}
+	};
 
 	private showGalleryPhotoPicker = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
@@ -221,7 +225,7 @@ export default class ChatThreadScreenComponent extends Component<
 			includeBase64: false, // picker is getting really slow with this option!
 		});
 		this.sendPhotoMessage(image);
-	}
+	};
 
 	private takeCameraPhoto = async () => {
 		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
@@ -230,7 +234,7 @@ export default class ChatThreadScreenComponent extends Component<
 			includeBase64: false,
 		});
 		this.sendPhotoMessage(image);
-	}
+	};
 
 	private sendPhotoMessage = (image: PickerImage | PickerImage[]) => {
 		const pickImage = image as PickerImage;
@@ -244,11 +248,11 @@ export default class ChatThreadScreenComponent extends Component<
 		};
 		this.props.sendOwnMessage(newImageMessage);
 		this.giftedChat.scrollToBottom();
-	}
+	};
 
 	private shareOptionNotImplementedHandler = () => {
 		alert('Share option TBD');
-	}
+	};
 
 	private shareMyCurrentPosition = () => {
 		// TODO: 1. check why location high accuracy does not work on Android?
@@ -284,5 +288,5 @@ export default class ChatThreadScreenComponent extends Component<
 				Alert.alert(LOCATION_ACCESS_DENIED);
 			}
 		});
-	}
+	};
 }

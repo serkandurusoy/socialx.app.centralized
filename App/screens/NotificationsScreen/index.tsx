@@ -116,45 +116,34 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		activityCards: [],
 	};
 
-	public componentWillReceiveProps(nextProps: INotificationsScreenProps) {
-		const {notifications} = nextProps;
+	public componentWillReceiveProps({notifications}: INotificationsScreenProps) {
 		if (!notifications.loading) {
 			if (this.state.activityCards.length < 1 && notifications.myNotifications.length > 0) {
-				const {myNotifications} = notifications;
-				const spine = [];
-				for (let i = 0; i < myNotifications.length; i++) {
-					const current = myNotifications[i];
-					let res = null;
-					switch (current.type) {
-						case NOTIFICATION_TYPES.FRIEND_REQUEST:
-							res = {
-								type: NOTIFICATION_TYPES.FRIEND_REQUEST,
-								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : AvatarImagePlaceholder,
-								fullName: current.owner.name,
-								username: current.owner.username,
-								requestId: current.id,
-								status: current.status,
-							};
-							break;
-
-						case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
-							res = {
-								type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
-								avatarURL: current.owner.avatar ? base.ipfs_URL + current.owner.avatar.hash : AvatarImagePlaceholder,
-								fullName: current.owner.name,
-								username: current.owner.username,
-								requestId: current.id,
-								text: `${current.owner.username} has ${current.status.toLocaleLowerCase()} your friend request.`,
-								status: current.status,
-							};
-							break;
-
-						default:
-							res = null;
-							break;
-					}
-					spine.push(res);
-				}
+				const spine = notifications.myNotifications
+					.map(
+						({type, owner: {name: fullName, avatar, username}, id: requestId, status}) =>
+							type === NOTIFICATION_TYPES.FRIEND_REQUEST
+								? {
+										type: NOTIFICATION_TYPES.FRIEND_REQUEST,
+										avatarURL: avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder,
+										fullName,
+										username,
+										requestId,
+										status,
+								  }
+								: type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE
+									? {
+											type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
+											avatarURL: avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder,
+											text: `${username} has ${status} you\'r friend request.`,
+											fullName,
+											username,
+											requestId,
+											status,
+									  }
+									: null,
+					)
+					.filter((n) => n !== null);
 				this.setState({activityCards: spine});
 			}
 		}
@@ -190,15 +179,15 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			console.log(ex);
 			this.setState({refreshing: false});
 		}
-	}
+	};
 
 	private postThumbPressedHandler = (postId: string) => {
 		alert('postThumbPressedHandler: ' + postId);
-	}
+	};
 
 	private superLikedPhotoPressedHandler = (postId: string) => {
 		alert('superLikedPhotoPressedHandler: ' + postId);
-	}
+	};
 
 	private friendRequestApprovedHandler = async (requestId: string) => {
 		const {acceptFriendRequest} = this.props;
@@ -208,7 +197,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			},
 		});
 		await this.refreshNotifications();
-	}
+	};
 
 	private friendRequestDeclinedHandler = async (requestId: string) => {
 		const {declineFriendRequest} = this.props;
@@ -218,21 +207,21 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			},
 		});
 		await this.refreshNotifications();
-	}
+	};
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
 		alert('groupRequestConfirmedHandler: ' + requestId);
-	}
+	};
 
 	private onGroupRequestDeclinedHandler = (requestId: string) => {
 		alert('onGroupRequestDeclinedHandler: ' + requestId);
-	}
+	};
 
 	private checkNotification = async (requestId: string) => {
 		const {checkNotification} = this.props;
 		await checkNotification({variables: {request: requestId}});
 		await this.refreshNotifications();
-	}
+	};
 }
 
 const notificationsWrapper = getMyNotificationsHoc(NotificationsScreen);

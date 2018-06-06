@@ -102,10 +102,12 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 				borderWidth: this.props.borderWidth,
 			},
 		];
-		const textInputStyles = [style.textInput, style['textInput' + this.props.size]];
-		if (isMultiline) {
-			textInputStyles.push(style.multilineTextInput);
-		}
+		const textInputStyles = [
+			style.textInput,
+			style['textInput' + this.props.size],
+			...(isMultiline ? [style.multilineTextInput] : []),
+		];
+
 		return (
 			<View style={this.getContainerStyles()}>
 				<View style={inputContainerStyles}>
@@ -144,18 +146,14 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		if (this.inputComponent) {
 			this.inputComponent.focus();
 		}
-	}
+	};
 
-	private getContainerStyles = () => {
-		const ret: any = [style.container];
-		if (this.props.width) {
-			ret.push({width: this.props.width});
-		}
-		if (this.props.disabled) {
-			ret.push(style.disabledInput);
-		}
-		return ret;
-	}
+	// todo @serkan @jake is this worth creating a function instance per mount?
+	private getContainerStyles = () => [
+		style.container,
+		...(this.props.width ? [{width: this.props.width}] : []),
+		...(this.props.disabled ? [style.disabledInput] : []),
+	];
 
 	private renderInputIcon = () => {
 		if (this.props.icon) {
@@ -166,7 +164,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			);
 		}
 		return null;
-	}
+	};
 
 	private renderCancelButton = () => {
 		if (this.state.hasFocus && this.props.canCancel) {
@@ -177,7 +175,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			);
 		}
 		return null;
-	}
+	};
 
 	private updateFocusHandler = (value: boolean) => {
 		this.setState({
@@ -186,14 +184,14 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		if (this.props.focusUpdateHandler) {
 			this.props.focusUpdateHandler(value);
 		}
-	}
+	};
 
 	private textChangedHandler = (value: string) => {
 		this.setState({textValue: value});
 		if (this.props.onChangeText) {
 			this.props.onChangeText(value);
 		}
-	}
+	};
 
 	private getIconHeight = () => {
 		let ret = Sizes.smartHorizontalScale(30);
@@ -203,5 +201,5 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			ret = Sizes.smartHorizontalScale(40);
 		}
 		return ret;
-	}
+	};
 }

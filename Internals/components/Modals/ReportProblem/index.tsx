@@ -46,6 +46,11 @@ class ModalReportProblemComponent extends Component<
 
 	public render() {
 		const backDropOpacity = Platform.OS === OS_TYPES.IOS ? 0 : 0.7;
+		const resizableStyles = [
+			style.keyboardView,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
+		];
+
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -57,7 +62,7 @@ class ModalReportProblemComponent extends Component<
 				style={style.container}
 			>
 				{this.renderOSBlurView()}
-				<View style={this.getResizableStyles()}>
+				<View style={resizableStyles}>
 					<View style={style.boxContainer}>
 						<View style={style.titleContainer}>
 							<Text style={style.title}>{'Report a Problem'}</Text>
@@ -89,6 +94,8 @@ class ModalReportProblemComponent extends Component<
 									placeholder={'Describe your Report'}
 									onChangeText={this.updateReportDescription}
 									blurOnSubmit={false}
+									autoCapitalize={'sentences'}
+									autoCorrect={true}
 								/>
 							</View>
 						</View>
@@ -116,25 +123,17 @@ class ModalReportProblemComponent extends Component<
 			);
 		}
 		return null;
-	}
+	};
 
 	private setNewSelection = (index: number, value: string) => {
 		this.setState({
 			reportReason: value,
 		});
-	}
-
-	private getResizableStyles = () => {
-		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.IOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
+	};
 
 	private updateReportDescription = (text: string) => {
 		this.setState({description: text});
-	}
+	};
 }
 
 export const ModalReportProblem = withResizeOnKeyboardShow(withManagedTransitions(ModalReportProblemComponent));

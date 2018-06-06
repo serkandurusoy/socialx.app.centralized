@@ -96,7 +96,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.3"
 
     defaultConfig {
@@ -185,6 +185,7 @@ dependencies {
     compile project(':react-native-fs')
     compile project(':react-native-fetch-blob')
     compile project(':react-native-tcp')
+    compile project(':lottie-react-native')
     compile project(':appcenter-analytics')
     compile project(':appcenter-crashes')
     compile project(':appcenter')

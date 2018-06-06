@@ -5,3 +5,4 @@ export * from './Post';
 export * from './Comments';
 export * from './Notifications';
 export * from './friends';
+export * from './other';

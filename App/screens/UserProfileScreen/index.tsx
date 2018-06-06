@@ -74,7 +74,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
-	})
+	});
 
 	public state = INITIAL_STATE;
 
@@ -108,8 +108,12 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				recentPosts={getUserPosts.Items}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
+<<<<<<< HEAD
 				allMediaObjects={getUserQuery.getUser.mediaObjects}
 
+=======
+				allMediaObjects={this.state.mediaObjects}
+>>>>>>> 036c7fc247408d7d17d01b17e1b7c577cc061ac8
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={null}
@@ -117,14 +121,126 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		);
 	}
 
+<<<<<<< HEAD
+=======
+	private preFetch = async () => {
+		const {client} = this.props;
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				isFollowed: this.state.isFollowed,
+				toggleFollow: this.toggleFollowHandler,
+			});
+		});
+
+		try {
+			const userId = this.props.navigation.state.params.userId;
+			const userProfileRes = await client.query({
+				query: getUserProfileQ,
+				variables: {userId},
+				fetchPolicy: 'network-only',
+			});
+			const {getUser} = userProfileRes.data;
+
+			const userPostsRes: any = await client.query({
+				query: getUserPostsQ,
+				variables: {userId},
+				fetchPolicy: 'network-only',
+			});
+			const userPosts = userPostsRes.data.getPostsOwner.Items || [];
+			console.log('userPosts', userPosts);
+
+			const mediaObjs = this.preloadAllMediaObjects(userPosts);
+			console.log('mediaObjects', mediaObjs);
+
+			const numOfLikes = getUser.posts.reduce((total: number, post: any) => total + post.likes.length, 0);
+
+			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
+			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);
+			this.setState({
+				isLoading: false,
+				avatarURL: avatar,
+				fullName: getUser.name,
+				username: getUser.username,
+				aboutMeText: getUser.bio,
+				mediaObjects: [],
+				numberOfPhotos: mediaObjs,
+				numberOfLikes: numOfLikes,
+				recentPosts: preLoadPosts,
+			});
+		} catch (ex) {
+			console.log(ex);
+		}
+	};
+
+	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
+		if (!posts) {
+			return [];
+		}
+
+		const ownerName = user.name;
+		const ownerId = user.userId;
+
+		const getCommentsNum = (comments: any) => {
+			if (!comments.length) {
+				return 0;
+			}
+
+			let res = 0;
+			for (res; res < comments.length; res++) {
+				res += comments[res].comments.length > 0 ? comments[res].comments.length : 0;
+			}
+			return res;
+		};
+
+		return posts.map((post: any, index: number) => {
+			if (index === 6) { return; }
+			return {
+				id: post.id,
+				title: null,
+				text: post.text,
+				location: post.location,
+				smallAvatar: ownerAvatar,
+				fullName: ownerName,
+				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+				numberOfLikes: post.likes.length,
+				numberOfComments: getCommentsNum(post.comments),
+				canDelete: post.owner.userId === ownerId,
+				media: post.Media,
+				owner: user,
+			}
+		});
+	};
+
+	private preloadAllMediaObjects = (posts: any) => {
+		if (!posts) {
+			return [];
+		}
+
+		// todo @serkan @jake I think I saw a similar unwrap/flatten approach somewhere else hmm
+		return posts.reduce((count: any, post: any) => count += post.Media.length, 0);
+		// const Imgs: IMediaProps[] = [];
+		// for (let y = 0; y < posts.length; y++) {
+		// 	const currentMedia = posts[y].Media;
+		// 	if (currentMedia) {
+		// 		for (let x = 0; x < currentMedia.length; x++) {
+		// 			Imgs.push(currentMedia[x]);
+		// 		}
+		// 	}
+		// }
+
+		// return Imgs;
+	};
+
+>>>>>>> 036c7fc247408d7d17d01b17e1b7c577cc061ac8
 	private toggleFollowHandler = () => {
 		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
 		this.setState({
 			isFollowed: !this.state.isFollowed,
 		});
-	}
+	};
 
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaViewerObject[] => {
+		// todo @serkan @jake I think I've something similar to this somewhere else
 		const ret: ISimpleMediaObject[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
 		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
@@ -138,7 +254,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private addFriendHandler = async () => {
 		const {addFriend, navigation, getUserQuery} = this.props;
@@ -160,25 +276,22 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			mediaObjects: media,
 			startIndex: index,
 		});
-	}
+	};
 
 	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
 		this.props.navigation.navigate('CommentsStack', {postId, userId});
-	}
+	};
 
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		// const {client} = this.props;
-
 		// const likeQuery = {variables: {postId}};
-
 		// const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
 		// console.log('result:', result);
-
 		// if (result.error) {
 		// 	console.log(result.error);
 		// 	return;
 		// }
-	}
+	};
 }
 
 const getUserQueryWrapper = getUserProfileHoc(UserProfileScreen);

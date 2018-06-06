@@ -33,6 +33,8 @@ export class SXButton extends Component<ISXButtonProps, any> {
 		loading: false,
 	};
 
+	// todo @serkan @jake why?????? get belongs to instance, props change within the lifecycle in render functions,
+	// don't apply "class" principles to react classes
 	get isDisabled(): boolean | undefined {
 		return this.props.disabled || this.props.loading;
 	}
@@ -58,20 +60,12 @@ export class SXButton extends Component<ISXButtonProps, any> {
 			ret = {};
 		}
 		return ret;
-	}
+	};
 
-	protected getContainerStyles = () => {
-		const ret: any[] = [style.container, {borderColor: this.props.borderColor}];
-
-		if (this.props.containerStyle) {
-			ret.push(this.props.containerStyle);
-		} else {
-			ret.push(style['container' + this.props.size]);
-		}
-
-		if (this.isDisabled) {
-			ret.push(style.disabledButton);
-		}
-		return ret;
-	}
+	protected getContainerStyles = () => [
+		style.container,
+		{borderColor: this.props.borderColor},
+		...(this.props.containerStyle ? [this.props.containerStyle] : [style['container' + this.props.size]]),
+		...(this.isDisabled ? [style.disabledButton] : []),
+	];
 }

@@ -49,9 +49,9 @@ export default class WalletActivityScreenComponent extends Component<IWalletActi
 			this.savedScrollHeight = scrollHeight;
 			this.props.loadMoreTransactions();
 		}
-	}
+	};
 
 	private renderTransaction = (data: {item: TransactionData; index: number}) => {
 		return <TransactionItem {...data.item} />;
-	}
+	};
 }

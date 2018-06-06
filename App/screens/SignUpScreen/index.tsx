@@ -66,6 +66,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private inputRefs: any = {};
 	private countryList: string[] = [];
 
+	// TODO: @serkan @jake let's simplify this and eliminate needless reinitialization with all countries like this
 	constructor(props: ISignUpScreenProps) {
 		super(props);
 		const deviceCountry = DeviceInfo.getDeviceCountry();
@@ -188,8 +189,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						ref={(ref: any) => this.updateInputRef(ref, 'phone')}
 						autoCorrect={false}
 						underlineColorAndroid={Colors.transparent}
-						autoCapitalize="none"
-						clearButtonMode="while-editing"
+						autoCapitalize='none'
+						clearButtonMode='while-editing'
 					/>
 				</View>
 				<View style={style.textInputContainer}>
@@ -252,7 +253,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private alreadyHaveCode = async () => {
 		if (!this.state.username) {
-			alert("Please fill in the username you entered before inside the 'Username' field above and click this again!");
+			alert('Please fill in the username you entered before inside the \'Username\' field above and click this again!');
 		} else {
 			this.toggleVisibleModalSMS();
 		}
@@ -286,7 +287,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				this.inputRefs[nextInputRef].focus();
 			}
 		}
-	}
+	};
 
 	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
@@ -388,33 +389,27 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			if (updatedAvatarImagePath) {
 				// do ipfs
 				const placeholderFunc = () => {};
-				await addFileBN(
-					updatedAvatarImagePath,
-					placeholderFunc,
-					placeholderFunc,
-					placeholderFunc,
-					async (rest) => {
-						const {Hash, Size} = JSON.parse(rest.responseBody);
-						// do addMedia
-						const mediaObj = await addMedia({
-							variables: {
-								type: 'ProfileImage',
-								size: parseInt(Size, undefined),
-								hash: Hash,
-							},
-						});
-						mediaId = mediaObj.data.addMedia.id;
+				await addFileBN(updatedAvatarImagePath, placeholderFunc, placeholderFunc, placeholderFunc, async (rest) => {
+					const {Hash, Size} = JSON.parse(rest.responseBody);
+					// do addMedia
+					const mediaObj = await addMedia({
+						variables: {
+							type: 'ProfileImage',
+							size: parseInt(Size, undefined),
+							hash: Hash,
+						},
+					});
+					mediaId = mediaObj.data.addMedia.id;
 
-						await createUser({
-							variables: {
-								username,
-								name,
-								avatar: mediaId,
-								email,
-							},
-						});
-					},
-				);
+					await createUser({
+						variables: {
+							username,
+							name,
+							avatar: mediaId,
+							email,
+						},
+					});
+				});
 			} else {
 				await createUser({
 					variables: {
@@ -437,21 +432,21 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		}
 		Keyboard.dismiss();
 		this.props.HideLoader();
-	}
+	};
 
 	private updateAvatarImage = (base64Photo: string) => {
 		this.setState({
 			updatedAvatarImagePath: base64Photo,
 			avatarImage: {uri: base64Photo},
 		});
-	}
+	};
 
 	private updatedSelectedCountryHandler = (country: ICountryData) => {
 		this.setState({
 			countryCCA2: country.cca2,
 			countryCallingCode: country.callingCode,
 		});
-	}
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -461,7 +456,10 @@ const MapDispatchToProps = (dispatch: any) => ({
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(null, MapDispatchToProps)(SignUpScreen as any);
+const reduxWrapper = connect(
+	null,
+	MapDispatchToProps,
+)(SignUpScreen as any);
 const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
 

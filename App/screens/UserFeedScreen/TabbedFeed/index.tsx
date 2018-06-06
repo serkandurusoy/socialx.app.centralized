@@ -62,18 +62,18 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 			// 	/>
 			// ),
 			headerRight: <View />,
-			headerLeft: <ScreenHeaderButton iconName={'md-flame'} onPress={() => alert('Hot Posts.. Comming soon..')} />,
-			headerTitle: () => {
-				const params = props.navigation.state.params || {};
-				return (
-					<SearchFeedHeader
-						onPress={() => alert('Search for #\'s or @\'s or even a relavent keyword.. Comming soon..')}
-						searchInputUpdated={params.searchInputUpdatedHandler}
-					/>
-				);
-			},
+			headerLeft: <ScreenHeaderButton iconName={'md-flame'} onPress={() => alert('Hot Posts.. Coming soon..')} />,
+			// headerTitle: () => {
+			// 	const params = props.navigation.state.params || {};
+			// 	return (
+			// 		<SearchFeedHeader
+			// 			onPress={() => alert('Search for #\'s or @\'s or even a relevant keyword.. Coming soon..')}
+			// 			searchInputUpdated={params.searchInputUpdatedHandler}
+			// 		/>
+			// 	);
+			// },
 		};
-	}
+	};
 
 	public state = {
 		selectedTab: FeedTabs.Friends,
@@ -133,8 +133,9 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 	) => {
 		action = action as NavigationNavigateAction;
 		this.changeTabTo(action.routeName as FeedTabs);
-	}
+	};
 
+	// @ionut TODO -> change tab changes to redux so it will be global through the app
 	private changeTabTo = (newTab: FeedTabs, skipNavigation = false) => {
 		this.setState({
 			selectedTab: newTab,
@@ -142,11 +143,11 @@ export default class TabbedFeed extends React.Component<ITabbedFeedProps, ITabbe
 		if (!skipNavigation && this.tabNavigator) {
 			this.tabNavigator.dispatch(NavigationActions.navigate({routeName: newTab}));
 		}
-	}
+	};
 
 	private updateSearchTerm = async (term: string) => {
 		this.setState({
 			searchTerm: term,
 		});
-	}
+	};
 }

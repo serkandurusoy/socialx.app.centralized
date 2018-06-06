@@ -8,29 +8,54 @@ import {Colors, Images} from 'theme';
 import style from './style';
 
 import {resetNavigationToRoute} from 'backend/actions';
+import {getMaintenanceQuery} from 'backend/graphql';
+
 import {CurrentUser} from 'utilities';
+
+import {ApolloClient} from 'apollo-client';
+import {withApollo, WithApolloClient} from 'react-apollo';
 
 export interface ILaunchScreenProps {
 	navigation: NavigationScreenProp<any>;
+	client: ApolloClient<any>;
 }
 
-export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
+class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	private static navigationOptions = {
 		header: null,
 	};
 
 	public async componentDidMount() {
+		const {client} = this.props;
 		try {
 			const currentUser = await CurrentUser();
-			if (!currentUser) {
-				return;
+			if (currentUser) {
+				const {
+					data: {getMaintenanceMode},
+				} = await client.query<{getMaintenanceMode: boolean}>({
+					query: getMaintenanceQuery,
+					fetchPolicy: 'network-only',
+				});
+
+				// TODO: put this back when Maintenance mode is set off server side
+				if (__DEV__) {
+					resetNavigationToRoute('MainScreen', this.props.navigation);
+				} else {
+					if (getMaintenanceMode) {
+						resetNavigationToRoute('Maintenance', this.props.navigation);
+					} else {
+						resetNavigationToRoute('MainScreen', this.props.navigation);
+					}
+				}
+
+				resetNavigationToRoute('MainScreen', this.props.navigation);
 			}
 
-			resetNavigationToRoute('MainScreen', this.props.navigation);
+			this.closeSplashScreen();
 		} catch (ex) {
-			//
+			this.closeSplashScreen();
+			console.log(ex);
 		}
-		this.closeSplashScreen();
 	}
 
 	public render() {
@@ -64,11 +89,11 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 
 	private navigateToLoginScreen = () => {
 		this.props.navigation.navigate('LoginScreen');
-	}
+	};
 
 	private navigateToSignUpScreen = () => {
 		this.props.navigation.navigate('SignUpScreen');
-	}
+	};
 
 	private closeSplashScreen = () => {
 		SplashScreen.close({
@@ -76,5 +101,7 @@ export default class LaunchScreen extends Component<ILaunchScreenProps, any> {
 			duration: 1000,
 			delay: 100,
 		});
-	}
+	};
 }
+
+export default withApollo(LaunchScreen);

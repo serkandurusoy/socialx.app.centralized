@@ -81,10 +81,11 @@ export class ContactsList extends React.Component<IContactsListProps> {
 			}
 			return ret;
 		});
-	}
+	};
 
 	private getFormattedData = () => {
 		const ret: any = {};
+		// todo: @serkan @jake what???
 		this.sortContactsList().forEach((contact: IContactListItem) => {
 			const nameInitial = contact.name.substr(0, 1).toUpperCase() + '.' + this.state.sideLetterLineHeight;
 			if (!ret.hasOwnProperty(nameInitial)) {
@@ -93,21 +94,22 @@ export class ContactsList extends React.Component<IContactsListProps> {
 			ret[nameInitial].push(contact);
 		});
 		return ret;
-	}
+	};
 
 	private getNumberOfUniqueLetters = () => {
+		// todo: @serkan @jake what???
 		const letterSet = new Set();
 		this.sortContactsList().forEach((contact: IContactListItem) => {
 			const nameInitial = contact.name.substr(0, 1).toUpperCase();
 			letterSet.add(nameInitial);
 		});
 		return letterSet.size;
-	}
+	};
 
 	private layoutHandler = (event: LayoutEvent) => {
 		const newLineHeight = Math.floor(event.nativeEvent.layout.height / this.getNumberOfUniqueLetters());
 		this.setState({
 			sideLetterLineHeight: newLineHeight,
 		});
-	}
+	};
 }

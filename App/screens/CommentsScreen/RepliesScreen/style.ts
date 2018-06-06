@@ -10,6 +10,18 @@ const style: any = {
 	repliesList: {
 		flex: 1,
 	},
+	noRepliesContainer: {
+		paddingTop: Sizes.smartVerticalScale(30),
+		alignItems: 'center',
+	},
+	noRepliesText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(16),
+		color: Colors.postText,
+		paddingTop: Sizes.smartVerticalScale(20),
+		textAlign: 'center',
+		paddingHorizontal: Sizes.smartHorizontalScale(20),
+	},
 };
 
 export default StyleSheet.create(style);

@@ -35,5 +35,5 @@ export default class EventDetailScreen extends Component<IEventDetailScreenProps
 	private onEventDeleteHandler = () => {
 		this.props.navigation.goBack();
 		this.props.navigation.state.params.onEventDelete(this.props.navigation.state.params.eventData);
-	}
+	};
 }

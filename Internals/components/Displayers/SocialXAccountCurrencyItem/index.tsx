@@ -21,10 +21,8 @@ export const SocialXAccountCurrencyItem: React.SFC<AccountCurrencyData> = (props
 	const coinAmountWithFormat = numeral(props.coinAmount).format('0.00a');
 	const trendIconColor = props.trendPercentage < 0 ? Colors.ceriseRed : Colors.sushi;
 	const trendIconValue = props.trendPercentage < 0 ? 'md-arrow-down' : 'md-arrow-up';
-	const trendPercentageStyles = [style.trendPercentage];
-	if (props.trendPercentage < 0) {
-		trendPercentageStyles.push(style.trendGoingDown);
-	}
+	const trendPercentageStyles = [style.trendPercentage, ...(props.trendPercentage < 0 ? [style.trendGoingDown] : [])];
+
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>

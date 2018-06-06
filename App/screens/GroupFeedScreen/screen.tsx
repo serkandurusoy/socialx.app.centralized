@@ -56,7 +56,7 @@ export default class GroupFeedScreenComponent extends Component<IGroupFeedScreen
 				<WallPostCard {...data.item} canDelete={canDelete} />
 			</View>
 		);
-	}
+	};
 
 	private renderFooterWhenLoading = () => {
 		return (
@@ -64,5 +64,5 @@ export default class GroupFeedScreenComponent extends Component<IGroupFeedScreen
 				<ActivityIndicator size={'small'} />
 			</View>
 		);
-	}
+	};
 }

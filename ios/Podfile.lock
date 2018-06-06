@@ -7,6 +7,10 @@ PODS:
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
   - FLAnimatedImage (1.0.12)
+  - lottie-ios (2.5.0)
+  - lottie-react-native (2.5.0):
+    - lottie-ios
+    - React
   - QBImagePickerController (3.4.0)
   - React (0.55.4):
     - React/Core (= 0.55.4)
@@ -53,7 +57,7 @@ PODS:
     - QBImagePickerController
     - React/Core
     - RSKImageCropper
-  - RSKImageCropper (2.0.0)
+  - RSKImageCropper (2.0.1)
   - SDWebImage/Core (4.3.3)
   - SDWebImage/GIF (4.3.3):
     - FLAnimatedImage (~> 1.0)
@@ -64,6 +68,8 @@ DEPENDENCIES:
   - AppCenter/Analytics (~> 1.5.0)
   - AppCenter/Crashes (~> 1.5.0)
   - AppCenterReactNativeShared (~> 1.4.0)
+  - lottie-ios (from `../node_modules/lottie-ios`)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - react-native-fast-image (from `../node_modules/react-native-fast-image`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
@@ -92,6 +98,10 @@ SPEC REPOS:
     - SDWebImage
 
 EXTERNAL SOURCES:
+  lottie-ios:
+    :path: "../node_modules/lottie-ios"
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
   React:
     :path: "../node_modules/react-native"
   react-native-fast-image:
@@ -111,6 +121,8 @@ SPEC CHECKSUMS:
   AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
   AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  lottie-ios: 9f24be3ecb13412223b6ac70d97437742b0e3de1
+  lottie-react-native: db4bd75685428c4ad0ec2f913145abff3d38b640
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: aa2040dbb6f317b95314968021bd2888816e03d5
   react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
@@ -118,10 +130,10 @@ SPEC CHECKSUMS:
   react-native-spinkit: c9f5826e1a0bf0da889b3795278eb96ae15c1350
   RNDeviceInfo: 568c5641057313b4912d08a7742ff0b2f753ed5c
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
-  RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
+  RSKImageCropper: 50d5a3e4160f0309b14d75b89d5ae2f496d56e0d
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 3c53fe040a608cc21f1d8c2f11f85beee1766c67
+PODFILE CHECKSUM: 5c9d761be6949e27e1844e9e5d17d6a24b1c1886
 
 COCOAPODS: 1.5.0

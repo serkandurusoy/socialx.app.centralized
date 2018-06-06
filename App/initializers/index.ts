@@ -1,14 +1,22 @@
 import {languageInit} from 'utilities/amplify';
 
-export default () => {
-	// init I18n language set
+import Amplify from 'aws-amplify';
+import {awsconfig} from 'configuration';
+
+export default async () => {
 	removeConsoleLogs();
-	languageInit();
+
+	// amplify configurations
+	Amplify.configure(awsconfig);
+
+	// init I18n language set
+	await languageInit();
 };
 
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
 		// tslint:disable-next-line
-		console.log = () => {};
+		console.log = () => {
+		};
 	}
 };

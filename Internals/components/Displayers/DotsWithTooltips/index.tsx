@@ -31,23 +31,17 @@ export class TooltipDots extends Component<ITooltipDotsProps> {
 				<Image source={Icons.iconDots} style={style.dots} resizeMode={'contain'} />
 			</View>
 		);
-	}
+	};
 
-	private getTooltipItems = () => {
-		const ret: any = [];
-		this.props.items.map((item: TooltipItem, index: any) => {
-			ret.push({
-				label: () => {
-					return (
-						<View key={index} style={style.lineContainer}>
-							<Image source={item.icon} style={style.icon} resizeMode={'contain'} />
-							<Text style={style.label}>{item.label}</Text>
-						</View>
-					);
-				},
-				onPress: item.actionHandler,
-			});
-		});
-		return ret;
-	}
+	// todo @serkan @jake hmm component calling function calling function calling iterator function calling component...
+	private getTooltipItems = () =>
+		this.props.items.map((item: TooltipItem, index: any) => ({
+			label: () => (
+				<View key={index} style={style.lineContainer}>
+					<Image source={item.icon} style={style.icon} resizeMode={'contain'} />
+					<Text style={style.label}>{item.label}</Text>
+				</View>
+			),
+			onPress: item.actionHandler,
+		}));
 }

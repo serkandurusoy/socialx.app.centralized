@@ -74,23 +74,22 @@ class NotificationGIComp extends React.Component<INotificationGIProps, INotifica
 			);
 		}
 		return <ActivityIndicator size={'small'} />;
-	}
+	};
 
 	private layoutHandler = (event: LayoutChangeEvent) => {
 		this.setState({
 			swipeOutHeight: event.nativeEvent.layout.height,
 		});
-	}
+	};
 
 	private getLeftContent = () => {
-		const swiperStyles = [style.leftSwipeContainer];
-		swiperStyles.push({height: this.state.swipeOutHeight});
+		const swiperStyles = [style.leftSwipeContainer, {height: this.state.swipeOutHeight}];
 		return (
 			<View style={swiperStyles}>
 				<Text style={style.leftText}>{'Dismiss'}</Text>
 			</View>
 		);
-	}
+	};
 
 	private confirmDismissNotification = (confirmed: boolean) => {
 		if (!confirmed) {
@@ -107,7 +106,7 @@ class NotificationGIComp extends React.Component<INotificationGIProps, INotifica
 		} else {
 			this.checkNotificationHandler();
 		}
-	}
+	};
 
 	private checkNotificationHandler = async () => {
 		try {
@@ -122,7 +121,7 @@ class NotificationGIComp extends React.Component<INotificationGIProps, INotifica
 				loading: false,
 			});
 		}
-	}
+	};
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -130,4 +129,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 	hideConfirm: () => dispatch(hideModalConfirmation()),
 });
 
-export const NotificationGI = connect(null, mapDispatchToProps)(NotificationGIComp as any);
+export const NotificationGI = connect(
+	null,
+	mapDispatchToProps,
+)(NotificationGIComp as any);

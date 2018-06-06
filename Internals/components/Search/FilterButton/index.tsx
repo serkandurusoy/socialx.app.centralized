@@ -11,29 +11,13 @@ export interface ISearchFilterButtonProps {
 }
 
 export const SearchFilterButton: React.SFC<ISearchFilterButtonProps> = (props) => {
-	const getTextStyle = () => {
-		const ret = [style.text];
-		if (props.selected) {
-			ret.push(style.textSelected);
-		} else {
-			ret.push(style.textUnselected);
-		}
-		return ret;
-	};
+	const textStyle = [style.text, ...(props.selected ? [style.textSelected] : [style.textUnselected])];
 
-	const getBackgroundStyle = () => {
-		const ret = [props.containerStyle];
-		if (props.selected) {
-			ret.push(style.backgroundSelected);
-		} else {
-			ret.push(style.background);
-		}
-		return ret;
-	};
+	const backgroundStyle = [props.containerStyle, ...(props.selected ? [style.backgroundSelected] : [style.background])];
 
 	return (
-		<TouchableOpacity style={getBackgroundStyle()} onPress={props.onPress}>
-			<Text style={getTextStyle()}>{props.text}</Text>
+		<TouchableOpacity style={backgroundStyle} onPress={props.onPress}>
+			<Text style={textStyle}>{props.text}</Text>
 		</TouchableOpacity>
 	);
 };

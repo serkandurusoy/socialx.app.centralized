@@ -1,11 +1,14 @@
-import {AsyncStorage} from 'react-native';
-import {connect} from 'react-redux';
+import React from 'react';
+import {StatusBar, View} from 'react-native';
 
-import {StartupActions} from '../../reducers/StartupReducers';
-import {Props, RootContainer} from './container';
+import ReduxNavigation from '../../navigation/ReduxNavigation';
 
-const mapDispatchToProps = (dispatch: any): Props => ({
-	startup: () => dispatch(StartupActions.startup()),
-});
+// Styles
+import styles from './styles';
 
-export default connect(null, mapDispatchToProps)(RootContainer);
+export default () => (
+	<View style={styles.applicationView}>
+		<StatusBar barStyle={'light-content'} />
+		<ReduxNavigation />
+	</View>
+);

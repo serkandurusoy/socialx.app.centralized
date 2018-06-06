@@ -15,6 +15,8 @@ export interface IBlobData {
 	data: string;
 }
 
+// todo @serkan @jake let's revisit this thing from the ground up. if anything, the libs are not maintained, there are
+// better alternatives. furthermore, we can maybe improve the structure of this class
 export default class Ipfslib {
 	private config: IProviderParams = {host: '0.0.0.0', port: '8080', protocol: 'http', root: '/api/v0'};
 	private responseData: any;
@@ -32,7 +34,7 @@ export default class Ipfslib {
 
 	public addBlob = (data: any) => {
 		return RNFetchBlob.fetch('POST', this.apiUrl('/add'), {'Content-Type': 'multipart/form-data'}, data);
-	}
+	};
 
 	public addFileBN = async (
 		path: string,
@@ -70,7 +72,7 @@ export default class Ipfslib {
 		} catch (ex) {
 			console.log('from ipfs BN upload:', ex);
 		}
-	}
+	};
 
 	public addFilesBN = async (
 		paths: string[],
@@ -162,7 +164,7 @@ export default class Ipfslib {
 		} catch (ex) {
 			console.log('from ipfs BN upload:', ex);
 		}
-	}
+	};
 
 	public addFile = (file: any, opts?: any): Promise<any> =>
 		new Promise((resolve) => {
@@ -177,7 +179,7 @@ export default class Ipfslib {
 				transform: (res: any) => (res ? JSON.parse(res) : null),
 				progress: opts ? opts.progress : null,
 			});
-		})
+		});
 
 	public addFiles = (files: any[], opts?: any): Promise<any> =>
 		new Promise((resolve) => {
@@ -192,7 +194,7 @@ export default class Ipfslib {
 				transform: (res: any) => (res ? JSON.parse(res) : null),
 				progress: opts ? opts.progress : null,
 			});
-		})
+		});
 
 	public add = (input: any, opts?: any): Promise<any> =>
 		new Promise((resolve) => {
@@ -209,10 +211,10 @@ export default class Ipfslib {
 				transform: (res: any) => (res ? JSON.parse(res) : null),
 				progress: opts ? opts.progress : null,
 			});
-		})
+		});
 
 	public cat = (ipfsHash: string): Promise<any> =>
-		new Promise((resolve) => this.request({callback: resolve, uri: `/cat/${ipfsHash}`}))
+		new Promise((resolve) => this.request({callback: resolve, uri: `/cat/${ipfsHash}`}));
 
 	public addJson = (json: object) => this.add(JSON.stringify(json, null, 2));
 
@@ -224,13 +226,13 @@ export default class Ipfslib {
 			(obj._isBuffer ||
 				(obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)))
 		);
-	}
+	};
 
 	private apiUrl = (path: string): string => {
 		return `${this.config.protocol}://${this.config.host}${this.config.port ? ':' + this.config.port : ''}${
 			this.config.root
 		}${path}`;
-	}
+	};
 
 	private onReadyState = (req: any, transform?: any) => {
 		if (req.readyState === 4) {
@@ -242,7 +244,7 @@ export default class Ipfslib {
 				}
 			}
 		}
-	}
+	};
 
 	private request = (opts: any) => {
 		const req = new XMLHttpRequest();
@@ -263,5 +265,5 @@ export default class Ipfslib {
 		} else {
 			req.send();
 		}
-	}
+	};
 }

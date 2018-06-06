@@ -87,12 +87,12 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 		}
 		date.setHours(0, 0, 0);
 		this.props.navigation.navigate('CreateEventScreen', {date, createNewEvent: this.createNewEvent});
-	}
+	};
 
 	private createNewEvent = (eventData: IEventData) => {
 		// console.log('createNewEvent', eventData); // TODO: GQL call to create the event
 		this.setState({eventsList: [...this.state.eventsList, eventData]});
-	}
+	};
 
 	private openEventDetailPageHandler = (eventData: IEventData) => {
 		const navParams: IEventDetailScreenNavParams = {
@@ -100,9 +100,9 @@ export default class MyEventsScreen extends Component<IMyEventsScreenProps, IMyE
 			onEventDelete: this.onEventDeleteHandler,
 		};
 		this.props.navigation.navigate('EventDetailScreen', navParams);
-	}
+	};
 
 	private onEventDeleteHandler = (eventData: IEventData) => {
 		// console.log('onEventDeleteHandler', eventData.title); // TODO: GQL call to delete the event
-	}
+	};
 }

@@ -1,3 +1,4 @@
+import get from 'lodash/get';
 import React, {Component} from 'react';
 import {InteractionManager, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
@@ -6,12 +7,11 @@ import MyProfileScreenComponent from './screen';
 import {IconButton} from 'components';
 
 import {ipfsConfig as base} from 'configuration';
+import {getUserAvatar} from 'utilities';
 
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
-import {IMediaProps, IUserDataResponse} from 'types';
-
-import {AvatarImagePlaceholder} from 'consts';
 import {Icon} from 'native-base';
+import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
@@ -58,10 +58,11 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		headerRight: (
 			<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.refreshScreen} />
 		),
-	})
+	});
 
 	public state = INITIAL_STATE;
 
+	// todo @serkan @jake why?
 	private lastLoadedPhotoIndex = 0;
 
 	public async componentDidMount() {
@@ -81,18 +82,16 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const {user} = data;
 		const {posts, avatar} = user;
 
-		let userImages = 0;
-		if (posts) {
-			posts.forEach((x) => {
-				userImages += x.Media ? x.Media.length : 0;
-			});
-		}
+		const userImages = posts
+			? posts.reduce((count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0), 0)
+			: 0;
+		const numOfLikes = posts ? posts.reduce((total: number, post: IPostsProps) => total + post.likes.length, 0) : 0;
 
-		const userAvatar = avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder;
+		const userAvatar = getUserAvatar(user);
 
 		this.setState({
 			numberOfPhotos: userImages,
-			numberOfLikes: 0,
+			numberOfLikes: numOfLikes,
 			numberOfFollowers: 0,
 			numberOfFollowing: 0,
 			avatarURL: userAvatar,
@@ -124,6 +123,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		);
 	}
 
+	// todo @serkan @jake what?
 	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
 		const ret: IMediaProps[] = [];
 		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
@@ -134,30 +134,26 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			}
 		}
 		return ret;
-	}
+	};
 
 	private preloadAllMediaObjects = () => {
-		const {data} = this.props;
-		const {user} = data;
-
-		const {posts} = user;
+		const posts = get(this.props.data, 'user.posts', null);
 
 		if (!posts) {
 			return [];
 		}
 
-		const Imgs: IMediaProps[] = [];
-		for (let y = 0; y < posts.length; y++) {
-			const currentMedia = posts[y].Media;
-			if (currentMedia) {
-				for (let x = 0; x < currentMedia.length; x++) {
-					Imgs.push(currentMedia[x]);
-				}
+		const images: IMediaProps[] = [];
+		posts.forEach((post: IPostsProps) => {
+			const medias = post.Media;
+			if (post.Media) {
+				medias.forEach((media) => {
+					images.push(media);
+				});
 			}
-		}
-
-		return Imgs;
-	}
+		});
+		return images;
+	};
 }
 
 const userDataWrapper = userHoc(MyProfileScreen);

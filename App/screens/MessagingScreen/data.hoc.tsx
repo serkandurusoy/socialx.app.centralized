@@ -110,21 +110,23 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 			// console.log('TODO: update this.state.contactsList for filter value', filterValue);
 			// and remove below dummy logic
 			const updatedContactsList =
+				// TODO @serkan @jake use of slice is generally confusing, prefer filter
 				filterValue === MessagingFilterValues.Recent ? DUMMY_CONTACTS_LIST.slice(0, 20) : DUMMY_CONTACTS_LIST;
 			this.setState({
 				contactsList: updatedContactsList,
 			});
-		}
+		};
 
 		private onSearchTermUpdatedHandler = (term: string) => {
 			// TODO: just a dummy condition here; update with real logic
 			const hasSearchResults = term.length > 2 && term.length < 8;
+			// TODO @serkan @jake use of slice is generally confusing, prefer filter
 			const filteredContactsList = DUMMY_CONTACTS_LIST.slice(21, 45);
 			this.setState({
 				chatListData: hasSearchResults ? FILTERED_CHAT_MESSAGES : SAMPLE_CHAT_MESSAGES,
 				contactsList: hasSearchResults ? filteredContactsList : DUMMY_CONTACTS_LIST,
 			});
-		}
+		};
 
 		private refreshChatListDataHandler = () => {
 			// TODO: update here chat list data on pull to refresh
@@ -138,7 +140,7 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 					chatListData: SAMPLE_CHAT_MESSAGES,
 				});
 			}, 1500);
-		}
+		};
 
 		private loadMoreChatEntriesHandler = () => {
 			// TODO: update here chat list data, load more handler
@@ -148,13 +150,13 @@ export const messagingWithDataHooks = (BaseComponent: React.ComponentType<IMessa
 					setTimeout(() => {
 						this.isLoadingNewChatEntries = false;
 						this.setState({
-							chatListData: this.state.chatListData.concat(SAMPLE_CHAT_MESSAGES),
+							chatListData: [...this.state.chatListData, ...SAMPLE_CHAT_MESSAGES],
 						});
 					}, 1000); // just simulate network calls delay
 				}
 			} else {
 				this.setState({hasMoreChatListEntries: false});
 			}
-		}
+		};
 	};
 };

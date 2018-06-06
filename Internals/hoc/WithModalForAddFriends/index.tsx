@@ -68,24 +68,24 @@ export const withModalForAddFriends = (
 				taggedFriends: this.state.taggedFriendsInModal,
 				modalVisible: false,
 			});
-		}
+		};
 
 		private showTagFriendsModal = () => {
 			this.setState({
 				taggedFriendsInModal: this.state.taggedFriends,
 				modalVisible: true,
 			});
-		}
+		};
 
 		private closeTagFriendsModal = () => {
 			this.setState({
 				modalVisible: false,
 			});
-		}
+		};
 
 		private tagFriendHandler = (friend: FriendsSearchResult) => {
-			this.setState({taggedFriendsInModal: this.state.taggedFriendsInModal.concat([friend])});
-		}
+			this.setState({taggedFriendsInModal: [...this.state.taggedFriendsInModal, friend]});
+		};
 
 		private friendsSearchUpdatedHandler = (term: string) => {
 			// TODO: make real search here
@@ -94,6 +94,6 @@ export const withModalForAddFriends = (
 				friendsSearchResults = SEARCH_RESULTS_TAG_FRIENDS;
 			}
 			this.setState({friendsSearchResults});
-		}
+		};
 	};
 };

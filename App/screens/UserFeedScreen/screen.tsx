@@ -98,8 +98,18 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					</TouchableWithoutFeedback>
 				</View>
 			);
+		} else {
+			return (
+				<View style={style.shareMessageContainer}>
+					<AvatarImage image={props.avatarImage} style={style.avatarImage} />
+					<TouchableWithoutFeedback onPress={props.showNewWallPostPage}>
+						<View style={style.shareTextContainer}>
+							<Text style={style.shareTextPlaceholder}>{'Share with the world what you think'}</Text>
+						</View>
+					</TouchableWithoutFeedback>
+				</View>
+			);
 		}
-		return null;
 	};
 
 	return (

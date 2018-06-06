@@ -34,10 +34,11 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 	private scrollRef: ScrollView;
 
 	public render() {
-		const containerStyles = [style.container];
-		if (Platform.OS === OS_TYPES.IOS) {
-			containerStyles.push({marginBottom: this.props.marginBottom});
-		}
+		const containerStyles = [
+			style.container,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
+		];
+
 		return this.props.renderWithLoader(
 			<SafeAreaView style={containerStyles}>
 				<ScrollView
@@ -54,21 +55,16 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 		);
 	}
 
-	private renderComments = () => {
-		const ret: any = [];
-		this.props.comments.forEach((comment, index) => {
-			ret.push(
-				<CommentCard
-					key={index}
-					comment={comment}
-					onCommentLike={() => this.props.onCommentLike(comment)}
-					onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
-					onCommentDelete={() => this.props.onCommentDelete(comment)}
-				/>,
-			);
-		});
-		return ret;
-	}
+	private renderComments = () =>
+		this.props.comments.map((comment, index) => (
+			<CommentCard
+				key={index}
+				comment={comment}
+				onCommentLike={() => this.props.onCommentLike(comment)}
+				onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
+				onCommentDelete={() => this.props.onCommentDelete(comment)}
+			/>
+		));
 
 	private renderNoComments = () => {
 		if (this.props.noComments) {
@@ -80,9 +76,9 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			);
 		}
 		return null;
-	}
+	};
 }
 
-const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent);
+const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent as any);
 
 export default withResizeOnKeyboardShow(inlineLoaderWrapper);

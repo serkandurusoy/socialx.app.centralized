@@ -59,18 +59,18 @@ export class SearchFeedHeader extends Component<ISearchFeedHeaderProps, ISearchF
 	private handleTextUpdated = (value: string) => {
 		this.searchTerm = value;
 		this.sendUpdatedSearchValue();
-	}
+	};
 
 	private closeKeyboard = () => {
 		Keyboard.dismiss();
-	}
+	};
 
 	private focusInputHandler = () => {
 		this.props.onPress();
 		this.setState({
 			hasFocus: true,
 		});
-	}
+	};
 
 	private inputFocusUpdatedHandler = (hasFocus: boolean) => {
 		if (this.state.hasFocus !== hasFocus) {
@@ -78,5 +78,5 @@ export class SearchFeedHeader extends Component<ISearchFeedHeaderProps, ISearchF
 				hasFocus,
 			});
 		}
-	}
+	};
 }

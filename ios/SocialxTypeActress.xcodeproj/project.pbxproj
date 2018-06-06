@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -2045,7 +2044,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = socialxnetwork;
 				PRODUCT_NAME = SocialxTypeActress;
-				PROVISIONING_PROFILE = "91f4dc63-f211-4d9d-b3e0-596209cdf350";
+				PROVISIONING_PROFILE = "cc46f892-a7fa-4001-98b8-8269556955c7";
 				PROVISIONING_PROFILE_SPECIFIER = "SocialX dev. profile";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2089,7 +2088,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = socialxnetwork;
 				PRODUCT_NAME = SocialxTypeActress;
-				PROVISIONING_PROFILE = "07c3e1c5-ecd2-4b16-9dcb-5650117c0c97";
+				PROVISIONING_PROFILE = "bf3339f9-ac30-468e-890f-b950389db8cd";
 				PROVISIONING_PROFILE_SPECIFIER = "SocialX Distribution";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";

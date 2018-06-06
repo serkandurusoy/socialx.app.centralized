@@ -28,6 +28,11 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 	};
 
 	public render() {
+		const resizableStyles = [
+			style.keyboardView,
+			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
+		];
+
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -40,7 +45,7 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 				afterDismiss={this.props.afterDismiss}
 			>
 				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
-				<View style={this.getResizableStyles()}>
+				<View style={resizableStyles}>
 					<View style={style.boxContainer}>
 						<View style={style.titleContainer}>
 							<Text style={style.title}>{'Create group'}</Text>
@@ -91,7 +96,7 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 				this.props.declineHandler();
 			},
 		);
-	}
+	};
 
 	private confirmHandler = () => {
 		this.setState(
@@ -102,15 +107,7 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 				this.props.confirmHandler();
 			},
 		);
-	}
-
-	private getResizableStyles = () => {
-		const ret = [style.keyboardView];
-		if (Platform.OS === OS_TYPES.IOS) {
-			ret.push({marginBottom: this.props.marginBottom});
-		}
-		return ret;
-	}
+	};
 }
 
 export const ModalCreateGroup = withManagedTransitions(withResizeOnKeyboardShow(ModalCreateGroupComponent));

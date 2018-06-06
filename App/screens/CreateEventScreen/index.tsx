@@ -43,7 +43,7 @@ class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
 			this.props.navigation.state.params.createNewEvent(this.screenRef.getEventData());
 			this.props.navigation.goBack();
 		}
-	}
+	};
 }
 
 const navigationOptions = (props: ICreateEventScreenProps) => ({
