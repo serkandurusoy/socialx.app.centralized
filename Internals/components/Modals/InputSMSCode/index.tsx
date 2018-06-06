@@ -60,7 +60,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 					<View style={style.borderContainer}>
 						<Text style={style.message}>{'Please type the verification code sent to ' + this.props.phoneNumber}</Text>
 						<View style={style.inputCellsContainer}>
-							{[...Array(NUMBER_OF_DIGITS)].map((i) => (
+							{Array.from(Array(NUMBER_OF_DIGITS).keys()).map((i) => (
 								<TextInput
 									key={i}
 									onChangeText={(value: string) => this.digitUpdatedHandler(i, value)}
