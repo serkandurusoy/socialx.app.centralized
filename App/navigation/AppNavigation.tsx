@@ -13,6 +13,7 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import LoginScreen from '../screens/LoginScreen';
+import MaintenanceScreen from '../screens/Maintenance';
 import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
 import MediaLicenceScreen from '../screens/MediaLicenceScreen';
 import MediaViewerScreen from '../screens/MediaViewerScreen';
@@ -214,6 +215,7 @@ const PrimaryNav = StackNavigator(
 	{
 		PreAuthScreen: {screen: PreAuthNavigator},
 		MainScreen: {screen: MainScreenWithModal},
+		Maintenance: {screen: MaintenanceScreen},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved
 		SendCoinsScreen: {screen: SendCoinsScreen}, // TODO: later to be moved!
 		EventsStack: {screen: EventsStackNavigator}, // TODO: later to be moved!

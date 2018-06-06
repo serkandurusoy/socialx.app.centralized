@@ -14,6 +14,9 @@ export const getUserProfileQ = gql`
 				likes {
 					userId
 				}
+				Media {
+					id
+				}
 			}
 			avatar {
 				id

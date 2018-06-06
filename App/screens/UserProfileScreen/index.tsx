@@ -125,26 +125,29 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			});
 			const {getUser} = userProfileRes.data;
 
-			// TODO: @serkan @jake this is unsafe!
-			const userPostsRes = await client.query({query: getUserPostsQ, variables: {userId}, fetchPolicy: 'network-only'});
-			const userPosts = userPostsRes.data.getPostsOwner.Items;
+			const userPostsRes: any = await client.query({
+				query: getUserPostsQ,
+				variables: {userId},
+				fetchPolicy: 'network-only',
+			});
+			const userPosts = userPostsRes.data.getPostsOwner.Items || [];
+			console.log('userPosts', userPosts);
 
 			const mediaObjs = this.preloadAllMediaObjects(userPosts);
+			console.log('mediaObjects', mediaObjs);
 
 			const numOfLikes = getUser.posts.reduce((total: number, post: any) => total + post.likes.length, 0);
 
 			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
 			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);
-
-			console.log(preLoadPosts);
 			this.setState({
 				isLoading: false,
 				avatarURL: avatar,
 				fullName: getUser.name,
 				username: getUser.username,
 				aboutMeText: getUser.bio,
-				mediaObjects: mediaObjs,
-				numberOfPhotos: mediaObjs.length,
+				mediaObjects: [],
+				numberOfPhotos: mediaObjs,
 				numberOfLikes: numOfLikes,
 				recentPosts: preLoadPosts,
 			});
@@ -173,29 +176,23 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			return res;
 		};
 
-		const recentPosts: any = [];
-		for (let i = 0; i < posts.length; i++) {
-			// todo @serkan @jake what???
-			if (i > 2) {
-				return recentPosts;
-			}
-			const currentPost = posts[i];
-			recentPosts.push({
-				id: currentPost.id,
+		return posts.map((post: any, index: number) => {
+			if (index === 6) { return; }
+			return {
+				id: post.id,
 				title: null,
-				text: currentPost.text,
-				location: currentPost.location,
+				text: post.text,
+				location: post.location,
 				smallAvatar: ownerAvatar,
 				fullName: ownerName,
-				timestamp: new Date(parseInt(currentPost.createdAt, 10) * 1000),
-				numberOfLikes: currentPost.likes.length,
-				numberOfComments: getCommentsNum(currentPost.comments),
-				canDelete: currentPost.owner.userId === ownerId,
-				media: currentPost.Media,
+				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+				numberOfLikes: post.likes.length,
+				numberOfComments: getCommentsNum(post.comments),
+				canDelete: post.owner.userId === ownerId,
+				media: post.Media,
 				owner: user,
-			});
-		}
-		return recentPosts;
+			}
+		});
 	};
 
 	private preloadAllMediaObjects = (posts: any) => {
@@ -204,17 +201,18 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		}
 
 		// todo @serkan @jake I think I saw a similar unwrap/flatten approach somewhere else hmm
-		const Imgs: IMediaProps[] = [];
-		for (let y = 0; y < posts.length; y++) {
-			const currentMedia = posts[y].Media;
-			if (currentMedia) {
-				for (let x = 0; x < currentMedia.length; x++) {
-					Imgs.push(currentMedia[x]);
-				}
-			}
-		}
+		return posts.reduce((count: any, post: any) => count += post.Media.length, 0);
+		// const Imgs: IMediaProps[] = [];
+		// for (let y = 0; y < posts.length; y++) {
+		// 	const currentMedia = posts[y].Media;
+		// 	if (currentMedia) {
+		// 		for (let x = 0; x < currentMedia.length; x++) {
+		// 			Imgs.push(currentMedia[x]);
+		// 		}
+		// 	}
+		// }
 
-		return Imgs;
+		// return Imgs;
 	};
 
 	private toggleFollowHandler = () => {
