@@ -108,7 +108,7 @@
     "react-native-text-gradient": "0.0.8",
     "react-native-textinput-effects": "^0.4.2",
     "react-native-vector-icons": "^4.5.0",
-    "react-native-video": "^2.0.0",
+    "react-native-video": "https://github.com/ionut-movila/react-native-video",
     "react-navigation": "1.2.1",
     "react-navigation-redux-helpers": "^1.0.2",
     "react-redux": "^5.0.7",
