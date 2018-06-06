@@ -1,11 +1,12 @@
+import {TKeyboardKeys} from 'components';
 import {OS_TYPES} from 'consts';
 import {withManagedTransitions} from 'hoc/ManagedModal';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
+import {range} from 'lodash';
 import React, {Component} from 'react';
 import {Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {Colors} from 'theme';
-import {TKeyboardKeys} from '../../Inputs';
 import style from './style';
 
 const NUMBER_OF_DIGITS = 6;
@@ -60,7 +61,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 					<View style={style.borderContainer}>
 						<Text style={style.message}>{'Please type the verification code sent to ' + this.props.phoneNumber}</Text>
 						<View style={style.inputCellsContainer}>
-							{Array.from(Array(NUMBER_OF_DIGITS).keys()).map((i) => (
+							{range(NUMBER_OF_DIGITS).map((i) => (
 								<TextInput
 									key={i}
 									onChangeText={(value: string) => this.digitUpdatedHandler(i, value)}
