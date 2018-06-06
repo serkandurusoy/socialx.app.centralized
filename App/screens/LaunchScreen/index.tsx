@@ -38,11 +38,15 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 				});
 
 				// TODO: put this back when Maintenance mode is set off server side
-				// if (getMaintenanceMode) {
-				// 	resetNavigationToRoute('Maintenance', this.props.navigation);
-				// } else {
-				// 	resetNavigationToRoute('MainScreen', this.props.navigation);
-				// }
+				if (__DEV__) {
+					resetNavigationToRoute('MainScreen', this.props.navigation);
+				} else {
+					if (getMaintenanceMode) {
+						resetNavigationToRoute('Maintenance', this.props.navigation);
+					} else {
+						resetNavigationToRoute('MainScreen', this.props.navigation);
+					}
+				}
 
 				resetNavigationToRoute('MainScreen', this.props.navigation);
 			}
