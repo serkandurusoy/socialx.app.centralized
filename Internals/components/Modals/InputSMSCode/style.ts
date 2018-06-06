@@ -72,24 +72,24 @@ const style: any = {
 		flexDirection: 'row',
 		justifyContent: 'center',
 	},
-	digitInput: {
-		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(28),
-		color: Colors.postFullName,
-		width: Sizes.smartHorizontalScale(45),
+	codeInput: {
+		minWidth: Sizes.smartHorizontalScale(200),
 		height: Sizes.smartHorizontalScale(55),
 		borderRadius: Sizes.smartHorizontalScale(5),
 		borderWidth: Sizes.smartHorizontalScale(1),
 		borderColor: Colors.cadetBlue,
 		textAlign: 'center',
-		marginHorizontal: Sizes.smartHorizontalScale(5),
 		marginBottom: Sizes.smartVerticalScale(10),
+		flexDirection: 'row',
+	},
+	inputText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(28),
+		color: Colors.postFullName,
+		letterSpacing: 10,
 	},
 	buttonDisabled: {
 		opacity: 0.3,
-	},
-	digitInputWithValue: {
-		borderColor: Colors.pink,
 	},
 	errorMessage: {
 		...Fonts.centuryGothic,
