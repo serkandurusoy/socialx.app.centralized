@@ -12,9 +12,9 @@ import UserProfileScreenComponent from './screen';
 import {ApolloClient} from 'apollo-client';
 import {withApollo} from 'react-apollo';
 
-import {getUserPostsQ, getUserProfileQ} from 'backend/graphql';
+import {addFriendHoc, getUserProfileHoc, getUserPostHoc} from 'backend/graphql';
 import {ipfsConfig as base} from 'configuration';
-import {AvatarImagePlaceholder} from 'consts';
+import {AvatarImagePlaceholder, FriendTypes} from 'consts';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
@@ -36,7 +36,9 @@ const INITIAL_STATE = {
 
 interface IUserProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
-	client: ApolloClient<any>;
+	addFriend: any;
+	getUserQuery: any;
+	getUserPosts: any;
 }
 
 interface IUserProfileScreenState {
@@ -68,6 +70,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				/> */}
 				{/* @ionut TODO: create a refresh button here? */}
 				{/* <IconButton ex={true} iconSource={'sync-alt'} /> */}
+				<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.addFriend} />
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
@@ -77,26 +80,32 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 	private lastLoadedPhotoIndex = 0;
 
-	public async componentDidMount() {
-		await this.preFetch();
+	public componentDidMount() {
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				isFollowed: this.state.isFollowed,
+				toggleFollow: this.toggleFollowHandler,
+			});
+		});
 	}
 
 	public render() {
+		const {getUserQuery, getUserPosts} = this.props;
 		return (
 			<UserProfileScreenComponent
-				isLoading={this.state.isLoading}
+				isLoading={getUserQuery.loading || getUserPosts.loading}
 				totalNumberOfPhotos={GRID_MAX_RESULTS}
 				gridPageSize={GRID_PAGE_SIZE}
-				numberOfPhotos={this.state.numberOfPhotos}
-				numberOfLikes={this.state.numberOfLikes}
+				numberOfPhotos={getUserQuery.getUser.numberOfPhotos}
+				numberOfLikes={getUserQuery.getUser.numberOfLikes}
 				numberOfFollowers={this.state.numberOfFollowers}
 				numberOfFollowing={this.state.numberOfFollowing}
 				isFollowed={this.state.isFollowed}
-				avatarURL={this.state.avatarURL}
-				fullName={this.state.fullName}
-				username={this.state.username}
-				aboutMeText={this.state.aboutMeText}
-				recentPosts={this.state.recentPosts}
+				avatarURL={getUserQuery.getUser.avatarURL}
+				fullName={getUserQuery.getUser.fullName}
+				username={getUserQuery.getUser.username}
+				aboutMeText={getUserQuery.getUser.aboutMeText}
+				recentPosts={getUserPosts.Items}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
 				allMediaObjects={this.state.mediaObjects}
@@ -239,6 +248,21 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		return ret;
 	};
 
+	private addFriendHandler = async () => {
+		const {addFriend, navigation, getUserQuery} = this.props;
+		const userId = navigation.state.params.userId;
+
+		try {
+			if (getUserQuery.relationship === FriendTypes.NotFriend) {
+				await addFriend({variables: { userId }});
+			} else {
+				alert('You are already friends with this user.');
+			}
+		} catch (ex) {
+			console.log(ex);
+		}
+	}
+
 	private onMediaObjectPressHandler = (index: number, media: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
 			mediaObjects: media,
@@ -262,6 +286,8 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	};
 }
 
-const ApolloWrapper = withApollo(UserProfileScreen);
+const getUserQueryWrapper = getUserProfileHoc(UserProfileScreen);
+const getUserPostsWrapper = getUserPostHoc(getUserQueryWrapper);
+const addFriendWrapper = addFriendHoc(getUserPostsWrapper);
 
-export default ApolloWrapper;
+export default addFriendWrapper;
