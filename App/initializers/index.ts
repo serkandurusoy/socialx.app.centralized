@@ -1,9 +1,16 @@
 import {languageInit} from 'utilities';
 
-export default () => {
+import Amplify from 'aws-amplify';
+import {awsconfig} from 'configuration';
+
+export default async () => {
 	removeConsoleLogs();
+
+	// amplify configurations
+	Amplify.configure(awsconfig);
+
 	// init I18n language set
-	languageInit();
+	await languageInit();
 };
 
 const removeConsoleLogs = () => {

@@ -27,15 +27,16 @@ export default class App extends Component<{}, {}> {
 		if (Platform.OS === OS_TYPES.Android) {
 			StatusBar.setBackgroundColor(Colors.pink);
 		}
-		Animatable.initializeRegistryWithDefinitions(Animations);
+		Animatable.initializeRegistryWithDefinitions(Animations as any);
 		Orientation.lockToPortrait();
+
+		// initialize all app essentials
 		await Init();
 	}
 
 	public render() {
 		return (
 			<ApolloProvider client={AppsyncClient}>
-				{/* // TODO: @serkan ask @jake why not use PersistGate? */}
 				{/* // TODO: and looks like aws-appsync-react is an "exotic" module, not officially installed from npm */}
 				<Rehydrated>
 					<Provider store={store}>
