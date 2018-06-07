@@ -1,16 +1,14 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {InteractionManager, TouchableOpacity, View} from 'react-native';
+import {InteractionManager} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
 
-import {IconButton} from 'components';
+import {ScreenHeaderButton} from 'components';
 
-import {ipfsConfig as base} from 'configuration';
 import {getUserAvatar} from 'utilities';
 
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
-import {Icon} from 'native-base';
 import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
 
 const GRID_PAGE_SIZE = 20;
@@ -55,9 +53,7 @@ interface IMyProfileScreenState {
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = (props: any) => ({
 		title: 'PROFILE',
-		headerRight: (
-			<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.refreshScreen} />
-		),
+		headerRight: <ScreenHeaderButton iconName={'md-refresh'} onPress={props.navigation.state.params.refreshScreen} />,
 	});
 
 	public state = INITIAL_STATE;
@@ -65,7 +61,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	// todo @serkan @jake why?
 	private lastLoadedPhotoIndex = 0;
 
-	public async componentDidMount() {
+	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({
 				refreshScreen: this.props.data.refetch,

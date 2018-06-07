@@ -1,20 +1,12 @@
-import {ModalCloseButton} from 'components';
+import {ModalCloseButton, ScreenHeaderButton} from 'components';
 import {IWallPostCardProp} from 'components/Displayers';
-import {IconButton, ToggleIconButton} from 'components/Interaction';
-import get from 'lodash/get';
 import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {Icons} from 'theme/';
-import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, IUserQuery, MediaTypeImage} from 'types';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
 import UserProfileScreenComponent from './screen';
 
-import {ApolloClient} from 'apollo-client';
-import {withApollo} from 'react-apollo';
-
-import {addFriendHoc, getUserProfileHoc, getUserPostHoc} from 'backend/graphql';
-import {ipfsConfig as base} from 'configuration';
-import {AvatarImagePlaceholder, FriendTypes} from 'consts';
+import {addFriendHoc, getUserPostHoc, getUserProfileHoc} from 'backend/graphql';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
@@ -68,9 +60,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 					onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}
 					selected={get(props, 'navigation.state.params.isFollowed', false)}
 				/> */}
-				{/* @ionut TODO: create a refresh button here? */}
-				{/* <IconButton ex={true} iconSource={'sync-alt'} /> */}
-				<IconButton ex={true} iconSource={'refresh'} onPress={() => props.navigation.state.params.addFriend} />
+				<ScreenHeaderButton iconName={'md-refresh'} onPress={props.navigation.state.params.refreshScreen} />
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
@@ -85,6 +75,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			this.props.navigation.setParams({
 				isFollowed: this.state.isFollowed,
 				toggleFollow: this.toggleFollowHandler,
+				refreshScreen: () => alert('refresh now'), // TODO: @Aaron - handle refresh here
 			});
 		});
 	}
@@ -108,121 +99,15 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				recentPosts={getUserPosts.Items}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
-				allMediaObjects={this.state.mediaObjects}
+				allMediaObjects={getUserQuery.getUser.mediaObjects}
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={null}
+				onAddFriend={this.addFriendHandler}
+				friendRequestStatus={getUserQuery.getUser.relationship}
 			/>
 		);
 	}
-
-	private preFetch = async () => {
-		const {client} = this.props;
-		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({
-				isFollowed: this.state.isFollowed,
-				toggleFollow: this.toggleFollowHandler,
-			});
-		});
-
-		try {
-			const userId = this.props.navigation.state.params.userId;
-			const userProfileRes = await client.query({
-				query: getUserProfileQ,
-				variables: {userId},
-				fetchPolicy: 'network-only',
-			});
-			const {getUser} = userProfileRes.data;
-
-			const userPostsRes: any = await client.query({
-				query: getUserPostsQ,
-				variables: {userId},
-				fetchPolicy: 'network-only',
-			});
-			const userPosts = userPostsRes.data.getPostsOwner.Items || [];
-			console.log('userPosts', userPosts);
-
-			const mediaObjs = this.preloadAllMediaObjects(userPosts);
-			console.log('mediaObjects', mediaObjs);
-
-			const numOfLikes = getUser.posts.reduce((total: number, post: any) => total + post.likes.length, 0);
-
-			const avatar = getUser.avatar ? base.ipfs_URL + getUser.avatar.hash : AvatarImagePlaceholder;
-			const preLoadPosts = this.preLoadPrevPosts(userPosts, avatar, getUser);
-			this.setState({
-				isLoading: false,
-				avatarURL: avatar,
-				fullName: getUser.name,
-				username: getUser.username,
-				aboutMeText: getUser.bio,
-				mediaObjects: [],
-				numberOfPhotos: mediaObjs,
-				numberOfLikes: numOfLikes,
-				recentPosts: preLoadPosts,
-			});
-		} catch (ex) {
-			console.log(ex);
-		}
-	};
-
-	private preLoadPrevPosts = (posts: any, ownerAvatar: any, user: IUserQuery) => {
-		if (!posts) {
-			return [];
-		}
-
-		const ownerName = user.name;
-		const ownerId = user.userId;
-
-		const getCommentsNum = (comments: any) => {
-			if (!comments.length) {
-				return 0;
-			}
-
-			let res = 0;
-			for (res; res < comments.length; res++) {
-				res += comments[res].comments.length > 0 ? comments[res].comments.length : 0;
-			}
-			return res;
-		};
-
-		return posts.map((post: any, index: number) => {
-			if (index === 6) { return; }
-			return {
-				id: post.id,
-				title: null,
-				text: post.text,
-				location: post.location,
-				smallAvatar: ownerAvatar,
-				fullName: ownerName,
-				timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
-				numberOfLikes: post.likes.length,
-				numberOfComments: getCommentsNum(post.comments),
-				canDelete: post.owner.userId === ownerId,
-				media: post.Media,
-				owner: user,
-			}
-		});
-	};
-
-	private preloadAllMediaObjects = (posts: any) => {
-		if (!posts) {
-			return [];
-		}
-
-		// todo @serkan @jake I think I saw a similar unwrap/flatten approach somewhere else hmm
-		return posts.reduce((count: any, post: any) => count += post.Media.length, 0);
-		// const Imgs: IMediaProps[] = [];
-		// for (let y = 0; y < posts.length; y++) {
-		// 	const currentMedia = posts[y].Media;
-		// 	if (currentMedia) {
-		// 		for (let x = 0; x < currentMedia.length; x++) {
-		// 			Imgs.push(currentMedia[x]);
-		// 		}
-		// 	}
-		// }
-
-		// return Imgs;
-	};
 
 	private toggleFollowHandler = () => {
 		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
@@ -249,19 +134,10 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	};
 
 	private addFriendHandler = async () => {
-		const {addFriend, navigation, getUserQuery} = this.props;
+		const {addFriend, navigation} = this.props;
 		const userId = navigation.state.params.userId;
-
-		try {
-			if (getUserQuery.relationship === FriendTypes.NotFriend) {
-				await addFriend({variables: { userId }});
-			} else {
-				alert('You are already friends with this user.');
-			}
-		} catch (ex) {
-			console.log(ex);
-		}
-	}
+		await addFriend({variables: {userId}});
+	};
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
