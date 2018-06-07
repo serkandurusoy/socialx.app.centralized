@@ -3,6 +3,7 @@ import {graphql, QueryProps} from 'react-apollo';
 
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
+import {IMediaProps, IPostsProps} from 'types';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {
@@ -178,12 +179,16 @@ const preloadAllMediaObjects = (posts: any) => {
 		return [];
 	}
 
-	return posts.map((post: any) => {
-		const currentMedia = post.Media;
-		if (currentMedia) {
-			return currentMedia.reduce((items: any, x: any) => items.concat(x), []);
+	const images: IMediaProps[] = [];
+	posts.forEach((post: IPostsProps) => {
+		const medias = post.Media;
+		if (post.Media) {
+			medias.forEach((media) => {
+				images.push(media);
+			});
 		}
 	});
+	return images;
 };
 
 export const addFriend = (comp: any) => graphql(addFriendMut, {name: 'addFriend'})(comp);
