@@ -51,10 +51,22 @@ interface IMyProfileScreenState {
 }
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
-	private static navigationOptions = (props: any) => ({
+	private static navigationOptions = (props: IMyProfileScreenProps) => ({
 		title: 'PROFILE',
-		headerRight: <ScreenHeaderButton iconName={'md-refresh'} onPress={props.navigation.state.params.refreshScreen} />,
+		headerRight: (
+			<ScreenHeaderButton
+				iconName={'md-refresh'}
+				onPress={() => MyProfileScreen.runRefreshScreenHandler(props)}
+			/>
+		),
 	});
+
+	private static runRefreshScreenHandler(props: any) {
+		const params = props.navigation.state.params || {};
+		if (params.refreshScreen) {
+			params.refreshScreen();
+		}
+	}
 
 	public state = INITIAL_STATE;
 
