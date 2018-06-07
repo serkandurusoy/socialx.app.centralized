@@ -4,6 +4,7 @@ import {NavigationScreenProp} from 'react-navigation';
 import {DataProvider} from 'recyclerlistview';
 
 import {
+	AddFriendButton,
 	IWallPostCardProp,
 	MediaObjectViewer,
 	NewGridPhotos,
@@ -14,7 +15,7 @@ import {
 import {ipfsConfig as base} from 'configuration';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Metrics} from 'theme';
-import {IMediaProps, IMediaViewerObject, ISimpleMediaObject} from 'types';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, SearchResultKind} from 'types';
 import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
 
 import style, {USER_MEDIA_THUMB_SIZE} from './style';
@@ -41,6 +42,8 @@ interface IUserProfileScreenProps extends IWithLoaderProps {
 	onCommentClick: any;
 	onImageClick: any;
 	onLikeClick: any;
+	onAddFriend: () => Promise<any>;
+	friendRequestStatus: SearchResultKind;
 }
 
 interface IUserProfileScreenComponentState {
@@ -99,6 +102,14 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 							username={this.props.username}
 						/>
 					</TouchableOpacity>
+					<View style={style.addFriendContainer}>
+						<AddFriendButton
+							kind={this.props.friendRequestStatus}
+							onAddFriend={this.props.onAddFriend}
+							addLabel={'Add friend'}
+							outAnimation={'zoomOut'}
+						/>
+					</View>
 					<ProfileStatistics
 						numberOfPhotos={this.props.numberOfPhotos}
 						numberOfLikes={this.props.numberOfLikes}
