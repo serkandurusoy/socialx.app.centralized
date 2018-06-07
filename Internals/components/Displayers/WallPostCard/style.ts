@@ -107,6 +107,15 @@ const style: any = {
 	likeTextBold: {
 		...Fonts.centuryGothicBold,
 	},
+	numCommentsContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		paddingBottom: Sizes.smartVerticalScale(5),
+	},
+	viewAllCommentsText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.grayText,
+	},
 };
 
 export default StyleSheet.create(style);

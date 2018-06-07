@@ -16,4 +16,5 @@ export default {
 	loginWrongConfirmationCode: 'Wrong confirmation code',
 	loginProgressMessage: 'Signing in..',
 	loginCodeConfirmWait: 'Confirming code..',
+	postCardViewAllComments: 'View all ${args[0]} comments',
 };

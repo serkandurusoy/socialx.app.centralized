@@ -9,7 +9,7 @@ import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
 import {IMediaProps, IUserQuery} from 'types';
-import {getUserAvatar, getUserFullName} from 'utilities';
+import {getText, getUserAvatar, getUserFullName} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -44,7 +44,7 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps {
 	onLikeButtonClick?: () => void;
 	onDeleteClick?: (postId: string) => void;
 	onUserClick?: () => void;
-	onCommentClick?: () => void;
+	onCommentClick?: (startComment: boolean) => void;
 	likedByMe?: boolean;
 	canDelete?: boolean;
 	media: IMediaProps[];
@@ -107,6 +107,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				{this.renderWallPostMedia()}
 				{this.renderWallPostActions()}
 				{this.renderRecentLikes()}
+				{this.renderNumberOfComments()}
 			</View>
 		);
 	}
@@ -343,13 +344,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			return (
 				<WallPostActions
 					likedByMe={this.props.likedByMe}
-					numberOfLikes={this.props.numberOfLikes}
 					numberOfSuperLikes={this.props.numberOfSuperLikes}
-					numberOfComments={this.props.numberOfComments}
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={this.props.onCommentClick}
+					commentsButtonPressed={() => this.props.onCommentClick(true)}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
 			);
@@ -358,6 +357,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	private renderRecentLikes = () => {
+		// TODO: check how this works under user profile page!
 		if (this.props.numberOfLikes && this.props.numberOfLikes > 0) {
 			const lastLikeUsername = this.props.likes[this.props.numberOfLikes - 1].username;
 			const numberOfOtherLikes = this.props.numberOfLikes - 1;
@@ -385,6 +385,18 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			);
 		}
 		return null;
+	};
+
+	private renderNumberOfComments = () => {
+		if (this.props.numberOfComments && this.props.numberOfComments > 0) {
+			return (
+				<TouchableOpacity style={style.numCommentsContainer} onPress={() => this.props.onCommentClick(false)}>
+					<Text style={style.viewAllCommentsText}>
+						{getText('postCardViewAllComments', this.props.numberOfComments)}
+					</Text>
+				</TouchableOpacity>
+			);
+		}
 	};
 
 	private toggleShowFullDescription = () => {

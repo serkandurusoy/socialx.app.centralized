@@ -79,6 +79,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				onCommentReply={this.onCommentReplyHandler}
 				onCommentSend={this.onCommentSendHandler}
 				onCommentDelete={this.onCommentDeleteHandler}
+				startComment={this.props.navigation.state.params.startComment}
 			/>
 		);
 	}
