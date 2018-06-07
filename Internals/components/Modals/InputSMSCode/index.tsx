@@ -34,8 +34,7 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 	public state = INITIAL_STATE;
 
 	public render() {
-		const numericCode = parseInt(this.state.inputValue, 10);
-		const okDisabled = isNaN(numericCode) || numericCode < Math.pow(10, NUMBER_OF_DIGITS - 1);
+		const okDisabled = this.state.inputValue.length < NUMBER_OF_DIGITS;
 		const modalStyles = [
 			style.container,
 			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
