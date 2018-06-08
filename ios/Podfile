@@ -38,6 +38,8 @@ target 'SocialxTypeActress' do
 
   pod 'react-native-image-resizer', :path => '../node_modules/react-native-image-resizer'
 
+  pod 'react-native-webrtc', :path => '../node_modules/react-native-webrtc'
+
   pod 'lottie-ios', :path => '../node_modules/lottie-ios'
 
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'

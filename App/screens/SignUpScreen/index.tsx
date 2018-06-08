@@ -313,6 +313,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			// signin to get access to appsync
 			await Signin(username, password);
 
+			await this.uploadAvatarAndCreateUser(updatedAvatarImagePath, addMedia, createUser, username, name, email);
+
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
 			resetNavigationToRoute('MainScreen', this.props.navigation);
@@ -385,41 +387,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			};
 			const res = await Signup(signupParams);
 
-			let mediaId: string | undefined;
-			if (updatedAvatarImagePath) {
-				// do ipfs
-				const placeholderFunc = () => {};
-				await addFileBN(updatedAvatarImagePath, placeholderFunc, placeholderFunc, placeholderFunc, async (rest) => {
-					const {Hash, Size} = JSON.parse(rest.responseBody);
-					// do addMedia
-					const mediaObj = await addMedia({
-						variables: {
-							type: 'ProfileImage',
-							size: parseInt(Size, undefined),
-							hash: Hash,
-						},
-					});
-					mediaId = mediaObj.data.addMedia.id;
-
-					await createUser({
-						variables: {
-							username,
-							name,
-							avatar: mediaId,
-							email,
-						},
-					});
-				});
-			} else {
-				await createUser({
-					variables: {
-						username,
-						name,
-						email,
-					},
-				});
-			}
-
 			ModalManager.safeRunAfterModalClosed(() => {
 				this.toggleVisibleModalSMS();
 			});
@@ -432,6 +399,50 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		}
 		Keyboard.dismiss();
 		this.props.HideLoader();
+	};
+
+	private uploadAvatarAndCreateUser = async (
+		updatedAvatarImagePath: string,
+		addMedia: any,
+		createUser: any,
+		username: string,
+		name: string,
+		email: string,
+	) => {
+		let mediaId: string | undefined;
+		if (updatedAvatarImagePath) {
+			// do ipfs
+			const placeholderFunc = () => {};
+			await addFileBN(updatedAvatarImagePath, placeholderFunc, placeholderFunc, placeholderFunc, async (rest) => {
+				const {Hash, Size} = JSON.parse(rest.responseBody);
+				// do addMedia
+				const mediaObj = await addMedia({
+					variables: {
+						type: 'ProfileImage',
+						size: parseInt(Size, undefined),
+						hash: Hash,
+					},
+				});
+				mediaId = mediaObj.data.addMedia.id;
+
+				await createUser({
+					variables: {
+						username,
+						name,
+						avatar: mediaId,
+						email,
+					},
+				});
+			});
+		} else {
+			await createUser({
+				variables: {
+					username,
+					name,
+					email,
+				},
+			});
+		}
 	};
 
 	private updateAvatarImage = (base64Photo: string) => {
