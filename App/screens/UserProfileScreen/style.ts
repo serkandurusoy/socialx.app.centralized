@@ -52,6 +52,10 @@ const style: any = {
 		width: USER_MEDIA_THUMB_SIZE,
 		height: USER_MEDIA_THUMB_SIZE,
 	},
+	addFriendContainer: {
+		alignItems: 'center',
+		paddingVertical: Sizes.smartVerticalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);

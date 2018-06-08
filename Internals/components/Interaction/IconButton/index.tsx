@@ -1,8 +1,6 @@
 import {AnimatedImage} from 'configuration/animations';
 import React, {Component} from 'react';
 import {Image, Text, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {Colors, Sizes} from 'theme';
 import style from './style';
 
 const PULSATE_PERIOD = 700;
@@ -13,7 +11,6 @@ export interface IIconButtonProps {
 	onPress?: Func;
 	iconStyle?: number;
 	changeWithAnimation: boolean;
-	ex?: boolean;
 }
 
 interface IIconButtonState {
@@ -46,22 +43,6 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 	private animatedIcon: any | null = null;
 
 	public render() {
-		if (this.props.ex) {
-			return (
-				<TouchableOpacity
-					onPress={this.buttonPressedHandler}
-					style={style.container}
-					disabled={!this.props.onPress || this.state.touchDisabled}
-				>
-					<Icon
-						name={this.props.iconSource}
-						size={Sizes.smartHorizontalScale(20)}
-						color={Colors.white}
-						style={style.closeIcon}
-					/>
-				</TouchableOpacity>
-			);
-		}
 		return (
 			<TouchableOpacity
 				style={style.container}

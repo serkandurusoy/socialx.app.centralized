@@ -3,6 +3,7 @@ import {graphql, QueryProps} from 'react-apollo';
 
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
+import {IMediaProps, IPostsProps} from 'types';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {
@@ -178,12 +179,16 @@ const preloadAllMediaObjects = (posts: any) => {
 		return [];
 	}
 
-	return posts.map((post: any) => {
-		const currentMedia = post.Media;
-		if (currentMedia) {
-			return currentMedia.reduce((items: any, x: any) => items.concat(x), []);
+	const images: IMediaProps[] = [];
+	posts.forEach((post: IPostsProps) => {
+		const medias = post.Media;
+		if (post.Media) {
+			medias.forEach((media) => {
+				images.push(media);
+			});
 		}
 	});
+	return images;
 };
 
 export const addFriend = (comp: any) => graphql(addFriendMut, {name: 'addFriend'})(comp);
@@ -203,18 +208,22 @@ export const getUserProfileHoc = (comp: any) =>
 				getUserQuery: {loading, getUserQuery},
 			} = pps;
 			const results = {getUserQuery: {getUser: {}, loading}};
-			const avatar = getUserQuery.user.avatar ? base.ipfs_URL + getUserQuery.user.avatar.hash : AvatarImagePlaceholder;
-			const mediaObjs = preloadAllMediaObjects(getUserQuery.user.posts);
-			results.getUserQuery.getUser = {
-				avatarURL: avatar,
-				fullName: getUserQuery.user.name,
-				username: getUserQuery.user.username,
-				aboutMeText: getUserQuery.user.bio,
-				mediaObjects: mediaObjs,
-				numberOfPhotos: mediaObjs.length,
-				numberOfLikes: getUserQuery.user.posts.reduce((likes: number, x: any) => likes += x.likes.length, 0),
-				relationship: getUserQuery.relationship,
-			};
+			if (!loading) {
+				const avatar = getUserQuery.user.avatar
+					? base.ipfs_URL + getUserQuery.user.avatar.hash
+					: AvatarImagePlaceholder;
+				const mediaObjs = preloadAllMediaObjects(getUserQuery.user.posts);
+				results.getUserQuery.getUser = {
+					avatarURL: avatar,
+					fullName: getUserQuery.user.name,
+					username: getUserQuery.user.username,
+					aboutMeText: getUserQuery.user.bio,
+					mediaObjects: mediaObjs,
+					numberOfPhotos: mediaObjs.length,
+					numberOfLikes: getUserQuery.user.posts.reduce((likes: number, x: any) => (likes += x.likes.length), 0),
+					relationship: getUserQuery.relationship,
+				};
+			}
 			return results;
 		},
 		options: (ownProps: any) => {
@@ -236,23 +245,28 @@ export const getUserPostHoc = (comp: any) =>
 				getUserPosts: {loading, getPostsOwner},
 			} = pps;
 			const results = {getUserPosts: {Items: [], loading}};
-			results.getUserPosts.Items = getPostsOwner.Items.length > 0 ? getPostsOwner.Items.map((item: any) => {
-				const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
-				return {
-					id: item.id,
-					title: null,
-					text: item.text,
-					location: item.location,
-					smallAvatar: avatar,
-					fullName: item.owner.name,
-					timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
-					numberOfLikes: item.likes.length,
-					numberOfComments: getCommentsNum(item.comments),
-					canDelete: false,
-					media: item.Media,
-					owner: item.owner,
-				};
-			}) : [];
+			if (!loading) {
+				results.getUserPosts.Items =
+					getPostsOwner.Items.length > 0
+						? getPostsOwner.Items.map((item: any) => {
+								const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
+								return {
+									id: item.id,
+									title: null,
+									text: item.text,
+									location: item.location,
+									smallAvatar: avatar,
+									fullName: item.owner.name,
+									timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
+									numberOfLikes: item.likes.length,
+									numberOfComments: getCommentsNum(item.comments),
+									canDelete: false,
+									media: item.Media,
+									owner: item.owner,
+								};
+						  })
+						: [];
+			}
 			return results;
 		},
 		options: (ownProps: any) => {

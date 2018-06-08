@@ -51,8 +51,6 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 						resetNavigationToRoute('MainScreen', this.props.navigation);
 					}
 				}
-
-				resetNavigationToRoute('MainScreen', this.props.navigation);
 			}
 
 			this.closeSplashScreen();
