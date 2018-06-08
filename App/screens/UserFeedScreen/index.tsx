@@ -265,8 +265,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	};
 
-	private onCommentsButtonClickHandler = (postId: any, userId: any) => {
-		this.props.navigation.navigate('CommentsStack', {postId, userId});
+	private onCommentsButtonClickHandler = (postId: any, userId: any, startComment: boolean) => {
+		this.props.navigation.navigate('CommentsStack', {postId, userId, startComment});
 	};
 }
 

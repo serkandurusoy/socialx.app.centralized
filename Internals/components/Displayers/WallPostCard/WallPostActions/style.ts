@@ -5,7 +5,7 @@ const style: any = {
 	container: {
 		flexDirection: 'row',
 		marginHorizontal: Sizes.smartHorizontalScale(15),
-		paddingVertical: Sizes.smartVerticalScale(5),
+		paddingTop: Sizes.smartVerticalScale(5),
 		marginVertical: Sizes.smartVerticalScale(5),
 		justifyContent: 'space-between',
 		borderTopColor: Colors.geyser,

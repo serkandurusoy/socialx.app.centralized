@@ -102,7 +102,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				allMediaObjects={getUserQuery.getUser.mediaObjects}
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
-				onLikeClick={null}
+				// onLikeClick={this.onLikeClickHandler} // TODO: later support likes on user profile!
 				onAddFriend={this.addFriendHandler}
 				friendRequestStatus={getUserQuery.getUser.relationship}
 			/>
@@ -136,7 +136,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	private addFriendHandler = async () => {
 		const {addFriend, navigation} = this.props;
 		const userId = navigation.state.params.userId;
-		await addFriend({variables: {userId}});
+		await addFriend({variables: {user: userId}});
 	};
 
 	private onMediaObjectPressHandler = (index: number, media: any) => {

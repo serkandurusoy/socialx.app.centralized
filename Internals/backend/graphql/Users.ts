@@ -4,6 +4,7 @@ import {graphql, QueryProps} from 'react-apollo';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {IMediaProps, IPostsProps} from 'types';
+import {bestTwoComments} from 'utilities';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {
@@ -69,6 +70,7 @@ export const getUserPostsQ = gql`
 				text
 				likes {
 					userId
+					username
 				}
 				owner {
 					userId
@@ -85,6 +87,14 @@ export const getUserPostsQ = gql`
 				}
 				comments {
 					id
+					text
+					likes {
+						userId
+					}
+					owner {
+						userId
+						username
+					}
 					comments {
 						id
 					}
@@ -263,6 +273,8 @@ export const getUserPostHoc = (comp: any) =>
 									canDelete: false,
 									media: item.Media,
 									owner: item.owner,
+									bestComments: bestTwoComments(item),
+									likes: item.likes,
 								};
 						  })
 						: [];

@@ -1,6 +1,7 @@
 export default {
 	appName: 'SocialX',
 	buttonOK: 'OK',
+	textAnd: 'and',
 	launchDescription: 'Social interaction with cryptocurrency rewards',
 	launchGetRewarded: 'Get rewarded',
 	launchLogin: 'LOGIN',
@@ -16,4 +17,6 @@ export default {
 	loginWrongConfirmationCode: 'Wrong confirmation code',
 	loginProgressMessage: 'Signing in..',
 	loginCodeConfirmWait: 'Confirming code..',
+	postCardViewAllComments: 'View all ${args[0]} comments',
+	postCardLikedBy: 'Liked by',
 };

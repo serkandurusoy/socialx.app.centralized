@@ -7,11 +7,9 @@ import style from './style';
 
 export interface IWallPostActions {
 	likedByMe: boolean;
-	numberOfLikes: number;
 	numberOfSuperLikes: number;
-	numberOfComments: number;
 	numberOfWalletCoins: number;
-	likeButtonPressed: Func;
+	likeButtonPressed?: Func;
 	superLikeButtonPressed: Func;
 	commentsButtonPressed: Func;
 	walletCoinsButtonPressed: Func;
@@ -31,12 +29,7 @@ export class WallPostActions extends Component<IWallPostActions> {
 					label={this.props.numberOfWalletCoins + ' SOCX'}
 				/> */}
 				<View style={style.rightContainer}>
-					<IconButton
-						iconSource={likeIconSource}
-						onPress={this.props.likeButtonPressed}
-						changeWithAnimation={true}
-						label={this.props.numberOfLikes.toString()}
-					/>
+					<IconButton iconSource={likeIconSource} onPress={this.props.likeButtonPressed} changeWithAnimation={true} />
 
 					{/* TODO: add when implemented: SuperLikes
 					 <IconButton
@@ -44,11 +37,7 @@ export class WallPostActions extends Component<IWallPostActions> {
 						onPress={this.props.superLikeButtonPressed}
 						label={this.props.numberOfSuperLikes.toString()}
 					/> */}
-					<IconButton
-						iconSource={Icons.iconPostComments}
-						onPress={this.props.commentsButtonPressed}
-						label={this.props.numberOfComments.toString()}
-					/>
+					<IconButton iconSource={Icons.iconPostComments} onPress={this.props.commentsButtonPressed} />
 				</View>
 			</View>
 		);
