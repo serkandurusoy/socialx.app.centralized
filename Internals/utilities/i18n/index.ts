@@ -8,7 +8,8 @@ import dictionary_es from './dictionary_es';
 export const LANGUAGE_EN = 'en';
 export const LANGUAGE_ES = 'es';
 
-const SUPPORTED_LANGUAGES = [LANGUAGE_EN, LANGUAGE_ES];
+// const SUPPORTED_LANGUAGES = [LANGUAGE_EN, LANGUAGE_ES];
+const SUPPORTED_LANGUAGES = [LANGUAGE_EN]; // until we finished with translations only enable english
 
 const initAllSupportedLanguages = () => {
 	I18n.putVocabulariesForLanguage(LANGUAGE_EN, dictionary_en);

@@ -8,7 +8,7 @@ import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
-import {IMediaProps, IUserQuery} from 'types';
+import {IMediaProps, ISimpleComment, IUserQuery} from 'types';
 import {getText, getUserAvatar, getUserFullName} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
@@ -43,12 +43,13 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps {
 	onImageClick?: (index: number) => void;
 	onLikeButtonClick?: () => void;
 	onDeleteClick?: (postId: string) => void;
-	onUserClick?: () => void;
-	onCommentClick?: (startComment: boolean) => void;
+	onUserClick?: (userId: string) => void;
+	onCommentClick: (startComment: boolean) => void;
 	likedByMe?: boolean;
 	canDelete?: boolean;
 	media: IMediaProps[];
 	likes?: any;
+	bestComments: ISimpleComment[];
 }
 
 export interface IWallPostCardState {
@@ -69,8 +70,6 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		numberOfSuperLikes: 0,
 		numberOfComments: 0,
 		numberOfWalletCoins: 0,
-		onLikeButtonClick: () => Function,
-		onCommentClick: () => Function,
 	};
 
 	public state = {
@@ -108,6 +107,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 				{this.renderWallPostActions()}
 				{this.renderRecentLikes()}
 				{this.renderNumberOfComments()}
+				{this.renderTwoBestComments()}
 			</View>
 		);
 	}
@@ -132,7 +132,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		const fullName = getUserFullName(this.props.owner);
 		return (
 			<TouchableOpacity
-				onPress={this.props.onUserClick}
+				onPress={() => this.navigateToUserProfilePage(this.props.owner.userId)}
 				style={style.topContainer}
 				disabled={this.state.hideGoToUserProfile}
 			>
@@ -357,27 +357,30 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	private renderRecentLikes = () => {
-		// TODO: check how this works under user profile page!
 		if (this.props.numberOfLikes && this.props.numberOfLikes > 0) {
-			const lastLikeUsername = this.props.likes[this.props.numberOfLikes - 1].username;
+			const lastLikeUser = this.props.likes[this.props.numberOfLikes - 1];
 			const numberOfOtherLikes = this.props.numberOfLikes - 1;
-			const secondLastLikeUsername =
-				this.props.numberOfLikes >= 2 ? this.props.likes[this.props.numberOfLikes - 2].username : null;
+			const secondLastLike = this.props.numberOfLikes >= 2 ? this.props.likes[this.props.numberOfLikes - 2] : null;
+			const andText = ` ${getText('textAnd')} `;
 			return (
 				<View style={style.recentLikesContainer}>
 					<Text style={style.likedText}>
-						{'Liked by '}
-						<Text style={style.likeTextBold}>{lastLikeUsername}</Text>
+						{getText('postCardLikedBy') + ' '}
+						<Text style={style.likeTextBold} onPress={() => this.navigateToUserProfilePage(lastLikeUser.userId)}>
+							{lastLikeUser.username}
+						</Text>
 					</Text>
 					{numberOfOtherLikes === 1 && (
 						<Text style={style.likedText}>
-							{' and '}
-							<Text style={style.likeTextBold}>{secondLastLikeUsername}</Text>
+							{andText}
+							<Text style={style.likeTextBold} onPress={() => this.navigateToUserProfilePage(secondLastLike.userId)}>
+								{secondLastLike.username}
+							</Text>
 						</Text>
 					)}
 					{numberOfOtherLikes > 1 && (
 						<Text style={style.likedText}>
-							{' and '}
+							{andText}
 							<Text style={style.likeTextBold}>{numberOfOtherLikes + ' others'}</Text>
 						</Text>
 					)}
@@ -395,6 +398,27 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 						{getText('postCardViewAllComments', this.props.numberOfComments)}
 					</Text>
 				</TouchableOpacity>
+			);
+		}
+	};
+
+	private renderTwoBestComments = () => {
+		if (this.props.numberOfComments && this.props.numberOfComments > 0) {
+			return (
+				<View style={style.bestCommentsContainer}>
+					{this.props.bestComments.map((comment: ISimpleComment, index: number) => (
+						<Text style={style.commentContainer} numberOfLines={2} key={index}>
+							<Text
+								style={style.commentUserName}
+								onPress={() => this.navigateToUserProfilePage(comment.owner.userId)}
+								suppressHighlighting={true}
+							>
+								{comment.owner.username + '  '}
+							</Text>
+							<Text onPress={() => this.props.onCommentClick(false)}>{comment.text}</Text>
+						</Text>
+					))}
+				</View>
 			);
 		}
 	};
@@ -444,8 +468,10 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	];
 
 	private tooltipsDeletePressedHandler = () => {
-		this.props.onDeleteClick(this.props.id);
-		// console.log('Delete this post');
+		if (this.props.onDeleteClick) {
+			this.props.onDeleteClick(this.props.id);
+			// console.log('Delete this post');
+		}
 	};
 
 	private reportProblemHandler = (data: IReportData) => {
@@ -459,5 +485,11 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 	private walletCoinsButtonPressedHandler = () => {
 		alert('Go to my wallet');
+	};
+
+	private navigateToUserProfilePage = (userId: string) => {
+		if (this.props.onUserClick) {
+			this.props.onUserClick(userId);
+		}
 	};
 }

@@ -109,6 +109,18 @@ export interface ICommentsResponse {
 	};
 }
 
+export interface ISimpleComment {
+	id: string;
+	text: string;
+	likes: Array<{
+		userId: string;
+	}>;
+	owner: {
+		userId: string;
+		username: string;
+	};
+}
+
 export type INotificationsResponse = GraphqlQueryControls & INotificationsData;
 
 export type IUserDataResponse = GraphqlQueryControls & IUserData;

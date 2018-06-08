@@ -77,7 +77,8 @@ export class CommentTextInput extends Component<ICommentTextInputProps> {
 	};
 
 	private sendCommentHandler = () => {
-		this.props.onCommentSend(this.state.commentText);
+		const escapedComment = this.state.commentText.replace(/\n/g, '\\n');
+		this.props.onCommentSend(escapedComment);
 		this.setState({
 			commentText: '',
 			showSendButton: false,

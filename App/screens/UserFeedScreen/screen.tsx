@@ -46,7 +46,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 					onImageClick={(index) => props.onMediaPress(index, data.item.media)}
 					onDeleteClick={() => props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => props.onLikePress(likedByMe, data.item.id)}
-					onUserClick={() => props.onUserPress(data.item.owner.userId)}
+					onUserClick={(userId) => props.onUserPress(userId)}
 				/>
 			</View>
 		);

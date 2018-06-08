@@ -116,6 +116,19 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(14),
 		color: Colors.grayText,
 	},
+	bestCommentsContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+	},
+	commentContainer: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postText,
+		paddingBottom: Sizes.smartVerticalScale(5),
+	},
+	commentUserName: {
+		...Fonts.centuryGothicBold,
+		marginRight: Sizes.smartHorizontalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);

@@ -9,7 +9,7 @@ export interface IWallPostActions {
 	likedByMe: boolean;
 	numberOfSuperLikes: number;
 	numberOfWalletCoins: number;
-	likeButtonPressed: Func;
+	likeButtonPressed?: Func;
 	superLikeButtonPressed: Func;
 	commentsButtonPressed: Func;
 	walletCoinsButtonPressed: Func;
