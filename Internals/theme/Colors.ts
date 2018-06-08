@@ -44,6 +44,7 @@ export const Colors = {
 	dustGray: '#979797',
 	gallery: '#efefef',
 	alabaster: '#F9F9F9',
+	monza: '#D0021B',
 };
 
 export const colorWithAlpha = (color: string, alpha: number) => {

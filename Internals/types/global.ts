@@ -39,3 +39,14 @@ export interface IMediaPropsWithIndex extends IMediaProps {
 }
 
 export type IMediaViewerObject = IMediaPropsWithIndex | ISimpleMediaObject;
+
+export enum CallType {
+	Video = 'video',
+	Voice = 'voice',
+}
+
+export enum CameraMode {
+	// values here set to match 'facingMode' in react-native-webrtc
+	Front = 'user',
+	Back = 'environment',
+}

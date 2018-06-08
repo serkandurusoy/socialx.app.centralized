@@ -12,6 +12,7 @@ import CreateEventScreen from '../screens/CreateEventScreen';
 import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
+import IncomingCallScreen from '../screens/IncomingCallScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MaintenanceScreen from '../screens/Maintenance';
 import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
@@ -22,6 +23,7 @@ import MyEventsScreen from '../screens/MyEventsScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import {NewWallPostScreen} from '../screens/NewWallPostScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import OutgoingCallScreen from '../screens/OutgoingCallScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import ProfileAnalyticsScreen from '../screens/ProfileAnalyticsScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
@@ -88,6 +90,8 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
 		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
+		IncomingCallScreen: {screen: IncomingCallScreen},
+		OutgoingCallScreen: {screen: OutgoingCallScreen},
 	};
 	const screenConfigMap: any = {};
 	screenConfigMap[routeName] = screen;

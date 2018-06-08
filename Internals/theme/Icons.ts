@@ -59,4 +59,11 @@ export const Icons = {
 	redRoundCross: require('./assets/icons/red_round_cross.png'),
 	greenCrossGovernance: require('./assets/icons/green_cross_governance.png'),
 	redCheckGovernance: require('./assets/icons/red_check_governance.png'),
+	videoCallCameraOn: require('./assets/icons/video_call_camera_on.png'),
+	videoCallCameraOff: require('./assets/icons/video_call_camera_off.png'),
+	videoCallSoundOn: require('./assets/icons/video_call_sound_on.png'),
+	videoCallSoundOff: require('./assets/icons/video_call_sound_off.png'),
+	videoCallMicrophoneOn: require('./assets/icons/video_call_microphone_on.png'),
+	videoCallMicrophoneOff: require('./assets/icons/video_call_microphone_off.png'),
+	videoCallCameraSwap: require('./assets/icons/video_call_camera_swap.png'),
 };

@@ -56,6 +56,8 @@ include ':aws-amplify-react-native'
 project(':aws-amplify-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/aws-amplify-react-native/android')
 include ':amazon-cognito-identity-js'
 project(':amazon-cognito-identity-js').projectDir = new File(rootProject.projectDir, '../node_modules/amazon-cognito-identity-js/android')
+include ':WebRTCModule'
+project(':WebRTCModule').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webrtc/android')
 
 
 include ':app'

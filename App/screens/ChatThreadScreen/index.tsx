@@ -224,7 +224,8 @@ export default class ChatThreadScreen extends Component<IChatThreadScreenProps, 
 	};
 
 	private makeCallHandler = () => {
-		alert('TODO: makeCallHandler');
+		// TODO: send chat user to call screen
+		this.props.navigation.navigate('OutgoingCallScreen');
 	};
 
 	// todo: get all recent messages with the socket client? database? storage?
