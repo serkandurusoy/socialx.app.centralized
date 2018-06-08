@@ -9,9 +9,14 @@ import style from './style';
 export interface ICommentTextInputProps {
 	placeholder: string;
 	onCommentSend: (commentText: string) => void;
+	autoFocus?: boolean;
 }
 
 export class CommentTextInput extends Component<ICommentTextInputProps> {
+	private static defaultProps: Partial<ICommentTextInputProps> = {
+		autoFocus: true,
+	};
+
 	public state = {
 		showSendButton: false,
 		commentText: '',
@@ -39,7 +44,7 @@ export class CommentTextInput extends Component<ICommentTextInputProps> {
 					onChangeText={this.commentTextChangedHandler}
 					style={style.textInput}
 					placeholder={this.props.placeholder}
-					autoFocus={true}
+					autoFocus={this.props.autoFocus}
 					multiline={true}
 					autoCorrect={false}
 					underlineColorAndroid={Colors.transparent}
@@ -62,21 +67,22 @@ export class CommentTextInput extends Component<ICommentTextInputProps> {
 			);
 		}
 		return null;
-	}
+	};
 
 	private commentTextChangedHandler = (value: string) => {
 		this.setState({
 			commentText: value,
 			showSendButton: value !== '',
 		});
-	}
+	};
 
 	private sendCommentHandler = () => {
-		this.props.onCommentSend(this.state.commentText);
+		const escapedComment = this.state.commentText.replace(/\n/g, '\\n');
+		this.props.onCommentSend(escapedComment);
 		this.setState({
 			commentText: '',
 			showSendButton: false,
 		});
 		this.textInput.blur();
-	}
+	};
 }

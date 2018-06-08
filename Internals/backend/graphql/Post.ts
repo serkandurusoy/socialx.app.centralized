@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import {graphql, QueryProps} from 'react-apollo';
 
-import {IAllPostsDataResponse, IPaginatedPosts} from 'types';
+import {IAllPostsDataResponse, IPaginatedPosts, ISimpleComment} from 'types';
 
 import {AvatarImagePlaceholder} from 'consts';
 
-import {decodeBase64Text} from 'utilities';
+import {bestTwoComments, decodeBase64Text, numberOfComments} from 'utilities';
 
 import {ipfsConfig as base} from 'configuration';
 
@@ -63,6 +63,7 @@ const getPublicPostsQ = gql`
 				location
 				likes {
 					userId
+					username
 				}
 				Media {
 					id
@@ -81,6 +82,14 @@ const getPublicPostsQ = gql`
 				}
 				comments {
 					id
+					text
+					likes {
+						userId
+					}
+					owner {
+						userId
+						username
+					}
 					comments {
 						id
 						comments {
@@ -113,6 +122,7 @@ const getFriendsPostsQ = gql`
 				location
 				likes {
 					userId
+					username
 				}
 				Media {
 					id
@@ -131,6 +141,14 @@ const getFriendsPostsQ = gql`
 				}
 				comments {
 					id
+					text
+					likes {
+						userId
+					}
+					owner {
+						userId
+						username
+					}
 					comments {
 						id
 						comments {
@@ -188,13 +206,6 @@ export const getPublicPostsHoc = (comp: any) =>
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
 			const Items = getPublicPosts ? getPublicPosts.Items : [];
-			const numberOfComments = (post: any) => {
-				let cres = 0;
-				for (let x = 0; x < post.comments.length; x++) {
-					cres += post.comments[x].comments.length + 1;
-				}
-				return cres;
-			};
 
 			const dataSpine = (pItems: any) =>
 				pItems.map((post: any) => ({
@@ -213,6 +224,7 @@ export const getPublicPostsHoc = (comp: any) =>
 					owner: post.owner,
 					onDeleteClick: null,
 					likes: post.likes,
+					bestComments: bestTwoComments(post),
 				}));
 
 			return {
@@ -261,13 +273,6 @@ export const getFriendsPostsHoc = (comp: any) =>
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
 			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
-			const numberOfComments = (post: any) => {
-				let cres = 0;
-				for (let x = 0; x < post.comments.length; x++) {
-					cres += post.comments[x].comments.length + 1;
-				}
-				return cres;
-			};
 
 			const dataSpine = (pItems: any) => {
 				const rets = [];
@@ -289,6 +294,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 						owner: post.owner,
 						onDeleteClick: null,
 						likes: post.likes,
+						bestComments: bestTwoComments(post),
 					});
 				}
 				return rets;

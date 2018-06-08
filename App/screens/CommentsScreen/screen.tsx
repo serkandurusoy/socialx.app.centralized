@@ -18,6 +18,7 @@ interface ICommentsScreenComponentProps extends IWithLoaderProps {
 	onCommentReply: (comment: IWallPostComment, startReply: boolean) => void;
 	onCommentSend: (commentText: string) => void;
 	noComments: boolean;
+	startComment: boolean;
 }
 
 interface ICommentsScreenComponentState {
@@ -50,7 +51,11 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					{this.renderNoComments()}
 					{this.renderComments()}
 				</ScrollView>
-				<CommentTextInput onCommentSend={this.props.onCommentSend} placeholder={'Write a comment...'} />
+				<CommentTextInput
+					autoFocus={this.props.startComment}
+					onCommentSend={this.props.onCommentSend}
+					placeholder={'Write a comment...'}
+				/>
 			</SafeAreaView>,
 		);
 	}

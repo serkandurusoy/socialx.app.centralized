@@ -41,7 +41,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps {
 	allMediaObjects: IMediaProps[];
 	onCommentClick: any;
 	onImageClick: any;
-	onLikeClick: any;
+	onLikeClick?: (likedByMe: boolean, postId: string) => void;
 	onAddFriend: () => Promise<any>;
 	friendRequestStatus: SearchResultKind;
 }
@@ -202,7 +202,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 					canDelete={false}
 					onCommentClick={() => this.props.onCommentClick(post.id, null)}
 					onImageClick={(index) => this.props.onImageClick(index, post.media)}
-					onLikeButtonClick={() => this.props.onLikeClick(post.likedByMe, post.id)}
+					// onLikeButtonClick={() => this.props.onLikeClick(post.likedByMe || false, post.id)}
 				/>
 			</View>
 		));

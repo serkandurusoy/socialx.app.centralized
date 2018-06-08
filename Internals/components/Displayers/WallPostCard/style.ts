@@ -93,6 +93,42 @@ const style: any = {
 		color: 'black',
 		fontWeight: 'bold',
 	},
+	recentLikesContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		flexDirection: 'row',
+		marginTop: -Sizes.smartVerticalScale(5),
+		marginBottom: Sizes.smartVerticalScale(5),
+	},
+	likedText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postText,
+	},
+	likeTextBold: {
+		...Fonts.centuryGothicBold,
+	},
+	numCommentsContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		paddingBottom: Sizes.smartVerticalScale(5),
+	},
+	viewAllCommentsText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.grayText,
+	},
+	bestCommentsContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+	},
+	commentContainer: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(14),
+		color: Colors.postText,
+		paddingBottom: Sizes.smartVerticalScale(5),
+	},
+	commentUserName: {
+		...Fonts.centuryGothicBold,
+		marginRight: Sizes.smartHorizontalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);
