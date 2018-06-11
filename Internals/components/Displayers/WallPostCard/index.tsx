@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Linking, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -245,29 +245,32 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 
 			return (
 				<View style={style.postTextPadding}>
-					<ParsedText
-						style={style.postText}
-						childrenProps={{allowFontScaling: false}}
-						parse={[
-							{
-								type: 'hashtag',
-								style: style.hashtag,
-								onPress: () => {
-									alert('Hashtags!! Coming soon..');
+					<Text style={style.postText}>
+						<ParsedText
+							style={style.postText}
+							childrenProps={{allowFontScaling: false}}
+							parse={[
+								{
+									type: 'hashtag',
+									style: style.hashtag,
+									onPress: this.handleHashTag,
 								},
-							},
-							{
-								type: 'tags',
-								style: style.tag,
-								onPress: () => {
-									alert('Tags!!! Coming soon..');
+								{
+									type: 'tags',
+									style: style.tag,
+									onPress: this.handleUserTag,
 								},
-							},
-						]}
-					>
-						{textToRender}
+								{
+									type: 'url',
+									style: style.url,
+									onPress: this.launchExternalURL,
+								},
+							]}
+						>
+							{textToRender}
+						</ParsedText>
 						{showMoreButton}
-					</ParsedText>
+					</Text>
 				</View>
 			);
 		}
@@ -420,5 +423,25 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		if (this.props.onUserClick) {
 			this.props.onUserClick(userId);
 		}
+	};
+
+	private handleHashTag = (hashtag: string) => {
+		alert('Hashtags!! Coming soon..' + hashtag);
+	};
+
+	private handleUserTag = (tag: string) => {
+		alert('Tags!!! Coming soon..' + tag);
+	};
+
+	private launchExternalURL = (url: string) => {
+		Linking.canOpenURL(url)
+			.then((supported: boolean) => {
+				if (!supported) {
+					alert('Link is not supported: ' + url);
+				} else {
+					return Linking.openURL(url);
+				}
+			})
+			.catch((err) => console.error('An error occurred', err));
 	};
 }

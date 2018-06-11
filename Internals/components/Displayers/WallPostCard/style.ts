@@ -82,6 +82,10 @@ const style: any = {
 		color: 'black',
 		fontWeight: 'bold',
 	},
+	url: {
+		color: Colors.postHour,
+		textDecorationLine: 'underline',
+	},
 	recentLikesContainer: {
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
 		flexDirection: 'row',
