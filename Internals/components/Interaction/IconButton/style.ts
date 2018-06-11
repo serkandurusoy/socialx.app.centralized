@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
-const ICON_DEFAULT_SIZE = Sizes.smartHorizontalScale(28);
+const ICON_DEFAULT_SIZE = Sizes.smartHorizontalScale(24);
 
 const style: any = {
 	container: {

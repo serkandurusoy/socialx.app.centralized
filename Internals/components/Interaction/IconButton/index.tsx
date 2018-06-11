@@ -1,20 +1,21 @@
-import {AnimatedImage} from 'configuration/animations';
+import {AnimatedImage, AnimatedIonicon} from 'configuration/animations';
 import React, {Component} from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
+import {StyleProp, Text, TouchableOpacity} from 'react-native';
 import style from './style';
 
 const PULSATE_PERIOD = 700;
 
 export interface IIconButtonProps {
 	label?: string;
-	iconSource: number;
+	iconSource: number | string; // use string for an Ionicon source
 	onPress?: Func;
-	iconStyle?: number;
+	iconStyle?: StyleProp<any>;
 	changeWithAnimation: boolean;
 }
 
 interface IIconButtonState {
-	iconSource: number;
+	iconSource: number | string;
+	iconStyle?: StyleProp<any>;
 	animating: boolean;
 	touchDisabled: boolean;
 }
@@ -36,6 +37,7 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 
 	public state = {
 		iconSource: this.props.iconSource,
+		iconStyle: this.props.iconStyle,
 		animating: false,
 		touchDisabled: false,
 	};
@@ -49,16 +51,32 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 				disabled={!this.props.onPress || this.state.touchDisabled}
 				onPress={this.buttonPressedHandler}
 			>
-				<AnimatedImage
-					ref={(ref: any) => (this.animatedIcon = ref)}
-					source={this.state.iconSource}
-					style={this.props.iconStyle}
-					resizeMode={'contain'}
-				/>
+				{this.renderAnimatedIcon()}
 				{this.props.label && <Text style={style.label}>{this.props.label}</Text>}
 			</TouchableOpacity>
 		);
 	}
+
+	private renderAnimatedIcon = () => {
+		if (typeof this.props.iconSource === 'number') {
+			return (
+				<AnimatedImage
+					ref={(ref: any) => (this.animatedIcon = ref)}
+					source={this.state.iconSource as number}
+					style={this.state.iconStyle}
+					resizeMode={'contain'}
+				/>
+			);
+		} else {
+			return (
+				<AnimatedIonicon
+					ref={(ref: any) => (this.animatedIcon = ref)}
+					name={this.state.iconSource as string}
+					style={this.state.iconStyle}
+				/>
+			);
+		}
+	};
 
 	private buttonPressedHandler = () => {
 		if (this.props.changeWithAnimation) {
@@ -79,6 +97,7 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 		} else {
 			this.setState({
 				iconSource: this.props.iconSource,
+				iconStyle: this.props.iconStyle,
 				touchDisabled: false,
 			});
 		}
