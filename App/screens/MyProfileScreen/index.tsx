@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {InteractionManager} from 'react-native';
+import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
 
@@ -53,6 +53,7 @@ interface IMyProfileScreenState {
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = (props: IMyProfileScreenProps) => ({
 		title: 'PROFILE',
+		headerLeft: <View/>,
 		headerRight: (
 			<ScreenHeaderButton
 				iconName={'md-refresh'}
