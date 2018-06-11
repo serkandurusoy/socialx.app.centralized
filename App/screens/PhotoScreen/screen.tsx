@@ -1,10 +1,10 @@
-import {AvatarImage} from 'components/Avatar';
+import {SharePostInput} from 'components';
 import {AddFriendsList} from 'components/Displayers/AddFriendsList';
 import {CheckboxButtonWithIcon} from 'components/Displayers/CheckboxButtonWithIcon';
 import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
-import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Image, Text, TextInput, View} from 'react-native';
 import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, Icons} from 'theme/';
@@ -21,34 +21,30 @@ interface IPhotoScreenComponentProps extends IWithLoaderProps {
 interface IPhotoScreenComponentState {
 	locationEnabled: boolean;
 	tagFriends: boolean;
-	textEnabled: boolean;
-	title: string;
 	location: string;
-	text: string;
 }
 
 class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoScreenComponentState> {
 	public state = {
 		locationEnabled: false,
 		tagFriends: false,
-		textEnabled: false,
-		title: '',
 		location: '',
-		text: '',
 	};
+
+	private sharePostInputRef: SharePostInput | null = null;
 
 	public getWallPostData = (): Partial<WallPostPhoto> => {
 		const ret: Partial<WallPostPhoto> = {
 			includeTaggedFriends: this.state.tagFriends,
 		};
-		if (this.state.title !== '') {
-			ret.title = this.state.title;
+		if (this.sharePostInputRef) {
+			const title = this.sharePostInputRef.getTitle();
+			if (title) {
+				ret.title = title;
+			}
 		}
 		if (this.state.locationEnabled && this.state.location !== '') {
 			ret.location = this.state.location;
-		}
-		if (this.state.textEnabled && this.state.text !== '') {
-			ret.text = this.state.text;
 		}
 		return ret;
 	};
@@ -60,29 +56,13 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 				alwaysBounceVertical={true}
 				keyboardShouldPersistTaps={'handled'}
 			>
-				<View style={style.shareMessageContainer}>
-					<AvatarImage image={{uri: this.props.avatarURL}} style={style.avatarImage} />
-					<View style={style.captionContainer}>
-						<TextInput
-							autoFocus={true}
-							autoCorrect={true}
-							underlineColorAndroid={Colors.transparent}
-							numberOfLines={1}
-							multiline={true}
-							placeholder={'Write a caption...'}
-							style={style.captionTextInput}
-							value={this.state.title}
-							onChangeText={(value: string) => this.textChangedHandler('title', value)}
-						/>
-					</View>
-				</View>
+				<SharePostInput ref={(ref) => (this.sharePostInputRef = ref)} avatarSource={{uri: this.props.avatarURL}} />
 				<View style={style.photoContainer}>
 					<MediaObjectViewer uri={this.props.mediaObject.path} style={style.photo} />
 				</View>
 				<View style={style.paddingContainer}>
 					{this.renderLocationSection()}
 					{this.renderTagFriendsSection()}
-					{this.renderDescriptionSection()}
 				</View>
 			</KeyboardAwareScrollView>,
 		);
@@ -160,43 +140,6 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 		return null;
 	};
 
-	private renderDescriptionSection = () => {
-		return (
-			<View style={style.checkboxButtonContainer}>
-				<CheckboxButtonWithIcon
-					iconSource={Icons.iconAddDescription}
-					selected={this.state.textEnabled}
-					text={'ADD DESCRIPTION'}
-					onPress={this.toggleDescriptionEnabledHandler}
-				/>
-				{this.renderAddDescription()}
-			</View>
-		);
-	};
-
-	private renderAddDescription = () => {
-		if (this.state.textEnabled) {
-			return (
-				<View>
-					<Text style={style.smallText}>{'Add description'}</Text>
-					<View style={style.withMaxHeight}>
-						<TextInput
-							autoFocus={true}
-							autoCorrect={true}
-							underlineColorAndroid={Colors.transparent}
-							numberOfLines={2}
-							multiline={true}
-							style={style.multilineTextInput}
-							value={this.state.text}
-							onChangeText={(value: string) => this.textChangedHandler('text', value)}
-						/>
-					</View>
-				</View>
-			);
-		}
-		return null;
-	};
-
 	private toggleLocationHandler = () => {
 		this.setState({
 			locationEnabled: !this.state.locationEnabled,
@@ -206,12 +149,6 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 	private toggleTagFriendsHandler = () => {
 		this.setState({
 			tagFriends: !this.state.tagFriends,
-		});
-	};
-
-	private toggleDescriptionEnabledHandler = () => {
-		this.setState({
-			textEnabled: !this.state.textEnabled,
 		});
 	};
 

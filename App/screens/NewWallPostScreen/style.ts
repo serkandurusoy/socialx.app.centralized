@@ -1,8 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {Colors, colorWithAlpha, Fonts, Sizes} from 'theme';
 
-const AVATAR_SIZE = Sizes.smartHorizontalScale(40);
-
 const style: any = {
 	container: {
 		flex: 1,
@@ -12,28 +10,6 @@ const style: any = {
 		alignItems: 'center',
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
 		paddingVertical: Sizes.smartVerticalScale(10),
-	},
-	topContainer: {
-		flexDirection: 'row',
-		width: '100%',
-		alignItems: 'center',
-		paddingBottom: Sizes.smartVerticalScale(10),
-	},
-	fullName: {
-		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
-		color: Colors.postFullName,
-		paddingLeft: Sizes.smartHorizontalScale(10),
-	},
-	avatarImage: {
-		width: AVATAR_SIZE,
-		height: AVATAR_SIZE,
-		borderRadius: AVATAR_SIZE / 2,
-		borderWidth: Sizes.smartHorizontalScale(1),
-		borderColor: Colors.pink,
-	},
-	inputContainer: {
-		maxHeight: Sizes.smartVerticalScale(110),
 	},
 	photosContainer: {
 		width: '100%',

@@ -1,10 +1,9 @@
 import moment from 'moment';
 import React, {Component} from 'react';
-import {Platform, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
@@ -18,12 +17,11 @@ import {WallPostMedia} from './WallPostMedia';
 
 import ParsedText from 'lib/textParser';
 
-const DESCRIPTION_TEXT_LENGTH_SHORT = 140;
-const TITLE_MAX_LINES = 3;
+const POST_SHORT_LENGTH = 100;
+const POST_SHORT_MAX_LINES = 3;
 
 export interface ISimpleWallPostCardProps {
 	id: string;
-	title?: string;
 	text?: string;
 	location?: string;
 	taggedFriends?: Array<{
@@ -53,8 +51,7 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps {
 }
 
 export interface IWallPostCardState {
-	fullTitleVisible: boolean;
-	fullDescriptionVisible: boolean;
+	fullTextVisible: boolean;
 	modalVisibleReportProblem: boolean;
 	hideAdvancedMenu: boolean;
 	hideGoToUserProfile: boolean;
@@ -73,8 +70,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 	};
 
 	public state = {
-		fullTitleVisible: false,
-		fullDescriptionVisible: false,
+		fullTextVisible: false,
 		modalVisibleReportProblem: false,
 		hideAdvancedMenu: this.props.governanceVersion || false,
 		hideGoToUserProfile: this.props.governanceVersion || false,
@@ -91,8 +87,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			this.props.numberOfLikes !== nextProps.numberOfLikes ||
 			this.props.numberOfComments !== nextProps.numberOfComments ||
 			this.state.modalVisibleReportProblem !== nextState.modalVisibleReportProblem ||
-			this.state.fullTitleVisible !== nextState.fullTitleVisible ||
-			this.state.fullDescriptionVisible !== nextState.fullDescriptionVisible
+			this.state.fullTextVisible !== nextState.fullTextVisible
 		);
 	}
 
@@ -101,8 +96,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			<View style={style.container}>
 				{this.renderModalReportProblem()}
 				{this.renderUserDetails()}
-				{this.renderPostTitle()}
-				{this.renderPostDescription()}
+				{this.renderPostText()}
 				{this.renderWallPostMedia()}
 				{this.renderWallPostActions()}
 				{this.renderRecentLikes()}
@@ -218,123 +212,64 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		);
 	};
 
-	private renderPostDescription = () => {
-		const {text, title} = this.props;
-		if (text && title) {
-			// if post has both title and text show here the text part!
-			// due to an android limitation nesting a button in the end of the text is not possible, see
-			// https://facebook.github.io/react-native/docs/text.html#nested-views-ios-only
+	private renderPostText = () => {
+		const postText = this.props.text;
+		if (postText) {
+			const numberOfLines = postText.split('\n').length;
+
 			const hasMore =
-				text.length > DESCRIPTION_TEXT_LENGTH_SHORT &&
-				!this.state.fullDescriptionVisible &&
-				Platform.OS === OS_TYPES.IOS;
-			const textToRender = hasMore ? text.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT) + '...' : text;
-			const showMoreButton = hasMore ? (
-				<TouchableOpacity onPress={this.toggleShowFullDescription}>
-					<Text style={style.showMoreText}>{'More'}</Text>
-				</TouchableOpacity>
-			) : null;
-			return (
-				<View style={style.postTextContainer}>
-					<Text style={style.postText}>
-						{textToRender}
-						{showMoreButton}
-					</Text>
-				</View>
-			);
-		}
-		return null;
-	};
+				(postText.length > POST_SHORT_LENGTH || numberOfLines > POST_SHORT_MAX_LINES) && !this.state.fullTextVisible;
 
-	private renderPostTitle = () => {
-		const title = this.props.title || this.props.text;
-		// if no title present use the text part as title!
-		if (title) {
-			if (Platform.OS === OS_TYPES.Android) {
-				return (
-					<View style={style.postTitlePadding}>
-						<ParsedText
-							style={style.postTitle}
-							childrenProps={{allowFontScaling: false}}
-							parse={[
-								{
-									type: 'hashtag',
-									style: style.hashtag,
-									onPress: () => {
-										alert('Hashtags!! Coming soon..');
-									},
-								},
-								{
-									type: 'tags',
-									style: style.tag,
-									onPress: () => {
-										alert('Tags!!! Coming soon..');
-									},
-								},
-							]}
-						>
-							{title}
-						</ParsedText>
-					</View>
-				);
-			} else {
-				const numberOfLines = title.split('\n').length;
+			let textToRender = postText;
 
-				const hasMore =
-					(title.length > DESCRIPTION_TEXT_LENGTH_SHORT || numberOfLines > TITLE_MAX_LINES) &&
-					!this.state.fullTitleVisible;
-
-				let textToRender = title;
-
-				if (hasMore) {
-					if (numberOfLines > TITLE_MAX_LINES) {
-						textToRender = textToRender
-							.split('\n')
-							.slice(0, TITLE_MAX_LINES)
-							.join('\n');
-					}
-
-					if (title.length > DESCRIPTION_TEXT_LENGTH_SHORT) {
-						textToRender = textToRender.substr(0, DESCRIPTION_TEXT_LENGTH_SHORT);
-					}
-
-					textToRender = textToRender + '...';
+			if (hasMore) {
+				if (numberOfLines > POST_SHORT_MAX_LINES) {
+					textToRender = textToRender
+						.split('\n')
+						.slice(0, POST_SHORT_MAX_LINES)
+						.join('\n');
 				}
 
-				const showMoreButton = hasMore ? (
-					<TouchableOpacity onPress={this.toggleShowFullTitle}>
-						<Text style={style.showMoreText}>{'More'}</Text>
-					</TouchableOpacity>
-				) : null;
+				if (postText.length > POST_SHORT_LENGTH) {
+					textToRender = textToRender.substr(0, POST_SHORT_LENGTH);
+				}
 
-				return (
-					<View style={style.postTitlePadding}>
-						<ParsedText
-							style={style.postTitle}
-							childrenProps={{allowFontScaling: false}}
-							parse={[
-								{
-									type: 'hashtag',
-									style: style.hashtag,
-									onPress: () => {
-										alert('Hashtags!! Coming soon..');
-									},
-								},
-								{
-									type: 'tags',
-									style: style.tag,
-									onPress: () => {
-										alert('Tags!!! Coming soon..');
-									},
-								},
-							]}
-						>
-							{textToRender}
-							{showMoreButton}
-						</ParsedText>
-					</View>
-				);
+				textToRender = textToRender + '...';
 			}
+
+			const showMoreButton = hasMore ? (
+				<Text style={style.showMoreText} onPress={this.toggleShowFullText}>
+					{'More'}
+				</Text>
+			) : null;
+
+			return (
+				<View style={style.postTextPadding}>
+					<ParsedText
+						style={style.postText}
+						childrenProps={{allowFontScaling: false}}
+						parse={[
+							{
+								type: 'hashtag',
+								style: style.hashtag,
+								onPress: () => {
+									alert('Hashtags!! Coming soon..');
+								},
+							},
+							{
+								type: 'tags',
+								style: style.tag,
+								onPress: () => {
+									alert('Tags!!! Coming soon..');
+								},
+							},
+						]}
+					>
+						{textToRender}
+						{showMoreButton}
+					</ParsedText>
+				</View>
+			);
 		}
 		return null;
 	};
@@ -423,15 +358,9 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		}
 	};
 
-	private toggleShowFullDescription = () => {
+	private toggleShowFullText = () => {
 		this.setState({
-			fullDescriptionVisible: true,
-		});
-	};
-
-	private toggleShowFullTitle = () => {
-		this.setState({
-			fullTitleVisible: true,
+			fullTextVisible: true,
 		});
 	};
 
