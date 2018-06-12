@@ -53,12 +53,9 @@ interface IMyProfileScreenState {
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = (props: IMyProfileScreenProps) => ({
 		title: 'PROFILE',
-		headerLeft: <View/>,
+		headerLeft: <View />,
 		headerRight: (
-			<ScreenHeaderButton
-				iconName={'md-refresh'}
-				onPress={() => MyProfileScreen.runRefreshScreenHandler(props)}
-			/>
+			<ScreenHeaderButton iconName={'md-refresh'} onPress={() => MyProfileScreen.runRefreshScreenHandler(props)} />
 		),
 	});
 
@@ -89,7 +86,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		const {user} = data;
-		const {posts, avatar} = user;
+		const {posts} = user;
 
 		const userImages = posts
 			? posts.reduce((count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0), 0)
@@ -107,7 +104,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			fullName: user.name,
 			username: user.username,
 			loaded: true,
-			mediaObjects: this.preloadAllMediaObjects(),
+			mediaObjects: this.preloadAllMediaObjects(nextProps),
 		});
 	}
 
@@ -145,8 +142,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		return ret;
 	};
 
-	private preloadAllMediaObjects = () => {
-		const posts = get(this.props.data, 'user.posts', null);
+	private preloadAllMediaObjects = (props: IMyProfileScreenProps) => {
+		const posts = get(props.data, 'user.posts', null);
 
 		if (!posts) {
 			return [];
