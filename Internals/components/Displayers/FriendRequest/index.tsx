@@ -10,8 +10,10 @@ export interface IFriendRequestProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;
+	userId: string;
 	onRequestConfirmed: () => Promise<any>;
 	onRequestDeclined: () => Promise<any>;
+	onViewUserProfile: (userId: string) => void;
 }
 
 interface IFriendRequestState {
@@ -32,14 +34,14 @@ export class FriendRequest extends React.Component<IFriendRequestProps, IFriendR
 	public render() {
 		return (
 			<View style={style.container}>
-				<View style={style.leftContainer}>
+				<TouchableOpacity style={style.leftContainer} onPress={() => this.props.onViewUserProfile(this.props.userId)}>
 					<AvatarImage image={{uri: this.props.avatarURL}} style={style.avatarImage} />
 					<View style={style.avatarNameContainer}>
 						<Text style={style.fullName}>{this.props.fullName}</Text>
 						{this.renderUsername()}
 						<Text style={style.friendRequest}>{'Friend Request'}</Text>
 					</View>
-				</View>
+				</TouchableOpacity>
 				{this.renderWithInlineLoader(
 					<TouchableOpacity onPress={this.requestConfirmedHandler} style={style.iconTouch} disabled={this.isLoading}>
 						<Image source={Icons.greenRoundCheck} style={style.iconImage} />
@@ -65,14 +67,14 @@ export class FriendRequest extends React.Component<IFriendRequestProps, IFriendR
 				<ActivityIndicator size={'small'} />
 			</View>
 		);
-	}
+	};
 
 	private renderUsername = () => {
 		if (this.props.username !== '') {
 			return <Text style={style.username}>{'@' + this.props.username}</Text>;
 		}
 		return null;
-	}
+	};
 
 	private requestConfirmedHandler = async () => {
 		try {
@@ -87,7 +89,7 @@ export class FriendRequest extends React.Component<IFriendRequestProps, IFriendR
 			});
 			showToastMessage('Friend request could not be accepted at this time. Try again later..');
 		}
-	}
+	};
 
 	private requestDeclinedHandler = async () => {
 		try {
@@ -102,5 +104,5 @@ export class FriendRequest extends React.Component<IFriendRequestProps, IFriendR
 			});
 			showToastMessage('Friend request could not be declined at this time. Try again later..');
 		}
-	}
+	};
 }
