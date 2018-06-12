@@ -2,7 +2,6 @@ import {ISimpleComment} from 'types';
 
 export const bestTwoComments = (post: {comments: ISimpleComment[]}) => {
 	const comments = [...post.comments];
-	comments.forEach((comment) => console.log('Number of likes', comment.likes.length, comment.text));
 	comments.sort((c1: ISimpleComment, c2: ISimpleComment) => {
 		try {
 			if (c1.likes.length > c2.likes.length) {
