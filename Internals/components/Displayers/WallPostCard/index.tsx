@@ -4,11 +4,12 @@ import {Linking, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import {blockUserHoc} from 'backend/graphql';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
 import {IMediaProps, ISimpleComment, IUserQuery} from 'types';
-import {getText, getUserAvatar, getUserFullName} from 'utilities';
+import {getText, getUserAvatar, getUserFullName, showToastMessage} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -30,6 +31,7 @@ export interface ISimpleWallPostCardProps {
 	}>;
 	timestamp: Date;
 	owner: IUserQuery;
+	blockUser: any;
 }
 
 export interface IWallPostCardProp extends ISimpleWallPostCardProps {
@@ -59,7 +61,7 @@ export interface IWallPostCardState {
 	disableMediaFullScreen: boolean;
 }
 
-export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardState> {
+class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> {
 	public static defaultProps: Partial<IWallPostCardProp> = {
 		canDelete: false,
 		likedByMe: false,
@@ -328,6 +330,24 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 		return null;
 	};
 
+	private blockUserHandler = async () => {
+		const {userId} = this.props.owner;
+		const {blockUser} = this.props;
+		console.log('this.props:', this.props);
+		console.log(`this.props: ${JSON.stringify(this.props)}`);
+		try {
+			await blockUser({
+				variables: {
+					user: userId,
+				},
+			});
+			showToastMessage('Friend was blocked...');
+		} catch (ex) {
+			showToastMessage(`There was a problem blocking this friend.  Please try again later... ${ex}`);
+			console.log(`exception: ${ex}`);
+		}
+	};
+
 	private renderNumberOfComments = () => {
 		if (this.props.numberOfComments && this.props.numberOfComments > 0) {
 			return (
@@ -378,9 +398,7 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			label: 'Block',
 			icon: Icons.redRoundCross,
 			actionHandler: () => {
-				ModalManager.safeRunAfterModalClosed(() => {
-					alert('Coming soon..');
-				});
+				ModalManager.safeRunAfterModalClosed(this.blockUserHandler);
 			},
 		},
 		{
@@ -445,3 +463,5 @@ export class WallPostCard extends Component<IWallPostCardProp, IWallPostCardStat
 			.catch((err) => console.error('An error occurred', err));
 	};
 }
+
+export const WallPostCard = blockUserHoc(WallPostCardComp);

@@ -132,6 +132,14 @@ const checkUsername = gql`
 	}
 `;
 
+const blockUserMut = gql`
+	mutation blockUser($user: ID!) {
+		blockUser(user: $user) {
+			userId
+		}
+	}
+`;
+
 const addFriendMut = gql`
 	mutation addFriend($user: ID!) {
 		addFriend(user: $user) {
@@ -190,6 +198,9 @@ const preloadAllMediaObjects = (posts: any) => {
 };
 
 export const addFriend = (comp: any) => graphql(addFriendMut, {name: 'addFriend'})(comp);
+
+export const blockUserHoc = (comp: any) => graphql(blockUserMut, {name: 'blockUser'})(comp);
+
 export const removeFriend = (comp: any) => graphql(removeFriendMut, {name: 'removeFriend'})(comp);
 
 export const searchUsersHoc = (comp: any) => graphql(searchUsers, {name: 'search'})(comp);
