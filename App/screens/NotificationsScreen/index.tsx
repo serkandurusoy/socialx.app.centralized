@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import NotificationsScreenComponent from './screen';
 
 import {
@@ -99,6 +99,7 @@ interface INotificationsScreenProps {
 	acceptFriendRequest: any;
 	declineFriendRequest: any;
 	checkNotification: any;
+	navigation: NavigationScreenProp<any>;
 }
 
 interface INotificationsScreenState {
@@ -121,7 +122,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 			if (this.state.activityCards.length < 1 && notifications.myNotifications.length > 0) {
 				const spine = notifications.myNotifications
 					.map(
-						({type, owner: {name: fullName, avatar, username}, id: requestId, status}) =>
+						({type, owner: {name: fullName, avatar, username, userId}, id: requestId, status}) =>
 							type === NOTIFICATION_TYPES.FRIEND_REQUEST
 								? {
 										type: NOTIFICATION_TYPES.FRIEND_REQUEST,
@@ -130,6 +131,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 										username,
 										requestId,
 										status,
+										userId,
 								  }
 								: type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE
 									? {
@@ -140,6 +142,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 											username,
 											requestId,
 											status,
+											userId,
 									  }
 									: null,
 					)
@@ -165,6 +168,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				onFriendRequestDeclined={this.friendRequestDeclinedHandler}
 				onGroupRequestConfirmed={this.groupRequestConfirmedHandler}
 				onGroupRequestDeclined={this.onGroupRequestDeclinedHandler}
+				onViewUserProfile={this.navigateToUserProfile}
 			/>
 		);
 	}
@@ -221,6 +225,10 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		const {checkNotification} = this.props;
 		await checkNotification({variables: {request: requestId}});
 		await this.refreshNotifications();
+	};
+
+	private navigateToUserProfile = (userId: string) => {
+		this.props.navigation.navigate('UserProfileScreen', {userId});
 	};
 }
 
