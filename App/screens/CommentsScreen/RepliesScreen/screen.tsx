@@ -18,6 +18,7 @@ interface IRepliesScreenComponentProps {
 	onReplyComment: (comment: IWallPostCommentReply, startReply: boolean) => void;
 	startReply: boolean;
 	noReplies: boolean;
+	onViewUserProfile: (userId: string) => void;
 }
 
 interface IRepliesScreenComponentState {
@@ -78,6 +79,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 				onCommentReply={() => this.props.onReplyComment(reply, true)}
 				isReply={false}
 				onCommentDelete={() => this.props.onReplyDelete(reply)}
+				onViewUserProfile={this.props.onViewUserProfile}
 			/>
 		));
 }

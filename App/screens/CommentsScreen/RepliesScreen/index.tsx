@@ -69,6 +69,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				onSendReply={this.onSendReplyHandler}
 				onReplyDelete={this.onReplyDeleteHandler}
 				onReplyComment={this.onCommentReplyHandler}
+				onViewUserProfile={this.navigateToUserProfile}
 			/>
 		);
 	}
@@ -130,7 +131,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 				user: {
 					fullName: comment.owner.name,
 					avatarURL: userAvatar,
-					id: comment.id,
+					id: comment.owner.userId,
 				},
 				timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
 				numberOfLikes: comment.likes ? comment.likes.length : 0,
@@ -176,6 +177,10 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			this.setState({noReplies: true, loading: false});
 			console.log(ex);
 		}
+	};
+
+	private navigateToUserProfile = (userId: string) => {
+		this.props.navigation.navigate('UserProfileScreen', {userId});
 	};
 }
 

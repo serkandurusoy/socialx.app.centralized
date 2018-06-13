@@ -1,11 +1,12 @@
-import {AnimatedText} from 'configuration/animations';
 import moment from 'moment';
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import {AvatarImage} from 'components';
+import {AnimatedText} from 'configuration/animations';
 import {Colors, Sizes} from 'theme';
 import {IWallPostComment, IWallPostCommentReply} from 'types';
-import {AvatarImage} from '../../../Avatar/Image';
 import style from './style';
 
 enum COMMENT_ADVANCED_ACTIONS {
@@ -25,6 +26,7 @@ export interface ICommentCardProps {
 	onCommentReply: (startReply: boolean) => void;
 	onCommentDelete: () => void;
 	isReply?: boolean;
+	onViewUserProfile: (userId: string) => void;
 }
 
 export interface ICommentCardState {
@@ -57,11 +59,15 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 		const commentTimestamp = moment(comment.timestamp).fromNow();
 		return (
 			<View style={style.container}>
-				<AvatarImage image={{uri: comment.user.avatarURL}} style={style.avatarImage} />
+				<TouchableOpacity onPress={() => this.props.onViewUserProfile(comment.user.id)}>
+					<AvatarImage image={{uri: comment.user.avatarURL}} style={style.avatarImage} />
+				</TouchableOpacity>
 				<View style={style.rightContainer}>
 					<View>
 						<View style={style.commentBackground}>
-							<Text style={style.userFullName}>{comment.user.fullName}</Text>
+							<Text style={style.userFullName} onPress={() => this.props.onViewUserProfile(comment.user.id)}>
+								{comment.user.fullName}
+							</Text>
 							<Text style={style.commentText}>{comment.text}</Text>
 						</View>
 						{this.renderLikes()}
@@ -84,15 +90,17 @@ export class CommentCard extends React.Component<ICommentCardProps, ICommentCard
 	// todo @serkan @jake these should all be separate components
 	private renderReply = (reply: IWallPostCommentReply, index: number) => {
 		return (
-			<TouchableOpacity style={style.replyEntry} key={index} onPress={() => this.props.onCommentReply(false)}>
-				<AvatarImage image={{uri: reply.user.avatarURL}} style={style.replyAvatar} />
-				<Text numberOfLines={1} style={style.replyUserFullName}>
-					{reply.user.fullName}
-				</Text>
-				<Text numberOfLines={1} style={style.replyText}>
+			<View style={style.replyEntry} key={index}>
+				<TouchableOpacity style={style.replyUserContainer} onPress={() => this.props.onViewUserProfile(reply.user.id)}>
+					<AvatarImage image={{uri: reply.user.avatarURL}} style={style.replyAvatar} />
+					<Text numberOfLines={1} style={style.replyUserFullName}>
+						{reply.user.fullName}
+					</Text>
+				</TouchableOpacity>
+				<Text numberOfLines={1} style={style.replyText} onPress={() => this.props.onCommentReply(false)}>
 					{reply.text}
 				</Text>
-			</TouchableOpacity>
+			</View>
 		);
 	};
 
