@@ -22,6 +22,7 @@ import {
 	IAllPostsDataResponse,
 	IComments,
 	ICommentsResponse,
+	IMediaProps,
 	IPaginatedPosts,
 	IPostsProps,
 	IUserDataResponse,
@@ -258,9 +259,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.props.navigation.navigate('UserProfileScreen', {userId});
 	};
 
-	private onMediaObjectPressHandler = (index: number, media: any) => {
+	private onMediaObjectPressHandler = (index: number, medias: IMediaProps[]) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: media,
+			mediaObjects: medias,
 			startIndex: index,
 		});
 	};

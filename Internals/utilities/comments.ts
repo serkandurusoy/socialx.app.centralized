@@ -1,4 +1,4 @@
-import {ISimpleComment} from 'types';
+import {IMediaProps, ISimpleComment} from 'types';
 
 export const bestTwoComments = (post: {comments: ISimpleComment[]}) => {
 	const comments = [...post.comments];
@@ -19,9 +19,28 @@ export const bestTwoComments = (post: {comments: ISimpleComment[]}) => {
 };
 
 export const numberOfComments = (post: any) => {
-	let cres = 0;
-	for (let x = 0; x < post.comments.length; x++) {
-		cres += post.comments[x].comments.length + 1;
+	let ret = 0;
+	const {comments} = post;
+
+	if (!comments.length) {
+		return 0;
 	}
-	return cres;
+
+	for (let x = 0; x < comments.length; x++) {
+		ret += comments[x].comments.length + 1;
+	}
+	return ret;
+};
+
+export const getPostMedia = (medias: IMediaProps[], numberOfLikes: number, numComments: number) => {
+	// for now all medias in a post have the same number of likes, but later each can have own number
+	const ret = [];
+	const newProps = {
+		numberOfComments: numComments,
+		numberOfLikes,
+	};
+	for (let i = 0; i < medias.length; i++) {
+		ret[i] = {...medias[i], ...newProps};
+	}
+	return ret;
 };

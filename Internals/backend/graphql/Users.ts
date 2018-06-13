@@ -4,7 +4,7 @@ import {graphql, QueryProps} from 'react-apollo';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {IMediaProps, IPostsProps} from 'types';
-import {bestTwoComments} from 'utilities';
+import {bestTwoComments, getPostMedia, numberOfComments} from 'utilities';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {
@@ -172,18 +172,6 @@ const updateUserData = gql`
 	}
 `;
 
-const getCommentsNum = (comments: any) => {
-	if (!comments.length) {
-		return 0;
-	}
-
-	let res = 0;
-	for (res; res < comments.length; res++) {
-		res += comments[res].comments.length > 0 ? comments[res].comments.length : 0;
-	}
-	return res;
-};
-
 const preloadAllMediaObjects = (posts: any) => {
 	if (!posts) {
 		return [];
@@ -260,6 +248,7 @@ export const getUserPostHoc = (comp: any) =>
 					getPostsOwner.Items.length > 0
 						? getPostsOwner.Items.map((item: any) => {
 								const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
+								const numComments = numberOfComments(item);
 								return {
 									id: item.id,
 									title: null,
@@ -269,9 +258,9 @@ export const getUserPostHoc = (comp: any) =>
 									fullName: item.owner.name,
 									timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
 									numberOfLikes: item.likes.length,
-									numberOfComments: getCommentsNum(item.comments),
+									numberOfComments: numComments,
 									canDelete: false,
-									media: item.Media,
+									media: getPostMedia(item.Media, item.likes.length, numComments),
 									owner: item.owner,
 									bestComments: bestTwoComments(item),
 									likes: item.likes,

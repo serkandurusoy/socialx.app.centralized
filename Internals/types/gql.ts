@@ -43,6 +43,8 @@ export interface IMediaProps {
 	type: string;
 	size: number;
 	optimizedHash: string;
+	numberOfLikes?: number;
+	numberOfComments?: number;
 }
 
 export interface IComments {

@@ -1,10 +1,12 @@
-import {MediaObjectViewer} from 'components';
-import {DeviceOrientations, OS_TYPES} from 'consts';
+import get from 'lodash/get';
 import React, {Component} from 'react';
-import {Dimensions, Image, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import {MediaObjectViewer} from 'components';
+import {DeviceOrientations, OS_TYPES} from 'consts';
 import {Colors, Sizes} from 'theme';
 import {IMediaViewerObject} from 'types';
 import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
@@ -69,8 +71,11 @@ export default class MediaViewerScreenComponent extends Component<
 						{...this.getIOSCarouselProps()}
 					/>
 				</View>
-				{this.renderPagination()}
 				{this.renderCloseButton()}
+				<View style={style.screenFooter}>
+					{this.renderMediaInfoSection()}
+					{this.renderPagination()}
+				</View>
 			</SafeAreaView>
 		);
 	}
@@ -121,6 +126,22 @@ export default class MediaViewerScreenComponent extends Component<
 				<TouchableOpacity onPress={this.exitFullScreenMode} style={style.closeIcon}>
 					<Icon name={'times'} size={Sizes.smartHorizontalScale(30)} color={Colors.white} />
 				</TouchableOpacity>
+			);
+		}
+		return null;
+	};
+
+	private renderMediaInfoSection = () => {
+		const currentMedia = this.props.mediaObjects[this.state.activeSlide];
+		const numberOfLikes = get(currentMedia, 'numberOfLikes', 0);
+		const numberOfComments = get(currentMedia, 'numberOfComments', 0);
+		if (numberOfComments > 0 || numberOfLikes > 0) {
+			return (
+				<View style={style.mediaInfoSection}>
+					{numberOfLikes > 0 && <Text style={style.infoText}>{'Likes ' + numberOfLikes}</Text>}
+					<View style={{flex: 1}} />
+					{numberOfComments > 0 && <Text style={style.infoText}>{'Comments ' + numberOfComments}</Text>}
+				</View>
 			);
 		}
 		return null;

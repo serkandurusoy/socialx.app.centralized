@@ -63,6 +63,9 @@ export const user = gql`
 				likes {
 					userId
 				}
+				comments {
+					id
+				}
 				createdAt
 				Media {
 					id

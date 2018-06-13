@@ -152,9 +152,13 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const images: IMediaProps[] = [];
 		posts.forEach((post: IPostsProps) => {
 			const medias = post.Media;
+			const newProps = {
+				numberOfComments: post.comments.length,
+				numberOfLikes: post.likes.length,
+			};
 			if (post.Media) {
 				medias.forEach((media) => {
-					images.push(media);
+					images.push({...media, ...newProps});
 				});
 			}
 		});
