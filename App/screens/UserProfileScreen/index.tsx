@@ -1,12 +1,13 @@
-import {ModalCloseButton, ScreenHeaderButton} from 'components';
-import {IWallPostCardProp} from 'components/Displayers';
+import get from 'lodash/get';
 import React, {Component} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
-import UserProfileScreenComponent from './screen';
 
 import {addFriendHoc, getUserPostHoc, getUserProfileHoc} from 'backend/graphql';
+import {IWallPostCardProp, ModalCloseButton, ToggleIconButton} from 'components';
+import {Icons} from 'theme';
+import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, MediaTypeImage} from 'types';
+import UserProfileScreenComponent from './screen';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 5000;
@@ -54,13 +55,12 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		headerLeft: <View />,
 		headerRight: (
 			<View style={{flexDirection: 'row'}}>
-				{/* <ToggleIconButton
-					selectedSource={Icons.iconHeartWhiteFilled}
-					unselectedSource={Icons.iconHeartWhiteOutline}
-					onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}
-					selected={get(props, 'navigation.state.params.isFollowed', false)}
-				/> */}
-				<ScreenHeaderButton iconName={'md-refresh'} onPress={props.navigation.state.params.refreshScreen} />
+				{/*<ToggleIconButton*/}
+				{/*selectedSource={Icons.iconHeartWhiteFilled}*/}
+				{/*unselectedSource={Icons.iconHeartWhiteOutline}*/}
+				{/*onPress={get(props, 'navigation.state.params.toggleFollow', undefined)}*/}
+				{/*selected={get(props, 'navigation.state.params.isFollowed', false)}*/}
+				{/*/>*/}
 				<ModalCloseButton navigation={props.navigation} />
 			</View>
 		),
@@ -75,7 +75,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			this.props.navigation.setParams({
 				isFollowed: this.state.isFollowed,
 				toggleFollow: this.toggleFollowHandler,
-				refreshScreen: () => alert('refresh now'), // TODO: @Aaron - handle refresh here
 			});
 		});
 	}
@@ -105,6 +104,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				// onLikeClick={this.onLikeClickHandler} // TODO: later support likes on user profile!
 				onAddFriend={this.addFriendHandler}
 				friendRequestStatus={getUserQuery.getUser.relationship}
+				onRefresh={this.refreshScreenHandler}
 			/>
 		);
 	}
@@ -159,6 +159,12 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		// 	console.log(result.error);
 		// 	return;
 		// }
+	};
+
+	private refreshScreenHandler = async () => {
+		const {getUserPosts, getUserQuery} = this.props;
+		await getUserPosts.refetch();
+		await getUserQuery.refetch();
 	};
 }
 

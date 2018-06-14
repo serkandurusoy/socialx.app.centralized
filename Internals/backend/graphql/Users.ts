@@ -214,9 +214,9 @@ export const getUserProfileHoc = (comp: any) =>
 		name: 'getUserQuery',
 		props(pps: any) {
 			const {
-				getUserQuery: {loading, getUserQuery},
+				getUserQuery: {loading, getUserQuery, refetch},
 			} = pps;
-			const results = {getUserQuery: {getUser: {}, loading}};
+			const results = {getUserQuery: {getUser: {}, loading, refetch}};
 			if (!loading) {
 				const avatar = getUserQuery.user.avatar
 					? base.ipfs_URL + getUserQuery.user.avatar.hash
@@ -251,9 +251,9 @@ export const getUserPostHoc = (comp: any) =>
 		name: 'getUserPosts',
 		props(pps: any) {
 			const {
-				getUserPosts: {loading, getPostsOwner},
+				getUserPosts: {loading, getPostsOwner, refetch},
 			} = pps;
-			const results = {getUserPosts: {Items: [], loading}};
+			const results = {getUserPosts: {Items: [], loading, refetch}};
 			if (!loading) {
 				results.getUserPosts.Items =
 					getPostsOwner.Items.length > 0
