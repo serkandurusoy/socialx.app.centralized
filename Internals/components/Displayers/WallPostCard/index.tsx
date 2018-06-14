@@ -333,8 +333,6 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	private blockUserHandler = async () => {
 		const {userId} = this.props.owner;
 		const {blockUser} = this.props;
-		console.log('this.props:', this.props);
-		console.log(`this.props: ${JSON.stringify(this.props)}`);
 		try {
 			await blockUser({
 				variables: {
