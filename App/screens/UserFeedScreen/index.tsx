@@ -1,9 +1,10 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
+import {InteractionManager} from 'react-native';
 import {connect} from 'react-redux';
 
 import {IWallPostCardProp} from 'components/Displayers';
-import {NavigationScreenProp} from 'react-navigation';
+import {NavigationEventSubscription, NavigationScreenProp} from 'react-navigation';
 import {Images} from 'theme';
 import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
@@ -79,6 +80,20 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		refreshing: false,
 		loadingMore: false,
 	};
+
+	private didFocusSubscription: NavigationEventSubscription | null = null;
+
+	public componentDidMount() {
+		InteractionManager.runAfterInteractions(() => {
+			this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.refreshWallPosts);
+		});
+	}
+
+	public componentWillUnmount(): void {
+		if (this.didFocusSubscription) {
+			this.didFocusSubscription.remove();
+		}
+	}
 
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
@@ -212,16 +227,18 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private refreshWallPosts = async () => {
-		this.setState({refreshing: true});
-		try {
-			await this.props.data.refetch();
-			await this.props.refresh();
-			this.setState({
-				refreshing: false,
-			});
-		} catch (Ex) {
-			this.setState({refreshing: false});
-			console.log('ex', Ex);
+		if (!this.state.refreshing) {
+			this.setState({refreshing: true});
+			try {
+				await this.props.data.refetch();
+				await this.props.refresh();
+				this.setState({
+					refreshing: false,
+				});
+			} catch (Ex) {
+				this.setState({refreshing: false});
+				console.log('ex', Ex);
+			}
 		}
 	};
 

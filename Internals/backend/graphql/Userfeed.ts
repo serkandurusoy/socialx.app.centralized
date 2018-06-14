@@ -3,10 +3,9 @@ import {graphql, QueryProps} from 'react-apollo';
 
 import {CurrentUserInfo} from 'utilities';
 
-// TODO: here mutation should accept location
 export const createPostMut = gql`
-	mutation($text: String, $Media: [ID]) {
-		createPost(text: $text, Media: $Media, location: $text) {
+	mutation($text: String, $Media: [ID], $location: String) {
+		createPost(text: $text, Media: $Media, location: $location) {
 			id
 		}
 	}

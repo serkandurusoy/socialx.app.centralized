@@ -102,7 +102,6 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
 				delete wallPostData.includeTaggedFriends;
 
-				// TODO @Aaron: send location when creating a post.
 				const {title, location, taggedFriends, media} = wallPostData;
 				const {mime, pathx, contentOptimizedPath} = media;
 
@@ -157,9 +156,9 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 						startPostadd();
 						// create post
 						if (title) {
-							await createPost({variables: {text: title, Media: mediaId}});
+							await createPost({variables: {text: title, Media: mediaId, location}});
 						} else {
-							await createPost({variables: {Media: mediaId}});
+							await createPost({variables: {Media: mediaId, location}});
 						}
 						stopLoading();
 						this.props.navigation.goBack(null);
