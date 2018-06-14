@@ -1,20 +1,27 @@
 import React, {Component} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
-import {Colors, Icons} from 'theme';
+import {Image, Text, View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import {Colors} from 'theme';
 import PopoverTooltip from '../../_lib/PopoverTooltip';
 import style from './style';
 
 export interface TooltipItem {
 	label: string;
-	icon: number;
+	icon: number | string;
 	actionHandler: () => void;
 }
 
 export interface ITooltipDotsProps {
 	items: TooltipItem[];
+	dotsColor?: string;
 }
 
 export class TooltipDots extends Component<ITooltipDotsProps> {
+	private static defaultProps: Partial<ITooltipDotsProps> = {
+		dotsColor: Colors.postFullName,
+	};
+
 	public render() {
 		return (
 			<PopoverTooltip
@@ -28,7 +35,7 @@ export class TooltipDots extends Component<ITooltipDotsProps> {
 	private getToolTipDotsButton = () => {
 		return (
 			<View style={style.container}>
-				<Image source={Icons.iconDots} style={style.dots} resizeMode={'contain'} />
+				<Icon name={'ios-more'} color={this.props.dotsColor} style={style.dotsIcon} />
 			</View>
 		);
 	};
@@ -38,7 +45,10 @@ export class TooltipDots extends Component<ITooltipDotsProps> {
 		this.props.items.map((item: TooltipItem, index: any) => ({
 			label: () => (
 				<View key={index} style={style.lineContainer}>
-					<Image source={item.icon} style={style.icon} resizeMode={'contain'} />
+					{typeof item.icon === 'number' && <Image source={item.icon} style={style.icon} resizeMode={'contain'} />}
+					{typeof item.icon === 'string' && (
+						<Icon name={item.icon} color={Colors.postFullName} style={[style.icon, style.fontIcon]} />
+					)}
 					<Text style={style.label}>{item.label}</Text>
 				</View>
 			),

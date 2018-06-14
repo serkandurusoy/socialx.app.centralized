@@ -1,14 +1,13 @@
 import {UserAvatar} from 'components/Avatar';
 import {GridPhotos, ProfileStatistics} from 'components/Displayers';
-import {TooltipDots} from 'components/Displayers/DotsWithTooltips';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
-import {Dimensions, ScrollView, Text, View} from 'react-native';
+import {Dimensions, RefreshControl, ScrollView, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {NavigationScreenProp} from 'react-navigation';
 import {Colors, Metrics, Sizes} from 'theme';
-import {Icons} from 'theme/Icons';
 import {IMediaProps} from 'types';
+import {showToastMessage} from 'utilities';
 import MediaViewerScreen from '../MediaViewerScreen';
 import style from './style';
 
@@ -28,9 +27,18 @@ interface IMyProfileScreenProps extends IWithLoaderProps {
 	gridPageSize: number;
 	getAllPhotos: IMediaProps[];
 	navigation: NavigationScreenProp<any>;
+	onRefresh: () => Promise<any>;
 }
 
-class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
+interface IIMyProfileScreenState {
+	refreshing: boolean;
+}
+
+class MyProfileScreenComponent extends Component<IMyProfileScreenProps, IIMyProfileScreenState> {
+	public state = {
+		refreshing: false,
+	};
+
 	private scrollView: any;
 	private isScrolled = false;
 
@@ -55,6 +63,7 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 						contentContainerStyle={style.scrollContainer}
 						showsVerticalScrollIndicator={false}
 						ref={(ref: any) => (this.scrollView = ref)}
+						refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.pageRefreshHandler} />}
 					>
 						<View style={style.topContainer}>
 							<UserAvatar
@@ -62,9 +71,6 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 								fullName={this.props.fullName}
 								username={this.props.username}
 							/>
-							<View style={style.dotsContainer}>
-								<TooltipDots items={this.getTooltipItems()} />
-							</View>
 							<ProfileStatistics
 								numberOfPhotos={this.props.numberOfPhotos}
 								numberOfLikes={this.props.numberOfLikes}
@@ -110,36 +116,14 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, any> {
 		});
 	};
 
-	private getTooltipItems = () => {
-		return [
-			// {
-			// 	label: 'Profile Analytics',
-			// 	icon: Icons.iconProfileAnalytics,
-			// 	actionHandler: this.goToProfileAnalyticsPage,
-			// },
-			// {
-			// 	label: 'Wallet',
-			// 	icon: Icons.iconWallet2,
-			// 	actionHandler: this.goToWalletActivityPage,
-			// },
-			{
-				label: 'Settings',
-				icon: Icons.iconSettingsGear,
-				actionHandler: this.goToSettingsPage,
-			},
-		];
-	};
-
-	private goToProfileAnalyticsPage = () => {
-		this.props.navigation.navigate('ProfileAnalyticsScreen');
-	};
-
-	private goToWalletActivityPage = () => {
-		this.props.navigation.navigate('WalletActivityScreen');
-	};
-
-	private goToSettingsPage = () => {
-		this.props.navigation.navigate('SettingsScreen');
+	private pageRefreshHandler = async () => {
+		this.setState({refreshing: true});
+		try {
+			await this.props.onRefresh();
+		} catch (ex) {
+			showToastMessage('Could not refresh your profile: ' + ex);
+		}
+		this.setState({refreshing: false});
 	};
 }
 
