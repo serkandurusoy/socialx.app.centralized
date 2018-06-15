@@ -1,6 +1,8 @@
+import LottieView from 'lottie-react-native';
 import React from 'react';
-import {Animated, Easing, Keyboard, StyleProp, View} from 'react-native';
-import Spinner from 'react-native-spinkit';
+import {Animated, Easing} from 'react-native';
+
+import {globe2} from 'animation';
 import {Colors, Sizes} from 'theme';
 import style from './style';
 
@@ -46,6 +48,11 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 		};
 
 		private originalRef: any = null;
+		private animationRef: any = null;
+
+		public componentDidMount(): void {
+			this.animationRef.play();
+		}
 
 		public render() {
 			const updatedProps: any = {...this.props, renderWithLoader: this.renderWithLoaderHandler};
@@ -57,20 +64,11 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 
 		public getOriginalRef = () => {
 			return this.originalRef;
-		}
+		};
 
 		private renderWithLoaderHandler = (WrappedComponent: React.ComponentType) => {
 			if (this.props.isLoading) {
-				return (
-					<View style={style.spinnerContainer}>
-						<Spinner
-							isVisible={true}
-							size={this.props.spinnerSize}
-							type={this.props.spinnerType}
-							color={this.props.spinnerColor}
-						/>
-					</View>
-				);
+				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.setAnimationRef} />;
 			} else {
 				const {fadeAnimation} = this.state;
 				return (
@@ -82,7 +80,7 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 					</Animated.View>
 				);
 			}
-		}
+		};
 
 		private animatedViewOnLayoutHandler = () => {
 			// TODO: not sure how safe is to start the animation with onLayout? best would be with componentDidMount
@@ -91,6 +89,10 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 				easing: Easing.ease,
 				duration: FADE_ANIMATION_DURATION,
 			}).start();
-		}
+		};
+
+		private setAnimationRef = (ref: any) => {
+			this.animationRef = ref;
+		};
 	};
 };
