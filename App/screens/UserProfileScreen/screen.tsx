@@ -1,5 +1,5 @@
 import React, {Component, ReactText} from 'react';
-import {Dimensions, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, RefreshControl, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {DataProvider} from 'recyclerlistview';
 
@@ -16,7 +16,7 @@ import {ipfsConfig as base} from 'configuration';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Metrics} from 'theme';
 import {IMediaProps, IMediaViewerObject, ISimpleMediaObject, SearchResultKind} from 'types';
-import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
+import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject, showToastMessage} from 'utilities';
 
 import style, {USER_MEDIA_THUMB_SIZE} from './style';
 
@@ -44,6 +44,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps {
 	onLikeClick?: (likedByMe: boolean, postId: string) => void;
 	onAddFriend: () => Promise<any>;
 	friendRequestStatus: SearchResultKind;
+	onRefresh: () => Promise<any>;
 }
 
 interface IUserProfileScreenComponentState {
@@ -51,6 +52,7 @@ interface IUserProfileScreenComponentState {
 	scrollView: any;
 	isScrolled: boolean;
 	gridMediaProvider: DataProvider;
+	refreshing: boolean;
 }
 
 // todo @serkan @jake let's refactor this togetgher as an example of react component composition
@@ -82,17 +84,20 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 			isScrolled: false,
 			isFollowed: this.props.isFollowed,
 			gridMediaProvider: this.dataProvider.cloneWithRows(this.props.loadMorePhotosHandler()),
+			refreshing: false,
 		};
 	}
 
 	public render() {
 		return this.props.renderWithLoader(
 			<ScrollView
+				// TODO: pull to refresh not support when scrollEnabled is false for isFollowed state
 				scrollEnabled={!this.state.isFollowed}
 				style={style.container}
 				contentContainerStyle={style.scrollContainer}
 				showsVerticalScrollIndicator={false}
 				ref={this.setScrollView}
+				refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.screenRefreshHandler} />}
 			>
 				<View style={style.topContainer}>
 					<TouchableOpacity onPress={this.showImage}>
@@ -124,7 +129,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 
 	private showImage = () => {
 		const {navigation, avatarURL} = this.props;
-		this.props.navigation.navigate('MediaViewerScreen', {
+		navigation.navigate('MediaViewerScreen', {
 			mediaObjects: [{type: 'jpg', hash: avatarURL.replace(base.ipfs_URL, '')}],
 			startIndex: 0,
 		});
@@ -238,6 +243,16 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 			// mediaObjects: this.state.gridMediaProvider.getAllData(),
 			startIndex: index,
 		});
+	};
+
+	private screenRefreshHandler = async () => {
+		this.setState({refreshing: true});
+		try {
+			await this.props.onRefresh();
+		} catch (ex) {
+			showToastMessage('Could not refresh user profile: ' + ex);
+		}
+		this.setState({refreshing: false});
 	};
 }
 
