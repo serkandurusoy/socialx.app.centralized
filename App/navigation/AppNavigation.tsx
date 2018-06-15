@@ -13,6 +13,7 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import IncomingCallScreen from '../screens/IncomingCallScreen';
+import IntroScreen from '../screens/IntroScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MaintenanceScreen from '../screens/Maintenance';
 import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
@@ -199,6 +200,7 @@ const MainScreenWithModal = StackNavigator(
 
 const PreAuthNavigator = StackNavigator(
 	{
+		// IntroScreen: {screen: IntroScreen}, // TODO: enable later!
 		LaunchScreen: {screen: LaunchScreen},
 		LoginScreen: {screen: LoginScreen},
 		SignUpScreen: {screen: SignUpScreen},
