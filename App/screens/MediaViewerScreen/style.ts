@@ -14,10 +14,13 @@ const style: any = {
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	paginationContainer: {
+	screenFooter: {
 		zIndex: 2,
 		position: 'absolute',
+		width: '100%',
 		bottom: Sizes.smartVerticalScale(50),
+	},
+	paginationContainer: {
 		alignItems: 'center',
 		width: '100%',
 	},
@@ -32,6 +35,17 @@ const style: any = {
 		top: Sizes.smartHorizontalScale(12),
 		padding: Sizes.smartHorizontalScale(10),
 		zIndex: 2,
+	},
+	mediaInfoSection: {
+		width: '100%',
+		paddingBottom: Sizes.smartVerticalScale(20),
+		paddingHorizontal: Sizes.smartHorizontalScale(15),
+		flexDirection: 'row',
+	},
+	infoText: {
+		...Fonts.centuryGothic,
+		color: Colors.white,
+		fontSize: Sizes.smartHorizontalScale(16),
 	},
 };
 

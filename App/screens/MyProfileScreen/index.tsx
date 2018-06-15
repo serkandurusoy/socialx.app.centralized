@@ -1,31 +1,30 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {InteractionManager, View} from 'react-native';
+import {AsyncStorage, InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import MyProfileScreenComponent from './screen';
+import style from './style';
 
-import {ScreenHeaderButton} from 'components';
+import {TooltipDots} from 'components';
 
-import {getUserAvatar} from 'utilities';
+import {getUserAvatar, Signout} from 'utilities';
 
+import {resetNavigationToRoute} from 'backend/actions';
 import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
+import {Colors} from 'theme';
 import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
 
 const GRID_PAGE_SIZE = 20;
 const GRID_MAX_RESULTS = 500;
 
-const FULL_NAME = 'Lester Wheeler';
-const USER_BIG_AVATAR_URL = 'https://placeimg.com/240/240/people';
-const USER_NAME = 'LesterWheeler';
-
 const INITIAL_STATE = {
-	numberOfPhotos: 13,
-	numberOfLikes: 24,
-	numberOfFollowers: 13401,
-	numberOfFollowing: 876324,
-	avatarURL: USER_BIG_AVATAR_URL,
-	fullName: FULL_NAME,
-	username: USER_NAME,
+	numberOfPhotos: 0,
+	numberOfLikes: 0,
+	numberOfFollowers: 0,
+	numberOfFollowing: 0,
+	avatarURL: '',
+	fullName: '',
+	username: '',
 	loaded: false,
 	mediaObjects: [],
 };
@@ -53,21 +52,60 @@ interface IMyProfileScreenState {
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = (props: IMyProfileScreenProps) => ({
 		title: 'PROFILE',
-		headerLeft: <View/>,
+		headerLeft: <View />,
 		headerRight: (
-			<ScreenHeaderButton
-				iconName={'md-refresh'}
-				onPress={() => MyProfileScreen.runRefreshScreenHandler(props)}
-			/>
+			<View style={style.titleBarRightButton}>
+				<TooltipDots items={MyProfileScreen.getTooltipItems(props)} dotsColor={Colors.white} />
+			</View>
 		),
 	});
 
-	private static runRefreshScreenHandler(props: any) {
-		const params = props.navigation.state.params || {};
-		if (params.refreshScreen) {
-			params.refreshScreen();
+	private static getTooltipItems = (props: IMyProfileScreenProps) => {
+		return [
+			// {
+			// 	label: 'Profile Analytics',
+			// 	icon: Icons.iconProfileAnalytics,
+			// 	actionHandler: () => MyProfileScreen.goToProfileAnalyticsPage(props),
+			// },
+			// {
+			// 	label: 'Wallet',
+			// 	icon: Icons.iconWallet2,
+			// 	actionHandler: () => MyProfileScreen.goToWalletActivityPage(props),
+			// },
+			{
+				label: 'Settings',
+				icon: 'ios-settings-outline',
+				actionHandler: () => MyProfileScreen.goToSettingsPage(props),
+			},
+			{
+				label: 'Logout',
+				icon: 'ios-log-out',
+				actionHandler: () => MyProfileScreen.logoutHandler(props),
+			},
+		];
+	};
+
+	private static goToProfileAnalyticsPage = (props: IMyProfileScreenProps) => {
+		props.navigation.navigate('ProfileAnalyticsScreen');
+	};
+
+	private static goToWalletActivityPage = (props: IMyProfileScreenProps) => {
+		props.navigation.navigate('WalletActivityScreen');
+	};
+
+	private static goToSettingsPage = (props: IMyProfileScreenProps) => {
+		props.navigation.navigate('SettingsScreen');
+	};
+
+	private static logoutHandler = async (props: IMyProfileScreenProps) => {
+		try {
+			await Signout();
+			await AsyncStorage.clear();
+			resetNavigationToRoute('PreAuthScreen', props.navigation);
+		} catch (ex) {
+			console.log(ex);
 		}
-	}
+	};
 
 	public state = INITIAL_STATE;
 
@@ -89,7 +127,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 
 		const {user} = data;
-		const {posts, avatar} = user;
+		const {posts} = user;
 
 		const userImages = posts
 			? posts.reduce((count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0), 0)
@@ -107,7 +145,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			fullName: user.name,
 			username: user.username,
 			loaded: true,
-			mediaObjects: this.preloadAllMediaObjects(),
+			mediaObjects: this.preloadAllMediaObjects(nextProps),
 		});
 	}
 
@@ -128,6 +166,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, this.state.numberOfPhotos)}
 				getAllPhotos={this.state.mediaObjects}
 				navigation={this.props.navigation}
+				onRefresh={this.refreshPageHandler}
 			/>
 		);
 	}
@@ -145,8 +184,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		return ret;
 	};
 
-	private preloadAllMediaObjects = () => {
-		const posts = get(this.props.data, 'user.posts', null);
+	private preloadAllMediaObjects = (props: IMyProfileScreenProps) => {
+		const posts = get(props.data, 'user.posts', null);
 
 		if (!posts) {
 			return [];
@@ -155,13 +194,21 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		const images: IMediaProps[] = [];
 		posts.forEach((post: IPostsProps) => {
 			const medias = post.Media;
+			const newProps = {
+				numberOfComments: post.comments.length,
+				numberOfLikes: post.likes.length,
+			};
 			if (post.Media) {
 				medias.forEach((media) => {
-					images.push(media);
+					images.push({...media, ...newProps});
 				});
 			}
 		});
 		return images;
+	};
+
+	private refreshPageHandler = async () => {
+		await this.props.data.refetch();
 	};
 }
 

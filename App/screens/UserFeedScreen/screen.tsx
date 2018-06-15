@@ -5,7 +5,7 @@ import React, {SFC} from 'react';
 import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
-import {IUserQuery} from 'types';
+import {IMediaProps, IUserQuery} from 'types';
 import style from './style';
 
 interface IUserFeedScreenProps extends IWithLoaderProps {
@@ -16,12 +16,12 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	refreshData: () => void;
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
-	onMediaPress: (index: any, media: any) => void;
+	onMediaPress: (index: any, medias: IMediaProps[]) => void;
 	onCommentPress: (postId: any, owner: any, startComment: boolean) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
-	onLikePress: any;
+	onLikePress: () => Promise<any>;
 	onPostDeletePress: any;
 	onUserPress: any;
 	loadingMore: boolean;

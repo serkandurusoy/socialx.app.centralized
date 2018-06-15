@@ -1,86 +1,52 @@
-import {AnimatedImage} from 'configuration/animations';
 import React, {Component} from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
-import style from './style';
+import {Image, StyleProp, Text, TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const PULSATE_PERIOD = 700;
+import style from './style';
 
 export interface IIconButtonProps {
 	label?: string;
-	iconSource: number;
-	onPress?: Func;
-	iconStyle?: number;
-	changeWithAnimation: boolean;
+	iconSource: number | string; // use string for an Ionicon source
+	onPress?: () => void;
+	iconStyle?: StyleProp<any>;
 }
 
 interface IIconButtonState {
-	iconSource: number;
-	animating: boolean;
-	touchDisabled: boolean;
+	iconSource: number | string;
+	iconStyle?: StyleProp<any>;
 }
 
 export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 	public static defaultProps: Partial<IIconButtonProps> = {
 		label: undefined,
 		iconStyle: style.iconStyle,
-		changeWithAnimation: false,
 	};
-
-	public static getDerivedStateFromProps(nextProps: IIconButtonProps, prevState: IIconButtonState) {
-		const ret: Partial<IIconButtonState> = {};
-		if (nextProps.iconSource !== prevState.iconSource) {
-			ret.animating = false;
-		}
-		return ret;
-	}
 
 	public state = {
 		iconSource: this.props.iconSource,
-		animating: false,
-		touchDisabled: false,
+		iconStyle: this.props.iconStyle,
 	};
-
-	private animatedIcon: any | null = null;
 
 	public render() {
 		return (
-			<TouchableOpacity
-				style={style.container}
-				disabled={!this.props.onPress || this.state.touchDisabled}
-				onPress={this.buttonPressedHandler}
-			>
-				<AnimatedImage
-					ref={(ref: any) => (this.animatedIcon = ref)}
-					source={this.state.iconSource}
-					style={this.props.iconStyle}
-					resizeMode={'contain'}
-				/>
+			<TouchableOpacity style={style.container} disabled={!this.props.onPress} onPress={this.buttonPressedHandler}>
+				{this.renderIcon()}
 				{this.props.label && <Text style={style.label}>{this.props.label}</Text>}
 			</TouchableOpacity>
 		);
 	}
 
-	private buttonPressedHandler = () => {
-		if (this.props.changeWithAnimation) {
-			this.animatedIcon.animate('pulsate', PULSATE_PERIOD).then(this.onAnimationEndHandler);
-			this.setState({
-				animating: true,
-				touchDisabled: true,
-			});
-		}
-		if (this.props.onPress) {
-			this.props.onPress();
+	private renderIcon = () => {
+		if (typeof this.props.iconSource === 'number') {
+			return <Image source={this.state.iconSource as number} style={this.state.iconStyle} resizeMode={'contain'} />;
+		} else {
+			return <Icon name={this.state.iconSource as string} style={this.state.iconStyle} />;
 		}
 	};
 
-	private onAnimationEndHandler = () => {
-		if (this.state.animating) {
-			this.animatedIcon.animate('pulsate', PULSATE_PERIOD).then(this.onAnimationEndHandler);
-		} else {
-			this.setState({
-				iconSource: this.props.iconSource,
-				touchDisabled: false,
-			});
+	private buttonPressedHandler = async () => {
+		if (this.props.onPress) {
+			this.props.onPress();
 		}
 	};
 }

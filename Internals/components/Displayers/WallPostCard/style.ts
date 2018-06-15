@@ -40,11 +40,11 @@ const style: any = {
 		color: Colors.postText,
 		paddingTop: Sizes.smartVerticalScale(3),
 	},
-	postTitlePadding: {
+	postTextPadding: {
 		marginHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
 		paddingBottom: Sizes.smartHorizontalScale(6),
 	},
-	postTitle: {
+	postText: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postFullName,
@@ -54,17 +54,6 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postHour,
 		paddingLeft: Sizes.smartHorizontalScale(5),
-	},
-	postTextContainer: {
-		flexDirection: 'row',
-		paddingBottom: Sizes.smartHorizontalScale(4),
-		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
-	},
-	postText: {
-		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
-		lineHeight: Sizes.smartHorizontalScale(24),
-		color: Colors.postText,
 	},
 	postMediaContainer: {
 		width: '100%',
@@ -92,6 +81,10 @@ const style: any = {
 	tag: {
 		color: 'black',
 		fontWeight: 'bold',
+	},
+	url: {
+		color: Colors.postHour,
+		textDecorationLine: 'underline',
 	},
 	recentLikesContainer: {
 		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),

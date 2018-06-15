@@ -28,3 +28,4 @@ export * from './WallPostCard/CommentCard';
 export * from './MediaObject';
 export * from './NewGridPhotos';
 export * from './GovernanceCard';
+export * from './DotsWithTooltips';

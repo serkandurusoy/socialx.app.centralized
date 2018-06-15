@@ -4,7 +4,7 @@ import {graphql, QueryProps} from 'react-apollo';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {IMediaProps, IPostsProps} from 'types';
-import {bestTwoComments} from 'utilities';
+import {bestTwoComments, getPostMedia, numberOfComments} from 'utilities';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {
@@ -132,6 +132,14 @@ const checkUsername = gql`
 	}
 `;
 
+const blockUserMut = gql`
+	mutation blockUser($user: ID!) {
+		blockUser(user: $user) {
+			userId
+		}
+	}
+`;
+
 const addFriendMut = gql`
 	mutation addFriend($user: ID!) {
 		addFriend(user: $user) {
@@ -172,18 +180,6 @@ const updateUserData = gql`
 	}
 `;
 
-const getCommentsNum = (comments: any) => {
-	if (!comments.length) {
-		return 0;
-	}
-
-	let res = 0;
-	for (res; res < comments.length; res++) {
-		res += comments[res].comments.length > 0 ? comments[res].comments.length : 0;
-	}
-	return res;
-};
-
 const preloadAllMediaObjects = (posts: any) => {
 	if (!posts) {
 		return [];
@@ -202,6 +198,9 @@ const preloadAllMediaObjects = (posts: any) => {
 };
 
 export const addFriend = (comp: any) => graphql(addFriendMut, {name: 'addFriend'})(comp);
+
+export const blockUserHoc = (comp: any) => graphql(blockUserMut, {name: 'blockUser'})(comp);
+
 export const removeFriend = (comp: any) => graphql(removeFriendMut, {name: 'removeFriend'})(comp);
 
 export const searchUsersHoc = (comp: any) => graphql(searchUsers, {name: 'search'})(comp);
@@ -215,9 +214,9 @@ export const getUserProfileHoc = (comp: any) =>
 		name: 'getUserQuery',
 		props(pps: any) {
 			const {
-				getUserQuery: {loading, getUserQuery},
+				getUserQuery: {loading, getUserQuery, refetch},
 			} = pps;
-			const results = {getUserQuery: {getUser: {}, loading}};
+			const results = {getUserQuery: {getUser: {}, loading, refetch}};
 			if (!loading) {
 				const avatar = getUserQuery.user.avatar
 					? base.ipfs_URL + getUserQuery.user.avatar.hash
@@ -252,14 +251,15 @@ export const getUserPostHoc = (comp: any) =>
 		name: 'getUserPosts',
 		props(pps: any) {
 			const {
-				getUserPosts: {loading, getPostsOwner},
+				getUserPosts: {loading, getPostsOwner, refetch},
 			} = pps;
-			const results = {getUserPosts: {Items: [], loading}};
+			const results = {getUserPosts: {Items: [], loading, refetch}};
 			if (!loading) {
 				results.getUserPosts.Items =
 					getPostsOwner.Items.length > 0
 						? getPostsOwner.Items.map((item: any) => {
 								const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
+								const numComments = numberOfComments(item);
 								return {
 									id: item.id,
 									title: null,
@@ -269,9 +269,9 @@ export const getUserPostHoc = (comp: any) =>
 									fullName: item.owner.name,
 									timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
 									numberOfLikes: item.likes.length,
-									numberOfComments: getCommentsNum(item.comments),
+									numberOfComments: numComments,
 									canDelete: false,
-									media: item.Media,
+									media: getPostMedia(item.Media, item.likes.length, numComments),
 									owner: item.owner,
 									bestComments: bestTwoComments(item),
 									likes: item.likes,

@@ -5,7 +5,7 @@ import {IAllPostsDataResponse, IPaginatedPosts, ISimpleComment} from 'types';
 
 import {AvatarImagePlaceholder} from 'consts';
 
-import {bestTwoComments, decodeBase64Text, numberOfComments} from 'utilities';
+import {bestTwoComments, decodeBase64Text, getPostMedia, numberOfComments} from 'utilities';
 
 import {ipfsConfig as base} from 'configuration';
 
@@ -202,30 +202,34 @@ export const getPublicPostsHoc = (comp: any) =>
 			const {
 				Posts: {loading, error, getPublicPosts, fetchMore, refetch, hasMore},
 			} = pps;
+			console.log('getPublicPostsHoc', pps);
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
 			const Items = getPublicPosts ? getPublicPosts.Items : [];
 
 			const dataSpine = (pItems: any) =>
-				pItems.map((post: any) => ({
-					id: post.id,
-					text: decodeBase64Text(post.text),
-					location: post.location,
-					media: post.Media,
-					// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
-					timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
-					numberOfLikes: post.likes.length,
-					numberOfSuperLikes: 0,
-					numberOfComments: numberOfComments(post),
-					numberOfWalletCoins: 0,
-					onLikeButtonClick: () => null,
-					canDelete: false,
-					owner: post.owner,
-					onDeleteClick: null,
-					likes: post.likes,
-					bestComments: bestTwoComments(post),
-				}));
+				pItems.map((post: any) => {
+					const numComments = numberOfComments(post);
+					return {
+						id: post.id,
+						text: decodeBase64Text(post.text),
+						location: post.location,
+						media: getPostMedia(post.Media, post.likes.length, numComments),
+						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+						numberOfLikes: post.likes.length,
+						numberOfSuperLikes: 0,
+						numberOfComments: numComments,
+						numberOfWalletCoins: 0,
+						onLikeButtonClick: () => null,
+						canDelete: false,
+						owner: post.owner,
+						onDeleteClick: null,
+						likes: post.likes,
+						bestComments: bestTwoComments(post),
+					};
+				});
 
 			return {
 				loading,
@@ -268,26 +272,28 @@ export const getFriendsPostsHoc = (comp: any) =>
 			const {
 				Posts: {loading, error, getFriendsPosts, fetchMore, refetch, hasMore},
 			} = pps;
-			console.log(pps);
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
 			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
 
+			console.log('getFriendsPostsHoc', pps, 'no items', Items.length);
+
 			const dataSpine = (pItems: any) => {
 				const rets = [];
 				for (let i = 0; i < pItems.length; i++) {
 					const post = pItems[i];
+					const numComments = numberOfComments(post);
 					rets.push({
 						id: post.id,
 						text: decodeBase64Text(post.text),
 						location: post.location,
-						media: post.Media,
+						media: getPostMedia(post.Media, post.likes.length, numComments),
 						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
 						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
 						numberOfLikes: post.likes.length,
 						numberOfSuperLikes: 0,
-						numberOfComments: numberOfComments(post),
+						numberOfComments: numComments,
 						numberOfWalletCoins: 0,
 						onLikeButtonClick: () => null,
 						canDelete: false,
@@ -316,6 +322,8 @@ export const getFriendsPostsHoc = (comp: any) =>
 									const previousItems = previousEntry ? previousEntry.Items : [];
 									const newItems = fetchMoreResult.getFriendsPosts.Items || [];
 									const newNext = fetchMoreResult.getFriendsPosts.nextToken;
+
+									console.log('New items', newItems.length);
 
 									const newPosts = {
 										getFriendsPosts: {

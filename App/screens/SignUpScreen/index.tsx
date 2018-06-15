@@ -340,7 +340,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			const res = await resendSignup(this.state.username);
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('App error', 'Could not resend confirmation code');
+				Alert.alert('App error', 'Could not resend confirmation code: ' + ex);
 			});
 		}
 		this.props.HideLoader();

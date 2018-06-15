@@ -13,11 +13,6 @@ const style: any = {
 	topContainer: {
 		paddingTop: Sizes.smartVerticalScale(19),
 	},
-	dotsContainer: {
-		position: 'absolute',
-		right: Sizes.smartHorizontalScale(10),
-		marginTop: Sizes.smartVerticalScale(19),
-	},
 	aboutMeContainer: {
 		width: '100%',
 		borderTopColor: Colors.dustWhite,
@@ -63,6 +58,9 @@ const style: any = {
 		paddingTop: Sizes.smartVerticalScale(20),
 		textAlign: 'center',
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
+	},
+	titleBarRightButton: {
+		marginRight: Sizes.smartHorizontalScale(10),
 	},
 };
 

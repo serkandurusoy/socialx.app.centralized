@@ -6,3 +6,4 @@ export * from './ShareOptionsButton';
 export * from './ToggleIconButton';
 export * from './VideoPlayer';
 export * from './AddFriendButton';
+export * from './LikeAnimatingButton';

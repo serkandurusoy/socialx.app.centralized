@@ -4,7 +4,7 @@ import {OS_TYPES} from 'consts';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
-import {Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Platform, SafeAreaView, ScrollView, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
 import {IWallPostComment} from './index';
@@ -19,6 +19,7 @@ interface ICommentsScreenComponentProps extends IWithLoaderProps {
 	onCommentSend: (commentText: string) => void;
 	noComments: boolean;
 	startComment: boolean;
+	onViewUserProfile: (userId: string) => void;
 }
 
 interface ICommentsScreenComponentState {
@@ -68,6 +69,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 				onCommentLike={() => this.props.onCommentLike(comment)}
 				onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
 				onCommentDelete={() => this.props.onCommentDelete(comment)}
+				onViewUserProfile={this.props.onViewUserProfile}
 			/>
 		));
 

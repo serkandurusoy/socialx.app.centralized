@@ -5,15 +5,14 @@ import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker'
 import ImageResizer from 'react-native-image-resizer';
 import {NavigationScreenProp} from 'react-navigation';
 
-import {AvatarImage} from 'components/Avatar';
 import {MediaObjectViewer} from 'components/Displayers/MediaObject';
-import {SXTextInput} from 'components/Inputs';
 import {ButtonSizes, SXButton} from 'components/Interaction';
 import {ModalCloseButton} from 'components/Modals';
 import {Colors, Icons, Sizes} from 'theme';
 import {MediaTypeImage} from 'types';
 import style from './style';
 
+import {SharePostInput} from 'components';
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
@@ -49,7 +48,6 @@ interface INewWallPostScreenProps {
 interface INewWallPostScreenState {
 	marginBottom: number;
 	mediaObjects: MediaObject[];
-	postText: string;
 	isUploading: boolean;
 	uploadProgress: number;
 }
@@ -64,12 +62,12 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	public state = {
 		marginBottom: DEFAULT_MARGIN_BOTTOM,
 		mediaObjects: [] as MediaObject[],
-		postText: '',
 		isUploading: false,
 		uploadProgress: 0,
 	};
 
 	private keyboardDidShowListener: any;
+	private sharePostInputRef: SharePostInput | null = null;
 
 	public componentDidMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
@@ -80,25 +78,14 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	}
 
 	public render() {
-		const {avatarImage, fullName} = this.props.navigation.state.params;
+		const {avatarImage} = this.props.navigation.state.params;
 		return (
 			<View style={[style.container, {paddingBottom: this.state.marginBottom}]}>
-				<View style={style.topContainer}>
-					<AvatarImage image={avatarImage} style={style.avatarImage} />
-					<Text style={style.fullName}>{fullName}</Text>
-				</View>
-				<View style={style.inputContainer}>
-					<SXTextInput
-						value={this.state.postText}
-						borderColor={Colors.dustWhite}
-						placeholder={'Type a message'}
-						autoFocus={true}
-						onChangeText={this.updatePostText}
-						multiline={true}
-						autoCorrect={true}
-						autoCapitalize={'sentences'}
-					/>
-				</View>
+				<SharePostInput
+					ref={(ref) => (this.sharePostInputRef = ref)}
+					avatarSource={avatarImage}
+					placeholder={'Type a message'}
+				/>
 				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler} disabled={this.state.isUploading}>
 					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
 					<Text style={style.addMediaText}>{'Attach Photo/Video'}</Text>
@@ -111,7 +98,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 					size={ButtonSizes.Small}
 					width={Sizes.smartHorizontalScale(100)}
 					onPress={this.sendPostHandler}
-					disabled={(this.state.postText.length < 0 && this.state.mediaObjects.length < 0) || this.state.isUploading}
+					disabled={this.state.isUploading}
 				/>
 			</View>
 		);
@@ -277,17 +264,18 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	];
 
 	private sendPostHandler = () => {
-		// TODO: get rid of this after we sort out SOC-148
-		const escapedText = this.state.postText.replace(/\n/g, '\\n');
-		const wallPostData: NewWallPostData = {
-			text: escapedText,
-			mediaObjects: this.state.mediaObjects,
-		};
-		this.props.navigation.state.params.postCreate(wallPostData);
-		this.props.navigation.goBack(null);
-	};
-
-	private updatePostText = (text: string) => {
-		this.setState({postText: text});
+		if (this.sharePostInputRef) {
+			const title = this.sharePostInputRef.getTitle();
+			if (this.state.mediaObjects.length < 1 && !title) {
+				alert('Empty post not allowed, please add one photo and/or message!');
+			} else {
+				const wallPostData: NewWallPostData = {
+					text: title,
+					mediaObjects: this.state.mediaObjects,
+				};
+				this.props.navigation.state.params.postCreate(wallPostData);
+				this.props.navigation.goBack(null);
+			}
+		}
 	};
 }

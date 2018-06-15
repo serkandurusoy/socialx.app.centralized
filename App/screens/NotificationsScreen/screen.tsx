@@ -19,6 +19,7 @@ interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	onGroupRequestConfirmed: (requestId: string) => void;
 	onGroupRequestDeclined: (requestId: string) => void;
 	onCheckNotification: (requestId: string) => void;
+	onViewUserProfile: (userId: string) => void;
 }
 
 class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
@@ -83,11 +84,18 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 						{...activityCardData}
 						onRequestConfirmed={() => this.props.onFriendRequestApproved(activityCardData.requestId)}
 						onRequestDeclined={() => this.props.onFriendRequestDeclined(activityCardData.requestId)}
+						onViewUserProfile={this.props.onViewUserProfile}
 					/>
 				);
 
 			case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
-				return <NotificationGI {...activityCardData} onCheckNotification={this.props.onCheckNotification} />;
+				return (
+					<NotificationGI
+						{...activityCardData}
+						onCheckNotification={this.props.onCheckNotification}
+						onViewUserProfile={this.props.onViewUserProfile}
+					/>
+				);
 
 			case NOTIFICATION_TYPES.SUPER_LIKED:
 				return <ActivitySuperLikedCard {...activityCardData} onThumbPress={this.props.onSuperLikedPhotoPressed} />;

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, findNodeHandle, InteractionManager, View} from 'react-native';
+import {Alert, InteractionManager} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
@@ -32,7 +32,6 @@ export interface FriendsSearchResult {
 
 export interface WallPostPhoto {
 	title?: string;
-	text?: string;
 	location?: string;
 	taggedFriends?: FriendsSearchResult[];
 	media: WallPostPhotoOptimized;
@@ -103,7 +102,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
 				delete wallPostData.includeTaggedFriends;
 
-				const {title, text, location, taggedFriends, media} = wallPostData;
+				const {title, location, taggedFriends, media} = wallPostData;
 				const {mime, pathx, contentOptimizedPath} = media;
 
 				const onStart = () => {
@@ -157,11 +156,9 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 						startPostadd();
 						// create post
 						if (title) {
-							// TODO: get rid of this after we sort out SOC-148
-							const escapedTitle = title.replace(/\n/g, '\\n');
-							await createPost({variables: {text: escapedTitle, Media: mediaId}});
+							await createPost({variables: {text: title, Media: mediaId, location}});
 						} else {
-							await createPost({variables: {Media: mediaId}});
+							await createPost({variables: {Media: mediaId, location}});
 						}
 						stopLoading();
 						this.props.navigation.goBack(null);

@@ -80,6 +80,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				onCommentSend={this.onCommentSendHandler}
 				onCommentDelete={this.onCommentDeleteHandler}
 				startComment={this.props.navigation.state.params.startComment}
+				onViewUserProfile={this.navigateToUserProfile}
 			/>
 		);
 	}
@@ -123,7 +124,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				user: {
 					fullName: comment.owner.name,
 					avatarURL: userAvatar,
-					id: comment.id,
+					id: comment.owner.userId,
 				},
 				timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
 				numberOfLikes: comment.likes ? comment.likes.length : 0,
@@ -156,8 +157,6 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		const {postId, userId} = this.props.navigation.state.params;
 		const {getComments, data} = this.props;
 
-		const thisUserId = data.user.userId;
-
 		const qVar = {variables: {targetPost: postId}};
 
 		const getResp: ICommentsResponse = await getComments(qVar);
@@ -184,6 +183,10 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				}),
 			});
 		}
+	};
+
+	private navigateToUserProfile = (userId: string) => {
+		this.props.navigation.navigate('UserProfileScreen', {userId});
 	};
 }
 

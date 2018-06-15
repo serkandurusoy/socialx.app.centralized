@@ -57,7 +57,12 @@ export default class textParser extends Component<ITextParserProps> {
 		const textExtraction = new TextExtraction(this.props.children, this.getPatterns());
 
 		return textExtraction.parse().map((props, index) => {
-			return <Text key={`pText-${index}`} {...this.props.childrenProps} {...props} />;
+			let onPressProps = {};
+			if ('onPress' in props) {
+				// just need to make sure onPress handler will receive the relevant text(hashtag, tag, url, etc)
+				onPressProps.onPress = () => props.onPress(props.children);
+			}
+			return <Text key={`pText-${index}`} {...this.props.childrenProps} {...props} {...onPressProps} />;
 		});
 	}
 

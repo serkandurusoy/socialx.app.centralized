@@ -88,6 +88,11 @@ const style: any = {
 		overflow: 'hidden',
 		paddingVertical: Sizes.smartHorizontalScale(5),
 	},
+	replyUserContainer: {
+		flexDirection: 'row',
+		maxWidth: '50%',
+		alignItems: 'center',
+	},
 	replyAvatar: {
 		width: REPLY_AVATAR_SIZE,
 		height: REPLY_AVATAR_SIZE,
@@ -107,7 +112,6 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
 		lineHeight: Sizes.smartHorizontalScale(20),
-		maxWidth: '50%',
 	},
 	viewMoreReplies: {
 		...Fonts.centuryGothicBold,

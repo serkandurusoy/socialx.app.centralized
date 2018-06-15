@@ -39,7 +39,12 @@ export const MediaObjectViewer: React.SFC<IMediaObjectViewerProps> = (props) => 
 		} else if (mediaMimeType.startsWith(MediaTypeImage.key)) {
 			ret = (
 				<TouchableOpacity onPress={props.onPress} disabled={!props.onPress} style={props.style}>
-					<ImageComponent source={{uri: props.uri}} resizeMode={props.resizeMode} style={style.photoStyle} />
+					<ImageComponent
+						source={{uri: props.uri}}
+						resizeMode={props.resizeMode}
+						style={style.photoStyle}
+						resizeMethod={'resize'}
+					/>
 				</TouchableOpacity>
 			);
 		} else if (mediaMimeType.startsWith(MediaTypeVideo.key)) {

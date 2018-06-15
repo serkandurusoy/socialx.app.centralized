@@ -1,9 +1,9 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
+import {InteractionManager} from 'react-native';
 import {connect} from 'react-redux';
 
-import {IWallPostCardProp} from 'components/Displayers';
-import {NavigationScreenProp} from 'react-navigation';
+import {NavigationEventSubscription, NavigationScreenProp} from 'react-navigation';
 import {Images} from 'theme';
 import {NewWallPostData} from '../NewWallPostScreen';
 import UserFeedScreenComponent from './screen';
@@ -22,6 +22,7 @@ import {
 	IAllPostsDataResponse,
 	IComments,
 	ICommentsResponse,
+	IMediaProps,
 	IPaginatedPosts,
 	IPostsProps,
 	IUserDataResponse,
@@ -70,6 +71,7 @@ interface IUserFeedScreenProps extends IFeedProps {
 
 interface IUserFeedScreenState {
 	refreshing: boolean;
+	silentRefresh: boolean;
 	loadingMore: boolean;
 }
 
@@ -77,7 +79,26 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public state = {
 		refreshing: false,
 		loadingMore: false,
+		silentRefresh: false,
 	};
+
+	private didFocusSubscription: NavigationEventSubscription | null = null;
+
+	get isRefreshing() {
+		return this.state.refreshing || this.state.silentRefresh;
+	}
+
+	// public componentDidMount() {
+	// 	InteractionManager.runAfterInteractions(() => {
+	// 		this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.silentRefreshWallPosts);
+	// 	});
+	// }
+
+	public componentWillUnmount(): void {
+		if (this.didFocusSubscription) {
+			this.didFocusSubscription.remove();
+		}
+	}
 
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
@@ -211,16 +232,33 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private refreshWallPosts = async () => {
-		this.setState({refreshing: true});
-		try {
-			await this.props.data.refetch();
-			await this.props.refresh();
-			this.setState({
-				refreshing: false,
-			});
-		} catch (Ex) {
-			this.setState({refreshing: false});
-			console.log('ex', Ex);
+		if (!this.isRefreshing) {
+			this.setState({refreshing: true});
+			try {
+				await this.props.data.refetch();
+				await this.props.refresh();
+				this.setState({
+					refreshing: false,
+				});
+			} catch (Ex) {
+				this.setState({refreshing: false});
+				console.log('ex', Ex);
+			}
+		}
+	};
+
+	private silentRefreshWallPosts = async () => {
+		if (!this.isRefreshing) {
+			this.setState({silentRefresh: true});
+			try {
+				await this.props.refresh();
+				this.setState({
+					silentRefresh: false,
+				});
+			} catch (Ex) {
+				this.setState({silentRefresh: false});
+				console.log('ex', Ex);
+			}
 		}
 	};
 
@@ -230,14 +268,16 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		const likeQuery = {variables: {postId}};
 
 		const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
-		console.log('result:', result);
+		console.log('onLikeButtonClickHandler result:', result);
 
 		if (result.error) {
 			console.log(result.error);
-			return;
+			return likedByMe;
 		}
 
 		// await refresh();
+
+		return !likedByMe;
 	};
 
 	private onPostDeleteClickHandler = async (postId: string) => {
@@ -258,9 +298,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.props.navigation.navigate('UserProfileScreen', {userId});
 	};
 
-	private onMediaObjectPressHandler = (index: number, media: any) => {
+	private onMediaObjectPressHandler = (index: number, medias: IMediaProps[]) => {
 		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: media,
+			mediaObjects: medias,
 			startIndex: index,
 		});
 	};

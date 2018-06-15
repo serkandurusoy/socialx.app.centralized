@@ -14,11 +14,13 @@ export interface INotificationGIProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;
+	userId: string;
 	text: string;
 	onCheckNotification: (requestId: string) => Promise<any>;
 	showConfirm: (confirmationOptions: IModalConfirmationProps) => void;
 	hideConfirm: () => void;
 	requestId: string;
+	onViewUserProfile: (userId: string) => void;
 }
 
 interface INotificationGIState {
@@ -50,14 +52,17 @@ class NotificationGIComp extends React.Component<INotificationGIProps, INotifica
 					leftActionActivationDistance={Dimensions.get('window').width / 2}
 				>
 					<View style={style.swipeContainer}>
-						<View style={style.leftContainer}>
+						<TouchableOpacity
+							style={style.leftContainer}
+							onPress={() => this.props.onViewUserProfile(this.props.userId)}
+						>
 							<AvatarImage image={{uri: this.props.avatarURL}} style={style.avatarImage} />
 							<View style={style.avatarNameContainer}>
 								<Text style={style.fullName}>{this.props.fullName}</Text>
 								{this.props.username && <Text style={style.username}>{'@' + this.props.username}</Text>}
 								<Text style={style.friendRequest}>{this.props.text}</Text>
 							</View>
-						</View>
+						</TouchableOpacity>
 						{this.renderCloseButtonWithLoading()}
 					</View>
 				</Swipeable>
