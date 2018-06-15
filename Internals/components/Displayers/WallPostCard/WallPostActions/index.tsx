@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {IconButton} from 'components';
+import {IconButton, LikeAnimatingButton} from 'components';
 import {Colors, Icons} from 'theme';
 import style from './style';
 
@@ -9,18 +9,13 @@ export interface IWallPostActions {
 	likedByMe: boolean;
 	numberOfSuperLikes: number;
 	numberOfWalletCoins: number;
-	likeButtonPressed?: Func;
+	likeButtonPressed?: () => Promise<any>;
 	superLikeButtonPressed: Func;
 	commentsButtonPressed: Func;
 	walletCoinsButtonPressed: Func;
 }
 
 export const WallPostActions: React.SFC<IWallPostActions> = (props) => {
-	const likeIconSource = props.likedByMe ? 'md-heart' : 'md-heart-outline';
-
-	const likeColor = props.likedByMe ? Colors.red : Colors.black;
-	const likeButtonStyles = [style.likeButton, {color: likeColor}];
-
 	return (
 		<View style={style.container}>
 			{/* Text component for the container alignment, causes padding issues if empty */}
@@ -32,12 +27,7 @@ export const WallPostActions: React.SFC<IWallPostActions> = (props) => {
 					label={props.numberOfWalletCoins + ' SOCX'}
 				/> */}
 			<View style={style.rightContainer}>
-				<IconButton
-					iconSource={likeIconSource}
-					onPress={props.likeButtonPressed}
-					changeWithAnimation={true}
-					iconStyle={likeButtonStyles}
-				/>
+				<LikeAnimatingButton onPress={props.likeButtonPressed} likedByMe={props.likedByMe} />
 
 				{/* TODO: add when implemented: SuperLikes
 					 <IconButton

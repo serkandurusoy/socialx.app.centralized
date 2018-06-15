@@ -14,9 +14,6 @@ const style: any = {
 	rightContainer: {
 		flexDirection: 'row',
 	},
-	likeButton: {
-		fontSize: Sizes.smartHorizontalScale(24),
-	},
 };
 
 export default StyleSheet.create(style);

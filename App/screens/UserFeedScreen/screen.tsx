@@ -21,7 +21,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	hideShareSection?: boolean;
-	onLikePress: any;
+	onLikePress: () => Promise<any>;
 	onPostDeletePress: any;
 	onUserPress: any;
 	loadingMore: boolean;

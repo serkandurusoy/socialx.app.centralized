@@ -202,6 +202,7 @@ export const getPublicPostsHoc = (comp: any) =>
 			const {
 				Posts: {loading, error, getPublicPosts, fetchMore, refetch, hasMore},
 			} = pps;
+			console.log('getPublicPostsHoc', pps);
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
@@ -271,7 +272,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 			const {
 				Posts: {loading, error, getFriendsPosts, fetchMore, refetch, hasMore},
 			} = pps;
-			console.log(pps);
+			console.log('getFriendsPostsHoc', pps);
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;

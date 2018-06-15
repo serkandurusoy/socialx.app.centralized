@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {InteractionManager} from 'react-native';
 import {connect} from 'react-redux';
 
-import {IWallPostCardProp} from 'components/Displayers';
 import {NavigationEventSubscription, NavigationScreenProp} from 'react-navigation';
 import {Images} from 'theme';
 import {NewWallPostData} from '../NewWallPostScreen';
@@ -72,6 +71,7 @@ interface IUserFeedScreenProps extends IFeedProps {
 
 interface IUserFeedScreenState {
 	refreshing: boolean;
+	silentRefresh: boolean;
 	loadingMore: boolean;
 }
 
@@ -79,13 +79,18 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public state = {
 		refreshing: false,
 		loadingMore: false,
+		silentRefresh: false,
 	};
 
 	private didFocusSubscription: NavigationEventSubscription | null = null;
 
+	get isRefreshing() {
+		return this.state.refreshing || this.state.silentRefresh;
+	}
+
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
-			this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.refreshWallPosts);
+			this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.silentRefreshWallPosts);
 		});
 	}
 
@@ -227,7 +232,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private refreshWallPosts = async () => {
-		if (!this.state.refreshing) {
+		if (!this.isRefreshing) {
 			this.setState({refreshing: true});
 			try {
 				await this.props.data.refetch();
@@ -242,20 +247,37 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 	};
 
+	private silentRefreshWallPosts = async () => {
+		if (!this.isRefreshing) {
+			this.setState({silentRefresh: true});
+			try {
+				await this.props.refresh();
+				this.setState({
+					silentRefresh: false,
+				});
+			} catch (Ex) {
+				this.setState({silentRefresh: false});
+				console.log('ex', Ex);
+			}
+		}
+	};
+
 	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
 		const {likePost, removeLikePost, Items, refresh} = this.props;
 
 		const likeQuery = {variables: {postId}};
 
 		const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
-		console.log('result:', result);
+		console.log('onLikeButtonClickHandler result:', result);
 
 		if (result.error) {
 			console.log(result.error);
-			return;
+			return likedByMe;
 		}
 
 		// await refresh();
+
+		return !likedByMe;
 	};
 
 	private onPostDeleteClickHandler = async (postId: string) => {

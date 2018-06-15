@@ -41,7 +41,7 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps {
 	numberOfComments?: number;
 	numberOfWalletCoins?: number;
 	onImageClick?: (index: number) => void;
-	onLikeButtonClick?: () => void;
+	onLikeButtonClick?: () => Promise<any>;
 	onDeleteClick?: (postId: string) => void;
 	onUserClick?: (userId: string) => void;
 	onCommentClick: (startComment: boolean) => void;
