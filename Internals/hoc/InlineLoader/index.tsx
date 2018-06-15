@@ -48,11 +48,6 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 		};
 
 		private originalRef: any = null;
-		private animationRef: any = null;
-
-		public componentDidMount(): void {
-			this.animationRef.play();
-		}
 
 		public render() {
 			const updatedProps: any = {...this.props, renderWithLoader: this.renderWithLoaderHandler};
@@ -68,7 +63,7 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 
 		private renderWithLoaderHandler = (WrappedComponent: React.ComponentType) => {
 			if (this.props.isLoading) {
-				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.setAnimationRef} />;
+				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.startAnimation} />;
 			} else {
 				const {fadeAnimation} = this.state;
 				return (
@@ -91,8 +86,10 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 			}).start();
 		};
 
-		private setAnimationRef = (ref: any) => {
-			this.animationRef = ref;
+		private startAnimation = (anim: any) => {
+			if (anim) {
+				anim.play();
+			}
 		};
 	};
 };

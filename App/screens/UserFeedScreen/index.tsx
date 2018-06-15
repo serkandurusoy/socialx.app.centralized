@@ -88,11 +88,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		return this.state.refreshing || this.state.silentRefresh;
 	}
 
-	public componentDidMount() {
-		InteractionManager.runAfterInteractions(() => {
-			this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.silentRefreshWallPosts);
-		});
-	}
+	// public componentDidMount() {
+	// 	InteractionManager.runAfterInteractions(() => {
+	// 		this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.silentRefreshWallPosts);
+	// 	});
+	// }
 
 	public componentWillUnmount(): void {
 		if (this.didFocusSubscription) {

@@ -272,11 +272,12 @@ export const getFriendsPostsHoc = (comp: any) =>
 			const {
 				Posts: {loading, error, getFriendsPosts, fetchMore, refetch, hasMore},
 			} = pps;
-			console.log('getFriendsPostsHoc', pps);
 			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
 			// const {nextToken, Items, rawItems} = getPublicPosts;
 			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
 			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
+
+			console.log('getFriendsPostsHoc', pps, 'no items', Items.length);
 
 			const dataSpine = (pItems: any) => {
 				const rets = [];
@@ -321,6 +322,8 @@ export const getFriendsPostsHoc = (comp: any) =>
 									const previousItems = previousEntry ? previousEntry.Items : [];
 									const newItems = fetchMoreResult.getFriendsPosts.Items || [];
 									const newNext = fetchMoreResult.getFriendsPosts.nextToken;
+
+									console.log('New items', newItems.length);
 
 									const newPosts = {
 										getFriendsPosts: {
