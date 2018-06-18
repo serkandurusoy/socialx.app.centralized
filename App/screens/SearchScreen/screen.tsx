@@ -1,8 +1,7 @@
 import {SearchFilterButton, SearchResultEntry} from 'components';
 import React, {Component} from 'react';
-import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {Keyboard, Text, View} from 'react-native';
 import {connect} from 'react-redux';
-import {Icons} from 'theme/';
 import {IAppUIStateProps, SearchResultData} from 'types';
 import {SearchFilterValues} from './index';
 import style from './style';
@@ -72,20 +71,13 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 	private renderEmptyState = () => {
 		return (
 			<View style={style.emptyContainer}>
-				<Image source={Icons.searchTabStartSearch} resizeMode={'contain'} style={style.startSearchIcon} />
-				<Text style={style.startSearchText}>{'Start searching now'}</Text>
+				<Text style={style.startSearchText}>{'Render default top results'}</Text>
 			</View>
 		);
 	};
 
 	private renderNoResults = () => {
-		return (
-			<View style={style.noResultsContainer}>
-				{this.renderFilterButtons()}
-				{this.renderPeopleNoResults()}
-				{this.renderCreateNewGroup()}
-			</View>
-		);
+		return <View style={style.noResultsContainer}>{this.renderPeopleNoResults()}</View>;
 	};
 
 	private renderPeopleNoResults = () => {
@@ -100,13 +92,7 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 	};
 
 	private renderSearchResults = () => {
-		return (
-			<View style={style.resultsContainer}>
-				{this.renderFilterButtons()}
-				{this.renderPeopleResults()}
-				{this.renderCreateNewGroup()}
-			</View>
-		);
+		return <View style={style.resultsContainer}>{this.renderPeopleResults()}</View>;
 	};
 
 	private renderPeopleResults = () =>
@@ -123,31 +109,27 @@ class SearchScreenComponent extends Component<ISearchScreenComponentProps, ISear
 		return (
 			<View style={style.filterButtonsContainer}>
 				<SearchFilterButton
+					text={'Top'}
+					selected={this.props.selectedFilter === SearchFilterValues.Top}
+					onPress={() => this.props.setNewFilter(SearchFilterValues.Top)}
+				/>
+				<SearchFilterButton
 					text={'People'}
 					selected={this.props.selectedFilter === SearchFilterValues.People}
 					onPress={() => this.props.setNewFilter(SearchFilterValues.People)}
 				/>
-				{/*<SearchFilterButton*/}
-				{/*text={'Groups'}*/}
-				{/*selected={this.props.selectedFilter === SearchFilterValues.Groups}*/}
-				{/*onPress={() => this.props.setNewFilter(SearchFilterValues.Groups)}*/}
-				{/*/>*/}
+				<SearchFilterButton
+					text={'Tags'}
+					selected={this.props.selectedFilter === SearchFilterValues.Tags}
+					onPress={() => this.props.setNewFilter(SearchFilterValues.Tags)}
+				/>
+				<SearchFilterButton
+					text={'Places'}
+					selected={this.props.selectedFilter === SearchFilterValues.Places}
+					onPress={() => this.props.setNewFilter(SearchFilterValues.Places)}
+				/>
 			</View>
 		);
-	};
-
-	private renderCreateNewGroup = () => {
-		if (this.props.selectedFilter === SearchFilterValues.Groups) {
-			return (
-				<View style={style.createGroupContainer}>
-					<Image source={Icons.searchTabCreateGroup} resizeMode={'contain'} style={style.createGroupIcon} />
-					<TouchableOpacity onPress={this.props.createGroupHandler}>
-						<Text style={style.createGroupText}>{'Create a group'}</Text>
-					</TouchableOpacity>
-				</View>
-			);
-		}
-		return null;
 	};
 }
 
