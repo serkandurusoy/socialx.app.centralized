@@ -12,8 +12,10 @@ import {AvatarImagePlaceholder} from 'consts';
 import {SearchResultData, SearchResultKind, SearchResultPeople} from 'types';
 
 export enum SearchFilterValues {
+	Top = 'top',
 	People = 'people',
-	Groups = 'groups',
+	Tags = 'tags',
+	Places = 'places',
 }
 
 export interface SearchResultCreateGroup {
@@ -45,9 +47,9 @@ interface ISearchScreenState {
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private static navigationOptions = (props: ISearchScreenProps) => ({
-		headerTitle: () => {
+		header: () => {
 			const params = props.navigation.state.params || {};
-			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} />;
+			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} onBack={params.backHandler} />;
 		},
 	});
 
@@ -69,7 +71,10 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({searchInputUpdatedHandler: this.updateSearchTerm});
+			this.props.navigation.setParams({
+				searchInputUpdatedHandler: this.updateSearchTerm,
+				backHandler: this.goBackHandler,
+			});
 		});
 		const blurViewHandle = findNodeHandle(this.blurView);
 		this.setState({blurViewRef: blurViewHandle});
@@ -219,6 +224,10 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			this.props.navigation.navigate('UserProfileScreen', {userId: result.id});
 		}
 		// later add other user cases!
+	};
+
+	private goBackHandler = () => {
+		this.props.navigation.goBack();
 	};
 }
 

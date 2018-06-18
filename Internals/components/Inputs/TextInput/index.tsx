@@ -1,5 +1,6 @@
+import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
-import {Keyboard, Text, TextInput, TextInputStatic, TouchableOpacity, View} from 'react-native';
+import {Keyboard, Platform, Text, TextInput, TextInputStatic, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Sizes} from 'theme';
 import style from './style';
@@ -167,7 +168,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	};
 
 	private renderCancelButton = () => {
-		if (this.state.hasFocus && this.props.canCancel) {
+		if (this.state.hasFocus && this.props.canCancel && Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableOpacity style={style.cancelButton} onPress={() => Keyboard.dismiss()}>
 					<Text style={[style.cancelButtonText, {color: this.props.cancelButtonTextColor}]}>Cancel</Text>
