@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {findNodeHandle, InteractionManager, View} from 'react-native';
+import {findNodeHandle, InteractionManager, Keyboard, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 
-import {ModalCreateGroup, ModalInvitePeople, SearchHeader} from 'components';
+import {ModalCreateGroup, ModalInvitePeople} from 'components';
 import SearchScreenComponent from './screen';
 
 import {ipfsConfig as base} from 'configuration';
@@ -10,6 +10,7 @@ import {ipfsConfig as base} from 'configuration';
 import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
 import {AvatarImagePlaceholder} from 'consts';
 import {SearchResultData, SearchResultKind, SearchResultPeople} from 'types';
+import {SearchHeader} from './Components';
 
 export enum SearchFilterValues {
 	Top = 'top',
@@ -43,13 +44,23 @@ interface ISearchScreenState {
 	groupName: string;
 	groupDescription: string;
 	nextShowInvitePeople: boolean;
+	trendingVisible: boolean;
+	searching: boolean;
 }
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private static navigationOptions = (props: ISearchScreenProps) => ({
 		header: () => {
 			const params = props.navigation.state.params || {};
-			return <SearchHeader searchInputUpdated={params.searchInputUpdatedHandler} onBack={params.backHandler} />;
+			return (
+				<SearchHeader
+					backVisible={params.backVisible}
+					searchInputUpdated={params.searchInputUpdatedHandler}
+					onBack={params.backHandler}
+					onFocusUpdated={params.onFocusUpdatedHandler}
+					searchValue={params.searchValue}
+				/>
+			);
 		},
 	});
 
@@ -57,7 +68,7 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		invitePeopleModalVisible: false,
 		searchTerm: '',
 		searchResults: [],
-		selectedFilter: SearchFilterValues.People,
+		selectedFilter: SearchFilterValues.Top,
 		blurViewRef: null,
 		createGroupSearchResults: [],
 		selectedUsers: [],
@@ -65,6 +76,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		groupName: '',
 		groupDescription: '',
 		nextShowInvitePeople: false,
+		trendingVisible: true,
+		searching: false,
 	};
 
 	private blurView = null;
@@ -72,8 +85,11 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({
+				backVisible: false,
 				searchInputUpdatedHandler: this.updateSearchTerm,
-				backHandler: this.goBackHandler,
+				backHandler: this.setTrendingVisible,
+				onFocusUpdatedHandler: this.onFocusUpdatedHandler,
+				searchValue: '',
 			});
 		});
 		const blurViewHandle = findNodeHandle(this.blurView);
@@ -111,6 +127,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 					setNewFilter={this.updateSelectedFilter}
 					createGroupHandler={() => this.toggleGroupInfoModal()}
 					onSearchResultSelect={this.onSearchResultSelectHandler}
+					trendingVisible={this.state.trendingVisible}
+					searching={this.state.searching}
 				/>
 			</View>
 		);
@@ -124,8 +142,17 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			return results;
 		}
 		try {
+			this.setState({
+				searching: true,
+			});
+
 			let resp = await search({variables: {query}});
 			resp = resp.data.searchUsers;
+
+			this.setState({
+				searching: false,
+			});
+
 			if (resp.length === 0) {
 				return results;
 			}
@@ -142,10 +169,12 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	};
 
 	private updateSearchTerm = async (term: string) => {
-		const {search} = this.props;
 		this.setState({
 			searchTerm: term,
 			searchResults: await this.doSearch(term),
+		});
+		this.props.navigation.setParams({
+			searchValue: term,
 		});
 	};
 
@@ -223,11 +252,28 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		) {
 			this.props.navigation.navigate('UserProfileScreen', {userId: result.id});
 		}
-		// later add other user cases!
 	};
 
-	private goBackHandler = () => {
-		this.props.navigation.goBack();
+	private setTrendingVisible = () => {
+		this.toggleBackVisible(false);
+		Keyboard.dismiss();
+	};
+
+	private toggleBackVisible = (visible: boolean) => {
+		this.props.navigation.setParams({
+			backVisible: visible,
+			searchValue: '',
+		});
+		this.setState({
+			trendingVisible: !visible,
+			searchResults: [],
+		});
+	};
+
+	private onFocusUpdatedHandler = (value: boolean) => {
+		if (value) {
+			this.toggleBackVisible(true);
+		}
 	};
 }
 

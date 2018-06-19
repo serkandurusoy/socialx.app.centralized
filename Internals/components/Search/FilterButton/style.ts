@@ -15,6 +15,7 @@ const style: any = {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
 		paddingVertical: Sizes.smartVerticalScale(15),
+		textAlign: 'center',
 	},
 	textSelected: {
 		color: Colors.postHour,
