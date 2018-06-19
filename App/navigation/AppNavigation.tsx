@@ -165,9 +165,8 @@ const UserFeedStackNavigator = StackNavigator(
 
 const MainScreenTabNavigation = TabNavigator(
 	{
-		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
 		UserFeedTab: UserFeedStackNavigator,
-		// SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
 		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
 		MyProfileTab: {screen: MyProfileStackNavigator},
 	},
