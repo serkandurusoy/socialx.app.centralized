@@ -133,10 +133,8 @@ const checkUsername = gql`
 `;
 
 const blockUserMut = gql`
-	mutation blockUser($user: ID!) {
-		blockUser(user: $user) {
-			userId
-		}
+	mutation blockUser($userId: ID!) {
+		blockUser(userId: $userId)
 	}
 `;
 

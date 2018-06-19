@@ -336,10 +336,10 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 		try {
 			await blockUser({
 				variables: {
-					user: userId,
+					userId,
 				},
 			});
-			showToastMessage('Friend was blocked...');
+			showToastMessage('This user has been blocked..');
 		} catch (ex) {
 			showToastMessage(`There was a problem blocking this friend.  Please try again later... ${ex}`);
 			console.log(`exception: ${ex}`);
