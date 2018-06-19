@@ -1,29 +1,22 @@
+import debounce from 'lodash/debounce';
 import React, {Component} from 'react';
-import {findNodeHandle, InteractionManager, Keyboard, View} from 'react-native';
+import {InteractionManager, Keyboard} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 
-import {ModalCreateGroup, ModalInvitePeople} from 'components';
-import SearchScreenComponent from './screen';
-
-import {ipfsConfig as base} from 'configuration';
-
 import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
+import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {SearchResultData, SearchResultKind, SearchResultPeople} from 'types';
 import {SearchHeader} from './Components';
+import SearchScreenComponent from './screen';
+
+const SEARCH_DEBOUNCE_TIME_MS = 300;
 
 export enum SearchFilterValues {
 	Top = 'top',
 	People = 'people',
 	Tags = 'tags',
 	Places = 'places',
-}
-
-export interface SearchResultCreateGroup {
-	id: string;
-	fullName: string;
-	location: string;
-	avatarURL?: string;
 }
 
 interface ISearchScreenProps {
@@ -36,28 +29,23 @@ interface ISearchScreenState {
 	searchTerm: string;
 	searchResults: SearchResultData[];
 	selectedFilter: SearchFilterValues;
-	invitePeopleModalVisible: boolean;
-	blurViewRef: any;
-	createGroupSearchResults: SearchResultCreateGroup[];
-	selectedUsers: string[];
-	groupInfoModalVisible: boolean;
-	groupName: string;
-	groupDescription: string;
-	nextShowInvitePeople: boolean;
 	trendingVisible: boolean;
 	searching: boolean;
+	loadingTrends: boolean;
+	trendingResults: SearchResultData[];
 }
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private static navigationOptions = (props: ISearchScreenProps) => ({
 		header: () => {
 			const params = props.navigation.state.params || {};
+			// TODO: any other options here not to use 'navigation.state.params'?
 			return (
 				<SearchHeader
 					backVisible={params.backVisible}
 					searchInputUpdated={params.searchInputUpdatedHandler}
 					onBack={params.backHandler}
-					onFocusUpdated={params.onFocusUpdatedHandler}
+					onFocusUpdated={params.onSearchFocusUpdatedHandler}
 					searchValue={params.searchValue}
 				/>
 			);
@@ -65,22 +53,20 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	});
 
 	public state = {
-		invitePeopleModalVisible: false,
 		searchTerm: '',
 		searchResults: [],
 		selectedFilter: SearchFilterValues.Top,
-		blurViewRef: null,
-		createGroupSearchResults: [],
-		selectedUsers: [],
-		groupInfoModalVisible: false,
-		groupName: '',
-		groupDescription: '',
-		nextShowInvitePeople: false,
 		trendingVisible: true,
 		searching: false,
+		loadingTrends: false,
+		trendingResults: [],
 	};
 
-	private blurView = null;
+	private debounceSearch = debounce(async (term: string) => {
+		this.setState({
+			searchResults: await this.doSearch(term),
+		});
+	}, SEARCH_DEBOUNCE_TIME_MS);
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
@@ -88,49 +74,26 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 				backVisible: false,
 				searchInputUpdatedHandler: this.updateSearchTerm,
 				backHandler: this.setTrendingVisible,
-				onFocusUpdatedHandler: this.onFocusUpdatedHandler,
+				onSearchFocusUpdatedHandler: this.onSearchFocusUpdatedHandler,
 				searchValue: '',
 			});
+			this.loadTrendingSearchResults();
 		});
-		const blurViewHandle = findNodeHandle(this.blurView);
-		this.setState({blurViewRef: blurViewHandle});
 	}
 
 	public render() {
 		return (
-			<View style={{flex: 1}}>
-				<ModalCreateGroup
-					visible={this.state.groupInfoModalVisible}
-					confirmHandler={() => this.toggleGroupInfoModal(true)}
-					declineHandler={() => this.toggleGroupInfoModal()}
-					updateGroupName={this.updateGroupNameHanlder}
-					updateGroupDescription={this.updateGroupDescriptionHandler}
-					blurViewRef={this.state.blurViewRef}
-					afterDismiss={this.onGroupInfoModalHide}
-				/>
-				<ModalInvitePeople
-					visible={this.state.invitePeopleModalVisible}
-					createHandler={this.handleCreateNewGroup}
-					cancelHandler={this.toggleInvitePeopleModal}
-					blurViewRef={this.state.blurViewRef}
-					onSearchUpdated={this.createGroupSearchUpdated}
-					searchResults={this.state.createGroupSearchResults}
-					selectNewUserForGroup={this.selectNewUserForGroupHandler}
-					selectedUsers={this.state.selectedUsers}
-				/>
-				<SearchScreenComponent
-					ref={(view: any) => (this.blurView = view)}
-					addFriendHandler={this.addFriendHandler}
-					searchTerm={this.state.searchTerm}
-					searchResults={this.state.searchResults}
-					selectedFilter={this.state.selectedFilter}
-					setNewFilter={this.updateSelectedFilter}
-					createGroupHandler={() => this.toggleGroupInfoModal()}
-					onSearchResultSelect={this.onSearchResultSelectHandler}
-					trendingVisible={this.state.trendingVisible}
-					searching={this.state.searching}
-				/>
-			</View>
+			<SearchScreenComponent
+				addFriendHandler={this.addFriendHandler}
+				searchResults={this.state.searchResults}
+				selectedFilter={this.state.selectedFilter}
+				setNewFilter={this.updateSelectedFilter}
+				onSearchResultSelect={this.onSearchResultSelectHandler}
+				trendingVisible={this.state.trendingVisible}
+				searching={this.state.searching}
+				loadingTrends={this.state.loadingTrends}
+				trendingResults={this.state.trendingResults}
+			/>
 		);
 	}
 
@@ -164,6 +127,10 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 				avatarURL: current.avatar ? base.ipfs_URL + current.avatar.hash : AvatarImagePlaceholder,
 			}));
 		} catch (ex) {
+			console.log('Search error', ex);
+			this.setState({
+				searching: false,
+			});
 			return results;
 		}
 	};
@@ -171,11 +138,11 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	private updateSearchTerm = async (term: string) => {
 		this.setState({
 			searchTerm: term,
-			searchResults: await this.doSearch(term),
 		});
 		this.props.navigation.setParams({
 			searchValue: term,
 		});
+		this.debounceSearch(term);
 	};
 
 	private updateSelectedFilter = async (value: SearchFilterValues) => {
@@ -183,42 +150,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			selectedFilter: value,
 			searchResults: await this.doSearch(this.state.searchTerm),
 		});
-	};
-
-	private toggleInvitePeopleModal = () => {
-		this.setState({
-			invitePeopleModalVisible: !this.state.invitePeopleModalVisible,
-			createGroupSearchResults: [],
-			selectedUsers: [],
-		});
-	};
-
-	private selectNewUserForGroupHandler = (userId: string) => {
-		this.setState({selectedUsers: [...this.state.selectedUsers, userId]});
-	};
-
-	private toggleGroupInfoModal = (prepareNext = false) => {
-		this.setState({
-			groupInfoModalVisible: !this.state.groupInfoModalVisible,
-			groupName: '',
-			groupDescription: '',
-			nextShowInvitePeople: prepareNext,
-		});
-	};
-
-	private updateGroupNameHanlder = (text: string) => {
-		this.setState({groupName: text});
-	};
-
-	private updateGroupDescriptionHandler = (text: string) => {
-		this.setState({groupDescription: text});
-	};
-
-	private onGroupInfoModalHide = () => {
-		if (this.state.nextShowInvitePeople) {
-			this.toggleInvitePeopleModal();
-			this.setState({nextShowInvitePeople: false});
-		}
 	};
 
 	private addFriendHandler = async (friendId: string) => {
@@ -229,19 +160,6 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 				user: friendId,
 			},
 		});
-	};
-
-	private handleCreateNewGroup = () => {
-		this.toggleInvitePeopleModal();
-		// TODO: check state variables: groupName, groupDescription, selectedUsers
-	};
-
-	private createGroupSearchUpdated = (term: string) => {
-		// let createGroupSearchResults: SearchResultCreateGroup[] = [];
-		// if (term.length > 3 && term.length < 8) {
-		// 	createGroupSearchResults = SEARCH_RESULTS_CREATE_GROUP;
-		// }
-		// this.setState({createGroupSearchResults});
 	};
 
 	private onSearchResultSelectHandler = (result: SearchResultData) => {
@@ -255,25 +173,52 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	};
 
 	private setTrendingVisible = () => {
-		this.toggleBackVisible(false);
+		this.toggleBackVisibleAndResetSearch(false);
+		this.setState({
+			trendingVisible: true,
+			searchResults: [],
+		});
 		Keyboard.dismiss();
 	};
 
-	private toggleBackVisible = (visible: boolean) => {
+	private toggleBackVisibleAndResetSearch = (visible: boolean) => {
 		this.props.navigation.setParams({
 			backVisible: visible,
 			searchValue: '',
 		});
+	};
+
+	private onSearchFocusUpdatedHandler = (value: boolean) => {
+		if (value && this.state.trendingVisible) {
+			this.loadTopSearchResults();
+			this.toggleBackVisibleAndResetSearch(true);
+		}
+	};
+
+	private loadTopSearchResults = async () => {
 		this.setState({
-			trendingVisible: !visible,
+			searching: true,
 			searchResults: [],
+			trendingVisible: false,
+		});
+		// TODO: @Jake: update query here
+		const searchResults = await this.doSearch('ma');
+		this.setState({
+			searching: false,
+			searchResults,
 		});
 	};
 
-	private onFocusUpdatedHandler = (value: boolean) => {
-		if (value) {
-			this.toggleBackVisible(true);
-		}
+	private loadTrendingSearchResults = async () => {
+		this.setState({
+			loadingTrends: true,
+		});
+		// TODO: @Jake: update query here
+		const trendingResults = await this.doSearch('ma');
+		this.setState({
+			loadingTrends: false,
+			trendingResults,
+		});
 	};
 }
 
