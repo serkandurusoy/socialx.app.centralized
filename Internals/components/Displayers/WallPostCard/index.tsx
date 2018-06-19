@@ -449,16 +449,17 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 		alert('Tags!!! Coming soon..' + tag);
 	};
 
-	private launchExternalURL = (url: string) => {
-		Linking.canOpenURL(url)
-			.then((supported: boolean) => {
-				if (!supported) {
-					alert('Link is not supported: ' + url);
-				} else {
-					return Linking.openURL(url);
-				}
-			})
-			.catch((err) => console.error('An error occurred', err));
+	private launchExternalURL = async (url: string) => {
+		try {
+			const supported = await Linking.canOpenURL(url);
+			if (!supported) {
+				alert('Cannot open link, link not supported');
+			} else {
+				return Linking.openURL(url);
+			}
+		} catch (ex) {
+			console.log(ex);
+		}
 	};
 }
 
