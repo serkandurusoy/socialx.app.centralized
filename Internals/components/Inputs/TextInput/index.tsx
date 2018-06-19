@@ -1,6 +1,6 @@
 import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
-import {Keyboard, Platform, Text, TextInput, TextInputStatic, TouchableOpacity, View} from 'react-native';
+import {Keyboard, Platform, Text, TextInput, TextInputProps, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Sizes} from 'theme';
 import style from './style';
@@ -58,7 +58,6 @@ export interface ISXTextInputProps {
 
 export interface ISXTextInputState {
 	hasFocus: boolean;
-	textValue?: string;
 }
 
 export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState> {
@@ -89,7 +88,6 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 
 	public state = {
 		hasFocus: false,
-		textValue: 'value' in this.props ? this.props.value : '',
 	};
 
 	public inputComponent: any;
@@ -109,6 +107,11 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 			...(isMultiline ? [style.multilineTextInput] : []),
 		];
 
+		const valueProps: Partial<TextInputProps> = {};
+		if ('value' in this.props) {
+			valueProps.value = this.props.value;
+		}
+
 		return (
 			<View style={this.getContainerStyles()}>
 				<View style={inputContainerStyles}>
@@ -116,7 +119,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 					<TextInput
 						allowFontScaling={false}
 						autoFocus={this.props.autoFocus}
-						value={this.state.textValue}
+						{...valueProps}
 						onChangeText={this.textChangedHandler}
 						onSubmitEditing={this.props.onSubmitPressed}
 						ref={(component: any) => (this.inputComponent = component)}
@@ -188,7 +191,6 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	};
 
 	private textChangedHandler = (value: string) => {
-		this.setState({textValue: value});
 		if (this.props.onChangeText) {
 			this.props.onChangeText(value);
 		}
