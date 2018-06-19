@@ -9,15 +9,15 @@ import {SearchFilterValues} from './index';
 import style from './style';
 
 interface ISearchScreenComponentProps extends IAppUIStateProps {
-	searchTerm: string;
+	addFriendHandler: (value: string) => Promise<any>;
 	searchResults: SearchResultData[];
 	selectedFilter: SearchFilterValues;
 	setNewFilter: (value: SearchFilterValues) => void;
-	createGroupHandler: () => void;
-	addFriendHandler: (value: string) => Promise<any>;
 	onSearchResultSelect: (result: SearchResultData) => void;
 	trendingVisible: boolean;
 	searching: boolean;
+	trendingResults: SearchResultData[];
+	loadingTrends: boolean;
 }
 
 const getContainerStyles = (trendingVisible: boolean) => {
@@ -32,7 +32,12 @@ const getContainerStyles = (trendingVisible: boolean) => {
 const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = (props) => (
 	<View style={{flex: 1}}>
 		<View style={getContainerStyles(props.trendingVisible)}>
-			<TrendingSearches />
+			<TrendingSearches
+				searchResults={props.trendingResults}
+				searching={props.loadingTrends}
+				addFriendHandler={props.addFriendHandler}
+				onSearchResultSelect={props.onSearchResultSelect}
+			/>
 			<SearchResults
 				searchResults={props.searchResults}
 				selectedFilter={props.selectedFilter}

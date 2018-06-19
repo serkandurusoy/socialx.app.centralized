@@ -77,7 +77,6 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		blurOnSubmit: false,
 		borderColor: Colors.pink,
 		numberOfLines: 1,
-		value: '',
 		autoFocus: false,
 		size: InputSizes.Normal,
 		borderWidth: Sizes.smartHorizontalScale(2),
