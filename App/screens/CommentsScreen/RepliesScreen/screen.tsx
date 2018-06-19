@@ -50,40 +50,32 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 					ref={(ref: ScrollView) => (this.scrollRef = ref)}
 					onLayout={() => this.scrollRef.scrollToEnd()}
 				>
-					{this.renderNoReplies()}
-					{this.renderReplies()}
+					{this.props.noReplies ? (
+						<View style={style.noRepliesContainer}>
+							<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+							<Text style={style.noRepliesText}>{'Be the first to comment here'}</Text>
+						</View>
+					) : (
+						// TODO: @jake @serkan find a better index here because
+						// this will be a problem with realtime updates as new comments come in
+						this.props.replies.map((reply, index) => (
+							<CommentCard
+								key={index}
+								comment={reply}
+								onCommentLike={() => this.props.onReplyLike(reply)}
+								onCommentReply={() => this.props.onReplyComment(reply, true)}
+								isReply={false}
+								onCommentDelete={() => this.props.onReplyDelete(reply)}
+								onViewUserProfile={this.props.onViewUserProfile}
+							/>
+						))
+					)}
 				</ScrollView>
 				<CommentTextInput onCommentSend={this.props.onSendReply} placeholder={'Write a reply...'} />
 			</SafeAreaView>
 		);
 	}
-
-	private renderNoReplies = () => {
-		if (this.props.noReplies) {
-			return (
-				<View style={style.noRepliesContainer}>
-					<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
-					<Text style={style.noRepliesText}>{'Be the first to comment here'}</Text>
-				</View>
-			);
-		}
-		return null;
-	};
-
-	private renderReplies = () =>
-		this.props.replies.map((reply, index) => (
-			<CommentCard
-				key={index}
-				comment={reply}
-				onCommentLike={() => this.props.onReplyLike(reply)}
-				onCommentReply={() => this.props.onReplyComment(reply, true)}
-				isReply={false}
-				onCommentDelete={() => this.props.onReplyDelete(reply)}
-				onViewUserProfile={this.props.onViewUserProfile}
-			/>
-		));
 }
 
-const inlineLoaderWrapper = withInlineLoader(RepliesScreenComponent as any);
-
-export default withResizeOnKeyboardShow(inlineLoaderWrapper);
+// TODO: @jake @serkan consider using "recompose" to compose HOC's
+export default withResizeOnKeyboardShow(withInlineLoader(RepliesScreenComponent as any));

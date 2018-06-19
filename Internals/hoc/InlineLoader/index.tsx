@@ -61,6 +61,7 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 			return this.originalRef;
 		};
 
+		// TODO: @jake @serkan let's refactor this!
 		private renderWithLoaderHandler = (WrappedComponent: React.ComponentType) => {
 			if (this.props.isLoading) {
 				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.startAnimation} />;
