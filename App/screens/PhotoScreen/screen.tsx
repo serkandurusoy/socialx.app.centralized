@@ -50,6 +50,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 	};
 
 	public render() {
+		// TODO: @jake @serkan let's refactor this!
 		return this.props.renderWithLoader(
 			<KeyboardAwareScrollView
 				style={style.scrollView}

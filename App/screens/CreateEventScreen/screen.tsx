@@ -3,15 +3,15 @@ import {CheckboxButtonWithIcon} from 'components/Displayers/CheckboxButtonWithIc
 import {IEventData} from 'components/Displayers/EventListItem';
 import moment from 'moment';
 import React, {Component} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import ModalDropdown from 'react-native-modal-dropdown';
 import {Hoshi, Sae} from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Icons, Sizes} from 'theme';
 import {FriendsSearchResult} from '../PhotoScreen';
 import style, {COLOR_BUTTON_HEIGHT} from './style';
+import { AddTitleAndColor } from './components';
 
 const DATE_FORMAT = 'DD MMM YYYY';
 const TIME_FORMAT = 'hh:mm A';
@@ -99,7 +99,12 @@ export default class CreateEventScreenComponent extends Component<
 					minimumDate={this.state.minimumDate}
 					titleIOS={this.state.iosTitle}
 				/>
-				{this.renderAddTitleAndColor()}
+				<AddTitleAndColor
+					selectedColorStyle={{backgroundColor: this.state.selectedColor}}
+					textInputChanged={this.textInputChanged}
+					newColorSelectedHandler={this.newColorSelectedHandler}
+					colorPickerUpdateSize={this.colorPickerUpdateSize}
+				/>
 				{this.renderStartEndDateSection()}
 				{this.renderAllDayEvent()}
 				{this.renderStartEndTimeSection()}
@@ -145,41 +150,6 @@ export default class CreateEventScreenComponent extends Component<
 			ret = {...ret, invitedFriends: this.props.invitedFriends};
 		}
 		return ret;
-	};
-
-	private renderAddTitleAndColor = () => {
-		const selectedColorStyle = {backgroundColor: this.state.selectedColor};
-		return (
-			<View style={[style.paddingContainer, style.topContainer]}>
-				<View style={{flex: 1}}>
-					<Sae
-						label={'Add title'}
-						iconClass={FontAwesomeIcon}
-						iconName={'pencil'}
-						iconColor={Colors.transparent} // trick to hide the icon
-						style={[style.saeElement, style.addsaeElement]}
-						inputStyle={style.titleInput}
-						labelStyle={style.titleLabel}
-						onChangeText={(value: string) => this.textInputChanged(value, 'title')}
-						autoCapitalize={'none'}
-						autoCorrect={false}
-					/>
-				</View>
-				<ModalDropdown
-					keyboardShouldPersistTaps={'handled'}
-					dropdownStyle={style.colorDropDown}
-					options={EVENT_COLORS}
-					defaultValue={EVENT_COLORS[0]}
-					onSelect={this.newColorSelectedHandler}
-					renderRow={this.renderColorItem}
-					renderSeparator={() => <View />}
-					scrollEnabled={false}
-					adjustFrame={this.colorPickerUpdateSize}
-				>
-					<View style={[style.colorRoundButton, selectedColorStyle]} />
-				</ModalDropdown>
-			</View>
-		);
 	};
 
 	private renderStartEndDateSection = () => {

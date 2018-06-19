@@ -64,6 +64,7 @@ const UserFeedScreen: SFC<IUserFeedScreenProps> = (props: IUserFeedScreenProps) 
 	};
 
 	const renderWithLoading = () => {
+		// TODO: @jake @serkan let's refactor this!
 		return props.renderWithLoader(
 			<FlatList
 				windowSize={5}

@@ -13,6 +13,11 @@ import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
 import {decodeBase64Text, getUserAvatar} from 'utilities';
 
+// TODO @jake @serkan too much async work being done in components, these should all be moved out into
+// a data api, which can be redux or some other state manager, the current app architecture makes everything
+// too tightly coupled, furthermore causes setState to be potentially called on unmounted components
+// which is a primate candidate for memory leaks
+
 interface IRepliesScreenNavScreenProps {
 	params: {
 		commentId: string;
@@ -194,6 +199,7 @@ const reduxWrapper = connect(
 	MapDispatchToProps,
 )(RepliesScreen as any);
 
+// TODO: @jake @serkan "recompose"
 const getCommentsWrapper = getCommentsHoc(reduxWrapper);
 const commentWrapper = commentHoc(getCommentsWrapper);
 const likeWrapper = likeCommentHoc(commentWrapper);

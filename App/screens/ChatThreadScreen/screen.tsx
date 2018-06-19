@@ -15,6 +15,35 @@ import uuidv4 from 'uuid/v4';
 import {MessageData} from './index';
 import style from './style';
 
+// TODO: @jake @serkan these props are definitely not correct!
+interface IMessageContentProps {
+	currentMessage: MessageData;
+	textStyle: number;
+}
+
+const MessageContent: React.SFC<IMessageContentProps> = ({currentMessage, textStyle}) => {
+	if (currentMessage.text) {
+		const textStyleUpdated = isStringPureEmoji(currentMessage.text) ? style.pureEmojiText : textStyle;
+		return (
+			<Text style={textStyleUpdated} selectable={true}>
+				{currentMessage.text}
+			</Text>
+		);
+	} else if (currentMessage.imageURL) {
+		return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'} />;
+	} else if (currentMessage.geolocation) {
+		return (
+			<Text style={textStyle} selectable={true}>
+				{'My location:\n'}
+				{currentMessage.geolocation.latitude}
+				{', '}
+				{currentMessage.geolocation.longitude}
+			</Text>
+		);
+	}
+	return null;
+};
+
 interface IChatThreadScreenComponentProps {
 	sendOwnMessage: (message: MessageData) => void;
 	messages: MessageData[];
@@ -102,11 +131,8 @@ export default class ChatThreadScreenComponent extends Component<
 	}
 
 	private addOwnMessage = (newMessages: MessageData[] = []) => {
-		newMessages[0].ownMessage = true;
-		this.props.sendOwnMessage(newMessages[0]);
+		this.props.sendOwnMessage({...newMessages[0], ownMessage: true});
 	};
-
-	private renderText = (text: string) => {};
 
 	private renderMessage = (props: any) => {
 		const currentMessage: MessageData = props.currentMessage;
@@ -118,70 +144,42 @@ export default class ChatThreadScreenComponent extends Component<
 		}
 	};
 
-	private renderOwnMessage = (currentMessage: MessageData, messageDateWithFormat: string) => {
-		const messageContent = this.renderMessageContent(currentMessage, style.ownMessageText);
-		const shadowStyles = [
-			style.ownMessageShadow,
-			currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH},
-		];
-		return (
-			<View style={style.messageContainer}>
-				<View style={{flex: 1}} />
-				<View style={shadowStyles}>
-					<LinearGradient
-						start={{x: 0, y: 0.5}}
-						end={{x: 1, y: 0.5}}
-						colors={[Colors.fuchsiaBlue, Colors.pink]}
-						style={style.ownMessageGradient}
-					>
-						{messageContent}
-						<Text style={style.ownMessageDate}>{messageDateWithFormat}</Text>
-					</LinearGradient>
-				</View>
+	private renderOwnMessage = (currentMessage: MessageData, messageDateWithFormat: string) => (
+		<View style={style.messageContainer}>
+			<View style={{flex: 1}} />
+			<View
+				style={[
+					style.ownMessageShadow,
+					currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH},
+				]}
+			>
+				<LinearGradient
+					start={{x: 0, y: 0.5}}
+					end={{x: 1, y: 0.5}}
+					colors={[Colors.fuchsiaBlue, Colors.pink]}
+					style={style.ownMessageGradient}
+				>
+					<MessageContent currentMessage={currentMessage} textStyle={style.ownMessageText} />
+					<Text style={style.ownMessageDate}>{messageDateWithFormat}</Text>
+				</LinearGradient>
 			</View>
-		);
-	};
+		</View>
+	);
 
-	private renderFriendMessage = (currentMessage: MessageData, messageDateWithFormat: string) => {
-		const messageContent = this.renderMessageContent(currentMessage, style.friendMessageText);
-		const borderStyles = [
-			style.friendMessageBorder,
-			currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH},
-		];
-		return (
-			<View style={style.messageContainer}>
-				<View style={borderStyles}>
-					{messageContent}
-					<Text style={style.friendMessageDate}>{messageDateWithFormat}</Text>
-				</View>
-				<View style={{flex: 1}} />
+	private renderFriendMessage = (currentMessage: MessageData, messageDateWithFormat: string) => (
+		<View style={style.messageContainer}>
+			<View
+				style={[
+					style.friendMessageBorder,
+					currentMessage.imageURL ? {width: MESSAGE_MAX_WIDTH} : {maxWidth: MESSAGE_MAX_WIDTH},
+				]}
+			>
+				<MessageContent currentMessage={currentMessage} textStyle={style.friendMessageText} />
+				<Text style={style.friendMessageDate}>{messageDateWithFormat}</Text>
 			</View>
-		);
-	};
-
-	private renderMessageContent = (currentMessage: MessageData, textStyle: number) => {
-		if (currentMessage.text) {
-			const isTextPureEmoji = isStringPureEmoji(currentMessage.text);
-			const textStyleUpdated = isTextPureEmoji ? style.pureEmojiText : textStyle;
-			return (
-				<Text style={textStyleUpdated} selectable={true}>
-					{currentMessage.text}
-				</Text>
-			);
-		} else if (currentMessage.imageURL) {
-			return <Image source={{uri: currentMessage.imageURL}} style={style.chatImage} resizeMode={'cover'} />;
-		} else if (currentMessage.geolocation) {
-			return (
-				<Text style={textStyle} selectable={true}>
-					{'My location:\n'}
-					{currentMessage.geolocation.latitude}
-					{', '}
-					{currentMessage.geolocation.longitude}
-				</Text>
-			);
-		}
-		return null;
-	};
+			<View style={{flex: 1}} />
+		</View>
+	);
 
 	private renderSendButton = (props: any) => {
 		return (
