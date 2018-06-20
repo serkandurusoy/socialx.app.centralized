@@ -67,43 +67,41 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, IIMyProf
 		// todo @serkan @jake let's revisit renderWithLoader, why? why not canonical react with component composition?
 		return (
 			<View style={style.container}>
-				{this.props.renderWithLoader(
-					<ScrollView
-						scrollEnabled={true}
-						contentContainerStyle={style.scrollContainer}
-						showsVerticalScrollIndicator={false}
-						ref={(ref: any) => (this.scrollView = ref)}
-						refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.pageRefreshHandler} />}
-					>
-						<View style={style.topContainer}>
-							<UserAvatar
-								avatarURL={{uri: this.props.avatarURL}}
-								fullName={this.props.fullName}
-								username={this.props.username}
-							/>
-							<ProfileStatistics
-								numberOfPhotos={this.props.numberOfPhotos}
-								numberOfLikes={this.props.numberOfLikes}
-								numberOfFollowers={this.props.numberOfFollowers}
-								numberOfFollowing={this.props.numberOfFollowing}
+				<ScrollView
+					scrollEnabled={true}
+					contentContainerStyle={style.scrollContainer}
+					showsVerticalScrollIndicator={false}
+					ref={(ref: any) => (this.scrollView = ref)}
+					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.pageRefreshHandler} />}
+				>
+					<View style={style.topContainer}>
+						<UserAvatar
+							avatarURL={{uri: this.props.avatarURL}}
+							fullName={this.props.fullName}
+							username={this.props.username}
+						/>
+						<ProfileStatistics
+							numberOfPhotos={this.props.numberOfPhotos}
+							numberOfLikes={this.props.numberOfLikes}
+							numberOfFollowers={this.props.numberOfFollowers}
+							numberOfFollowing={this.props.numberOfFollowing}
+						/>
+					</View>
+					{this.props.getAllPhotos.length === 0 ? (
+						<View style={style.noPhotosContainer}>
+							<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+							<Text style={style.noPhotosText}>{'Your photo gallery is empty.'}</Text>
+						</View>
+					) : (
+						<View style={gridPhotosStyles}>
+							<GridPhotos
+								onScroll={this.scrollUpdated}
+								loadMorePhotos={this.props.loadMorePhotosHandler}
+								itemPressed={this.onPhotoPressHandler}
 							/>
 						</View>
-						{this.props.getAllPhotos.length === 0 ? (
-							<View style={style.noPhotosContainer}>
-								<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
-								<Text style={style.noPhotosText}>{'Your photo gallery is empty.'}</Text>
-							</View>
-						) : (
-							<View style={gridPhotosStyles}>
-								<GridPhotos
-									onScroll={this.scrollUpdated}
-									loadMorePhotos={this.props.loadMorePhotosHandler}
-									itemPressed={this.onPhotoPressHandler}
-								/>
-							</View>
-						)}
-					</ScrollView>,
-				)}
+					)}
+				</ScrollView>
 			</View>
 		);
 	}

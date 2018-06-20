@@ -30,7 +30,6 @@ interface IInlineLoaderProps {
 }
 
 export interface IWithLoaderProps extends IInlineLoaderProps {
-	renderWithLoader: (node: any) => any;
 	isLoading: boolean;
 }
 
@@ -47,35 +46,33 @@ export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderP
 			fadeAnimation: new Animated.Value(0), // Initial value for opacity: 0
 		};
 
+		// TODO: @Serkan -> there is another problem here: when using this HOC, I the ref usage is lost.
+		// so I implemented this workaround with originalRef + useRef (to avoid error in case of using with SFC)
 		private originalRef: any = null;
 
 		public render() {
-			const updatedProps: any = {...this.props, renderWithLoader: this.renderWithLoaderHandler};
+			if (this.props.isLoading) {
+				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.startAnimation} />;
+			}
+
+			const {fadeAnimation} = this.state;
+			const updatedProps: any = {...this.props};
 			if (useRef) {
 				updatedProps.ref = (ref) => (this.originalRef = ref);
 			}
-			return <BaseComponent {...updatedProps} />;
+
+			return (
+				<Animated.View
+					style={[this.props.animatedStyle, {opacity: fadeAnimation}]}
+					onLayout={this.animatedViewOnLayoutHandler}
+				>
+					<BaseComponent {...updatedProps} />
+				</Animated.View>
+			);
 		}
 
 		public getOriginalRef = () => {
 			return this.originalRef;
-		};
-
-		// TODO: @jake @serkan let's refactor this!
-		private renderWithLoaderHandler = (WrappedComponent: React.ComponentType) => {
-			if (this.props.isLoading) {
-				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.startAnimation} />;
-			} else {
-				const {fadeAnimation} = this.state;
-				return (
-					<Animated.View
-						style={[this.props.animatedStyle, {opacity: fadeAnimation}]}
-						onLayout={this.animatedViewOnLayoutHandler}
-					>
-						{WrappedComponent}
-					</Animated.View>
-				);
-			}
 		};
 
 		private animatedViewOnLayoutHandler = () => {

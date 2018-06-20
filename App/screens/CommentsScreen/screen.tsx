@@ -42,7 +42,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 		];
 
 		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<SafeAreaView style={containerStyles}>
 				<ScrollView
 					style={style.commentsList}
@@ -75,7 +75,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					onCommentSend={this.props.onCommentSend}
 					placeholder={'Write a comment...'}
 				/>
-			</SafeAreaView>,
+			</SafeAreaView>
 		);
 	}
 }

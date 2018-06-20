@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, RefObject} from 'react';
 import {
 	AsyncStorage,
 	ImageRequireSource,
@@ -102,7 +102,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		email: '',
 	};
 
-	private screenRef: any;
+	private screenRef: RefObject<any> = React.createRef();
 
 	public render() {
 		const {data} = this.props;
@@ -116,7 +116,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				miningEnabled={false} // later update hc value
 				saveChanges={this.saveChanges}
 				isLoading={data.loading}
-				ref={(ref) => (this.screenRef = ref)}
+				ref={this.screenRef}
 			/>
 		);
 	}
@@ -180,7 +180,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			await updateUserData(mVar);
 			await data.refetch();
 
-			this.screenRef.getOriginalRef().resetChanges();
+			this.screenRef.current.getOriginalRef().resetChanges();
 		} catch (e) {
 			//
 			console.log(e);

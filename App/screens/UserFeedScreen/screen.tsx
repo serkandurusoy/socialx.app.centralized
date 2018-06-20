@@ -32,10 +32,32 @@ interface IUserFeedScreenState {
 	fetchingMore: boolean;
 }
 
-const renderNoPosts = () => (
+const FeedWithNoPosts: React.SFC = () => (
 	<View style={style.noPostsContainer}>
 		<Icon name={'md-film'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
 		<Text style={style.noPostsText}>{'Your feed is empty. Start adding your first post!'}</Text>
+	</View>
+);
+
+const LoadingFooter: React.SFC<any> = ({hasMore}) => {
+	if (hasMore) {
+		return (
+			<View style={style.bottomLoadingContainer}>
+				<ActivityIndicator size={'large'} />
+			</View>
+		);
+	}
+	return null;
+};
+
+const ShareSection: React.SFC<any> = ({sharePlaceholder, avatarImage, showNewWallPostPage}) => (
+	<View style={style.shareMessageContainer}>
+		<AvatarImage image={avatarImage} style={style.avatarImage} />
+		<TouchableWithoutFeedback onPress={showNewWallPostPage}>
+			<View style={style.shareTextContainer}>
+				<Text style={style.shareTextPlaceholder}>{sharePlaceholder}</Text>
+			</View>
+		</TouchableWithoutFeedback>
 	</View>
 );
 
@@ -50,34 +72,51 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	public state = {
 		fetchingMore: false,
+	};
+
+	public render() {
+		const {avatarImage, showNewWallPostPage, hideShareSection} = this.props;
+		const sharePlaceHolder = hideShareSection
+			? 'Share with the world what you think'
+			: 'Share with your friends what you think';
+		return (
+			<View style={style.container}>
+				<ShareSection
+					avatarImage={avatarImage}
+					showNewWallPostPage={showNewWallPostPage}
+					sharePlaceholder={sharePlaceHolder}
+				/>
+				{this.props.noPosts ? (
+					<FeedWithNoPosts />
+				) : (
+					<FlatList
+						windowSize={10}
+						refreshing={this.props.refreshing}
+						onRefresh={this.props.refreshData}
+						data={this.props.wallPosts}
+						keyExtractor={this.keyExtractor}
+						renderItem={this.renderWallPosts}
+						onEndReached={async () => {
+							if (!this.props.isLoading && this.props.hasMore && !this.state.fetchingMore) {
+								this.setState({fetchingMore: true}, async () => {
+									await this.props.loadMorePosts();
+									this.setState({fetchingMore: false});
+								});
+							}
+						}}
+						onEndReachedThreshold={0.5}
+						alwaysBounceVertical={false}
+						keyboardShouldPersistTaps={'handled'}
+						ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
+					/>
+				)}
+			</View>
+		);
 	}
 
-	public renderShareSection = () => {
-		if (!this.props.hideShareSection) {
-			return (
-				<View style={style.shareMessageContainer}>
-					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
-					<TouchableWithoutFeedback onPress={this.props.showNewWallPostPage}>
-						<View style={style.shareTextContainer}>
-							<Text style={style.shareTextPlaceholder}>{'Share with your friends what you think'}</Text>
-						</View>
-					</TouchableWithoutFeedback>
-				</View>
-			);
-		} else {
-			return (
-				<View style={style.shareMessageContainer}>
-					<AvatarImage image={this.props.avatarImage} style={style.avatarImage} />
-					<TouchableWithoutFeedback onPress={this.props.showNewWallPostPage}>
-						<View style={style.shareTextContainer}>
-							<Text style={style.shareTextPlaceholder}>{'Share with the world what you think'}</Text>
-						</View>
-					</TouchableWithoutFeedback>
-				</View>
-			);
-		}
-	};
-	public renderWallPosts = (data: {item: IWallPostCardProp}) => {
+	private keyExtractor = (item: IWallPostCardProp, index: number) => item.id;
+
+	private renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		const canDelete = this.props.currentUser.userId === data.item.owner.userId;
 		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === this.props.currentUser.userId);
 		return (
@@ -97,52 +136,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			</View>
 		);
 	};
-
-	public renderFooterWhenLoading = () => {
-		if (this.props.hasMore) {
-			return (
-				<View style={style.bottomLoadingContainer}>
-					<ActivityIndicator size={'large'} />
-				</View>
-			);
-		}
-		return <View />;
-	};
-
-	public renderWithLoading = () => {
-		// TODO: @jake @serkan let's refactor this!
-		const keyExtractor = (item: IWallPostCardProp, index: number) => item.id;
-		return this.props.renderWithLoader(
-			<FlatList
-				windowSize={10}
-				refreshing={this.props.refreshing}
-				onRefresh={this.props.refreshData}
-				data={this.props.wallPosts}
-				keyExtractor={keyExtractor}
-				renderItem={this.renderWallPosts}
-				onEndReached={async () => {
-					if (!this.props.isLoading && this.props.hasMore && !this.state.fetchingMore) {
-						this.setState({fetchingMore: true}, async () => {
-							await this.props.loadMorePosts();
-							this.setState({fetchingMore: false});
-						});
-					}
-				}}
-				onEndReachedThreshold={0.5}
-				alwaysBounceVertical={false}
-				keyboardShouldPersistTaps={'handled'}
-				ListFooterComponent={this.renderFooterWhenLoading}
-			/>,
-		);
-	};
-	public render() {
-		return (
-			<View style={style.container}>
-				{this.renderShareSection()}
-				{!this.props.noPosts ? this.renderWithLoading() : renderNoPosts()}
-			</View>
-		);
-	}
 }
 
 export default withInlineLoader(UserFeedScreen as any);

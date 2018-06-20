@@ -90,7 +90,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 
 	public render() {
 		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<ScrollView
 				// TODO: pull to refresh not support when scrollEnabled is false for isFollowed state
 				scrollEnabled={!this.state.isFollowed}
@@ -124,7 +124,7 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 					/>
 				</View>
 				{this.conditionalRendering()}
-			</ScrollView>,
+			</ScrollView>
 		);
 	}
 

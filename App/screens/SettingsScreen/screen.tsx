@@ -82,7 +82,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 	public render() {
 		// @ionut: todo -> add location-age fields
 		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView
 					style={style.keyboardView}
@@ -169,7 +169,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 					{/*</View>*/}
 				</KeyboardAwareScrollView>
 				{this.renderSaveButton()}
-			</View>,
+			</View>
 		);
 	}
 

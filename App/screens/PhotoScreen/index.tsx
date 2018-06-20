@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, RefObject} from 'react';
 import {Alert, InteractionManager} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -65,7 +65,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		avatarURL: 'https://placeimg.com/120/120/people',
 	};
 
-	private photoScreen: PhotoScreenComponent | null = null;
+	private photoScreen: RefObject<any> = React.createRef();
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
@@ -82,7 +82,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : AvatarImagePlaceholder}
 				mediaObject={this.props.navigation.state.params.mediaObject}
 				taggedFriends={this.props.addedFriends}
-				ref={(ref) => (this.photoScreen = ref)}
+				ref={this.photoScreen}
 			/>
 		);
 	}
@@ -90,91 +90,89 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	private sendPostHandler = async () => {
 		const {addMedia, createPost, startMediaPost, startPostadd, stopLoading} = this.props;
 
-		if (this.photoScreen) {
-			try {
-				const wallPostDataInScreen = this.photoScreen.getOriginalRef().getWallPostData();
-				const localPhotoData: Partial<WallPostPhoto> = {
-					media: this.props.navigation.state.params.mediaObject,
-				};
-				if (wallPostDataInScreen.includeTaggedFriends && this.props.addedFriends.length > 0) {
-					localPhotoData.taggedFriends = this.props.addedFriends;
-				}
-				const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
-				delete wallPostData.includeTaggedFriends;
-
-				const {title, location, taggedFriends, media} = wallPostData;
-				const {mime, pathx, contentOptimizedPath} = media;
-
-				const onStart = () => {
-					// start adding media loading
-					startMediaPost(0);
-				};
-
-				const onError = (err: any, id: any) => {
-					console.log(err, id);
-					this.showErrorMessage(err);
-				};
-
-				const onProgress = (progress: any, id: any) => {
-					console.log('progress:', progress, id);
-					startMediaPost(Math.round(progress));
-				};
-
-				const onComplete = async (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
-					try {
-						let mediaOb: any = null;
-						let opMediaOb: any = null;
-
-						console.log('Completed! ->', data);
-						if (Array.isArray(data)) {
-							for (let i = 0; i < data.length; i++) {
-								const current = data[i];
-								if (current.index === 0) {
-									mediaOb = JSON.parse(current.data.responseBody);
-								} else {
-									opMediaOb = JSON.parse(current.data.responseBody);
-								}
-							}
-						} else {
-							// TODO: @Jake: this needs better handling!
-							mediaOb = JSON.parse(data.responseBody);
-						}
-
-						// create media object on aws
-						const addResp = await addMedia({
-							variables: {
-								hash: mediaOb.Hash,
-								size: parseInt(mediaOb.Size, undefined),
-								type: mime,
-								optimizedHash: opMediaOb !== null ? opMediaOb.Hash : mediaOb.Hash,
-							},
-						});
-
-						const mediaId = addResp.data.addMedia.id;
-
-						// start adding post loading
-						startPostadd();
-						// create post
-						if (title) {
-							await createPost({variables: {text: title, Media: mediaId, location}});
-						} else {
-							await createPost({variables: {Media: mediaId, location}});
-						}
-						stopLoading();
-						this.props.navigation.goBack(null);
-					} catch (ex) {
-						this.showErrorMessage(ex);
-					}
-				};
-
-				if (contentOptimizedPath) {
-					await addFilesBN([pathx, contentOptimizedPath], onStart, onProgress, onError, onComplete);
-				} else {
-					await addFileBN(pathx, onStart, onProgress, onError, onComplete);
-				}
-			} catch (ex) {
-				this.showErrorMessage(ex);
+		try {
+			const wallPostDataInScreen = this.photoScreen.current.getOriginalRef().getWallPostData();
+			const localPhotoData: Partial<WallPostPhoto> = {
+				media: this.props.navigation.state.params.mediaObject,
+			};
+			if (wallPostDataInScreen.includeTaggedFriends && this.props.addedFriends.length > 0) {
+				localPhotoData.taggedFriends = this.props.addedFriends;
 			}
+			const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
+			delete wallPostData.includeTaggedFriends;
+
+			const {title, location, taggedFriends, media} = wallPostData;
+			const {mime, pathx, contentOptimizedPath} = media;
+
+			const onStart = () => {
+				// start adding media loading
+				startMediaPost(0);
+			};
+
+			const onError = (err: any, id: any) => {
+				console.log(err, id);
+				this.showErrorMessage(err);
+			};
+
+			const onProgress = (progress: any, id: any) => {
+				console.log('progress:', progress, id);
+				startMediaPost(Math.round(progress));
+			};
+
+			const onComplete = async (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
+				try {
+					let mediaOb: any = null;
+					let opMediaOb: any = null;
+
+					console.log('Completed! ->', data);
+					if (Array.isArray(data)) {
+						for (let i = 0; i < data.length; i++) {
+							const current = data[i];
+							if (current.index === 0) {
+								mediaOb = JSON.parse(current.data.responseBody);
+							} else {
+								opMediaOb = JSON.parse(current.data.responseBody);
+							}
+						}
+					} else {
+						// TODO: @Jake: this needs better handling!
+						mediaOb = JSON.parse(data.responseBody);
+					}
+
+					// create media object on aws
+					const addResp = await addMedia({
+						variables: {
+							hash: mediaOb.Hash,
+							size: parseInt(mediaOb.Size, undefined),
+							type: mime,
+							optimizedHash: opMediaOb !== null ? opMediaOb.Hash : mediaOb.Hash,
+						},
+					});
+
+					const mediaId = addResp.data.addMedia.id;
+
+					// start adding post loading
+					startPostadd();
+					// create post
+					if (title) {
+						await createPost({variables: {text: title, Media: mediaId, location}});
+					} else {
+						await createPost({variables: {Media: mediaId, location}});
+					}
+					stopLoading();
+					this.props.navigation.goBack(null);
+				} catch (ex) {
+					this.showErrorMessage(ex);
+				}
+			};
+
+			if (contentOptimizedPath) {
+				await addFilesBN([pathx, contentOptimizedPath], onStart, onProgress, onError, onComplete);
+			} else {
+				await addFileBN(pathx, onStart, onProgress, onError, onComplete);
+			}
+		} catch (ex) {
+			this.showErrorMessage(ex);
 		}
 	};
 

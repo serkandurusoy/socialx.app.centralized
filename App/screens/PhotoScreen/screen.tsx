@@ -51,7 +51,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 
 	public render() {
 		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<KeyboardAwareScrollView
 				style={style.scrollView}
 				alwaysBounceVertical={true}
@@ -65,7 +65,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 					{this.renderLocationSection()}
 					{/*{this.renderTagFriendsSection()}*/}
 				</View>
-			</KeyboardAwareScrollView>,
+			</KeyboardAwareScrollView>
 		);
 	}
 
