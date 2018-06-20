@@ -7,17 +7,10 @@ import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {SearchResultData, SearchResultKind, SearchResultPeople} from 'types';
-import {SearchHeader} from './Components';
+import {SearchFilterValues, SearchHeader} from './Components';
 import SearchScreenComponent from './screen';
 
 const SEARCH_DEBOUNCE_TIME_MS = 300;
-
-export enum SearchFilterValues {
-	Top = 'top',
-	People = 'people',
-	Tags = 'tags',
-	Places = 'places',
-}
 
 interface ISearchScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -63,8 +56,9 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 	};
 
 	private debounceSearch = debounce(async (term: string) => {
+		const searchResults = await this.doSearch(term);
 		this.setState({
-			searchResults: await this.doSearch(term),
+			searchResults,
 		});
 	}, SEARCH_DEBOUNCE_TIME_MS);
 

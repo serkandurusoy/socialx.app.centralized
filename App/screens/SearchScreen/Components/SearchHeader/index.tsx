@@ -14,23 +14,25 @@ interface ISearchHeaderProps {
 	searchValue: string;
 }
 
-const closeKeyboard = () => {
-	Keyboard.dismiss();
-};
-
-export const SearchHeader: React.SFC<ISearchHeaderProps> = (props) => (
+export const SearchHeader: React.SFC<ISearchHeaderProps> = ({
+	backVisible,
+	onBack,
+	searchValue,
+	searchInputUpdated,
+	onFocusUpdated,
+}) => (
 	<SafeAreaView style={style.safeView}>
 		<View style={style.headerContainer}>
-			{props.backVisible && (
-				<TouchableOpacity onPress={props.onBack}>
+			{backVisible && (
+				<TouchableOpacity onPress={onBack}>
 					<Icon name={'ios-arrow-back'} style={style.backIcon} />
 				</TouchableOpacity>
 			)}
 			<View style={{flex: 1}}>
 				<SXTextInput
-					value={props.searchValue}
-					onChangeText={props.searchInputUpdated}
-					onSubmitPressed={closeKeyboard}
+					value={searchValue}
+					onChangeText={searchInputUpdated}
+					onSubmitPressed={Keyboard.dismiss}
 					placeholder={'Search'}
 					icon={'search'}
 					canCancel={true}
@@ -39,7 +41,7 @@ export const SearchHeader: React.SFC<ISearchHeaderProps> = (props) => (
 					iconColor={Colors.cadetBlue}
 					returnKeyType={TRKeyboardKeys.done}
 					autoCorrect={true}
-					focusUpdateHandler={props.onFocusUpdated}
+					focusUpdateHandler={onFocusUpdated}
 				/>
 			</View>
 		</View>

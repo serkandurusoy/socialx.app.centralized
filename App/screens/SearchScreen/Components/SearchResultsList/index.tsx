@@ -6,20 +6,23 @@ import {SearchResultData} from 'types';
 import style from './style';
 
 interface ISearchResultsListProps {
-	searching: boolean;
 	searchResults: SearchResultData[];
 	addFriendHandler: (value: string) => Promise<any>;
 	onSearchResultSelect: (result: SearchResultData) => void;
 }
 
-export const SearchResultsList: React.SFC<ISearchResultsListProps> = (props) => (
+export const SearchResultsList: React.SFC<ISearchResultsListProps> = ({
+	searchResults,
+	addFriendHandler,
+	onSearchResultSelect,
+}) => (
 	<ScrollView style={style.resultsContainer} keyboardShouldPersistTaps={'handled'}>
-		{props.searchResults.map((searchResult, i) => (
+		{searchResults.map((searchResult, i) => (
 			<SearchResultEntry
-				key={i}
+				key={searchResult.id}
 				{...searchResult}
-				addFriendHandler={() => props.addFriendHandler(searchResult.id)}
-				onEntrySelect={() => props.onSearchResultSelect(searchResult)}
+				addFriendHandler={() => addFriendHandler(searchResult.id)}
+				onEntrySelect={() => onSearchResultSelect(searchResult)}
 			/>
 		))}
 	</ScrollView>
