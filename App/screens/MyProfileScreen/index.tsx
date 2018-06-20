@@ -125,28 +125,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		if (data.loading || this.state.loaded) {
 			return;
 		}
-
-		const {user} = data;
-		const {posts} = user;
-
-		const userImages = posts
-			? posts.reduce((count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0), 0)
-			: 0;
-		const numOfLikes = posts ? posts.reduce((total: number, post: IPostsProps) => total + post.likes.length, 0) : 0;
-
-		const userAvatar = getUserAvatar(user);
-
-		this.setState({
-			numberOfPhotos: userImages,
-			numberOfLikes: numOfLikes,
-			numberOfFollowers: 0,
-			numberOfFollowing: 0,
-			avatarURL: userAvatar,
-			fullName: user.name,
-			username: user.username,
-			loaded: true,
-			mediaObjects: this.preloadAllMediaObjects(nextProps),
-		});
+		this.updateScreenData(data);
 	}
 
 	public render() {
@@ -184,13 +163,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		return ret;
 	};
 
-	private preloadAllMediaObjects = (props: IMyProfileScreenProps) => {
-		const posts = get(props.data, 'user.posts', null);
-
-		if (!posts) {
-			return [];
-		}
-
+	private preloadAllMediaObjects = (posts: IPostsProps[]) => {
 		const images: IMediaProps[] = [];
 		posts.forEach((post: IPostsProps) => {
 			const medias = post.Media;
@@ -207,8 +180,33 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		return images;
 	};
 
+	private updateScreenData = (data: IUserDataResponse) => {
+		const {user} = data;
+		const posts = get(data, 'user.posts', null);
+
+		const userImages = posts
+			? posts.reduce((count: number, post: IPostsProps) => count + (post.Media ? post.Media.length : 0), 0)
+			: 0;
+		const numOfLikes = posts ? posts.reduce((total: number, post: IPostsProps) => total + post.likes.length, 0) : 0;
+
+		const userAvatar = getUserAvatar(user);
+
+		this.setState({
+			numberOfPhotos: userImages,
+			numberOfLikes: numOfLikes,
+			numberOfFollowers: 0,
+			numberOfFollowing: 0,
+			avatarURL: userAvatar,
+			fullName: user.name,
+			username: user.username,
+			loaded: true,
+			mediaObjects: posts ? this.preloadAllMediaObjects(posts) : [],
+		});
+	};
+
 	private refreshPageHandler = async () => {
-		await this.props.data.refetch();
+		const res = await this.props.data.refetch();
+		this.updateScreenData(res.data);
 	};
 }
 
