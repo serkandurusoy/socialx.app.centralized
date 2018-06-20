@@ -4,8 +4,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {connect} from 'react-redux';
 
 import {IAppUIStateProps, SearchResultData} from 'types';
-import {SearchResults, TrendingSearches} from './Components';
-import {SearchFilterValues} from './index';
+import {SearchFilterValues, SearchResults, TrendingSearches} from './Components';
 import style from './style';
 
 interface ISearchScreenComponentProps extends IAppUIStateProps {
@@ -20,34 +19,38 @@ interface ISearchScreenComponentProps extends IAppUIStateProps {
 	loadingTrends: boolean;
 }
 
-const getContainerStyles = (trendingVisible: boolean) => {
-	const containerStyles: any[] = [style.container];
-	if (!trendingVisible) {
-		const screenWidth = Dimensions.get('window').width;
-		containerStyles.push({transform: [{translateX: -screenWidth}]});
-	}
-	return containerStyles;
-};
-
-const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = (props) => (
+const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = ({
+	addFriendHandler,
+	searchResults,
+	selectedFilter,
+	setNewFilter,
+	onSearchResultSelect,
+	trendingVisible,
+	searching,
+	trendingResults,
+	loadingTrends,
+	tabBarBottomHeight,
+}) => (
 	<View style={{flex: 1}}>
-		<View style={getContainerStyles(props.trendingVisible)}>
+		<View
+			style={[style.container, !trendingVisible ? {transform: [{translateX: -Dimensions.get('window').width}]} : {}]}
+		>
 			<TrendingSearches
-				searchResults={props.trendingResults}
-				searching={props.loadingTrends}
-				addFriendHandler={props.addFriendHandler}
-				onSearchResultSelect={props.onSearchResultSelect}
+				searchResults={trendingResults}
+				searching={loadingTrends}
+				addFriendHandler={addFriendHandler}
+				onSearchResultSelect={onSearchResultSelect}
 			/>
 			<SearchResults
-				searchResults={props.searchResults}
-				selectedFilter={props.selectedFilter}
-				setNewFilter={props.setNewFilter}
-				searching={props.searching}
-				addFriendHandler={props.addFriendHandler}
-				onSearchResultSelect={props.onSearchResultSelect}
+				searchResults={searchResults}
+				selectedFilter={selectedFilter}
+				setNewFilter={setNewFilter}
+				searching={searching}
+				addFriendHandler={addFriendHandler}
+				onSearchResultSelect={onSearchResultSelect}
 			/>
 		</View>
-		<KeyboardSpacer style={{width: '100%'}} topSpacing={-props.tabBarBottomHeight} />
+		<KeyboardSpacer style={{width: '100%'}} topSpacing={-tabBarBottomHeight} />
 	</View>
 );
 

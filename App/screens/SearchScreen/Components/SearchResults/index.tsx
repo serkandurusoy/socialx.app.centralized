@@ -6,8 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {SpinnerTypes} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {SearchResultData} from 'types';
-import {SearchFilterValues} from '../../index';
-import {SearchFilter} from '../SearchFilter';
+import {SearchFilter, SearchFilterValues} from '../SearchFilter';
 import {SearchResultsList} from '../SearchResultsList';
 import style from './style';
 
@@ -41,11 +40,25 @@ const SearchNoResults: React.SFC = () => (
 	</View>
 );
 
-export const SearchResults: React.SFC<ISearchResultsProps> = (props) => (
+export const SearchResults: React.SFC<ISearchResultsProps> = ({
+	selectedFilter,
+	setNewFilter,
+	searching,
+	searchResults,
+	addFriendHandler,
+	onSearchResultSelect,
+}) => (
 	<View style={style.container}>
-		<SearchFilter selectedFilter={props.selectedFilter} setNewFilter={props.setNewFilter} />
-		{props.searching && <SearchingLoader />}
-		{!props.searching && props.searchResults.length === 0 && <SearchNoResults />}
-		{!props.searching && props.searchResults.length > 0 && <SearchResultsList {...props} />}
+		<SearchFilter selectedFilter={selectedFilter} setNewFilter={setNewFilter} />
+		{searching && <SearchingLoader />}
+		{!searching && searchResults.length === 0 && <SearchNoResults />}
+		{!searching &&
+			searchResults.length > 0 && (
+				<SearchResultsList
+					searchResults={searchResults}
+					addFriendHandler={addFriendHandler}
+					onSearchResultSelect={onSearchResultSelect}
+				/>
+			)}
 	</View>
 );

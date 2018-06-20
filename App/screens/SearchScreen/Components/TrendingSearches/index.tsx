@@ -26,9 +26,21 @@ const TrendingLoader: React.SFC = () => (
 	</View>
 );
 
-export const TrendingSearches: React.SFC<ITrendingSearchesProps> = (props) => (
+export const TrendingSearches: React.SFC<ITrendingSearchesProps> = ({
+	searching,
+	searchResults,
+	addFriendHandler,
+	onSearchResultSelect,
+}) => (
 	<View style={style.container}>
-		{props.searching && <TrendingLoader />}
-		{!props.searching && props.searchResults.length > 0 && <SearchResultsList {...props} />}
+		{searching && <TrendingLoader />}
+		{!searching &&
+			searchResults.length > 0 && (
+				<SearchResultsList
+					searchResults={searchResults}
+					addFriendHandler={addFriendHandler}
+					onSearchResultSelect={onSearchResultSelect}
+				/>
+			)}
 	</View>
 );
