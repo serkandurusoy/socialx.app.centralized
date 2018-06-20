@@ -108,6 +108,9 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 		);
 	};
 
+	if (!mediaObjects) {
+		return null;
+	}
 	if (mediaObjects.length > 2) {
 		return renderMultiMediaPost();
 	} else if (mediaObjects.length > 1) {

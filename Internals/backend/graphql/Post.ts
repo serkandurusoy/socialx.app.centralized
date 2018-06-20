@@ -170,23 +170,29 @@ const getFriendsPostsQ = gql`
 		}
 	}
 `;
-const getNumberOfComments = (comments: any, holder: number = 0) => {
-	if (!comments) {
-		return 0;
-	}
-	if (comments.length > 0) {
-		holder += comments.length;
-		return comments.map((com: any) => {
-			if (com.comments.length > 0) {
-				return getNumberOfComments(com.comments, holder);
-			} else {
-				return holder;
-			}
-		});
-	} else {
-		return 0;
-	}
-};
+
+const postsMapper = (posts: any) =>
+	posts.map((post: any) => {
+		const numComments = numberOfComments(post);
+		return {
+			id: post.id,
+			text: post.text,
+			location: post.location,
+			media: getPostMedia(post.Media, post.likes.length, numComments),
+			// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
+			timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
+			numberOfLikes: post.likes ? post.likes.length : 0,
+			numberOfSuperLikes: 0,
+			numberOfComments: numComments,
+			numberOfWalletCoins: 0,
+			onLikeButtonClick: () => null,
+			canDelete: false,
+			owner: post.owner,
+			onDeleteClick: null,
+			likes: post.likes,
+			bestComments: bestTwoComments(post),
+		};
+});
 
 export const likePostHoc = (comp: any) => graphql(likePost, {name: 'likePost'})(comp);
 export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: 'removeLikePost'})(comp);
@@ -197,145 +203,109 @@ export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'de
 export const getPublicPostsHoc = (comp: any) =>
 	graphql(getPublicPostsQ, {
 		name: 'Posts',
-		options: {fetchPolicy: 'network-only'},
-		props(pps) {
-			const {
-				Posts: {loading, error, getPublicPosts, fetchMore, refetch, hasMore},
-			} = pps;
-			console.log('getPublicPostsHoc', pps);
-			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
-			// const {nextToken, Items, rawItems} = getPublicPosts;
-			const nextToken = getPublicPosts ? getPublicPosts.nextToken : null;
-			const Items = getPublicPosts ? getPublicPosts.Items : [];
+		options: {variables: {next: ''}, fetchPolicy: 'network-only'},
+		props(qPorps: any) {
+			const {Posts} = qPorps;
+			if (Posts.loading) {
+				return qPorps;
+			}
+			const {getPublicPosts, fetchMore} = Posts;
 
-			const dataSpine = (pItems: any) =>
-				pItems.map((post: any) => {
-					const numComments = numberOfComments(post);
-					return {
-						id: post.id,
-						text: decodeBase64Text(post.text),
-						location: post.location,
-						media: getPostMedia(post.Media, post.likes.length, numComments),
-						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
-						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
-						numberOfLikes: post.likes.length,
-						numberOfSuperLikes: 0,
-						numberOfComments: numComments,
-						numberOfWalletCoins: 0,
-						onLikeButtonClick: () => null,
-						canDelete: false,
-						owner: post.owner,
-						onDeleteClick: null,
-						likes: post.likes,
-						bestComments: bestTwoComments(post),
-					};
+			const {nextToken, Items} = getPublicPosts;
+
+			const mappedItems = postsMapper(Items);
+
+			const paginationFunc = async () => {
+				if (!nextToken) {
+					return {};
+				}
+				await fetchMore({
+					variables: {next: nextToken},
+					updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
+						const previousEntry = previousResult.getPublicPosts;
+						const previousItems = previousEntry.Items;
+
+						const newItems = fetchMoreResult.getPublicPosts.Items;
+						const newNext = fetchMoreResult.getPublicPosts.nextToken;
+
+						const newFlag = newNext !== nextToken && newNext;
+
+						const newPosts = {
+							getPublicPosts : {
+								nextToken: newNext,
+								Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
+								__typename: 'PaginatedPosts',
+							},
+						};
+
+						return newPosts;
+					},
 				});
+			};
 
 			return {
-				loading,
-				rawItems: Items,
-				Items: dataSpine(Items),
-				refresh: refetch,
+				...Posts,
+				Items: mappedItems,
 				nextToken,
-				noPosts: !Items.length,
+				noPosts: !Items,
 				hasMore: nextToken !== null,
-				loadMore: () =>
-					nextToken !== null
-						? fetchMore({
-								variables: {next: nextToken},
-								updateQuery: (previousResult, {fetchMoreResult}) => {
-									const previousEntry = previousResult.getPublicPosts;
-									const previousItems = previousEntry ? previousEntry.Items : [];
-
-									const newItems = fetchMoreResult.getPublicPosts.Items;
-									const newNext = fetchMoreResult.getPublicPosts.nextToken;
-
-									return {
-										getPublicPosts: {
-											nextToken: newNext,
-											Items: newNext ? [...previousItems, ...newItems] : previousItems,
-											__typename: 'PaginatedPosts',
-										},
-									};
-								},
-						  })
-						: {},
+				loadMore: paginationFunc,
+				refresh: Posts.refetch,
 			};
 		},
-	})(comp);
+})(comp);
 
 export const getFriendsPostsHoc = (comp: any) =>
 	graphql(getFriendsPostsQ, {
 		name: 'Posts',
-		options: {fetchPolicy: 'network-only'},
-		props(pps) {
-			const {
-				Posts: {loading, error, getFriendsPosts, fetchMore, refetch, hasMore},
-			} = pps;
-			// {Posts: {loading, getPublicPosts, fetchMore, refetch}
-			// const {nextToken, Items, rawItems} = getPublicPosts;
-			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : null;
-			const Items = getFriendsPosts ? getFriendsPosts.Items : [];
+		options: {variables: {next: ''}, fetchPolicy: 'network-only'},
+		props(qPorps: any) {
+			const {Posts} = qPorps;
+			if (Posts.loading) {
+				return qPorps;
+			}
+			const {getFriendsPosts, fetchMore} = Posts;
 
-			console.log('getFriendsPostsHoc', pps, 'no items', Items.length);
+			const {nextToken, Items} = getFriendsPosts;
 
-			const dataSpine = (pItems: any) => {
-				const rets = [];
-				for (let i = 0; i < pItems.length; i++) {
-					const post = pItems[i];
-					const numComments = numberOfComments(post);
-					rets.push({
-						id: post.id,
-						text: decodeBase64Text(post.text),
-						location: post.location,
-						media: getPostMedia(post.Media, post.likes.length, numComments),
-						// TODO: add (@username) somewhere here? for duplicate friends names, usernames cant be duplicates
-						timestamp: new Date(parseInt(post.createdAt, 10) * 1000),
-						numberOfLikes: post.likes.length,
-						numberOfSuperLikes: 0,
-						numberOfComments: numComments,
-						numberOfWalletCoins: 0,
-						onLikeButtonClick: () => null,
-						canDelete: false,
-						owner: post.owner,
-						onDeleteClick: null,
-						likes: post.likes,
-						bestComments: bestTwoComments(post),
-					});
+			const mappedItems = postsMapper(Items);
+
+			const paginationFunc = () => {
+				if (!nextToken) {
+					return {};
 				}
-				return rets;
+				fetchMore({
+					variables: {next: nextToken},
+					updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
+						const previousEntry = previousResult.getFriendsPosts;
+						const previousItems = previousEntry.Items;
+
+						const newItems = fetchMoreResult.getFriendsPosts.Items;
+						const newNext = fetchMoreResult.getFriendsPosts.nextToken;
+
+						const newFlag = newNext !== nextToken && newNext;
+
+						const newPosts = {
+							getFriendsPosts: {
+								nextToken: newNext,
+								Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
+								__typename: 'PaginatedPosts',
+							},
+						};
+
+						return newPosts;
+					},
+				});
 			};
+
 			return {
-				loading,
-				rawItems: Items,
-				Items: dataSpine(Items),
-				refresh: refetch,
+				...Posts,
+				Items: mappedItems,
 				nextToken,
-				noPosts: !Items.length,
+				noPosts: !Items,
 				hasMore: nextToken !== null,
-				loadMore: () =>
-					nextToken !== null
-						? fetchMore({
-								variables: {next: nextToken},
-								updateQuery: (previousResult, {fetchMoreResult}) => {
-									const previousEntry = previousResult.getFriendsPosts;
-									const previousItems = previousEntry ? previousEntry.Items : [];
-									const newItems = fetchMoreResult.getFriendsPosts.Items || [];
-									const newNext = fetchMoreResult.getFriendsPosts.nextToken;
-
-									console.log('New items', newItems.length);
-
-									const newPosts = {
-										getFriendsPosts: {
-											nextToken: newNext,
-											Items: newNext ? previousItems.concat(newItems) : previousItems,
-											__typename: 'PaginatedPosts',
-										},
-									};
-									return newPosts;
-								},
-						  })
-						: {},
+				loadMore: paginationFunc,
+				refresh: Posts.refetch,
 			};
 		},
-	})(comp);
+})(comp);
