@@ -1,0 +1,1 @@
+export { AddTitleAndColor } from './AddTitleAndColor';

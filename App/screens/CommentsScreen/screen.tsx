@@ -33,6 +33,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 		commentText: '',
 	};
 
+	// TODO: @jake @serkan ugrade to the new react ref api
 	private scrollRef: ScrollView;
 
 	public render() {
@@ -41,6 +42,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
 		];
 
+		// TODO: @jake @serkan let's refactor this!
 		return this.props.renderWithLoader(
 			<SafeAreaView style={containerStyles}>
 				<ScrollView
@@ -49,8 +51,25 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					ref={(ref: ScrollView) => (this.scrollRef = ref)}
 					onLayout={() => this.scrollRef.scrollToEnd()}
 				>
-					{this.renderNoComments()}
-					{this.renderComments()}
+					{this.props.noComments ? (
+						<View style={style.noCommentsContainer}>
+							<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+							<Text style={style.noCommentsText}>{'Be the first to comment here'}</Text>
+						</View>
+					) : (
+						// TODO: @jake @serkan check out the similar comment from repliesscreen!
+						// and what's with the code repetition here? why not make this a component and reuse?
+						this.props.comments.map((comment, index) => (
+							<CommentCard
+								key={index}
+								comment={comment}
+								onCommentLike={() => this.props.onCommentLike(comment)}
+								onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
+								onCommentDelete={() => this.props.onCommentDelete(comment)}
+								onViewUserProfile={this.props.onViewUserProfile}
+							/>
+						))
+					)}
 				</ScrollView>
 				<CommentTextInput
 					autoFocus={this.props.startComment}
@@ -60,30 +79,6 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			</SafeAreaView>,
 		);
 	}
-
-	private renderComments = () =>
-		this.props.comments.map((comment, index) => (
-			<CommentCard
-				key={index}
-				comment={comment}
-				onCommentLike={() => this.props.onCommentLike(comment)}
-				onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
-				onCommentDelete={() => this.props.onCommentDelete(comment)}
-				onViewUserProfile={this.props.onViewUserProfile}
-			/>
-		));
-
-	private renderNoComments = () => {
-		if (this.props.noComments) {
-			return (
-				<View style={style.noCommentsContainer}>
-					<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
-					<Text style={style.noCommentsText}>{'Be the first to comment here'}</Text>
-				</View>
-			);
-		}
-		return null;
-	};
 }
 
 const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent as any);
