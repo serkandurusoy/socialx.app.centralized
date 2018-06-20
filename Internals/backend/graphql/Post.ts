@@ -192,7 +192,7 @@ const postsMapper = (posts: any) =>
 			likes: post.likes,
 			bestComments: bestTwoComments(post),
 		};
-});
+	});
 
 export const likePostHoc = (comp: any) => graphql(likePost, {name: 'likePost'})(comp);
 export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: 'removeLikePost'})(comp);
@@ -231,7 +231,7 @@ export const getPublicPostsHoc = (comp: any) =>
 						const newFlag = newNext !== nextToken && newNext;
 
 						const newPosts = {
-							getPublicPosts : {
+							getPublicPosts: {
 								nextToken: newNext,
 								Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
 								__typename: 'PaginatedPosts',
@@ -253,7 +253,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				refresh: Posts.refetch,
 			};
 		},
-})(comp);
+	})(comp);
 
 export const getFriendsPostsHoc = (comp: any) =>
 	graphql(getFriendsPostsQ, {
@@ -270,11 +270,11 @@ export const getFriendsPostsHoc = (comp: any) =>
 
 			const mappedItems = postsMapper(Items);
 
-			const paginationFunc = () => {
+			const paginationFunc = async () => {
 				if (!nextToken) {
 					return {};
 				}
-				fetchMore({
+				await fetchMore({
 					variables: {next: nextToken},
 					updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
 						const previousEntry = previousResult.getFriendsPosts;
@@ -308,4 +308,4 @@ export const getFriendsPostsHoc = (comp: any) =>
 				refresh: Posts.refetch,
 			};
 		},
-})(comp);
+	})(comp);

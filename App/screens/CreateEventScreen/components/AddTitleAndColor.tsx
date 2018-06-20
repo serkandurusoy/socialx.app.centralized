@@ -1,9 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Colors} from 'theme';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Sae} from 'react-native-textinput-effects';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {Colors} from 'theme';
 import style from '../style';
 
 const EVENT_COLORS = ['red', 'purple', 'lime', 'yellow', 'blue', 'cyan'];
