@@ -24,7 +24,7 @@ interface IRenderOSBlurViewProps {
 const RenderOSBlurView: React.SFC<IRenderOSBlurViewProps> = ({closeHandler}) =>
 	Platform.OS === OS_TYPES.IOS ? (
 		<TouchableWithoutFeedback onPress={closeHandler}>
-			<BlurView style={style.blurView} blurType="dark" blurAmount={2} />
+			<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
 		</TouchableWithoutFeedback>
 	) : null;
 
