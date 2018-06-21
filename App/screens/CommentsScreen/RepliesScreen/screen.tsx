@@ -3,7 +3,7 @@ import {CommentTextInput} from 'components/Inputs/CommentTextInput';
 import {OS_TYPES} from 'consts';
 import {withInlineLoader} from 'hoc';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
-import React, {Component} from 'react';
+import React, {Component, RefObject} from 'react';
 import {Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
@@ -34,7 +34,7 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 		replyText: '',
 	};
 
-	private scrollRef: ScrollView;
+	private readonly scrollRef: RefObject<ScrollView> = React.createRef();
 
 	public render() {
 		const containerStyles = [
@@ -47,8 +47,8 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 				<ScrollView
 					style={style.repliesList}
 					keyboardShouldPersistTaps={'handled'}
-					ref={(ref: ScrollView) => (this.scrollRef = ref)}
-					onLayout={() => this.scrollRef.scrollToEnd()}
+					ref={this.scrollRef}
+					onLayout={() => this.scrollRef.current.scrollToEnd()}
 				>
 					{this.props.noReplies ? (
 						<View style={style.noRepliesContainer}>
@@ -56,11 +56,9 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 							<Text style={style.noRepliesText}>{'Be the first to comment here'}</Text>
 						</View>
 					) : (
-						// TODO: @jake @serkan find a better index here because
-						// this will be a problem with realtime updates as new comments come in
 						this.props.replies.map((reply, index) => (
 							<CommentCard
-								key={index}
+								key={reply.id}
 								comment={reply}
 								onCommentLike={() => this.props.onReplyLike(reply)}
 								onCommentReply={() => this.props.onReplyComment(reply, true)}
