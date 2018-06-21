@@ -32,6 +32,7 @@ import {addFileBN} from 'utilities/ipfs';
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
 import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {ValidatedPassword} from './components/ValidatedPassword';
 import {compose} from 'recompose';
 
 interface ICountryData {
@@ -204,6 +205,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						clearButtonMode='while-editing'
 					/>
 				</View>
+				<ValidatedPassword value={this.state.password} />
 				<View style={style.textInputContainer}>
 					<SXTextInput
 						isPassword={true}
