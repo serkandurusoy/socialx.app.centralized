@@ -17,6 +17,10 @@ interface ISearchScreenComponentProps extends IAppUIStateProps {
 	searching: boolean;
 	trendingResults: SearchResultData[];
 	loadingTrends: boolean;
+	onLoadMoreResults: () => void;
+	hasMoreResults: boolean;
+	onLoadMoreTrends: () => void;
+	hasMoreTrends: boolean;
 }
 
 const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = ({
@@ -30,6 +34,10 @@ const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = ({
 	trendingResults,
 	loadingTrends,
 	tabBarBottomHeight,
+	onLoadMoreResults,
+	hasMoreResults,
+	onLoadMoreTrends,
+	hasMoreTrends,
 }) => (
 	<View style={{flex: 1}}>
 		<View
@@ -40,6 +48,8 @@ const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = ({
 				searching={loadingTrends}
 				addFriendHandler={addFriendHandler}
 				onSearchResultSelect={onSearchResultSelect}
+				hasMore={hasMoreTrends}
+				onLoadMore={onLoadMoreTrends}
 			/>
 			<SearchResults
 				searchResults={searchResults}
@@ -48,6 +58,8 @@ const SearchScreenComponent: React.SFC<ISearchScreenComponentProps> = ({
 				searching={searching}
 				addFriendHandler={addFriendHandler}
 				onSearchResultSelect={onSearchResultSelect}
+				hasMore={hasMoreResults}
+				onLoadMore={onLoadMoreResults}
 			/>
 		</View>
 		<KeyboardSpacer style={{width: '100%'}} topSpacing={-tabBarBottomHeight} />

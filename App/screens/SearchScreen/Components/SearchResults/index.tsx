@@ -17,6 +17,8 @@ interface ISearchResultsProps {
 	searchResults: SearchResultData[];
 	addFriendHandler: (value: string) => Promise<any>;
 	onSearchResultSelect: (result: SearchResultData) => void;
+	onLoadMore: () => void;
+	hasMore: boolean;
 }
 
 const SearchingLoader: React.SFC = () => (
@@ -47,6 +49,8 @@ export const SearchResults: React.SFC<ISearchResultsProps> = ({
 	searchResults,
 	addFriendHandler,
 	onSearchResultSelect,
+	onLoadMore,
+	hasMore,
 }) => (
 	<View style={style.container}>
 		<SearchFilter selectedFilter={selectedFilter} setNewFilter={setNewFilter} />
@@ -58,6 +62,8 @@ export const SearchResults: React.SFC<ISearchResultsProps> = ({
 					searchResults={searchResults}
 					addFriendHandler={addFriendHandler}
 					onSearchResultSelect={onSearchResultSelect}
+					onLoadMore={onLoadMore}
+					hasMore={hasMore}
 				/>
 			)}
 	</View>
