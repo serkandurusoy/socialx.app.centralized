@@ -307,14 +307,14 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 					<Text style={style.likedText}>
 						{getText('postCardLikedBy') + ' '}
 						<Text style={style.likeTextBold} onPress={() => this.navigateToUserProfilePage(lastLikeUser.userId)}>
-							{lastLikeUser.username}
+							{lastLikeUser.userName}
 						</Text>
 					</Text>
 					{numberOfOtherLikes === 1 && (
 						<Text style={style.likedText}>
 							{andText}
 							<Text style={style.likeTextBold} onPress={() => this.navigateToUserProfilePage(secondLastLike.userId)}>
-								{secondLastLike.username}
+								{secondLastLike.userName}
 							</Text>
 						</Text>
 					)}

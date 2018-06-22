@@ -2,11 +2,12 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme/';
 
 const style: any = {
-	container: {
+	resultsContainer: {
 		flex: 1,
-		width: '200%',
-		flexDirection: 'row',
-		backgroundColor: Colors.white,
+		width: '100%',
+	},
+	bottomLoadingContainer: {
+		paddingVertical: Sizes.smartVerticalScale(20),
 	},
 };
 

@@ -17,6 +17,7 @@ declare module 'react-native-svg-charts';
 declare module 'react-native-gifted-chat';
 declare module 'react-native-android-keyboard-adjust';
 declare module 'react-native-smart-splash-screen';
+declare module 'react-native-spinkit';
 
 declare module 'react-native-mime-types' {
 	export function lookup(filenameOrExt: string): string | false;

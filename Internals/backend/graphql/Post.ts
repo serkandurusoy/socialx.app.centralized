@@ -10,25 +10,17 @@ import {bestTwoComments, decodeBase64Text, getPostMedia, numberOfComments} from 
 import {ipfsConfig as base} from 'configuration';
 
 const likePost = gql`
-	mutation likePost($postId: ID!) {
-		likePost(postId: $postId) {
+	mutation likePost($likedPostId: ID!) {
+		setLikedPost(likedPostId: $likedPostId) {
 			id
-			likes {
-				userId
-				username
-			}
 		}
 	}
 `;
 
 const removeLikePost = gql`
-	mutation removelikePost($postId: ID!) {
-		removelikePost(postId: $postId) {
+	mutation removelikePost($likedPostId: ID!) {
+		unsetLikedPost(likedPostId: $likedPostId) {
 			id
-			likes {
-				userId
-				username
-			}
 		}
 	}
 `;
@@ -62,8 +54,9 @@ const getPublicPostsQ = gql`
 				createdAt
 				location
 				likes {
+					id
 					userId
-					username
+					userName
 				}
 				Media {
 					id
@@ -121,8 +114,9 @@ const getFriendsPostsQ = gql`
 				createdAt
 				location
 				likes {
+					id
 					userId
-					username
+					userName
 				}
 				Media {
 					id
@@ -194,8 +188,8 @@ const postsMapper = (posts: any) =>
 		};
 	});
 
-export const likePostHoc = (comp: any) => graphql(likePost, {name: 'likePost'})(comp);
-export const removeLikePostHoc = (comp: any) => graphql(removeLikePost, {name: 'removeLikePost'})(comp);
+export const setLikedPostHoc = (comp: any) => graphql(likePost, {name: 'setLikedPost'})(comp);
+export const unsetLikedPostHoc = (comp: any) => graphql(removeLikePost, {name: 'unsetLikedPost'})(comp);
 
 export const deleteOwnPostHoc = (comp: any) => graphql(deletePostMut, {name: 'deletePost'})(comp);
 
