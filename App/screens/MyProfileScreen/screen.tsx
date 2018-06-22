@@ -42,6 +42,16 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, IIMyProf
 	private scrollView: any;
 	private isScrolled = false;
 
+	public shouldComponentUpdate(nextProps: IMyProfileScreenProps, nextState: IIMyProfileScreenState) {
+		if (this.props !== nextProps) {
+			return true;
+		} else if (this.state !== nextState) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public render() {
 		const gridPhotosStyles = [
 			style.gridPhotosContainer,

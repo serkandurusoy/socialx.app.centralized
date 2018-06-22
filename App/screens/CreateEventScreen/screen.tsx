@@ -10,8 +10,8 @@ import {Hoshi, Sae} from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Icons, Sizes} from 'theme';
 import {FriendsSearchResult} from '../PhotoScreen';
-import style, {COLOR_BUTTON_HEIGHT} from './style';
 import { AddTitleAndColor } from './components';
+import style, {COLOR_BUTTON_HEIGHT} from './style';
 
 const DATE_FORMAT = 'DD MMM YYYY';
 const TIME_FORMAT = 'hh:mm A';

@@ -3,7 +3,7 @@ import {CommentTextInput} from 'components/Inputs/CommentTextInput';
 import {OS_TYPES} from 'consts';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
-import React, {Component} from 'react';
+import React, {Component, RefObject} from 'react';
 import {Platform, SafeAreaView, ScrollView, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
@@ -33,8 +33,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 		commentText: '',
 	};
 
-	// TODO: @jake @serkan ugrade to the new react ref api
-	private scrollRef: ScrollView;
+	private readonly scrollRef: RefObject<ScrollView> = React.createRef();
 
 	public render() {
 		const containerStyles = [
@@ -48,12 +47,12 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 				<ScrollView
 					style={style.commentsList}
 					keyboardShouldPersistTaps={'handled'}
-					ref={(ref: ScrollView) => (this.scrollRef = ref)}
-					onLayout={() => this.scrollRef.scrollToEnd()}
+					ref={this.scrollRef}
+					onLayout={() => this.scrollRef.current.scrollToEnd()}
 				>
 					{this.props.noComments ? (
 						<View style={style.noCommentsContainer}>
-							<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
+							<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser}/>
 							<Text style={style.noCommentsText}>{'Be the first to comment here'}</Text>
 						</View>
 					) : (
