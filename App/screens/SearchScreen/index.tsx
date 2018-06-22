@@ -7,6 +7,7 @@ import {addFriendHoc, searchUsersHoc} from 'backend/graphql';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {SearchResultData, SearchResultKind, SearchResultPeople} from 'types';
+import {ISearchUserResult} from 'types/userSearch';
 import {SearchFilterValues, SearchHeader} from './Components';
 import SearchScreenComponent from './screen';
 
@@ -14,7 +15,7 @@ const SEARCH_DEBOUNCE_TIME_MS = 300;
 
 interface ISearchScreenProps {
 	navigation: NavigationScreenProp<any>;
-	search: any;
+	search: () => Promise<ISearchUserResult>;
 	addFriend: any;
 }
 
