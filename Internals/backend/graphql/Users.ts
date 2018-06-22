@@ -105,25 +105,21 @@ export const getUserPostsQ = gql`
 	}
 `;
 
-const searchUsersQ = gql`
-	query search($query: String!, $next: String) {
-		searchUsers(query: $query, next: $next) {
-			items {
-				user {
-					userId
-					username
-					name
-					email
-					avatar {
-						hash
-						size
-						type
-					}
+const searchUsersMut = gql`
+	mutation search($query: String!) {
+		searchUsers(query: $query) {
+			user {
+				userId
+				username
+				name
+				email
+				avatar {
+					hash
+					size
+					type
 				}
-				connection
 			}
-			nextToken
-			hasMore
+			connection
 		}
 	}
 `;
@@ -209,57 +205,7 @@ export const checkUsernameHoc = (comp: any) => graphql(checkUsername, {name: 'ch
 
 export const updateUserDataHoc = (comp: any) => graphql(updateUserData, {name: 'updateUserData'})(comp);
 
-export const searchUsersHoc = (comp: any) => graphql(searchUsersQ, {
-	name: 'search',
-	options: (ownPorps: any) => {
-		const {query} = ownPorps;
-		return {
-			variables: {query, next: ''},
-		};
-	},
-	props(qProps: any) {
-		if (qProps.search.loading) {
-			return qProps;
-		}
-		const {search} = qProps;
-		const {fetchMore, searchUsers} = search;
-		const {hasMore, nextToken} = searchUsers;
-
-		const loadMoreFunc = async () => {
-			if (!hasMore) {
-				return {};
-			}
-			await fetchMore({
-				variables: {next: nextToken},
-				updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
-					const previousEntry = previousResult.searchUsers;
-					const previousItems = previousEntry.Items;
-
-					const newItems = fetchMoreResult.searchUsers.Items;
-					const newNext = fetchMoreResult.searchUsers.nextToken;
-					const newFlag = fetchMoreResult.searchUsers.hasMore;
-
-					const newPosts = {
-						searchUsers: {
-							nextToken: newNext,
-							hasMore: newFlag,
-							Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
-							__typename: 'PaginatedSearchQuery',
-						},
-					};
-
-					return newPosts;
-				},
-			})
-		};
-
-		return {
-			...search,
-			loadMore: loadMoreFunc,
-			refresh: search.refetch,
-		};
-	},
-})(comp);
+export const searchUsersHoc = (comp: any) => graphql(searchUsersMut, {name: 'search'})(comp);
 
 export const getUserProfileHoc = (comp: any) =>
 	graphql(getUserQueryProfileQ, {

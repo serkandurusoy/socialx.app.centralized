@@ -34,11 +34,6 @@ export interface IWallPostComment extends IWallPostCommentReply {
 	replies: IWallPostCommentReply[];
 }
 
-export enum SearchFilterValues {
-	People = 'people',
-	Groups = 'groups',
-}
-
 export enum SearchResultKind {
 	Friend = 'FRIEND',
 	NotFriend = 'NOT_FRIEND',

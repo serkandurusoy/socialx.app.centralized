@@ -2,11 +2,14 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme/';
 
 const style: any = {
-	container: {
-		flex: 1,
-		width: '200%',
+	filterButtonsContainer: {
 		flexDirection: 'row',
-		backgroundColor: Colors.white,
+		width: '100%',
+		borderBottomWidth: Sizes.smartHorizontalScale(1),
+		borderBottomColor: Colors.iron2,
+	},
+	searchButton: {
+		flex: 1,
 	},
 };
 

@@ -4,9 +4,13 @@ import {Colors, Fonts, Sizes} from 'theme/';
 const style: any = {
 	container: {
 		flex: 1,
-		width: '200%',
-		flexDirection: 'row',
-		backgroundColor: Colors.white,
+		width: '50%',
+	},
+	loadingContainer: {
+		flex: 1,
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 };
 
