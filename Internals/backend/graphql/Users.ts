@@ -209,57 +209,63 @@ export const checkUsernameHoc = (comp: any) => graphql(checkUsername, {name: 'ch
 
 export const updateUserDataHoc = (comp: any) => graphql(updateUserData, {name: 'updateUserData'})(comp);
 
-export const searchUsersHoc = (comp: any) => graphql(searchUsersQ, {
-	name: 'search',
-	options: (ownPorps: any) => {
-		const {query} = ownPorps;
-		return {
-			variables: {query, next: ''},
-		};
-	},
-	props(qProps: any) {
-		if (qProps.search.loading) {
-			return qProps;
-		}
-		const {search} = qProps;
-		const {fetchMore, searchUsers} = search;
-		const {hasMore, nextToken} = searchUsers;
-
-		const loadMoreFunc = async () => {
-			if (!hasMore) {
-				return {};
+export const searchUsersHoc = (comp: any) =>
+	graphql(searchUsersQ, {
+		name: 'search',
+		options: (ownProps: any) => {
+			// TODO: causing a crash when query is empty first time! Below just a very dumb workaround...
+			// const {query} = ownProps;
+			let {query} = ownProps;
+			if (!query) {
+				query = 'a';
 			}
-			await fetchMore({
-				variables: {next: nextToken},
-				updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
-					const previousEntry = previousResult.searchUsers;
-					const previousItems = previousEntry.Items;
+			return {
+				variables: {query, next: ''},
+			};
+		},
+		props(qProps: any) {
+			if (qProps.search.loading) {
+				return qProps;
+			}
+			const {search} = qProps;
+			const {fetchMore, searchUsers} = search;
+			const {hasMore, nextToken} = searchUsers;
 
-					const newItems = fetchMoreResult.searchUsers.Items;
-					const newNext = fetchMoreResult.searchUsers.nextToken;
-					const newFlag = fetchMoreResult.searchUsers.hasMore;
+			const loadMoreFunc = async () => {
+				if (!hasMore) {
+					return {};
+				}
+				await fetchMore({
+					variables: {next: nextToken},
+					updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
+						const previousEntry = previousResult.searchUsers;
+						const previousItems = previousEntry.Items;
 
-					const newPosts = {
-						searchUsers: {
-							nextToken: newNext,
-							hasMore: newFlag,
-							Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
-							__typename: 'PaginatedSearchQuery',
-						},
-					};
+						const newItems = fetchMoreResult.searchUsers.Items;
+						const newNext = fetchMoreResult.searchUsers.nextToken;
+						const newFlag = fetchMoreResult.searchUsers.hasMore;
 
-					return newPosts;
-				},
-			})
-		};
+						const newPosts = {
+							searchUsers: {
+								nextToken: newNext,
+								hasMore: newFlag,
+								Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
+								__typename: 'PaginatedSearchQuery',
+							},
+						};
 
-		return {
-			...search,
-			loadMore: loadMoreFunc,
-			refresh: search.refetch,
-		};
-	},
-})(comp);
+						return newPosts;
+					},
+				});
+			};
+
+			return {
+				...search,
+				loadMore: loadMoreFunc,
+				refresh: search.refetch,
+			};
+		},
+	})(comp);
 
 export const getUserProfileHoc = (comp: any) =>
 	graphql(getUserQueryProfileQ, {

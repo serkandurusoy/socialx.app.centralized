@@ -6,6 +6,9 @@ const style: any = {
 		flex: 1,
 		width: '100%',
 	},
+	bottomLoadingContainer: {
+		paddingVertical: Sizes.smartVerticalScale(20),
+	},
 };
 
 export default StyleSheet.create(style);

@@ -13,6 +13,8 @@ interface ITrendingSearchesProps {
 	searchResults: SearchResultData[];
 	addFriendHandler: (value: string) => Promise<any>;
 	onSearchResultSelect: (result: SearchResultData) => void;
+	onLoadMore: () => void;
+	hasMore: boolean;
 }
 
 const TrendingLoader: React.SFC = () => (
@@ -31,6 +33,8 @@ export const TrendingSearches: React.SFC<ITrendingSearchesProps> = ({
 	searchResults,
 	addFriendHandler,
 	onSearchResultSelect,
+	onLoadMore,
+	hasMore,
 }) => (
 	<View style={style.container}>
 		{searching && <TrendingLoader />}
@@ -40,6 +44,8 @@ export const TrendingSearches: React.SFC<ITrendingSearchesProps> = ({
 					searchResults={searchResults}
 					addFriendHandler={addFriendHandler}
 					onSearchResultSelect={onSearchResultSelect}
+					onLoadMore={onLoadMore}
+					hasMore={hasMore}
 				/>
 			)}
 	</View>

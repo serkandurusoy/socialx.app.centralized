@@ -26,6 +26,8 @@ interface ISearchScreenState {
 	searching: boolean;
 	loadingTrends: boolean;
 	trendingResults: SearchResultData[];
+	hasMoreTrends: boolean;
+	hasMoreResults: boolean;
 }
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
@@ -53,7 +55,12 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		searching: false,
 		loadingTrends: false,
 		trendingResults: [],
+		hasMoreTrends: true,
+		hasMoreResults: true,
 	};
+
+	private loadingMoreResults = false;
+	private loadingMoreTrends = false;
 
 	private debounceSearch = debounce(async (term: string) => {
 		const searchResults = await this.doSearch(term);
@@ -87,12 +94,17 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 				searching={this.state.searching}
 				loadingTrends={this.state.loadingTrends}
 				trendingResults={this.state.trendingResults}
+				hasMoreTrends={this.state.hasMoreTrends}
+				hasMoreResults={this.state.hasMoreResults}
+				onLoadMoreResults={this.onLoadMoreResultsHandler}
+				onLoadMoreTrends={this.onLoadMoreTrendsHandler}
 			/>
 		);
 	}
 
 	// todo @serkan @jake let's discuss this
 	private doSearch = async (query: string) => {
+		// TODO: @jake: please fix this one is now broken...
 		const {search} = this.props;
 		const results: SearchResultPeople[] = [];
 		if (query.length < 2) {
@@ -213,6 +225,22 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			loadingTrends: false,
 			trendingResults,
 		});
+	};
+
+	private onLoadMoreResultsHandler = () => {
+		if (!this.loadingMoreResults) {
+			this.loadingMoreResults = true;
+			// TODO: @Jake: load more here, and update this.state.searchResults
+			this.loadingMoreResults = false;
+		}
+	};
+
+	private onLoadMoreTrendsHandler = () => {
+		if (!this.loadingMoreTrends) {
+			this.loadingMoreTrends = true;
+			// TODO: @Jake: load more here, and update this.state.trendingResults
+			this.loadingMoreTrends = false;
+		}
 	};
 }
 
