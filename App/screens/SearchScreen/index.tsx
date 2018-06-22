@@ -56,8 +56,8 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 		searching: false,
 		loadingTrends: false,
 		trendingResults: [],
-		hasMoreTrends: true,
-		hasMoreResults: true,
+		hasMoreTrends: false,
+		hasMoreResults: false,
 	};
 
 	private loadingMoreResults = false;
@@ -226,6 +226,22 @@ class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
 			loadingTrends: false,
 			trendingResults,
 		});
+	};
+
+	private onLoadMoreResultsHandler = () => {
+		if (!this.loadingMoreResults) {
+			this.loadingMoreResults = true;
+			// TODO: @Jake: load more here, and update this.state.searchResults
+			this.loadingMoreResults = false;
+		}
+	};
+
+	private onLoadMoreTrendsHandler = () => {
+		if (!this.loadingMoreTrends) {
+			this.loadingMoreTrends = true;
+			// TODO: @Jake: load more here, and update this.state.trendingResults
+			this.loadingMoreTrends = false;
+		}
 	};
 }
 
