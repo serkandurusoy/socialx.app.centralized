@@ -13,8 +13,8 @@ import {
 	createPostHoc,
 	deleteOwnPostHoc,
 	getUserPostsHoc,
-	likePostHoc,
-	removeLikePostHoc,
+	setLikedPostHoc,
+	unsetLikedPostHoc,
 	userHoc,
 } from 'backend/graphql';
 import {graphql} from 'react-apollo';
@@ -52,8 +52,8 @@ interface IUserFeedScreenProps extends IFeedProps {
 	User: IUserDataResponse;
 	// TODO: create interface
 	createPost: any;
-	likePost: any;
-	removeLikePost: any;
+	setLikedPost: any;
+	unsetLikedPost: any;
 	addMedia: any;
 	startMediaPost: any;
 	startPostadd: any;
@@ -103,7 +103,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
 
-		// console.log(this.props);
+		console.log(Items);
 
 		return (
 			<UserFeedScreenComponent
@@ -262,12 +262,12 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 	};
 
-	private onLikeButtonClickHandler = async (likedByMe: boolean, postId: string) => {
-		const {likePost, removeLikePost, Items, refresh} = this.props;
+	private onLikeButtonClickHandler = async (likedByMe: boolean, likedPostId: string) => {
+		const {setLikedPost, unsetLikedPost, Items, refresh} = this.props;
 
-		const likeQuery = {variables: {postId}};
+		const likeQuery = {variables: {likedPostId}};
 
-		const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
+		const result = likedByMe ? await unsetLikedPost(likeQuery) : await setLikedPost(likeQuery);
 		console.log('onLikeButtonClickHandler result:', result);
 
 		if (result.error) {
@@ -325,8 +325,8 @@ const reduxWrapper = connect(
 const userWrapper = userHoc(reduxWrapper);
 const createPostWrapper = createPostHoc(userWrapper);
 const addMediaWrapper = addMediaHoc(createPostWrapper);
-const likePostWrapper = likePostHoc(addMediaWrapper);
-const removeLikePostWrapper = removeLikePostHoc(likePostWrapper);
+const likePostWrapper = setLikedPostHoc(addMediaWrapper);
+const removeLikePostWrapper = unsetLikedPostHoc(likePostWrapper);
 const deletePostWrapper = deleteOwnPostHoc(removeLikePostWrapper);
 
 export default deletePostWrapper;
