@@ -225,12 +225,12 @@ export const searchUsersHoc = (comp: any) => graphql(searchUsersQ, {
 		const {fetchMore, searchUsers} = search;
 		const {hasMore, nextToken} = searchUsers;
 
-		const loadMoreFunc = async (newQuery: string) => {
+		const loadMoreFunc = async () => {
 			if (!hasMore) {
 				return {};
 			}
 			await fetchMore({
-				variables: {next: nextToken, query: newQuery},
+				variables: {next: nextToken},
 				updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
 					const previousEntry = previousResult.searchUsers;
 					const previousItems = previousEntry.Items;
