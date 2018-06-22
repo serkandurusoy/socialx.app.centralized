@@ -1,3 +1,4 @@
+import PasswordValidator from 'password-validator';
 import React from 'react';
 import {Text, View} from 'react-native';
 
@@ -5,18 +6,23 @@ import {getText} from 'utilities';
 import style from './style';
 
 const MIN_PASSWORD_LENGTH = 8;
-const DIGIT_REGEX = new RegExp('[0-9]');
-const LOWERCASE_REGEX = new RegExp('[a-z]');
-const UPPERCASE_REGEX = new RegExp('[A-Z]');
-const SYMBOLS_REGEX = new RegExp('[^\\w\\s]+');
-
-interface IValidatedPasswordProps {
-	value: string;
-}
+const MIN_LENGTH_VALIDATOR = new PasswordValidator().is().min(MIN_PASSWORD_LENGTH);
+const LOWERCASE_VALIDATOR = new PasswordValidator().has().lowercase();
+const UPPERCASE_VALIDATOR = new PasswordValidator().has().uppercase();
+const DIGIT_VALIDATOR = new PasswordValidator().has().digits();
+const SYMBOL_VALIDATOR = new PasswordValidator().has().symbols();
 
 interface IValidationErrors {
 	minLength: React.ReactElement<any> | null;
 	pattern: React.ReactElement<any> | null;
+}
+
+interface IValidatedPasswordProps {
+	validationErrors: IValidationErrors;
+}
+
+interface IWithValidationProps {
+	value: string;
 }
 
 const getErrors = (value: string) => {
@@ -25,7 +31,7 @@ const getErrors = (value: string) => {
 		pattern: null,
 	};
 	if (value) {
-		if (value.length < MIN_PASSWORD_LENGTH) {
+		if (!MIN_LENGTH_VALIDATOR.validate(value)) {
 			errors.minLength = (
 				<Text style={style.errorText}>
 					<Text style={style.boldText}>{getText('signupPasswordMinLength') + ' '}</Text>
@@ -34,16 +40,16 @@ const getErrors = (value: string) => {
 			);
 		}
 		const patternMessages: string[] = [];
-		if (!DIGIT_REGEX.test(value)) {
+		if (!DIGIT_VALIDATOR.validate(value)) {
 			patternMessages.push(getText('signupPasswordInvalidNumbers'));
 		}
-		if (!LOWERCASE_REGEX.test(value)) {
+		if (!LOWERCASE_VALIDATOR.validate(value)) {
 			patternMessages.push(getText('signupPasswordInvalidLowercase'));
 		}
-		if (!UPPERCASE_REGEX.test(value)) {
+		if (!UPPERCASE_VALIDATOR.validate(value)) {
 			patternMessages.push(getText('signupPasswordInvalidUppercase'));
 		}
-		if (!SYMBOLS_REGEX.test(value)) {
+		if (!SYMBOL_VALIDATOR.validate(value)) {
 			patternMessages.push(getText('signupPasswordInvalidSymbols'));
 		}
 		if (patternMessages.length > 0) {
@@ -58,8 +64,13 @@ const getErrors = (value: string) => {
 	return errors;
 };
 
-export const ValidatedPassword: React.SFC<IValidatedPasswordProps> = ({value}) => {
-	const validationErrors = getErrors(value);
+const withValidationLogic = <P extends IValidatedPasswordProps>(
+	Component: React.ComponentType<P>,
+): React.SFC<IWithValidationProps> => ({value}: IWithValidationProps) => {
+	return <Component validationErrors={getErrors(value)} />;
+};
+
+export const ValidatedPassword: React.SFC<IValidatedPasswordProps> = ({validationErrors}) => {
 	if (validationErrors.minLength || validationErrors.pattern) {
 		return (
 			<View style={style.errorContainer}>
@@ -70,3 +81,5 @@ export const ValidatedPassword: React.SFC<IValidatedPasswordProps> = ({value}) =
 	}
 	return null;
 };
+
+export default withValidationLogic(ValidatedPassword);
