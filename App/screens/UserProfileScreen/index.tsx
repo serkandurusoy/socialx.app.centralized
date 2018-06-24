@@ -81,6 +81,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 	public render() {
 		const {getUserQuery, getUserPosts} = this.props;
+		console.log('userPosts', getUserPosts)
 		return (
 			<UserProfileScreenComponent
 				isLoading={getUserQuery.loading || getUserPosts.loading}
@@ -95,7 +96,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				fullName={getUserQuery.getUser.fullName}
 				username={getUserQuery.getUser.username}
 				aboutMeText={getUserQuery.getUser.aboutMeText}
-				recentPosts={getUserPosts.Items}
+				recentPosts={getUserPosts.getPostsOwner ? getUserPosts.getPostsOwner.Items : []}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				navigation={this.props.navigation}
 				allMediaObjects={getUserQuery.getUser.mediaObjects}

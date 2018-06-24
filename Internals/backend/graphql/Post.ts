@@ -13,6 +13,11 @@ const likePost = gql`
 	mutation likePost($likedPostId: ID!) {
 		setLikedPost(likedPostId: $likedPostId) {
 			id
+			likes {
+				id
+				userId
+				userName
+			}
 		}
 	}
 `;
@@ -21,6 +26,11 @@ const removeLikePost = gql`
 	mutation removelikePost($likedPostId: ID!) {
 		unsetLikedPost(likedPostId: $likedPostId) {
 			id
+			likes {
+				id
+				userId
+				userName
+			}
 		}
 	}
 `;

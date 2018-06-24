@@ -80,8 +80,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public renderWallPosts = (data: {item: IWallPostCardProp}) => {
 		const canDelete = this.props.currentUser.userId === data.item.owner.userId;
 		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === this.props.currentUser.userId);
-		console.log('likedByMe', likedByMe);
-		console.log('data.item.likedByMe', data.item.likedByMe);
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard

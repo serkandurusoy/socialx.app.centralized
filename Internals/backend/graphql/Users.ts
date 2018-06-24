@@ -19,7 +19,7 @@ export const getUserQueryProfileQ = gql`
 				posts {
 					id
 					likes {
-						userId
+						id
 					}
 					Media {
 						id
@@ -46,7 +46,7 @@ export const getUserProfileQ = gql`
 			posts {
 				id
 				likes {
-					userId
+					id
 				}
 				Media {
 					id
@@ -69,8 +69,9 @@ export const getUserPostsQ = gql`
 				location
 				text
 				likes {
+					id
 					userId
-					username
+					userName
 				}
 				owner {
 					userId
@@ -251,33 +252,36 @@ export const getUserPostHoc = (comp: any) =>
 			const {
 				getUserPosts: {loading, getPostsOwner, refetch},
 			} = pps;
-			const results = {getUserPosts: {Items: [], loading, refetch}};
-			if (!loading) {
-				results.getUserPosts.Items =
-					getPostsOwner.Items.length > 0
-						? getPostsOwner.Items.map((item: any) => {
-								const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
-								const numComments = numberOfComments(item);
-								return {
-									id: item.id,
-									title: null,
-									text: item.text,
-									location: item.location,
-									smallAvatar: avatar,
-									fullName: item.owner.name,
-									timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
-									numberOfLikes: item.likes.length,
-									numberOfComments: numComments,
-									canDelete: false,
-									media: getPostMedia(item.Media, item.likes.length, numComments),
-									owner: item.owner,
-									bestComments: bestTwoComments(item),
-									likes: item.likes,
-								};
-						  })
-						: [];
+			if (loading) {
+				return pps;
 			}
-			return results;
+			return {
+				...pps,
+				...pps.getUserPosts,
+				getPostsOwner: {
+					...pps.getUserPosts.getPostsOwner,
+					Items: getPostsOwner.Items.map((item: any) => {
+						const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
+						const numComments = numberOfComments(item);
+						return {
+							id: item.id,
+							title: null,
+							text: item.text,
+							location: item.location,
+							smallAvatar: avatar,
+							fullName: item.owner.name,
+							timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
+							numberOfLikes: item.likes.length,
+							numberOfComments: numComments,
+							canDelete: false,
+							media: getPostMedia(item.Media, item.likes.length, numComments),
+							owner: item.owner,
+							bestComments: bestTwoComments(item),
+							likes: item.likes,
+						};
+					}),
+				},
+			};
 		},
 		options: (ownProps: any) => {
 			const {navigation} = ownProps;

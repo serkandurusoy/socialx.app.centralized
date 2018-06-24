@@ -47,7 +47,8 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps {
 	onCommentClick: (startComment: boolean) => void;
 	likedByMe?: boolean;
 	canDelete?: boolean;
-	media: IMediaProps[];
+	Media?: IMediaProps[];
+	media?: IMediaProps[];
 	likes?: any;
 	bestComments: ISimpleComment[];
 }
@@ -207,7 +208,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	private renderWallPostMedia = () => {
 		return (
 			<WallPostMedia
-				mediaObjects={this.props.media}
+				mediaObjects={this.props.Media || this.props.media}
 				onMediaObjectView={this.props.onImageClick}
 				noInteraction={this.state.disableMediaFullScreen}
 			/>
