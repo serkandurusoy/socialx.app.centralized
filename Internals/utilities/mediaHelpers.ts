@@ -14,14 +14,18 @@ const PHOTO_LIB_SAVE_ACCESS_DENIED = 'Save to photo library denied :(';
 const PHOTO_LIB_SAVE_DOWNLOAD_ERROR = 'Save to photo library denied :(';
 const PHOTO_LIB_SAVE_MOVE_TO_PHOTO_LIB_FAILED = 'Media object was downloaded but moving to photo library failed';
 
-export const getURLForMediaViewerObject = (object: IMediaViewerObject) => {
+export const getURLForMediaViewerObject = (object: IMediaViewerObject, original?: boolean) => {
 	let mediaURL;
 	if ('url' in object) {
 		mediaURL = (object as ISimpleMediaObject).url;
 	} else {
 		object = object as IMediaPropsWithIndex;
 		mediaURL = base.ipfs_URL;
-		mediaURL += object.optimizedHash ? object.optimizedHash : object.hash;
+		if (original) {
+			mediaURL += object.hash;
+		} else {
+			mediaURL += object.optimizedHash ? object.optimizedHash : object.hash;
+		}
 	}
 	return mediaURL;
 };

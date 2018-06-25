@@ -200,18 +200,20 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 		);
 	};
 
-	private renderRecentPosts = () =>
-		this.props.recentPosts.map((post, i) => (
+	private renderRecentPosts = () => {
+		console.log('props', this.props);
+		return this.props.recentPosts.map((post, i) => (
 			<View style={style.wallPostContainer} key={i}>
 				<WallPostCard
 					{...post}
 					canDelete={false}
 					onCommentClick={() => this.props.onCommentClick(post.id, null)}
-					onImageClick={(index) => this.props.onImageClick(index, post.media)}
+					onImageClick={(index) => this.props.onImageClick(index, post.media || post.Media)}
 					// onLikeButtonClick={() => this.props.onLikeClick(post.likedByMe || false, post.id)}
 				/>
 			</View>
 		));
+	};
 
 	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
 		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.state.isScrolled) {

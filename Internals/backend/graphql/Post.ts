@@ -13,6 +13,11 @@ const likePost = gql`
 	mutation likePost($likedPostId: ID!) {
 		setLikedPost(likedPostId: $likedPostId) {
 			id
+			likes {
+				id
+				userId
+				userName
+			}
 		}
 	}
 `;
@@ -21,6 +26,11 @@ const removeLikePost = gql`
 	mutation removelikePost($likedPostId: ID!) {
 		unsetLikedPost(likedPostId: $likedPostId) {
 			id
+			likes {
+				id
+				userId
+				userName
+			}
 		}
 	}
 `;
@@ -204,8 +214,12 @@ export const getPublicPostsHoc = (comp: any) =>
 				return qPorps;
 			}
 			const {getPublicPosts, fetchMore} = Posts;
+			if (!getPublicPosts) {
+				return qPorps;
+			}
 
-			const {nextToken, Items} = getPublicPosts;
+			const {Items} = getPublicPosts;
+			const nextToken = getPublicPosts ? getPublicPosts.nextToken : '';
 
 			const mappedItems = postsMapper(Items);
 
@@ -242,7 +256,7 @@ export const getPublicPostsHoc = (comp: any) =>
 				Items: mappedItems,
 				nextToken,
 				noPosts: !Items,
-				hasMore: nextToken !== null,
+				hasMore: !!nextToken,
 				loadMore: paginationFunc,
 				refresh: Posts.refetch,
 			};
@@ -259,8 +273,12 @@ export const getFriendsPostsHoc = (comp: any) =>
 				return qPorps;
 			}
 			const {getFriendsPosts, fetchMore} = Posts;
+			if (!getFriendsPosts) {
+				return qPorps;
+			}
 
-			const {nextToken, Items} = getFriendsPosts;
+			const {Items} = getFriendsPosts;
+			const nextToken = getFriendsPosts ? getFriendsPosts.nextToken : '';
 
 			const mappedItems = postsMapper(Items);
 
@@ -297,7 +315,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 				Items: mappedItems,
 				nextToken,
 				noPosts: !Items,
-				hasMore: nextToken !== null,
+				hasMore: !!nextToken,
 				loadMore: paginationFunc,
 				refresh: Posts.refetch,
 			};

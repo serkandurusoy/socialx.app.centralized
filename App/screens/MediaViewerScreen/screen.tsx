@@ -162,7 +162,7 @@ export default class MediaViewerScreenComponent extends Component<
 	private renderCarouselItem = (itemData: {item: IMediaViewerObject; index: number}) => {
 		const carouselImageStyles = [style.carouselMediaObject, {width: this.state.viewport.width}];
 		const dataItem = itemData.item;
-		const mediaURL = getURLForMediaViewerObject(dataItem);
+		const mediaURL = getURLForMediaViewerObject(dataItem, true);
 		const mediaTypeProps = getTypePropsForMediaViewerObject(dataItem);
 		return (
 			<MediaObjectViewer
