@@ -24,7 +24,6 @@ interface INotificationsScreenComponentProps extends IWithLoaderProps {
 
 class NotificationsScreenComponent extends Component<INotificationsScreenComponentProps, any> {
 	public render() {
-		// TODO: @jake @serkan let's refactor this!
 		return <View style={style.container}>{this.conditionalRender()}</View>;
 	}
 
@@ -113,4 +112,4 @@ class NotificationsScreenComponent extends Component<INotificationsScreenCompone
 	};
 }
 
-export default withInlineLoader(NotificationsScreenComponent as any);
+export default withInlineLoader(NotificationsScreenComponent);

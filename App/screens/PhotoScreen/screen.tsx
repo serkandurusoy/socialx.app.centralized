@@ -50,7 +50,6 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 	};
 
 	public render() {
-		// TODO: @jake @serkan let's refactor this!
 		return (
 			<KeyboardAwareScrollView
 				style={style.scrollView}
@@ -160,4 +159,4 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 	};
 }
 
-export default withInlineLoader(PhotoScreenComponent, true);
+export default withInlineLoader(PhotoScreenComponent);

@@ -103,8 +103,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
 
-		console.log(Items);
-
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}

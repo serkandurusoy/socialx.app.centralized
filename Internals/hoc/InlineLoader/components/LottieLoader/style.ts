@@ -2,8 +2,9 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
 const style: any = {
-	animatedView: {
-		flex: 1,
+	lottieAnimation: {
+		width: '100%',
+		height: Sizes.smartVerticalScale(200),
 	},
 };
 

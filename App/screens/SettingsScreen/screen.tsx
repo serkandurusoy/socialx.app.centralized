@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
-import {
-	AsyncStorage,
-	ImageRequireSource,
-	ImageURISource,
-	Text,
-	TouchableOpacity,
-	View,
-	ViewAsyncStroage,
-} from 'react-native';
+import {AsyncStorage, ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -81,7 +73,6 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 
 	public render() {
 		// @ionut: todo -> add location-age fields
-		// TODO: @jake @serkan let's refactor this!
 		return (
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView
@@ -228,4 +219,4 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 	};
 }
 
-export default withInlineLoader(SettingsScreenComponent as any, true);
+export default withInlineLoader(SettingsScreenComponent);

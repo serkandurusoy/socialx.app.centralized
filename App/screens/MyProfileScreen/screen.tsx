@@ -64,7 +64,6 @@ class MyProfileScreenComponent extends Component<IMyProfileScreenProps, IIMyProf
 				: []),
 		];
 
-		// todo @serkan @jake let's revisit renderWithLoader, why? why not canonical react with component composition?
 		return (
 			<View style={style.container}>
 				<ScrollView

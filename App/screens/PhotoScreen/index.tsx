@@ -91,7 +91,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		const {addMedia, createPost, startMediaPost, startPostadd, stopLoading} = this.props;
 
 		try {
-			const wallPostDataInScreen = this.photoScreen.current.getOriginalRef().getWallPostData();
+			const wallPostDataInScreen = this.photoScreen.current.getOriginalRef().current.getWallPostData();
 			const localPhotoData: Partial<WallPostPhoto> = {
 				media: this.props.navigation.state.params.mediaObject,
 			};

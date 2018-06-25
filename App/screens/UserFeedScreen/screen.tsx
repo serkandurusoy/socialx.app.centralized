@@ -138,4 +138,4 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 }
 
-export default withInlineLoader(UserFeedScreen as any);
+export default withInlineLoader(UserFeedScreen);

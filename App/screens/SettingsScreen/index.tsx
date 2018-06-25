@@ -180,7 +180,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 			await updateUserData(mVar);
 			await data.refetch();
 
-			this.screenRef.current.getOriginalRef().resetChanges();
+			this.screenRef.current.getOriginalRef().current.resetChanges();
 		} catch (e) {
 			//
 			console.log(e);

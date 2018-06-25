@@ -7,8 +7,10 @@ export interface IWithResizeOnKeyboardShowProps {
 	safeRunAfterKeyboardHide: (handler: () => void) => void;
 }
 
-const withResizeOnKeyboardShowInt = (BaseComponent: any) => {
-	return class extends React.Component {
+export const withResizeOnKeyboardShowInt = <P extends IWithResizeOnKeyboardShowProps>(
+	BaseComponent: React.ComponentType<P>,
+) => {
+	return class extends React.Component<P> {
 		public state = {
 			marginBottom: 0,
 			isHidden: false,
