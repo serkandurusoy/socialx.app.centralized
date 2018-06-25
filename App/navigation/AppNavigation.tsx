@@ -200,7 +200,6 @@ const MainScreenWithModal = StackNavigator(
 
 const PreAuthNavigator = StackNavigator(
 	{
-		// IntroScreen: {screen: IntroScreen}, // TODO: enable later!
 		LaunchScreen: {screen: LaunchScreen},
 		LoginScreen: {screen: LoginScreen},
 		SignUpScreen: {screen: SignUpScreen},
@@ -220,6 +219,7 @@ const PreAuthNavigator = StackNavigator(
 const PrimaryNav = StackNavigator(
 	{
 		PreAuthScreen: {screen: PreAuthNavigator},
+		IntroScreen: {screen: IntroScreen},
 		MainScreen: {screen: MainScreenWithModal},
 		Maintenance: {screen: MaintenanceScreen},
 		GroupScreen: {screen: GroupScreen}, // TODO: later to be moved

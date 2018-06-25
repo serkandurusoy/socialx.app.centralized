@@ -317,7 +317,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
-			resetNavigationToRoute('MainScreen', this.props.navigation);
+			resetNavigationToRoute('IntroScreen', this.props.navigation);
 			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			console.log(ex);
@@ -351,6 +351,10 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	};
 
 	private startRegister = async () => {
+		if (!this.state.termsAccepted) {
+			return;
+		}
+
 		const {email, name, username, password, confirmPassword, updatedAvatarImagePath} = this.state;
 		const {createUser, addMedia, checkUsername} = this.props;
 

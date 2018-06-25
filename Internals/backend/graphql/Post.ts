@@ -314,7 +314,7 @@ export const getFriendsPostsHoc = (comp: any) =>
 				...Posts,
 				Items: mappedItems,
 				nextToken,
-				noPosts: !Items,
+				noPosts: !Items || Items.length === 0,
 				hasMore: !!nextToken,
 				loadMore: paginationFunc,
 				refresh: Posts.refetch,
