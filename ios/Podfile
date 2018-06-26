@@ -44,6 +44,8 @@ target 'SocialxTypeActress' do
 
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
+  pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
+
   target 'SocialxTypeActressTests' do
     inherit! :search_paths
     # Pods for testing
