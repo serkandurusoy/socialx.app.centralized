@@ -66,4 +66,12 @@ export default {
 	'reset.password.mismatch': "Your passwords don't match",
 	'reset.password.success': 'Your password has been successfully reset!',
 	'reset.password.wrong.code': 'Wrong reset code entered, please try again.',
+	'intro.skip.label': 'Skip',
+	'intro.first.slide.title': 'Decentralising your media',
+	'intro.first.slide.description': 'Have full ownership of your content and data at all times',
+	'intro.second.slide.title': 'Get rewarded for content',
+	'intro.second.slide.description':
+		'The Superlike feature allows you to receive SOCX tokens by publishing high-quality content',
+	'intro.third.slide.title': 'One wallet to rule them all',
+	'intro.third.slide.description': 'We make adoption to digital currencies easy and secure.',
 };

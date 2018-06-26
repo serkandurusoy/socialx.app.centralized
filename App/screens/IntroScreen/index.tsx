@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {NavigationScreenProp} from 'react-navigation';
 
 import {Colors, Images} from 'theme';
-import {getText} from 'utilities';
+import {getTextStatic, IWithTranslationProps, withTranslations} from 'utilities';
 import {resetNavigationToRoute} from '../../../Internals/backend/actions';
 import style from './style';
 import {WalkThroughFirst} from './WalkThroughFirst';
@@ -14,24 +14,27 @@ import {WalkThroughGeneric} from './WalkThroughGeneric';
 const CustomSlide1 = 'CustomSlide1';
 const GenericSlide = 'GenericSlide';
 
+// TODO: refactor here and get rid of getTextStatic
 const SLIDES = [
 	{
 		type: CustomSlide1,
 		key: 'Slide1',
+		title: getTextStatic('intro.first.slide.title'),
+		description: getTextStatic('intro.first.slide.description'),
 	},
 	{
 		type: GenericSlide,
 		key: 'Slide2',
-		title: getText('introSecondSlideTitle'),
-		description: getText('introSecondSlideDescription'),
+		title: getTextStatic('intro.second.slide.title'),
+		description: getTextStatic('intro.second.slide.description'),
 		image: Images.IntroWalkThrough2,
 		gradient: [Colors.blueMarguerite, Colors.postHour],
 	},
 	{
 		type: GenericSlide,
 		key: 'Slide3',
-		title: getText('introThirdSlideTitle'),
-		description: getText('introThirdSlideDescription'),
+		title: getTextStatic('intro.third.slide.title'),
+		description: getTextStatic('intro.third.slide.description'),
 		image: Images.IntroWalkThrough3,
 		gradient: [Colors.blueMarguerite, Colors.blueMarguerite, Colors.shuttleGray],
 	},
@@ -44,16 +47,19 @@ export interface ISlideProps {
 	bottomSpacer: number;
 	key: string;
 	type: string;
+	title: string;
+	description: string;
 }
 
 export interface IGenericSlide extends ISlideProps {
 	image: ImageRequireSource;
-	title: string;
-	description: string;
 	gradient: string[];
 }
 
-const SkipButton: React.SFC = () => <Text style={style.skipButton}>{getText('introSkipLabel')}</Text>;
+const SkipButton: React.SFC<IWithTranslationProps> = ({getText}) => (
+	<Text style={style.skipButton}>{getText('intro.skip.label')}</Text>
+);
+const SkipButtonTranslated = withTranslations(SkipButton);
 
 const NextButton: React.SFC = () => (
 	<View style={[style.buttonCircle, style.buttonNext]}>
@@ -94,7 +100,7 @@ const IntroScreen: React.SFC<IIntroScreenProps> = ({navigation}) => (
 		onDone={() => onDoneHandler(navigation)}
 		onSkip={() => onDoneHandler(navigation)}
 		showSkipButton={true}
-		renderSkipButton={SkipButton}
+		renderSkipButton={SkipButtonTranslated}
 	/>
 );
 
