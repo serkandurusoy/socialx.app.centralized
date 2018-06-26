@@ -3,6 +3,7 @@ package socialx.network;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.bugsnag.BugsnagReactNative;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.vydia.RNUploader.UploaderReactPackage;
@@ -55,6 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+                BugsnagReactNative.getPackage(),
                 new ReactNativeRestartPackage(),
                 new LottiePackage(),
                 new WebRTCModulePackage(),
@@ -99,6 +101,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        BugsnagReactNative.start(this);
         SoLoader.init(this, /* native exopackage */ false);
     }
 }

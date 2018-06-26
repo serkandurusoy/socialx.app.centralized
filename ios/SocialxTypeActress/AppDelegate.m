@@ -19,6 +19,8 @@
 // react-native-smart-splash-screen
 #import "RCTSplashScreen.h"
 
+#import <BugsnagReactNative/BugsnagReactNative.h>
+
 @implementation AppDelegate
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
@@ -35,7 +37,10 @@
 
   [AppCenterReactNative register];  // Initialize AppCenter 
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+  [BugsnagReactNative start];
+
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"SocialxTypeActress"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
