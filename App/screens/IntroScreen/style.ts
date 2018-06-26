@@ -1,41 +1,34 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme/';
 
+const CIRCLE_BUTTON_SIZE = Sizes.smartHorizontalScale(40);
+
 const style: any = {
-	mainContent: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'space-around',
-	},
-	image: {
-		width: 320,
-		height: 320,
-	},
-	text: {
-		color: 'rgba(255, 255, 255, 0.8)',
-		backgroundColor: 'transparent',
-		textAlign: 'center',
-		paddingHorizontal: 16,
-	},
-	title: {
-		fontSize: 22,
-		color: 'white',
-		backgroundColor: 'transparent',
-		textAlign: 'center',
-		marginBottom: 16,
-	},
 	buttonCircle: {
-		width: 40,
-		height: 40,
-		backgroundColor: 'rgba(0, 0, 0, .2)',
-		borderRadius: 20,
+		width: CIRCLE_BUTTON_SIZE,
+		height: CIRCLE_BUTTON_SIZE,
+		borderRadius: CIRCLE_BUTTON_SIZE / 2,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	nextIcon: {
-		backgroundColor: 'transparent',
-		color: 'rgba(255, 255, 255, .9)',
+	buttonNext: {
+		backgroundColor: Colors.amethyst,
+	},
+	buttonDone: {
+		backgroundColor: Colors.blueGem,
+	},
+	whiteIcon: {
+		color: Colors.white,
 		fontSize: 24,
+	},
+	doneIcon: {
+		color: Colors.white,
+		fontSize: 24,
+	},
+	skipButton: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(18),
+		color: Colors.white,
 	},
 };
 

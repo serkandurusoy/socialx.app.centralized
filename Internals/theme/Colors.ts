@@ -45,6 +45,9 @@ export const Colors = {
 	gallery: '#efefef',
 	alabaster: '#F9F9F9',
 	monza: '#D0021B',
+	blueMarguerite: '#6162C7',
+	amethyst: '#9863D3',
+	blueGem: '#4813A0',
 };
 
 export const colorWithAlpha = (color: string, alpha: number) => {
