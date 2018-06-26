@@ -54,6 +54,12 @@ export default {
 	'register.signingUp': 'Signing you up',
 	'register.confirming.code': 'Confirming your code',
 	'register.resending.code': 'Resending code..',
+	'signup.password.min.length': 'minimum length',
+	'signup.password.invalid.numbers': 'numbers',
+	'signup.password.invalid.lowercase': 'lowercase letters',
+	'signup.password.invalid.uppercase': 'uppercase letters',
+	'signup.password.invalid.symbols': 'special characters',
+	'signup.password.invalid.policy': 'Password policy',
 	'terms.and.conditions.screen.title': 'Terms and Conditions',
 	'reset.password.screen.title': 'RESET PASSWORD',
 	'reset.password.description':

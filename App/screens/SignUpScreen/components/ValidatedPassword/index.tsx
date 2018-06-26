@@ -6,19 +6,28 @@ import {getText} from 'utilities';
 import style from './style';
 
 const MIN_PASSWORD_LENGTH = 8;
-const MIN_LENGTH_VALIDATOR = new PasswordValidator().is().min(MIN_PASSWORD_LENGTH);
-const LOWERCASE_VALIDATOR = new PasswordValidator().has().lowercase();
-const UPPERCASE_VALIDATOR = new PasswordValidator().has().uppercase();
-const DIGIT_VALIDATOR = new PasswordValidator().has().digits();
-const SYMBOL_VALIDATOR = new PasswordValidator().has().symbols();
+const VALIDATOR_SCHEMA = new PasswordValidator()
+	.is()
+	.min(MIN_PASSWORD_LENGTH)
+	.has()
+	.lowercase()
+	.has()
+	.uppercase()
+	.has()
+	.digits()
+	.has()
+	.symbols();
 
-interface IValidationErrors {
-	minLength: React.ReactElement<any> | null;
-	pattern: React.ReactElement<any> | null;
-}
+const ERROR_MESSAGES: {[key: string]: string} = {
+	min: getText('signup.password.min.length') + ' ' + MIN_PASSWORD_LENGTH,
+	uppercase: getText('signup.password.invalid.uppercase'),
+	lowercase: getText('signup.password.invalid.lowercase'),
+	digits: getText('signup.password.invalid.numbers'),
+	symbols: getText('signup.password.invalid.symbols'),
+};
 
 interface IValidatedPasswordProps {
-	validationErrors: IValidationErrors;
+	validationErrors: string[];
 }
 
 interface IWithValidationProps {
@@ -26,42 +35,11 @@ interface IWithValidationProps {
 }
 
 const getErrors = (value: string) => {
-	const errors: IValidationErrors = {
-		minLength: null,
-		pattern: null,
-	};
 	if (value) {
-		if (!MIN_LENGTH_VALIDATOR.validate(value)) {
-			errors.minLength = (
-				<Text style={style.errorText}>
-					<Text style={style.boldText}>{getText('signupPasswordMinLength') + ' '}</Text>
-					{MIN_PASSWORD_LENGTH}
-				</Text>
-			);
-		}
-		const patternMessages: string[] = [];
-		if (!DIGIT_VALIDATOR.validate(value)) {
-			patternMessages.push(getText('signupPasswordInvalidNumbers'));
-		}
-		if (!LOWERCASE_VALIDATOR.validate(value)) {
-			patternMessages.push(getText('signupPasswordInvalidLowercase'));
-		}
-		if (!UPPERCASE_VALIDATOR.validate(value)) {
-			patternMessages.push(getText('signupPasswordInvalidUppercase'));
-		}
-		if (!SYMBOL_VALIDATOR.validate(value)) {
-			patternMessages.push(getText('signupPasswordInvalidSymbols'));
-		}
-		if (patternMessages.length > 0) {
-			errors.pattern = (
-				<Text style={style.errorText}>
-					<Text style={style.boldText}>{getText('signupPasswordInvalidPolicy') + ' '}</Text>
-					{patternMessages.join(', ')}
-				</Text>
-			);
-		}
+		const errors = VALIDATOR_SCHEMA.validate(value, {list: true});
+		return errors.map((error: string) => ERROR_MESSAGES[error]);
 	}
-	return errors;
+	return [];
 };
 
 const withValidationLogic = <P extends IValidatedPasswordProps>(
@@ -71,11 +49,13 @@ const withValidationLogic = <P extends IValidatedPasswordProps>(
 };
 
 export const ValidatedPassword: React.SFC<IValidatedPasswordProps> = ({validationErrors}) => {
-	if (validationErrors.minLength || validationErrors.pattern) {
+	if (validationErrors.length > 0) {
 		return (
 			<View style={style.errorContainer}>
-				{validationErrors.minLength && validationErrors.minLength}
-				{validationErrors.pattern && <Text style={style.errorText}>{validationErrors.pattern}</Text>}
+				<Text style={style.errorText}>
+					<Text style={style.boldText}>{`${getText('signup.password.invalid.policy')}: `}</Text>
+					{validationErrors.join(', ')}
+				</Text>
 			</View>
 		);
 	}
