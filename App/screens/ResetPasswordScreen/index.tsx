@@ -1,20 +1,21 @@
-import {SXTextInput, TRKeyboardKeys} from 'components/Inputs/TextInput';
-import {SXButton} from 'components/Interaction/Button';
-import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
-import {Alert, Platform, ScrollView, Text, View} from 'react-native';
+import {Alert, Platform, Text, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
+import {compose} from 'recompose';
+
+import {SXButton, SXTextInput, TRKeyboardKeys} from 'components';
+import {OS_TYPES} from 'consts';
 import {Colors} from 'theme';
 import style from './style';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
-import {ForgotPasswordConfirm, getText} from 'utilities';
+import {ForgotPasswordConfirm, IWithTranslationProps, withTranslations} from 'utilities';
 
-interface IResetPasswordScreenProps {
+interface IResetPasswordScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	showLoader: (message: string) => void;
 	hideLoader: () => void;
@@ -27,10 +28,11 @@ interface IResetPasswordScreenState {
 }
 
 class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPasswordScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: getText('resetPasswordScreenTitle'),
+	private static navigationOptions = (props: IResetPasswordScreenProps) => ({
+		// TODO: this is a bad hack, we should reconsider the architecture!
+		title: props.navigationOptions.getText('reset.password.screen.title'),
 		headerRight: <View />,
-	};
+	});
 
 	public state = {
 		resetCode: '',
@@ -54,6 +56,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 	public render() {
 		const containerStyles = [style.scrollView];
+		const {getText} = this.props;
 		return (
 			<KeyboardAwareScrollView
 				style={containerStyles}
@@ -61,10 +64,10 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 				alwaysBounceVertical={false}
 				keyboardShouldPersistTaps={'handled'}
 			>
-				<Text style={style.descriptionText}>{getText('resetPasswordDescription')}</Text>
+				<Text style={style.descriptionText}>{getText('reset.password.description')}</Text>
 				<View style={style.inputContainer}>
 					<SXTextInput
-						placeholder={getText('resetPasswordResetCode')}
+						placeholder={getText('reset.password.reset.code')}
 						iconColor={Colors.iron}
 						icon={'key'}
 						blurOnSubmit={false}
@@ -76,7 +79,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 				</View>
 				<View style={style.inputContainer}>
 					<SXTextInput
-						placeholder={getText('resetPasswordNewPassword')}
+						placeholder={getText('reset.password.new.password')}
 						iconColor={Colors.iron}
 						icon={'eye-slash'}
 						blurOnSubmit={false}
@@ -89,7 +92,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 				</View>
 				<View style={style.inputContainer}>
 					<SXTextInput
-						placeholder={getText('resetPasswordConfirmPassword')}
+						placeholder={getText('reset.password.confirm.password')}
 						iconColor={Colors.iron}
 						icon={'eye-slash'}
 						blurOnSubmit={true}
@@ -101,7 +104,7 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 					/>
 				</View>
 				<SXButton
-					label={getText('resetPasswordSetButton')}
+					label={getText('reset.password.set.button')}
 					autoWidth={true}
 					borderColor={Colors.transparent}
 					onPress={this.setNewPasswordHandler}
@@ -128,22 +131,22 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 	private setNewPasswordHandler = async () => {
 		const {resetCode, password, confirmPassword} = this.state;
-		const {showLoader, hideLoader, navigation} = this.props;
+		const {showLoader, hideLoader, navigation, getText} = this.props;
 
 		const params = this.props.navigation.state.params;
 
-		showLoader(getText('resetPasswordResetting'));
+		showLoader(getText('reset.password.resetting'));
 		try {
 			if (password !== confirmPassword) {
 				ModalManager.safeRunAfterModalClosed(() => {
-					Alert.alert(getText('resetPasswordMismatch'));
+					Alert.alert(getText('reset.password.mismatch'));
 				});
 				return;
 			}
 
 			if (!params.username) {
 				ModalManager.safeRunAfterModalClosed(() => {
-					Alert.alert(getText('generalErrorMessage'));
+					Alert.alert(getText('general.error.message'));
 				});
 				resetNavigationToRoute('MainScreen', this.props.navigation);
 				return;
@@ -151,12 +154,12 @@ class ResetPasswordScreen extends Component<IResetPasswordScreenProps, IResetPas
 
 			const resetRes = await ForgotPasswordConfirm(params.username, resetCode, password);
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(getText('resetPasswordSuccess'));
+				Alert.alert(getText('reset.password.success'));
 			});
 			resetNavigationToRoute('MainScreen', this.props.navigation);
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(getText('resetPasswordWrongCode'));
+				Alert.alert(getText('reset.password.wrong.code'));
 			});
 			console.log(ex);
 		}
@@ -169,7 +172,10 @@ const MapDispatchToState = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-export default connect(
-	null,
-	MapDispatchToState,
+export default compose(
+	withTranslations,
+	connect(
+		null,
+		MapDispatchToState,
+	),
 )(ResetPasswordScreen as any);

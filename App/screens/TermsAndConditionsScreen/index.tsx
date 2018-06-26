@@ -2,7 +2,7 @@ import React from 'react';
 import {Platform, SafeAreaView, View, WebView} from 'react-native';
 
 import {OS_TYPES} from 'consts';
-import {getText} from 'utilities';
+import {withTranslations} from 'utilities';
 import style from './style';
 import TermsAndConditionsHTML from './terms_and_conditions.html';
 
@@ -18,9 +18,9 @@ const TermsAndConditionsScreen: React.SFC = () => {
 	);
 };
 
-TermsAndConditionsScreen.navigationOptions = {
-	title: getText('termsAndConditionsScreenTitle'),
+TermsAndConditionsScreen.navigationOptions = (props: any) => ({
+	title: props.navigationOptions.getText('terms.and.conditions.screen.title'),
 	headerRight: <View />,
-};
+});
 
-export default TermsAndConditionsScreen;
+export default withTranslations(TermsAndConditionsScreen);

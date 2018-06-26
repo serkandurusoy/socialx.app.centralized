@@ -3,13 +3,14 @@ import React, {Component} from 'react';
 import {Linking, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {compose} from 'recompose';
 
 import {blockUserHoc} from 'backend/graphql';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
 import {IMediaProps, ISimpleComment, IUserQuery} from 'types';
-import {getText, getUserAvatar, getUserFullName, showToastMessage} from 'utilities';
+import {getUserAvatar, getUserFullName, IWithTranslationProps, showToastMessage, withTranslations} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -34,7 +35,7 @@ export interface ISimpleWallPostCardProps {
 	blockUser: any;
 }
 
-export interface IWallPostCardProp extends ISimpleWallPostCardProps {
+export interface IWallPostCardProp extends ISimpleWallPostCardProps, IWithTranslationProps {
 	governanceVersion?: boolean;
 	numberOfLikes?: number;
 	numberOfSuperLikes?: number;
@@ -299,14 +300,15 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 
 	private renderRecentLikes = () => {
 		if (this.props.numberOfLikes && this.props.numberOfLikes > 0) {
+			const {getText} = this.props;
 			const lastLikeUser = this.props.likes[this.props.numberOfLikes - 1];
 			const numberOfOtherLikes = this.props.numberOfLikes - 1;
 			const secondLastLike = this.props.numberOfLikes >= 2 ? this.props.likes[this.props.numberOfLikes - 2] : null;
-			const andText = ` ${getText('textAnd')} `;
+			const andText = ` ${getText('text.and')} `;
 			return (
 				<View style={style.recentLikesContainer}>
 					<Text style={style.likedText}>
-						{getText('postCardLikedBy') + ' '}
+						{getText('post.card.liked.by') + ' '}
 						<Text style={style.likeTextBold} onPress={() => this.navigateToUserProfilePage(lastLikeUser.userId)}>
 							{lastLikeUser.userName}
 						</Text>
@@ -348,11 +350,12 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	};
 
 	private renderNumberOfComments = () => {
-		if (this.props.numberOfComments && this.props.numberOfComments > 0) {
+		const {numberOfComments, getText} = this.props;
+		if (numberOfComments && numberOfComments > 0) {
 			return (
 				<TouchableOpacity style={style.numCommentsContainer} onPress={() => this.props.onCommentClick(false)}>
 					<Text style={style.viewAllCommentsText}>
-						{getText('postCardViewAllComments', this.props.numberOfComments)}
+						{getText('post.card.view.all.comments', this.props.numberOfComments)}
 					</Text>
 				</TouchableOpacity>
 			);
@@ -464,4 +467,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	};
 }
 
-export const WallPostCard = blockUserHoc(WallPostCardComp);
+export const WallPostCard = compose(
+	withTranslations,
+	blockUserHoc,
+)(WallPostCardComp);
