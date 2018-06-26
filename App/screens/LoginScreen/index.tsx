@@ -196,7 +196,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 }
 
 const navigationOptions = {
-	title: 'LOGIN',
+	title: getText('loginScreenTitle'),
 	headerRight: <View />,
 };
 

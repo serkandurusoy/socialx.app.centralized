@@ -12,7 +12,7 @@ import {Colors, Images, Sizes} from 'theme';
 import style from './style';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
-import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from 'utilities';
+import {ConfirmSignup, getText, ISignup, resendSignup, Signin, Signup, updateUserAttr} from 'utilities';
 
 import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from 'backend/graphql';
 import {createUserFunc} from 'types';
@@ -59,7 +59,7 @@ export interface ISignUpScreenProps {
 
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'REGISTER',
+		title: getText('registerScreenTitle'),
 		headerRight: <View />,
 	};
 
@@ -124,7 +124,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					<SXTextInput
 						iconColor={Colors.iron}
 						icon={'envelope'}
-						placeholder={'Email'}
+						placeholder={getText('registerEmail')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -140,7 +140,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						autoCorrect={true}
 						iconColor={Colors.iron}
 						icon={'user'}
-						placeholder={'Name'}
+						placeholder={getText('registerName')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -153,7 +153,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					<SXTextInput
 						iconColor={Colors.iron}
 						icon={'user'}
-						placeholder={'Username'}
+						placeholder={getText('registerUsername')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -174,12 +174,12 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 							onChange={this.updatedSelectedCountryHandler}
 							closeable={true}
 							filterable={true}
-							filterPlaceholder={'Search your country..'}
+							filterPlaceholder={getText('registerCountrySelect')}
 						/>
 						<Text style={style.countryCode}>{`(+${this.state.countryCallingCode})`}</Text>
 					</View>
 					<TextInput
-						placeholder={'Phone number'}
+						placeholder={getText('registerPhoneNumber')}
 						placeholderTextColor={Colors.postText}
 						style={style.phoneNumberInput}
 						returnKeyType={TRKeyboardKeys.next}
@@ -198,7 +198,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						isPassword={true}
 						iconColor={Colors.iron}
 						icon={'lock'}
-						placeholder={'Password'}
+						placeholder={getText('registerPassword')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -212,7 +212,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						isPassword={true}
 						iconColor={Colors.iron}
 						icon={'lock'}
-						placeholder={'Confirm Password'}
+						placeholder={getText('registerConfirmPassword')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.go}
@@ -224,21 +224,21 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				</View>
 				<View style={[style.buttonContainer, style.registerButtonContainer]}>
 					<SXButton
-						label={'REGISTER NOW!'}
+						label={getText('registerButtonLabel')}
 						borderColor={Colors.transparent}
 						onPress={this.startRegister}
 						disabled={!this.state.termsAccepted}
 					/>
 					<SXButton
-						label={'Already have the code? Click here!'}
+						label={getText('registerButtonHaveCode')}
 						borderColor={Colors.transparent}
 						onPress={this.alreadyHaveCode}
 					/>
 				</View>
 				<View style={style.termContainer}>
-					<Text style={style.acceptText}>{'Accept our'}</Text>
+					<Text style={style.acceptText}>{getText('registerAcceptPart1')}</Text>
 					<TouchableOpacity onPress={this.showTermsAndConditionsHandler}>
-						<Text style={style.acceptTextLink}>{'Terms and Conditions'}</Text>
+						<Text style={style.acceptTextLink}>{getText('registerAcceptPart2')}</Text>
 					</TouchableOpacity>
 					<CheckBox
 						checked={this.state.termsAccepted}
@@ -253,7 +253,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private alreadyHaveCode = async () => {
 		if (!this.state.username) {
-			alert('Please fill in the username you entered before inside the \'Username\' field above and click this again!');
+			alert(getText('registerAlertUserNameMissing'));
 		} else {
 			this.toggleVisibleModalSMS();
 		}
@@ -340,7 +340,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			const res = await resendSignup(this.state.username);
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('App error', 'Could not resend confirmation code: ' + ex);
+				Alert.alert(getText('appError'), `${getText('registerCouldNotResendCode')} ${ex}`);
 			});
 		}
 		this.props.HideLoader();
@@ -361,19 +361,19 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		// closing the modla when using alerts, issue MD-163
 		if (password !== confirmPassword) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Your passwords don\'t match');
+			Alert.alert(getText('validationError'), getText('registerPasswordMismatch'));
 			return;
 		}
 
 		if (username.length < 4) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Enter a username bigger than 4 letters');
+			Alert.alert(getText('validationError'), getText('registerUsernameLengthError'));
 			return;
 		}
 
 		if (name.length < 4) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Enter a name bigger than 4 letters');
+			Alert.alert(getText('validationError'), getText('registerNameLengthError'));
 			return;
 		}
 
@@ -397,7 +397,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		} catch (ex) {
 			console.log(ex);
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('Register failed', ex.message);
+				Alert.alert(getText('registerFailed'), ex.message);
 			});
 			this.toggleVisibleModalSMS(false);
 		}
@@ -465,9 +465,9 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
-	SignupLoading: () => dispatch(showActivityIndicator('Signing you up', 'please wait..')),
-	ConfirmSignupLoading: () => dispatch(showActivityIndicator('Confirming your code')),
-	ResendCodeLoading: () => dispatch(showActivityIndicator('Resending code..')),
+	SignupLoading: () => dispatch(showActivityIndicator(getText('registerSigningUp'), getText('pleaseWait'))),
+	ConfirmSignupLoading: () => dispatch(showActivityIndicator(getText('registerConfirmingCode'))),
+	ResendCodeLoading: () => dispatch(showActivityIndicator(getText('registerResendingCode'))),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 

@@ -1,7 +1,7 @@
 import {SXTextInput, TRKeyboardKeys} from 'components/Inputs/TextInput';
 import {SXButton} from 'components/Interaction/Button';
 import React, {Component} from 'react';
-import {Alert, Platform, ScrollView, Text, View} from 'react-native';
+import {Alert, ScrollView, Text, View} from 'react-native';
 import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
 import {connect} from 'react-redux';
 import {Colors} from 'theme';
@@ -9,7 +9,7 @@ import style from './style';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {ModalManager} from 'hoc/ManagedModal/manager';
-import {ForgotPassword} from 'utilities';
+import {ForgotPassword, getText} from 'utilities';
 
 interface IForgotPasswordScreenProps {
 	navigation: NavigationScreenProp<any>;
@@ -24,7 +24,7 @@ interface IForgotPasswordScreenState {
 
 class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgotPasswordScreenState> {
 	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'FORGOT PASSWORD',
+		title: getText('forgotPasswordScreenTitle'),
 		headerRight: <View />,
 	};
 
@@ -40,10 +40,10 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 				alwaysBounceVertical={false}
 				keyboardShouldPersistTaps={'handled'}
 			>
-				<Text style={style.descriptionText}>{'Enter your username to get a new password.'}</Text>
+				<Text style={style.descriptionText}>{getText('forgotPasswordInstructions')}</Text>
 				<View style={style.usernameInputContainer}>
 					<SXTextInput
-						placeholder={'Username'}
+						placeholder={getText('forgotPasswordUsername')}
 						iconColor={Colors.iron}
 						icon={'user'}
 						blurOnSubmit={true}
@@ -54,7 +54,7 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 				</View>
 				<SXButton
 					disabled={this.state.username.length === 0 || this.state.requested}
-					label={'Send reset code'}
+					label={getText('forgotPasswordSendButton')}
 					autoWidth={true}
 					borderColor={Colors.transparent}
 					onPress={this.sendResetCodeHandler}
@@ -73,14 +73,14 @@ class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgot
 		const {username} = this.state;
 		const {showLoader, hideLoader} = this.props;
 
-		showLoader('Requesting Password Code..');
+		showLoader(getText('forgotPasswordRequesting'));
 		try {
 			const forgotRes = await ForgotPassword(username);
 			this.setState({requested: true});
 			this.props.navigation.navigate('ResetPasswordScreen', {username});
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(`Something went wrong, ${ex.message}`);
+				Alert.alert(getText('forgotPasswordRequestError', ex.message));
 			});
 		}
 		hideLoader();
