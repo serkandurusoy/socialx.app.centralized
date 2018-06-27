@@ -32,8 +32,8 @@ import {addFileBN} from 'utilities/ipfs';
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
 import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {ValidatedPassword} from './components/ValidatedPassword';
 import {compose} from 'recompose';
+import ValidatedPassword from './components/ValidatedPassword';
 
 interface ICountryData {
 	cca2: string;

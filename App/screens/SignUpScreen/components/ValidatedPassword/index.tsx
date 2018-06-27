@@ -19,11 +19,11 @@ const VALIDATOR_SCHEMA = new PasswordValidator()
 	.symbols();
 
 const ERROR_MESSAGES: {[key: string]: string} = {
-	min: getText('signup.password.min.length') + ' ' + MIN_PASSWORD_LENGTH,
-	uppercase: getText('signup.password.invalid.uppercase'),
-	lowercase: getText('signup.password.invalid.lowercase'),
-	digits: getText('signup.password.invalid.numbers'),
-	symbols: getText('signup.password.invalid.symbols'),
+	min: getText('register.password.min.length') + ' ' + MIN_PASSWORD_LENGTH,
+	uppercase: getText('register.password.invalid.uppercase'),
+	lowercase: getText('register.password.invalid.lowercase'),
+	digits: getText('register.password.invalid.numbers'),
+	symbols: getText('register.password.invalid.symbols'),
 };
 
 interface IValidatedPasswordProps {
@@ -53,7 +53,7 @@ export const ValidatedPassword: React.SFC<IValidatedPasswordProps> = ({validatio
 		return (
 			<View style={style.errorContainer}>
 				<Text style={style.errorText}>
-					<Text style={style.boldText}>{`${getText('signup.password.invalid.policy')}: `}</Text>
+					<Text style={style.boldText}>{`${getText('register.password.invalid.policy')}: `}</Text>
 					{validationErrors.join(', ')}
 				</Text>
 			</View>
