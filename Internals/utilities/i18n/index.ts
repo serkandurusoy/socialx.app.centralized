@@ -49,8 +49,6 @@ export const getText = (key: string, ...args: any[]) => {
 	return ret;
 };
 
-export const getTextStatic = getText;
-
 export interface IWithTranslationProps {
 	getText: (value: string, ...args: any[]) => string;
 }
