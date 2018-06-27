@@ -12,6 +12,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "postinstall": "rn-nodeify --install stream,process,util --hack --y",
+    "postversion": "react-native-version",
     "test": "jest",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean --force",
     "clean:android": "cd android/ && ./gradlew clean && cd .. && react-native run-android",
@@ -171,6 +172,7 @@
     "react-addons-test-utils": "^15.6.2",
     "react-dom": "^16.2.0",
     "react-native-typescript-transformer": "^1.2.3",
+    "react-native-version": "^2.6.2",
     "react-test-renderer": "^16.2.0",
     "rn-nodeify": "https://github.com/Shadyzpop/rn-nodeify",
     "ts-jest": "^22.0.4",
