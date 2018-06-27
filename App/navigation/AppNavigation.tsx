@@ -5,6 +5,7 @@ import LaunchScreen from '../screens/LaunchScreen';
 import {TabBarBottom} from 'components/Displayers';
 import {Animated, Easing} from 'react-native';
 import {ApplicationStyles, Colors} from 'theme';
+import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
 import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
@@ -50,6 +51,11 @@ const navOptionsDefault = {
 	headerTitleStyle: ApplicationStyles.screenHeader,
 	headerBackTitle: null,
 	gesturesEnabled: false,
+	getText, // TODO: this is a bad hack, we should reconsider the architecture!
+};
+
+const navOptionsNoHeader = {
+	header: null,
 };
 
 const slideFromLeftTransition = (): TransitionConfig => ({
@@ -173,9 +179,7 @@ const MainScreenTabNavigation = TabNavigator(
 	{
 		tabBarPosition: 'bottom',
 		animationEnabled: true,
-		navigationOptions: {
-			header: null,
-		},
+		navigationOptions: navOptionsNoHeader,
 		lazy: true,
 		swipeEnabled: false,
 		tabBarComponent: (props: any) => <TabBarBottom navigation={props.navigation} />,
