@@ -35,7 +35,6 @@ export const withInlineLoader = <P extends IWithLoaderProps>(BaseComponent: Reac
 			spinnerColor: Colors.pink,
 		};
 
-		// TODO: @Serkan: maybe you can teach me how can we get rid of this 'extra' step with originalRef
 		private originalRef = React.createRef();
 
 		public render() {
@@ -43,13 +42,11 @@ export const withInlineLoader = <P extends IWithLoaderProps>(BaseComponent: Reac
 				return <LottieLoader />;
 			}
 
-			const BaseWithRef = React.forwardRef((props, ref) => (
+			return (
 				<AnimatedOriginalComp animatedStyle={this.props.animatedStyle}>
-					<BaseComponent {...this.props} ref={ref} />
+					<BaseComponent {...this.props} ref={this.originalRef} />
 				</AnimatedOriginalComp>
-			));
-
-			return <BaseWithRef ref={this.originalRef} />;
+			);
 		}
 
 		public getOriginalRef = () => {
