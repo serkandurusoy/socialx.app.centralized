@@ -30,10 +30,34 @@ export interface IGenericSlide extends ISlideProps {
 	gradient: string[];
 }
 
-const SkipButton: React.SFC<IWithTranslationProps> = ({getText}) => (
+const SLIDES = [
+	{
+		type: CustomSlide1,
+		key: 'Slide1',
+		title: 'intro.first.slide.title',
+		description: 'intro.first.slide.description',
+	},
+	{
+		type: GenericSlide,
+		key: 'Slide2',
+		title: 'intro.second.slide.title',
+		description: 'intro.second.slide.description',
+		image: Images.IntroWalkThrough2,
+		gradient: [Colors.blueMarguerite, Colors.postHour],
+	},
+	{
+		type: GenericSlide,
+		key: 'Slide3',
+		title: 'intro.third.slide.title',
+		description: 'intro.third.slide.description',
+		image: Images.IntroWalkThrough3,
+		gradient: [Colors.blueMarguerite, Colors.blueMarguerite, Colors.shuttleGray],
+	},
+];
+
+const SkipButton: React.SFC<IWithTranslationProps> = withTranslations(({getText}) => (
 	<Text style={style.skipButton}>{getText('intro.skip.label')}</Text>
-);
-const SkipButtonTranslated = withTranslations(SkipButton);
+));
 
 const NextButton: React.SFC = () => (
 	<View style={[style.buttonCircle, style.buttonNext]}>
@@ -64,34 +88,13 @@ interface IIntroScreenProps extends IWithTranslationProps {
 }
 
 const IntroScreen: React.SFC<IIntroScreenProps> = ({navigation, getText}) => {
-	const SLIDES = [
-		{
-			type: CustomSlide1,
-			key: 'Slide1',
-			title: getText('intro.first.slide.title'),
-			description: getText('intro.first.slide.description'),
-		},
-		{
-			type: GenericSlide,
-			key: 'Slide2',
-			title: getText('intro.second.slide.title'),
-			description: getText('intro.second.slide.description'),
-			image: Images.IntroWalkThrough2,
-			gradient: [Colors.blueMarguerite, Colors.postHour],
-		},
-		{
-			type: GenericSlide,
-			key: 'Slide3',
-			title: getText('intro.third.slide.title'),
-			description: getText('intro.third.slide.description'),
-			image: Images.IntroWalkThrough3,
-			gradient: [Colors.blueMarguerite, Colors.blueMarguerite, Colors.shuttleGray],
-		},
-	];
-
 	return (
 		<AppIntroSlider
-			slides={SLIDES}
+			slides={SLIDES.map((slide) => ({
+				...slide,
+				title: getText(slide.title),
+				description: getText(slide.description),
+			}))}
 			activeDotColor={Colors.pink}
 			dotColor={Colors.alabaster}
 			renderItem={renderSlide}
@@ -100,7 +103,7 @@ const IntroScreen: React.SFC<IIntroScreenProps> = ({navigation, getText}) => {
 			onDone={() => onDoneHandler(navigation)}
 			onSkip={() => onDoneHandler(navigation)}
 			showSkipButton={true}
-			renderSkipButton={SkipButtonTranslated}
+			renderSkipButton={SkipButton}
 		/>
 	);
 };
