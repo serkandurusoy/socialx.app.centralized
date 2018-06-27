@@ -1,7 +1,6 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
-import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 
 import {LayoutEvent, NavigationScreenProp} from 'react-navigation';
@@ -12,6 +11,7 @@ import {updateTabBarBottomHeight} from 'backend/actions';
 import {getMyNotificationsHoc} from 'backend/graphql';
 import {connect} from 'react-redux';
 import {IAppUIStateProps, MediaTypeImage, WallPostPhotoOptimized} from 'types';
+import {getCameraMediaObject, getGalleryMediaObject, PickerImage} from 'utilities';
 
 export enum MENU_BUTTON_TYPE {
 	MENU_BUTTON_SIMPLE = 'MENU_BUTTON_SIMPLE',
@@ -206,47 +206,25 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				cancelButtonIndex: 2,
 				title: ACTION_SHEET_TITLE,
 			},
-			(buttonIndex: number) => {
+			async (buttonIndex: number) => {
 				switch (buttonIndex) {
 					case 0:
-						this.showGalleryPhotoPicker();
+						const galleryMediaObject = await getGalleryMediaObject();
+						this.useSelectedMediaObject(galleryMediaObject);
 						break;
 					case 1:
-						this.takeCameraPhoto();
+						const cameraMediaObject = await getCameraMediaObject();
+						this.useSelectedMediaObject(cameraMediaObject);
 						break;
 				}
 			},
 		);
 	};
 
-	// TODO: show the user that he has excceded the maximum file size
-	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
-
-	private showGalleryPhotoPicker = async () => {
-		try {
-			const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
-				cropping: false,
-				mediaType: 'any',
-			});
-			this.useSelectedMediaObject(image as PickerImage);
-		} catch (ex) {
-			console.log(ex);
+	private useSelectedMediaObject = async (retMedia: PickerImage | undefined) => {
+		if (!retMedia) {
+			return;
 		}
-	};
-
-	private takeCameraPhoto = async () => {
-		try {
-			const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
-				cropping: false,
-				mediaType: 'any',
-			});
-			this.useSelectedMediaObject(image as PickerImage);
-		} catch (ex) {
-			console.log(ex);
-		}
-	};
-
-	private useSelectedMediaObject = async (retMedia: PickerImage) => {
 		try {
 			let contentOptimizedPath;
 			if (retMedia.mime.startsWith(MediaTypeImage.key)) {

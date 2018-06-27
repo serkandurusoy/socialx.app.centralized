@@ -1,5 +1,6 @@
-import {Alert, CameraRoll, PermissionsAndroid} from 'react-native';
+import {CameraRoll, PermissionsAndroid} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
 
 import {IMediaObjectViewerProps} from 'components';
 import {ipfsConfig as base} from 'configuration';
@@ -13,6 +14,18 @@ export const PHOTO_LIB_SAVE_SUCCESS = 'Media saved to local photo library';
 const PHOTO_LIB_SAVE_ACCESS_DENIED = 'Save to photo library denied :(';
 const PHOTO_LIB_SAVE_DOWNLOAD_ERROR = 'Save to photo library denied :(';
 const PHOTO_LIB_SAVE_MOVE_TO_PHOTO_LIB_FAILED = 'Media object was downloaded but moving to photo library failed';
+
+const DEFAULT_PICKER_OPTIONS = {
+	cropping: false,
+	mediaType: 'any',
+	compressImageQuality: 0.8,
+};
+
+const DEFAULT_CAMERA_OPTIONS = {
+	cropping: false,
+	mediaType: 'any',
+	useFrontCamera: false,
+};
 
 export const getURLForMediaViewerObject = (object: IMediaViewerObject, original?: boolean) => {
 	let mediaURL;
@@ -83,7 +96,33 @@ export const saveRemoteMediaFileToLocalPhotoLibrary = async (
 
 const onMediaDownloadProgress = (progress: DownloadProgressCallbackResult, callback?: (value: number) => void) => {
 	if (callback) {
-		const progressPercentage = Math.round(progress.bytesWritten * 100 / progress.contentLength);
+		const progressPercentage = Math.round((progress.bytesWritten * 100) / progress.contentLength);
 		callback(progressPercentage);
+	}
+};
+
+export type PickerImage = Image;
+
+export const getGalleryMediaObject = async (options = {}): Promise<PickerImage | undefined> => {
+	try {
+		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
+			...DEFAULT_PICKER_OPTIONS,
+			...options,
+		});
+		return mediaObject as PickerImage;
+	} catch (ex) {
+		console.log(ex);
+	}
+};
+
+export const getCameraMediaObject = async (options = {}): Promise<PickerImage | undefined> => {
+	try {
+		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+			...DEFAULT_CAMERA_OPTIONS,
+			...options,
+		});
+		return mediaObject as PickerImage;
+	} catch (ex) {
+		console.log(ex);
 	}
 };

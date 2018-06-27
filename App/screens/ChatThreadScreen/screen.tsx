@@ -6,11 +6,16 @@ import React, {Component} from 'react';
 import {Alert, findNodeHandle, Image, PermissionsAndroid, Platform, Text, TouchableOpacity, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {GiftedChat, Send} from 'react-native-gifted-chat';
-import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
-import {isStringPureEmoji, requestResourcePermission} from 'utilities';
+import {
+	getCameraMediaObject,
+	getGalleryMediaObject,
+	isStringPureEmoji,
+	PickerImage,
+	requestResourcePermission,
+} from 'utilities';
 import uuidv4 from 'uuid/v4';
 import {MessageData} from './index';
 import style from './style';
@@ -217,32 +222,24 @@ export default class ChatThreadScreenComponent extends Component<
 	};
 
 	private showGalleryPhotoPicker = async () => {
-		const image: PickerImage | PickerImage[] = await ImagePicker.openPicker({
-			cropping: false,
-			mediaType: 'photo',
-			includeBase64: false, // picker is getting really slow with this option!
-		});
-		this.sendPhotoMessage(image);
+		const galleryMediaObject = await getGalleryMediaObject({mediaType: 'photo'});
+		this.sendPhotoMessage(galleryMediaObject);
 	};
 
 	private takeCameraPhoto = async () => {
-		const image: PickerImage | PickerImage[] = await ImagePicker.openCamera({
-			cropping: false,
-			mediaType: 'photo',
-			includeBase64: false,
-		});
-		this.sendPhotoMessage(image);
+		const cameraMediaObject = await getCameraMediaObject({mediaType: 'photo'});
+		this.sendPhotoMessage(cameraMediaObject);
 	};
 
-	private sendPhotoMessage = (image: PickerImage | PickerImage[]) => {
-		const pickImage = image as PickerImage;
-		// const base64Image = `data:${pickImage.mime};base64,${pickImage.data}`;
+	private sendPhotoMessage = (image: PickerImage | undefined) => {
+		if (!image) {
+			return;
+		}
 		const newImageMessage: MessageData = {
 			_id: uuidv4(),
-			imageURL: 'file://' + pickImage.path,
+			imageURL: 'file://' + image.path,
 			createdAt: new Date(),
 			ownMessage: true,
-			// base64Image,
 		};
 		this.props.sendOwnMessage(newImageMessage);
 		this.giftedChat.scrollToBottom();

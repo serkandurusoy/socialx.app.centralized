@@ -5,9 +5,9 @@ import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Image, Text, TextInput, View} from 'react-native';
-import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, Icons} from 'theme/';
+import {PickerImage} from 'utilities';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 
