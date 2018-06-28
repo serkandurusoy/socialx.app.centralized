@@ -8,6 +8,7 @@ const style: any = {
 	lineContainer: {
 		alignItems: 'center',
 		flexDirection: 'row',
+		padding: Sizes.smartHorizontalScale(7),
 	},
 	dotsIcon: {
 		fontSize: Sizes.smartHorizontalScale(25),

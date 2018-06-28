@@ -1,17 +1,21 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {InteractionManager} from 'react-native';
+import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import RepliesScreenComponent from './screen';
-
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
-
-import {IComments, ICommentsResponse, IUserQuery} from 'types';
-import {IWallPostComment, IWallPostCommentReply} from '../index';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-
-import {decodeBase64Text, getUserAvatar} from 'utilities';
+import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
+import {
+	CommentsSortingOptions,
+	IComments,
+	ICommentsResponse,
+	IUserQuery,
+	IWallPostComment,
+	IWallPostCommentReply,
+} from 'types';
+import {decodeBase64Text, getUserAvatar, updateSortedComments} from 'utilities';
+import {HeaderRight} from '../HeaderRight';
+import RepliesScreenComponent from './screen';
 
 // TODO @jake @serkan too much async work being done in components, these should all be moved out into
 // a data api, which can be redux or some other state manager, the current app architecture makes everything
@@ -44,22 +48,36 @@ interface IRepliesScreenState {
 	replies: IWallPostCommentReply[];
 	noReplies: boolean;
 	loading: boolean;
+	sortOption: CommentsSortingOptions;
 }
 
 class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
+	private static navigationOptions = ({navigation}: IRepliesScreenProps) => ({
 		title: 'Replies',
-		headerRight: <View />,
-	};
+		headerRight: (
+			<HeaderRight
+				sortOption={navigation.state.params.sortOption}
+				onValueChange={navigation.state.params.onSelectionChange}
+				navigation={navigation}
+			/>
+		),
+	});
 
 	public state = {
 		replies: [],
 		noReplies: false,
 		loading: true,
+		sortOption: CommentsSortingOptions.Likes,
 	};
 
 	public async componentDidMount() {
 		await this.preFetchComments();
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				onSelectionChange: this.updateSortingHandler,
+				sortOption: this.state.sortOption,
+			});
+		});
 	}
 
 	public render() {
@@ -167,16 +185,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			this.setState({
 				noReplies: resComments.length === 0,
 				loading: false,
-				replies: resComments.sort((a: any, b: any) => {
-					if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
-						a = a.numberOfLikes;
-						b = b.numberOfLikes;
-						return a > b ? -1 : a < b ? 1 : 0;
-					}
-					a = a.timestamp;
-					b = b.timestamp;
-					return a > b ? -1 : a < b ? 1 : 0;
-				}),
+				replies: updateSortedComments(resComments, this.state.sortOption),
 			});
 		} catch (ex) {
 			this.setState({noReplies: true, loading: false});
@@ -186,6 +195,16 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 
 	private navigateToUserProfile = (userId: string) => {
 		this.props.navigation.navigate('UserProfileScreen', {userId});
+	};
+
+	private updateSortingHandler = (value: CommentsSortingOptions) => {
+		this.setState({
+			sortOption: value,
+			replies: updateSortedComments(this.state.replies, value),
+		});
+		this.props.navigation.setParams({
+			sortOption: value,
+		});
 	};
 }
 

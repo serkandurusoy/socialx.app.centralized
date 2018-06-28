@@ -64,6 +64,9 @@ const style: any = {
 		color: Colors.postFullName,
 		lineHeight: Sizes.smartHorizontalScale(20),
 	},
+	commentTextPadding: {
+		paddingBottom: Sizes.smartHorizontalScale(10),
+	},
 	actionsContainer: {
 		flexDirection: 'row',
 	},
@@ -112,6 +115,7 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
 		lineHeight: Sizes.smartHorizontalScale(20),
+		flex: 1,
 	},
 	viewMoreReplies: {
 		...Fonts.centuryGothicBold,
