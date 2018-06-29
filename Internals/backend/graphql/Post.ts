@@ -55,6 +55,64 @@ interface IPostResponse {
 	getPublicPosts: IPaginatedPosts;
 }
 
+const getPublicTrendingPostsQ = gql`
+	query getTrendingPosts {
+		getTrendingPosts {
+			Items {
+				id
+				text
+				createdAt
+				location
+				likes {
+					userId
+					username
+				}
+				Media {
+					id
+					hash
+					optimizedHash
+					type
+				}
+				owner {
+					userId
+					username
+					name
+					avatar {
+						id
+						hash
+					}
+				}
+				comments {
+					id
+					text
+					likes {
+						userId
+					}
+					owner {
+						userId
+						username
+					}
+					comments {
+						id
+						comments {
+							id
+							comments {
+								id
+								comments {
+									id
+									comments {
+										id
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+`;
+
 const getPublicPostsQ = gql`
 	query getPublicPosts($next: String) {
 		getPublicPosts(next: $next) {
@@ -321,3 +379,5 @@ export const getFriendsPostsHoc = (comp: any) =>
 			};
 		},
 	})(comp);
+
+export const getTrendingPostsHoc = (comp: any) => graphql(getPublicTrendingPostsQ, {name: 'getTrendingPosts'})(comp);
