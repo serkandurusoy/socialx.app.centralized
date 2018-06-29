@@ -14,17 +14,13 @@ const style: any = {
 	},
 	buttonContainer: {
 		width: '100%',
-		paddingTop: Sizes.smartVerticalScale(24),
-		paddingBottom: Sizes.smartVerticalScale(19),
+		paddingTop: Sizes.smartVerticalScale(20),
 		paddingHorizontal: Sizes.smartHorizontalScale(28),
 	},
 	orText: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
 		color: Colors.postText,
-	},
-	registerButtonContainer: {
-		paddingTop: Sizes.smartVerticalScale(55),
 	},
 	textInputContainer: {
 		width: '100%',
@@ -65,9 +61,9 @@ const style: any = {
 		paddingLeft: Sizes.smartHorizontalScale(10),
 		color: Colors.shuttleGray,
 	},
-	termContainer: {
+	termsContainer: {
 		flexDirection: 'row',
-		paddingBottom: Sizes.smartVerticalScale(15),
+		paddingTop: Sizes.smartVerticalScale(15),
 		alignItems: 'center',
 	},
 	acceptText: {

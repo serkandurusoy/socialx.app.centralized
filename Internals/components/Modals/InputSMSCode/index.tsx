@@ -33,6 +33,16 @@ export interface IModalInputSMSCodeComponentState {
 class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentProps, IModalInputSMSCodeComponentState> {
 	public state = INITIAL_STATE;
 
+	private mounted = false;
+
+	public componentDidMount(): void {
+		this.mounted = true;
+	}
+
+	public componentWillUnmount(): void {
+		this.mounted = false;
+	}
+
 	public render() {
 		const okDisabled = this.state.inputValue.length < NUMBER_OF_DIGITS;
 		const modalStyles = [
@@ -89,25 +99,31 @@ class ModalInputSMSCodeComponent extends Component<IModalInputSMSCodeComponentPr
 		);
 	}
 
-	private actionConfirmed = () => {
-		this.props.confirmHandler(this.state.inputValue);
-		this.setState(INITIAL_STATE);
+	private actionConfirmed = async () => {
+		await this.props.confirmHandler(this.state.inputValue);
+		this.setStateIfMounted(INITIAL_STATE);
 	};
 
 	private actionCanceled = () => {
 		this.props.declineHandler();
-		this.setState(INITIAL_STATE);
+		this.setStateIfMounted(INITIAL_STATE);
 	};
 
-	private actionResend = () => {
-		this.props.resendHandler();
-		this.setState(INITIAL_STATE);
+	private actionResend = async () => {
+		await this.props.resendHandler();
+		this.setStateIfMounted(INITIAL_STATE);
 	};
 
 	private handleTextChange = (value: string) => {
-		this.setState({
+		this.setStateIfMounted({
 			inputValue: value,
 		});
+	};
+
+	private setStateIfMounted = (state: Partial<IModalInputSMSCodeComponentState>) => {
+		if (this.mounted && typeof state === 'object') {
+			this.setState(state);
+		}
 	};
 }
 
