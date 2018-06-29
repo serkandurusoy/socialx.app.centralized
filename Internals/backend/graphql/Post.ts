@@ -58,6 +58,7 @@ interface IPostResponse {
 const getPublicTrendingPostsQ = gql`
 	query getTrendingPosts {
 		getTrendingPosts {
+			nextToken
 			Items {
 				id
 				text
@@ -380,4 +381,61 @@ export const getFriendsPostsHoc = (comp: any) =>
 		},
 	})(comp);
 
-export const getTrendingPostsHoc = (comp: any) => graphql(getPublicTrendingPostsQ, {name: 'getTrendingPosts'})(comp);
+export const getTrendingPostsHoc = (comp: any) =>
+	graphql(getPublicTrendingPostsQ, {
+		name: 'Posts',
+		options: {variables: {next: ''}, fetchPolicy: 'network-only'},
+		props(qPorps: any) {
+			const {Posts} = qPorps;
+			if (Posts.loading) {
+				return qPorps;
+			}
+			const {getTrendingPosts, fetchMore} = Posts;
+			if (!getTrendingPosts) {
+				return qPorps;
+			}
+
+			const {Items} = getTrendingPosts;
+			const nextToken = getTrendingPosts ? getTrendingPosts.nextToken : '';
+
+			const mappedItems = postsMapper(Items);
+
+			const paginationFunc = async () => {
+				if (!nextToken) {
+					return {};
+				}
+				await fetchMore({
+					variables: {next: nextToken},
+					updateQuery: (previousResult: any, {fetchMoreResult}: any) => {
+						const previousEntry = previousResult.getTrendingPosts;
+						const previousItems = previousEntry.Items;
+
+						const newItems = fetchMoreResult.getTrendingPosts.Items;
+						const newNext = fetchMoreResult.getTrendingPosts.nextToken;
+
+						const newFlag = newNext !== nextToken && newNext;
+
+						const newPosts = {
+							getTrendingPosts: {
+								nextToken: newNext,
+								Items: newFlag && newItems.length ? [...previousItems, ...newItems] : previousItems,
+								__typename: 'PaginatedPosts',
+							},
+						};
+
+						return newPosts;
+					},
+				});
+			};
+
+			return {
+				...Posts,
+				Items: mappedItems,
+				nextToken,
+				noPosts: !Items || Items.length === 0,
+				hasMore: !!nextToken,
+				loadMore: paginationFunc,
+				refresh: Posts.refetch,
+			};
+		},
+	})(comp);
