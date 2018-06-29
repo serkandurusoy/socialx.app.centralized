@@ -1,3 +1,5 @@
+import {PickerImage} from 'utilities';
+
 export * from './gql';
 export * from './appUI';
 export * from './popup';
@@ -6,7 +8,6 @@ export * from './confirmation';
 
 // temp
 
-import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {IUserQuery} from './gql';
 
 export interface FriendsSearchResult {

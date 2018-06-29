@@ -20,8 +20,7 @@ import {addFileBN, addFilesBN} from 'utilities/ipfs';
 import {AvatarImagePlaceholder} from 'consts';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
-
-import {Image as PickerImage} from 'react-native-image-crop-picker';
+import {PickerImage} from 'utilities';
 
 export interface FriendsSearchResult {
 	id: string;
@@ -56,15 +55,7 @@ interface IPhotoScreenProps extends IModalForAddFriendsProps {
 	stopLoading: any;
 }
 
-interface IPhotoScreenState {
-	avatarURL: string;
-}
-
-class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
-	public state = {
-		avatarURL: 'https://placeimg.com/120/120/people',
-	};
-
+class PhotoScreen extends Component<IPhotoScreenProps> {
 	private photoScreen: RefObject<any> = React.createRef();
 
 	public componentDidMount() {
