@@ -76,6 +76,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private inputRefs: any = {};
 	private countryList: string[] = [];
+	private mounted = false;
 
 	// TODO: @serkan @jake let's simplify this and eliminate needless reinitialization with all countries like this
 	constructor(props: ISignUpScreenProps) {
@@ -106,8 +107,18 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		};
 	}
 
+	public componentDidMount(): void {
+		this.mounted = true;
+	}
+
+	public componentWillUnmount(): void {
+		this.mounted = false;
+	}
+
 	public render() {
 		const {getText} = this.props;
+		const {email, name, username, phone, password, confirmPassword} = this.state;
+		const signupEnabled = this.state.termsAccepted && email && name && username && phone && password && confirmPassword;
 		return (
 			<KeyboardAwareScrollView
 				style={style.keyboardView}
@@ -116,14 +127,16 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				keyboardShouldPersistTaps={'handled'}
 				enableOnAndroid={true}
 			>
-				<ModalInputSMSCode
-					errorMessage={this.state.smsCodeErrorMessage}
-					visible={this.state.showModalForSMSCode}
-					confirmHandler={this.smsCodeConfirmedHandler}
-					declineHandler={this.smsCodeDeclinedHandler}
-					resendHandler={this.smsCodeResendHandler}
-					phoneNumber={this.getPhoneNumber()}
-				/>
+				{this.state.showModalForSMSCode && (
+					<ModalInputSMSCode
+						errorMessage={this.state.smsCodeErrorMessage}
+						visible={this.state.showModalForSMSCode}
+						confirmHandler={this.smsCodeConfirmedHandler}
+						declineHandler={this.smsCodeDeclinedHandler}
+						resendHandler={this.smsCodeResendHandler}
+						phoneNumber={this.getPhoneNumber()}
+					/>
+				)}
 				{/* <View style={style.buttonContainer}>
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
 				</View>
@@ -235,20 +248,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						blurOnSubmit={true}
 					/>
 				</View>
-				<View style={[style.buttonContainer, style.registerButtonContainer]}>
-					<SXButton
-						label={getText('register.button.label')}
-						borderColor={Colors.transparent}
-						onPress={this.startRegister}
-						disabled={!this.state.termsAccepted}
-					/>
-					<SXButton
-						label={getText('register.button.have.code')}
-						borderColor={Colors.transparent}
-						onPress={this.alreadyHaveCode}
-					/>
-				</View>
-				<View style={style.termContainer}>
+				<View style={style.termsContainer}>
 					<Text style={style.acceptText}>{getText('register.accept.part1')}</Text>
 					<TouchableOpacity onPress={this.showTermsAndConditionsHandler}>
 						<Text style={style.acceptTextLink}>{getText('register.accept.part2')}</Text>
@@ -258,6 +258,21 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						onPress={this.termsAcceptedUpdatedHandler}
 						color={Colors.pink}
 						style={style.acceptCheckbox}
+					/>
+				</View>
+				<View style={style.buttonContainer}>
+					<SXButton
+						label={getText('register.button.label')}
+						borderColor={Colors.transparent}
+						onPress={this.startRegister}
+						disabled={!signupEnabled}
+					/>
+				</View>
+				<View style={style.buttonContainer}>
+					<SXButton
+						label={getText('register.button.have.code')}
+						borderColor={Colors.transparent}
+						onPress={this.alreadyHaveCode}
 					/>
 				</View>
 			</KeyboardAwareScrollView>
@@ -304,9 +319,11 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
-		this.setState({
-			showModalForSMSCode: visible,
-		});
+		if (this.mounted) {
+			this.setState({
+				showModalForSMSCode: visible,
+			});
+		}
 	};
 
 	private smsCodeConfirmedHandler = async (code: string) => {
