@@ -10,7 +10,7 @@ import {TooltipDots} from 'components';
 import {getUserAvatar, Signout} from 'utilities';
 
 import {resetNavigationToRoute} from 'backend/actions';
-import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
+import {userHoc} from 'backend/graphql';
 import {Colors} from 'theme';
 import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
 
@@ -32,9 +32,6 @@ const INITIAL_STATE = {
 interface IMyProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
-	// todo
-	createUser: any;
-	addMedia: any;
 }
 
 interface IMyProfileScreenState {
@@ -210,8 +207,4 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	};
 }
 
-const userDataWrapper = userHoc(MyProfileScreen);
-const addMediaWrapper = addMediaHoc(userDataWrapper);
-const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
-
-export default updateUserWrapper;
+export default userHoc(MyProfileScreen);

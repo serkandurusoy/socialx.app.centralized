@@ -59,7 +59,7 @@ export interface ISignUpScreenState {
 export interface ISignUpScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	SignupLoading: () => void;
-	ConfirmSignupLoading: () => void;
+	CreatingUserProfile: () => void;
 	ResendCodeLoading: () => void;
 	HideLoader: () => void;
 	createUser: any;
@@ -314,30 +314,33 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		const {createUser, addMedia} = this.props;
 
 		try {
-			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
 
 			if (!this.state.password) {
-				Keyboard.dismiss();
-				this.toggleVisibleModalSMS(false);
 				resetNavigationToRoute('LoginScreen', this.props.navigation);
 			}
+
+			ModalManager.safeRunAfterModalClosed(() => {
+				this.props.CreatingUserProfile();
+			});
+			Keyboard.dismiss();
+			this.toggleVisibleModalSMS(false);
 
 			// signin to get access to appsync
 			await Signin(username, password);
 
 			await this.uploadAvatarAndCreateUser(updatedAvatarImagePath, addMedia, createUser, username, name, email);
-
-			Keyboard.dismiss();
-			this.toggleVisibleModalSMS(false);
-			resetNavigationToRoute('IntroScreen', this.props.navigation);
-			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			console.log(ex);
 			this.setState({
 				smsCodeErrorMessage: ex.message,
 			});
+			this.props.HideLoader();
 		}
+	};
+
+	private afterUserCreate = () => {
+		resetNavigationToRoute('IntroScreen', this.props.navigation);
 		this.props.HideLoader();
 	};
 
@@ -451,6 +454,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						email,
 					},
 				});
+
+				this.afterUserCreate();
 			});
 		} else {
 			await createUser({
@@ -480,7 +485,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 const MapDispatchToProps = (dispatch: any, {getText}: ISignUpScreenProps) => ({
 	SignupLoading: () => dispatch(showActivityIndicator(getText('register.signingUp'), getText('please.wait'))),
-	ConfirmSignupLoading: () => dispatch(showActivityIndicator(getText('register.confirming.code'))),
+	CreatingUserProfile: () => dispatch(showActivityIndicator(getText('register.confirming.code'))),
 	ResendCodeLoading: () => dispatch(showActivityIndicator(getText('register.resending.code'))),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });

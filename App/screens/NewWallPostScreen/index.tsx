@@ -203,7 +203,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		};
 
 		try {
-			const mediaPath = mediaObject.path.replace('file://', '');
+			const mediaPath = mediaObject.path;
 			let imageOptimizedPath = null;
 
 			if (mediaObject.mime.startsWith(MediaTypeImage.key)) {

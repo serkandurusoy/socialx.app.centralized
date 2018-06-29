@@ -52,7 +52,7 @@ export default {
 	'register.name.length.error': 'Enter a name bigger than 4 letters',
 	'register.failed': 'Register failed',
 	'register.signingUp': 'Signing you up',
-	'register.confirming.code': 'Confirming your code',
+	'register.confirming.code': 'Creating your profile',
 	'register.resending.code': 'Resending code..',
 	'register.password.min.length': 'minimum length',
 	'register.password.invalid.numbers': 'numbers',

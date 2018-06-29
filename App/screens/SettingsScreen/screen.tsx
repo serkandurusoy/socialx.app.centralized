@@ -31,7 +31,7 @@ interface ISettingsScreenComponentState {
 	miningEnabled: boolean;
 	selectedImage: boolean;
 	hasChanges: boolean;
-	localAvatarBase64: string | null;
+	localAvatarPath: string | null;
 }
 
 class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, ISettingsScreenComponentState> {
@@ -61,13 +61,13 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 		miningEnabled: this.props.miningEnabled,
 		selectedImage: false,
 		hasChanges: false,
-		localAvatarBase64: null,
+		localAvatarPath: null,
 	};
 
 	public resetChanges = () => {
 		this.setState({
 			hasChanges: false,
-			localAvatarBase64: null,
+			localAvatarPath: null,
 		});
 	};
 
@@ -182,13 +182,12 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 		return this.state.firstName + ' ' + this.state.lastName;
 	};
 
-	private updateAvatarImage = (base64Photo: string) => {
-		const base64 = base64Photo.substring(base64Photo.indexOf(',') + 1, base64Photo.length);
+	private updateAvatarImage = (localPhotoPath: string) => {
 		this.setState({
-			avatarImage: {uri: base64Photo},
+			avatarImage: {uri: localPhotoPath},
 			hasChanges: true,
 			selectedImage: true,
-			localAvatarBase64: base64,
+			localAvatarPath: localPhotoPath,
 		});
 	};
 
@@ -208,7 +207,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 
 	private saveChanges = () => {
 		const saveData: SettingsData = {
-			updatedAvatarImageBase64: this.state.localAvatarBase64,
+			updatedAvatarImagePath: this.state.localAvatarPath,
 			aboutText: this.state.aboutText,
 			firstName: this.state.firstName,
 			lastName: this.state.lastName,
