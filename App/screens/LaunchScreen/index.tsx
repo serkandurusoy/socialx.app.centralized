@@ -9,9 +9,6 @@ import {SXButton, SXGradientButton, TextGradient} from 'components';
 import {Colors, Images} from 'theme';
 import style from './style';
 
-import { Client } from 'bugsnag-react-native';
-const bugsnag = new Client();
-
 import {hideModalConfirmation, resetNavigationToRoute, showModalConfirmation} from 'backend/actions';
 import {getMaintenanceQuery} from 'backend/graphql';
 import {ModalManager} from 'hoc';
