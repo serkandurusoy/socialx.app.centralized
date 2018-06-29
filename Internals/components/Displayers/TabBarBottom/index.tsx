@@ -241,7 +241,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 				...retMedia,
 				contentOptimizedPath,
 				type: retMedia.mime,
-				pathx: retMedia.path.replace('file://', ''),
+				pathx: retMedia.path,
 			};
 			this.props.navigation.navigate('PhotoScreen', {mediaObject});
 		} catch (ex) {

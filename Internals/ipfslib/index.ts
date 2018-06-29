@@ -45,7 +45,7 @@ export default class Ipfslib {
 	) => {
 		const opts = {
 			url: this.apiUrl('/add'),
-			path,
+			path: path.replace('file://', ''),
 			method: 'POST',
 			type: 'multipart',
 			field: 'file',
@@ -91,12 +91,12 @@ export default class Ipfslib {
 
 		const mediaOpfs = {
 			...opts,
-			path: paths[0],
+			path: paths[0].replace('file://', ''),
 		};
 
 		const optimizedMediaOpfs = {
 			...opts,
-			path: paths[1],
+			path: paths[1].replace('file://', ''),
 		};
 		//   Upload.startUpload(mediaOpfs).then((uploadId) => {
 		// 	console.log('Upload started')

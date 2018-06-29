@@ -19,7 +19,6 @@ const AVATAR_PICKER_OPTIONS = {
 	height: IMAGE_CROP_SIZE,
 	cropping: true,
 	mediaType: 'photo',
-	includeBase64: true,
 };
 
 const AVATAR_CAMERA_OPTIONS = {
@@ -36,57 +35,53 @@ export interface IAvatarPickerProps {
 	avatarSize?: number;
 }
 
-export const AvatarPicker: React.SFC<IAvatarPickerProps> = (props) => {
-	const showGalleryPhotoPicker = async () => {
-		const galleryMediaObject = await getGalleryMediaObject(AVATAR_PICKER_OPTIONS);
-		if (galleryMediaObject) {
-			const base64Image = `data:${galleryMediaObject.mime};base64,${galleryMediaObject.data}`;
-			props.afterImagePick(base64Image);
-		}
-	};
+const showGalleryPhotoPicker = async (afterImagePick: (image: string) => void) => {
+	const galleryMediaObject = await getGalleryMediaObject(AVATAR_PICKER_OPTIONS);
+	if (galleryMediaObject) {
+		afterImagePick(galleryMediaObject.path);
+	}
+};
 
-	// TODO: @Jake: decide what format we use here: base64, or local path?
-	// See also usages of this component in SettingsScreen and SignUpScreen
+const takeCameraPhoto = async (afterImagePick: (image: string) => void) => {
+	const cameraMediaObject = await getCameraMediaObject(AVATAR_CAMERA_OPTIONS);
+	if (cameraMediaObject) {
+		afterImagePick(cameraMediaObject.path);
+	}
+};
 
-	const takeCameraPhoto = async () => {
-		const cameraMediaObject = await getCameraMediaObject(AVATAR_CAMERA_OPTIONS);
-		if (cameraMediaObject) {
-			props.afterImagePick(cameraMediaObject.path);
-		}
-	};
+const pickUserAvatar = (afterImagePick: (image: string) => void) => {
+	ActionSheet.show(
+		{
+			options: [PICK_FROM_GALLERY, TAKE_A_PHOTO, CANCEL],
+			cancelButtonIndex: 2,
+			title: ACTION_SHEET_TITLE,
+		},
+		(buttonIndex: number) => {
+			switch (buttonIndex) {
+				case 0:
+					showGalleryPhotoPicker(afterImagePick);
+					break;
+				case 1:
+					takeCameraPhoto(afterImagePick);
+					break;
+			}
+		},
+	);
+};
 
-	const pickUserAvatar = () => {
-		ActionSheet.show(
-			{
-				options: [PICK_FROM_GALLERY, TAKE_A_PHOTO, CANCEL],
-				cancelButtonIndex: 2,
-				title: ACTION_SHEET_TITLE,
-			},
-			(buttonIndex: number) => {
-				switch (buttonIndex) {
-					case 0:
-						showGalleryPhotoPicker();
-						break;
-					case 1:
-						takeCameraPhoto();
-						break;
-				}
-			},
-		);
-	};
-
+export const AvatarPicker: React.SFC<IAvatarPickerProps> = ({avatarImage, avatarSize, afterImagePick}) => {
 	const avatarSizeStyle = {
-		width: props.avatarSize,
-		height: props.avatarSize,
-		borderRadius: props.avatarSize / 2,
+		width: avatarSize,
+		height: avatarSize,
+		borderRadius: avatarSize / 2,
 	};
 
-	const iconSize = Math.min(35, Math.round(props.avatarSize / 5));
+	const iconSize = Math.min(35, Math.round(avatarSize / 5));
 
 	return (
 		<View>
-			<AvatarImage image={props.avatarImage} style={[style.avatarImage, avatarSizeStyle]} />
-			<TouchableOpacity onPress={pickUserAvatar} style={style.editIcon}>
+			<AvatarImage image={avatarImage} style={[style.avatarImage, avatarSizeStyle]} />
+			<TouchableOpacity onPress={() => pickUserAvatar(afterImagePick)} style={style.editIcon}>
 				<Icon name={'camera'} size={iconSize} color={Colors.postFullName} />
 			</TouchableOpacity>
 		</View>
