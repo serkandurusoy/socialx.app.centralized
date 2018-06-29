@@ -5,6 +5,7 @@ export * from './appUI';
 export * from './popup';
 export * from './global';
 export * from './confirmation';
+export * from './comments';
 
 // temp
 

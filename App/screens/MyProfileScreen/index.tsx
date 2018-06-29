@@ -52,7 +52,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		headerLeft: <View />,
 		headerRight: (
 			<View style={style.titleBarRightButton}>
-				<TooltipDots items={MyProfileScreen.getTooltipItems(props)} dotsColor={Colors.white} />
+				<TooltipDots items={MyProfileScreen.getTooltipItems(props)} iconColor={Colors.white} />
 			</View>
 		),
 	});

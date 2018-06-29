@@ -3,6 +3,7 @@
 export default {
 	'app.name': 'SocialX',
 	'button.OK': 'OK',
+	'button.BACK': 'Back',
 	'text.and': 'and',
 	'app.error': 'App error',
 	'validation.error': 'Validation error',
@@ -80,4 +81,5 @@ export default {
 		'The Superlike feature allows you to receive SOCX tokens by publishing high-quality content',
 	'intro.third.slide.title': 'One wallet to rule them all',
 	'intro.third.slide.description': 'We make adoption to digital currencies easy and secure.',
+	'comments.order.title': 'Order by:',
 };

@@ -59,7 +59,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 						// and what's with the code repetition here? why not make this a component and reuse?
 						this.props.comments.map((comment, index) => (
 							<CommentCard
-								key={index}
+								key={comment.id}
 								comment={comment}
 								onCommentLike={() => this.props.onCommentLike(comment)}
 								onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
