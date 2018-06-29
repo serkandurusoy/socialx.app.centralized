@@ -166,12 +166,19 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 		const {notifications} = this.props;
 		const {myNotifications, loading} = notifications;
 
-		const notificationsRender = () =>
-			myNotifications.length > 0 && (
+		const notificationsRender = () => {
+			if (!myNotifications) {
+				return (
+					<View />
+				);
+			}
+			return myNotifications.length > 0 && (
 				<View style={style.badgeBackground}>
 					<Text style={style.notificationBadge}>{myNotifications.length.toString()}</Text>
 				</View>
 			);
+		}
+
 
 		return (
 			<View style={style.notificationsContainer}>
