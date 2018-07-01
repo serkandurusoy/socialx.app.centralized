@@ -113,6 +113,10 @@ android {
         renderscriptSupportModeEnabled true
         multiDexEnabled true
     }
+    // dex options tell the compiler how to handle multidex compilation
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     signingConfigs {
         release {
             if (project.hasProperty('SOCIALX_RELEASE_STORE_FILE')) {
@@ -153,16 +157,16 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support') {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion '25.3.1'
-            }
-        }
-    }
-}
+// configurations.all {
+//     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+//         def requested = details.requested
+//         if (requested.group == 'com.android.support') {
+//             if (!requested.name.startsWith("multidex")) {
+//                 details.useVersion '25.3.1'
+//             }
+//         }
+//     }
+// }
 
 dependencies {
     compile project(':WebRTCModule')
