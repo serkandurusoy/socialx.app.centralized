@@ -74,9 +74,9 @@ import com.android.build.OutputFile
 
 project.ext.react = [
         entryFile: "index.js",
-        extraPackagerArgs: [
-            "--sourcemap-output", file("$buildDir/../../../sourcemap.android.js")
-        ]
+        // extraPackagerArgs: [
+        //     "--sourcemap-output", file("$buildDir/../../../sourcemap.android.js")
+        // ]
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
