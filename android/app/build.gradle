@@ -158,14 +158,9 @@ android {
 }
 
  configurations.all {
-     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-         def requested = details.requested
-         if (requested.group == 'com.android.support') {
-             if (!requested.name.startsWith("multidex")) {
-                 details.useVersion '25.3.1'
-             }
-         }
-     }
+    resolutionStrategy {
+        force "com.airbnb.android:lottie:2.5.5"
+    }
  }
 
 dependencies {
