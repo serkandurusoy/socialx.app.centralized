@@ -150,21 +150,20 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
 		const {data} = this.props;
-		const avatarHash = data ? (data.user.avatar ? data.user.avatar.hash : null) : null;
-		if (!data.loading && avatarHash) {
-			ret = {uri: base.ipfs_URL + avatarHash};
+		if (!data.loading) {
+			const avatarHash = data ? (data.user.avatar ? data.user.avatar.hash : null) : null;
+			if (avatarHash) {
+				ret = {uri: base.ipfs_URL + avatarHash};
+			}
 		}
 		return ret;
 	};
 
 	private showNewWallPostPage = () => {
 		const {data} = this.props;
-		const avatarUri = data ? data.user.avatar
-			? {uri: base.ipfs_URL + data.user.avatar.hash}
-			: Images.user_avatar_placeholder : Images.user_avatar_placeholder;
 		this.props.navigation.navigate('NewWallPostScreen', {
 			fullName: data ? data.user.name : '',
-			avatarImage: avatarUri,
+			avatarImage: this.getAvatarImage(),
 			postCreate: this.addWallPostHandler,
 		});
 	};
