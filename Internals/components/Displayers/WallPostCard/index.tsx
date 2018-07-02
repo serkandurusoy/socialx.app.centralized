@@ -126,7 +126,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	private renderUserDetails = () => {
 		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
 		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
-		const avatarURL = getUserAvatar(this.props.owner);
+		const avatarURL = getUserAvatar({user: this.props.owner});
 		const fullName = getUserFullName(this.props.owner);
 		return (
 			<TouchableOpacity

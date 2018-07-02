@@ -178,7 +178,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	};
 
 	private updateScreenData = (data: IUserDataResponse) => {
-		const {user} = data;
+		const user = data ? data.user : null;
 		const posts = get(data, 'user.posts', null);
 
 		const userImages = posts
@@ -186,7 +186,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			: 0;
 		const numOfLikes = posts ? posts.reduce((total: number, post: IPostsProps) => total + post.likes.length, 0) : 0;
 
-		const userAvatar = getUserAvatar(user);
+		const userAvatar = getUserAvatar(data);
 
 		this.setState({
 			numberOfPhotos: userImages,
@@ -194,8 +194,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			numberOfFollowers: 0,
 			numberOfFollowing: 0,
 			avatarURL: userAvatar,
-			fullName: user.name,
-			username: user.username,
+			fullName: user ? user.name : '',
+			username: user ? user.username : '',
 			loaded: true,
 			mediaObjects: posts ? this.preloadAllMediaObjects(posts) : [],
 		});

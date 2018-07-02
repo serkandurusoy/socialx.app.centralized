@@ -10,9 +10,9 @@ import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} fr
 import {addMediaHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
 import {IUserDataResponse} from 'types/gql';
 
-import {IBlobData} from 'ipfslib';
 import {Signout} from 'utilities/amplify';
 import {addFileBN} from 'utilities/ipfs';
+import {getUserAvatar} from 'utilities/userHelpers';
 
 import {ScreenHeaderButton} from 'components';
 import {ipfsConfig as base} from 'configuration/ipfs';
@@ -51,7 +51,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		prevState: Readonly<IISettingsScreenState>,
 	) {
 		const {data} = nextProps;
-		if (!data.loading) {
+		if (!data.loading && data) {
 			const avatarImage = data.user.avatar
 				? {uri: `${base.ipfs_URL}${data.user.avatar.hash}`}
 				: Images.user_avatar_placeholder;

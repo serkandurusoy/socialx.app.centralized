@@ -72,7 +72,7 @@ export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
 		const {user} = this.props;
 		if (user) {
 			const fullName = getUserFullName(user);
-			const avatarURL = getUserAvatar(user);
+			const avatarURL = getUserAvatar({user});
 			return (
 				<View style={style.topContainer}>
 					<Text style={style.fullName}>{fullName}</Text>

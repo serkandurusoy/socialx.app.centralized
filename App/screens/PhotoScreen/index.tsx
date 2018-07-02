@@ -20,7 +20,7 @@ import {addFileBN, addFilesBN} from 'utilities/ipfs';
 import {AvatarImagePlaceholder} from 'consts';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
-import {PickerImage} from 'utilities';
+import {PickerImage, getUserAvatar} from 'utilities';
 
 export interface FriendsSearchResult {
 	id: string;
@@ -70,7 +70,7 @@ class PhotoScreen extends Component<IPhotoScreenProps> {
 			<PhotoScreenComponent
 				isLoading={data.loading}
 				showTagFriendsModal={this.props.showAddFriendsModal}
-				avatarURL={data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : AvatarImagePlaceholder}
+				avatarURL={getUserAvatar(data)}
 				mediaObject={this.props.navigation.state.params.mediaObject}
 				taggedFriends={this.props.addedFriends}
 				ref={this.photoScreen}
