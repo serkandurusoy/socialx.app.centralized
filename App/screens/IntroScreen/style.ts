@@ -10,16 +10,12 @@ const style: any = {
 		borderRadius: CIRCLE_BUTTON_SIZE / 2,
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: Colors.white,
 	},
-	buttonNext: {
-		backgroundColor: Colors.amethyst,
-	},
-	buttonDone: {
-		backgroundColor: Colors.blueGem,
-	},
-	whiteIcon: {
-		color: Colors.white,
-		fontSize: 24,
+	pinkIcon: {
+		color: Colors.pink,
+		fontSize: Sizes.smartHorizontalScale(30),
+		lineHeight: Sizes.smartHorizontalScale(30),
 	},
 	doneIcon: {
 		color: Colors.white,

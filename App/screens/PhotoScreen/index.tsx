@@ -20,7 +20,7 @@ import {addFileBN, addFilesBN} from 'utilities/ipfs';
 import {AvatarImagePlaceholder} from 'consts';
 
 import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
-import {PickerImage, getUserAvatar} from 'utilities';
+import {getUserAvatar, PickerImage} from 'utilities';
 
 export interface FriendsSearchResult {
 	id: string;

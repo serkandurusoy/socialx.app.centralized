@@ -179,7 +179,6 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 			);
 		}
 
-
 		return (
 			<View style={style.notificationsContainer}>
 				{this.renderSimpleTabButton(menuItem)}

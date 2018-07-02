@@ -7,8 +7,10 @@ const style: any = {
 		alignItems: 'center',
 	},
 	slideImage: {
-		width: '100%',
-		height: Sizes.smartHorizontalScale(275),
+		height: Sizes.smartHorizontalScale(264),
+		maxWidth: '90%',
+		marginTop: Sizes.smartVerticalScale(20),
+		marginBottom: Sizes.smartVerticalScale(30),
 	},
 	textContainer: {
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
