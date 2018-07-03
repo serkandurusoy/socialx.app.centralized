@@ -53,10 +53,10 @@ uploadIOS() {
     echo 'BugSnag upload complete'
 }
 
-if [ -n ${APPCENTER_ANDROID_VARIANT} ]; then
+if [ -n "${APPCENTER_XCODE_SCHEME}" ]; then
+    echo 'Now uploadIOS'
+    uploadIOS
+else
     echo 'Now uploadAndroid'
     uploadAndroid
-else
-    echo 'Now uploadIOS'
-   uploadIOS
 fi
