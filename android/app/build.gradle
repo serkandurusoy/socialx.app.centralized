@@ -74,8 +74,9 @@ import com.android.build.OutputFile
 
 project.ext.react = [
         entryFile: "index.js",
+        bundleAssetName: "android-release.bundle",
         extraPackagerArgs: [
-            "--sourcemap-output", file("$buildDir/../../../sourcemap.android.js")
+            "--sourcemap-output", file("$buildDir/../../../android-release.bundle.map")
         ]
 ]
 
