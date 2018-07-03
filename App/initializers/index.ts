@@ -46,6 +46,7 @@ const bugSnagConf = new Configuration();
 bugSnagConf.appVersion = computeAppVersion().toString();
 const BugSnag = !(__DEV__) ? new Client(bugSnagConf) : null;
 
+// only use this helper method because in dev. mode BugSnag is not initialized to avoid unnecessary reports
 export const snagReport = (message: string) => {
 	if (BugSnag) {
 		BugSnag.notify(new Error(message));
