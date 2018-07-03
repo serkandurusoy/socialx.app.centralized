@@ -3,6 +3,9 @@
 # https://github.com/facebook/react-native/issues/19321
 # https://github.com/android-ndk/ndk/issues/700
 
+echo 'PreBuild read env variables'
+env
+
 set -ex
 
 # set env vars
