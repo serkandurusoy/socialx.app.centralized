@@ -1,7 +1,8 @@
-import {languageInit} from 'utilities';
-
 import Amplify from 'aws-amplify';
+import { Client, Configuration } from 'bugsnag-react-native';
+
 import {awsconfig} from 'configuration';
+import {languageInit} from 'utilities';
 
 export default async () => {
 	removeConsoleLogs();
@@ -19,3 +20,6 @@ const removeConsoleLogs = () => {
 		console.log = () => {};
 	}
 };
+
+const bugSnagConf = new Configuration();
+export const BugSnag = new Client(bugSnagConf);

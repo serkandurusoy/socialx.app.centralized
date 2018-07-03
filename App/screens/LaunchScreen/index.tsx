@@ -12,14 +12,12 @@ import {SXButton, SXGradientButton, TextGradient} from 'components';
 import {Colors, Images} from 'theme';
 import style from './style';
 
-import { Client } from 'bugsnag-react-native';
-const bugsnag = new Client();
-
 import {hideModalConfirmation, resetNavigationToRoute, showModalConfirmation} from 'backend/actions';
 import {getMaintenanceQuery} from 'backend/graphql';
 import {ModalManager} from 'hoc';
 import {IModalConfirmationProps} from 'types';
 import {CurrentUser, IWithTranslationProps, setLanguage, withTranslations} from 'utilities';
+import {BugSnag} from '../../initializers';
 
 export interface ILaunchScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
@@ -34,7 +32,6 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	};
 
 	public async componentDidMount() {
-		// bugsnag.notify(new Error('another test with sourcemaps'));
 		const {client} = this.props;
 		try {
 			const currentUser = await CurrentUser();
@@ -103,11 +100,13 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
+		BugSnag.notify(new Error('Error when going to LoginScreen'));
 		this.props.navigation.navigate('LoginScreen');
 	};
 
 	private navigateToSignUpScreen = () => {
-		this.props.navigation.navigate('SignUpScreen');
+		// TODO: here an unhandled error to test BugSnag!
+		this.props.navigationn.navigate('SignUpScreen');
 	};
 
 	private closeSplashScreen = () => {
