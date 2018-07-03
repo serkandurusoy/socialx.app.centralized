@@ -17,7 +17,7 @@ import {getMaintenanceQuery} from 'backend/graphql';
 import {ModalManager} from 'hoc';
 import {IModalConfirmationProps} from 'types';
 import {CurrentUser, IWithTranslationProps, setLanguage, withTranslations} from 'utilities';
-import {BugSnag} from '../../initializers';
+import {snagReport} from '../../initializers';
 
 export interface ILaunchScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
@@ -39,7 +39,7 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 			if (currentUser) {
 				const {
 					data: {getMaintenanceMode},
-				} = await client.query<{getMaintenanceMode: boolean}>({
+				} = await client.query<{ getMaintenanceMode: boolean }>({
 					query: getMaintenanceQuery,
 					fetchPolicy: 'network-only',
 				});
@@ -66,7 +66,7 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 		const {getText} = this.props;
 		return (
 			<View style={style.container}>
-				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'} />
+				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'}/>
 				<View style={style.topPaddingContainer}>
 					<TextGradient
 						text={getText('app.name')}
@@ -101,7 +101,7 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
-		BugSnag.notify(new Error('Error when going to LoginScreen'));
+		snagReport('Error when going to LoginScreen');
 		this.props.navigation.navigate('LoginScreen');
 	};
 

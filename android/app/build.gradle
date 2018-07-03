@@ -76,8 +76,7 @@ project.ext.react = [
         entryFile: "index.js",
         bundleAssetName: "index.android.bundle",
         extraPackagerArgs: [
-            "--sourcemap-output", file("$buildDir/../../../index.android.bundle.map"),
-            "--bundle-output", file("$buildDir/../../../index.android.bundle")
+            "--sourcemap-output", file("$buildDir/../../../index.android.bundle.map")
         ]
 ]
 
