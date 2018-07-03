@@ -104,8 +104,8 @@ android {
         applicationId "socialx.network"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.7"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
