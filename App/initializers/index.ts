@@ -44,10 +44,10 @@ const computeAppVersion = () => {
 
 const bugSnagConf = new Configuration();
 bugSnagConf.appVersion = computeAppVersion().toString();
-const BugSnag = new Client(bugSnagConf);
+const BugSnag = !(__DEV__) ? new Client(bugSnagConf) : null;
 
 export const snagReport = (message: string) => {
-	if (!__DEV__) {
+	if (BugSnag) {
 		BugSnag.notify(new Error(message));
 	}
 };
