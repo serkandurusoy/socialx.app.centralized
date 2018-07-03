@@ -1,9 +1,9 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {MediaObjectViewer} from 'components';
 import {DeviceOrientations, OS_TYPES} from 'consts';
@@ -23,7 +23,22 @@ interface IMediaViewerScreenComponentState {
 	viewport: {
 		width: number;
 	};
+	showInfoButton: boolean;
+	showInfoOverlay: boolean;
 }
+
+export const MediaInfoOverlay: React.SFC<{
+	onShowInfo: () => void;
+	onHideInfoButton: () => void;
+}> = ({onShowInfo, onHideInfoButton}) => (
+	<TouchableWithoutFeedback onPress={onHideInfoButton}>
+		<View style={style.fullScreen}>
+			<TouchableOpacity style={style.infoButton} onPress={onShowInfo}>
+				<Icon name={'ios-information-circle-outline'} style={style.infoIcon} />
+			</TouchableOpacity>
+		</View>
+	</TouchableWithoutFeedback>
+);
 
 export default class MediaViewerScreenComponent extends Component<
 	IMediaViewerScreenComponentProps,
@@ -34,6 +49,8 @@ export default class MediaViewerScreenComponent extends Component<
 		viewport: {
 			width: Dimensions.get('window').width,
 		},
+		showInfoButton: false,
+		showInfoOverlay: false,
 	};
 
 	private carouselRef: CarouselStatic<IMediaViewerObject> | null = null;
@@ -51,31 +68,41 @@ export default class MediaViewerScreenComponent extends Component<
 		nextState: Readonly<IMediaViewerScreenComponentState>,
 		nextContext: any,
 	): boolean {
-		return nextState.activeSlide !== this.state.activeSlide || nextProps.orientation !== this.props.orientation;
+		return (
+			nextState.activeSlide !== this.state.activeSlide ||
+			nextProps.orientation !== this.props.orientation ||
+			nextState.showInfoButton !== this.state.showInfoButton
+		);
 	}
 
 	public render() {
+		const {showInfoButton} = this.state;
 		return (
 			<SafeAreaView style={style.safeView}>
-				<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
-					<Carousel
-						ref={(c: any) => (this.carouselRef = c)}
-						// hack so that renderItem will use updated state value for activeSlide
-						activeSlide={this.state.activeSlide}
-						data={this.props.mediaObjects}
-						renderItem={this.renderCarouselItem}
-						sliderWidth={this.state.viewport.width}
-						itemWidth={this.state.viewport.width}
-						firstItem={this.props.startIndex}
-						onSnapToItem={this.handleSlideChanged}
-						{...this.getIOSCarouselProps()}
-					/>
-				</View>
+				<TouchableWithoutFeedback onPress={this.toggleInfoButtonHandler}>
+					<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
+						<Carousel
+							ref={(c: any) => (this.carouselRef = c)}
+							// hack so that renderItem will use updated state value for activeSlide
+							activeSlide={this.state.activeSlide}
+							data={this.props.mediaObjects}
+							renderItem={this.renderCarouselItem}
+							sliderWidth={this.state.viewport.width}
+							itemWidth={this.state.viewport.width}
+							firstItem={this.props.startIndex}
+							onSnapToItem={this.handleSlideChanged}
+							{...this.getIOSCarouselProps()}
+						/>
+					</View>
+				</TouchableWithoutFeedback>
 				{this.renderCloseButton()}
 				<View style={style.screenFooter}>
 					{this.renderMediaInfoSection()}
 					{this.renderPagination()}
 				</View>
+				{showInfoButton && (
+					<MediaInfoOverlay onShowInfo={this.showMediaInfoHandler} onHideInfoButton={this.toggleInfoButtonHandler} />
+				)}
 			</SafeAreaView>
 		);
 	}
@@ -174,5 +201,19 @@ export default class MediaViewerScreenComponent extends Component<
 				resizeToChangeAspectRatio={true}
 			/>
 		);
+	};
+
+	private showMediaInfoHandler = () => {
+		this.setState({
+			showInfoOverlay: true,
+			showInfoButton: false,
+		});
+	};
+
+	private toggleInfoButtonHandler = () => {
+		console.log('toggleInfoButtonHandler', !this.state.showInfoButton);
+		this.setState({
+			showInfoButton: !this.state.showInfoButton,
+		});
 	};
 }

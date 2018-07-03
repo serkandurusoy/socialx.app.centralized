@@ -1,9 +1,12 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from 'theme';
+import {Colors, colorWithAlpha, Fonts, Sizes} from 'theme';
+
+const INFO_BUTTON_SIZE = Sizes.smartHorizontalScale(40);
 
 const style: any = {
 	safeView: {
 		backgroundColor: Colors.midnight,
+		flex: 1,
 	},
 	carouselContainer: {
 		height: '100%',
@@ -46,6 +49,25 @@ const style: any = {
 		...Fonts.centuryGothic,
 		color: Colors.white,
 		fontSize: Sizes.smartHorizontalScale(16),
+	},
+	fullScreen: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		backgroundColor: colorWithAlpha(Colors.black, 0.5), // TODO: remove this in the end
+		paddingHorizontal: Sizes.smartHorizontalScale(20),
+		paddingVertical: Sizes.smartVerticalScale(20),
+		alignItems: 'flex-end',
+	},
+	infoIcon: {
+		color: Colors.white,
+		fontSize: Sizes.smartHorizontalScale(30),
+	},
+	infoButton: {
+		width: INFO_BUTTON_SIZE,
+		height: INFO_BUTTON_SIZE,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 };
 
