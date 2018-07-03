@@ -1,6 +1,7 @@
 import {I18n} from 'aws-amplify';
 import {AsyncStorage} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import {compose, hoistStatics, withProps} from 'recompose';
 
 import dictionary_en from './dictionary_en';
 import dictionary_es from './dictionary_es';
@@ -47,3 +48,15 @@ export const getText = (key: string, ...args: any[]) => {
 	}
 	return ret;
 };
+
+export interface IWithTranslationProps {
+	getText: (value: string, ...args: any[]) => string;
+}
+
+export const withTranslations = compose(
+	hoistStatics(
+		withProps(() => ({
+			getText: (value: string, ...args: any[]) => getText(value, args),
+		})),
+	),
+);

@@ -1,6 +1,7 @@
 import {CommentCard} from 'components/Displayers/WallPostCard/CommentCard';
 import {CommentTextInput} from 'components/Inputs/CommentTextInput';
 import {OS_TYPES} from 'consts';
+import {IWithResizeOnKeyboardShowProps} from 'hoc';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component, RefObject} from 'react';
@@ -10,8 +11,7 @@ import {Colors, Sizes} from 'theme';
 import {IWallPostComment} from './index';
 import style from './style';
 
-interface ICommentsScreenComponentProps extends IWithLoaderProps {
-	marginBottom: number;
+interface ICommentsScreenComponentProps extends IWithLoaderProps, IWithResizeOnKeyboardShowProps {
 	comments: IWallPostComment[];
 	onCommentLike: (comment: IWallPostComment) => void;
 	onCommentDelete: (comment: IWallPostComment) => void;
@@ -41,8 +41,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
 		];
 
-		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<SafeAreaView style={containerStyles}>
 				<ScrollView
 					style={style.commentsList}
@@ -52,7 +51,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 				>
 					{this.props.noComments ? (
 						<View style={style.noCommentsContainer}>
-							<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser}/>
+							<Icon name={'md-list'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
 							<Text style={style.noCommentsText}>{'Be the first to comment here'}</Text>
 						</View>
 					) : (
@@ -60,7 +59,7 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 						// and what's with the code repetition here? why not make this a component and reuse?
 						this.props.comments.map((comment, index) => (
 							<CommentCard
-								key={index}
+								key={comment.id}
 								comment={comment}
 								onCommentLike={() => this.props.onCommentLike(comment)}
 								onCommentReply={(startReply: boolean) => this.props.onCommentReply(comment, startReply)}
@@ -75,11 +74,11 @@ class CommentsScreenComponent extends Component<ICommentsScreenComponentProps, I
 					onCommentSend={this.props.onCommentSend}
 					placeholder={'Write a comment...'}
 				/>
-			</SafeAreaView>,
+			</SafeAreaView>
 		);
 	}
 }
 
-const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent as any);
+const inlineLoaderWrapper = withInlineLoader(CommentsScreenComponent);
 
 export default withResizeOnKeyboardShow(inlineLoaderWrapper);

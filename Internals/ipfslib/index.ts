@@ -45,7 +45,7 @@ export default class Ipfslib {
 	) => {
 		const opts = {
 			url: this.apiUrl('/add'),
-			path,
+			path: path.replace('file://', ''),
 			method: 'POST',
 			type: 'multipart',
 			field: 'file',
@@ -91,12 +91,12 @@ export default class Ipfslib {
 
 		const mediaOpfs = {
 			...opts,
-			path: paths[0],
+			path: paths[0].replace('file://', ''),
 		};
 
 		const optimizedMediaOpfs = {
 			...opts,
-			path: paths[1],
+			path: paths[1].replace('file://', ''),
 		};
 		//   Upload.startUpload(mediaOpfs).then((uploadId) => {
 		// 	console.log('Upload started')
@@ -118,6 +118,10 @@ export default class Ipfslib {
 		//   })
 
 		try {
+			const originalFileSize = (await Upload.getFileInfo(paths[0])).size;
+			const optimizedFileSize = (await Upload.getFileInfo(paths[1])).size;
+			const totalUploadSize = originalFileSize + optimizedFileSize;
+
 			const mediaUploadId = await Upload.startUpload(mediaOpfs);
 			const optimizedMediaUId = await Upload.startUpload(optimizedMediaOpfs);
 			const resData: any = [];
@@ -126,13 +130,24 @@ export default class Ipfslib {
 			onStart();
 
 			let mediaProgress = 0;
-			let optimiezedMediaProgress = 0;
+			let optimizedMediaProgress = 0;
+
+			const originalProgressHandler = (data: any) => {
+				mediaProgress = data.progress;
+				const updatedProgress =
+					(mediaProgress * originalFileSize + optimizedMediaProgress * optimizedFileSize) / totalUploadSize;
+				onProgress(updatedProgress, mediaUploadId);
+			};
+
+			const optimizedProgressHandler = (data: any) => {
+				optimizedMediaProgress = data.progress;
+				const updatedProgress =
+					(mediaProgress * originalFileSize + optimizedMediaProgress * optimizedFileSize) / totalUploadSize;
+				onProgress(updatedProgress, optimizedMediaUId);
+			};
 
 			// media events
-			Upload.addListener('progress', mediaUploadId, (data: any) => {
-				mediaProgress = data.progress;
-				onProgress((data.progress + optimiezedMediaProgress) / 2, mediaUploadId);
-			});
+			Upload.addListener('progress', mediaUploadId, originalProgressHandler);
 			Upload.addListener('error', mediaUploadId, (data: any) => {
 				onError(data.error, mediaUploadId);
 			});
@@ -147,10 +162,7 @@ export default class Ipfslib {
 			// optimized media events
 			// @iont: TODO -> the progress here is not accurate, the optimized
 			// image finishes really quick so it doesnt actually adds up to the progress
-			Upload.addListener('progress', optimizedMediaUId, (data: any) => {
-				optimiezedMediaProgress = data.progress;
-				onProgress((data.progress + mediaProgress) / 2, optimizedMediaUId);
-			});
+			Upload.addListener('progress', optimizedMediaUId, optimizedProgressHandler);
 			Upload.addListener('error', optimizedMediaUId, (data: any) => {
 				onError(data.error, optimizedMediaUId);
 			});

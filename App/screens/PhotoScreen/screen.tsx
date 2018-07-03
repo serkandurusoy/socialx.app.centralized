@@ -5,9 +5,9 @@ import {MediaObjectViewer} from 'components/Displayers/MediaObject';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component} from 'react';
 import {Image, Text, TextInput, View} from 'react-native';
-import {Image as PickerImage} from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, Icons} from 'theme/';
+import {PickerImage} from 'utilities';
 import {FriendsSearchResult, WallPostPhoto} from './index';
 import style from './style';
 
@@ -50,8 +50,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 	};
 
 	public render() {
-		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<KeyboardAwareScrollView
 				style={style.scrollView}
 				alwaysBounceVertical={true}
@@ -65,7 +64,7 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 					{this.renderLocationSection()}
 					{/*{this.renderTagFriendsSection()}*/}
 				</View>
-			</KeyboardAwareScrollView>,
+			</KeyboardAwareScrollView>
 		);
 	}
 
@@ -160,4 +159,4 @@ class PhotoScreenComponent extends Component<IPhotoScreenComponentProps, IPhotoS
 	};
 }
 
-export default withInlineLoader(PhotoScreenComponent, true);
+export default withInlineLoader(PhotoScreenComponent);

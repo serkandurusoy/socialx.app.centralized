@@ -4,7 +4,7 @@ import {graphql, QueryProps} from 'react-apollo';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {IMediaProps, IPostsProps} from 'types';
-import {bestTwoComments, getPostMedia, numberOfComments} from 'utilities';
+import {bestTwoComments, getPostMedia, getUserAvatar, numberOfComments} from 'utilities';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {
@@ -217,9 +217,7 @@ export const getUserProfileHoc = (comp: any) =>
 			} = pps;
 			const results = {getUserQuery: {getUser: {}, loading, refetch}};
 			if (!loading) {
-				const avatar = getUserQuery.user.avatar
-					? base.ipfs_URL + getUserQuery.user.avatar.hash
-					: AvatarImagePlaceholder;
+				const avatar = getUserAvatar(getUserQuery);
 				const mediaObjs = preloadAllMediaObjects(getUserQuery.user.posts);
 				results.getUserQuery.getUser = {
 					avatarURL: avatar,
@@ -261,7 +259,7 @@ export const getUserPostHoc = (comp: any) =>
 				getPostsOwner: {
 					...pps.getUserPosts.getPostsOwner,
 					Items: getPostsOwner.Items.map((item: any) => {
-						const avatar = item.owner.avatar ? base.ipfs_URL + item.owner.avatar.hash : AvatarImagePlaceholder;
+						const avatar = getUserAvatar({user: item ? item.owner : null})
 						const numComments = numberOfComments(item);
 						return {
 							id: item.id,

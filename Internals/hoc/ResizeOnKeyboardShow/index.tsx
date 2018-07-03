@@ -1,16 +1,16 @@
 import React from 'react';
 import {Keyboard} from 'react-native';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import {hoistStatics} from 'recompose';
 
 export interface IWithResizeOnKeyboardShowProps {
 	marginBottom: number;
 	safeRunAfterKeyboardHide: (handler: () => void) => void;
 }
 
-export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partial<NavigationStackScreenOptions>) => {
-	return class extends React.Component {
-		private static navigationOptions = navOptions;
-
+export const withResizeOnKeyboardShowInt = <P extends IWithResizeOnKeyboardShowProps>(
+	BaseComponent: React.ComponentType<P>,
+) => {
+	return class extends React.Component<P> {
 		public state = {
 			marginBottom: 0,
 			isHidden: false,
@@ -70,3 +70,5 @@ export const withResizeOnKeyboardShow = (BaseComponent: any, navOptions?: Partia
 		};
 	};
 };
+
+export const withResizeOnKeyboardShow = hoistStatics(withResizeOnKeyboardShowInt);

@@ -74,9 +74,10 @@ import com.android.build.OutputFile
 
 project.ext.react = [
         entryFile: "index.js",
+        bundleAssetName: "index.android.bundle",
         extraPackagerArgs: [
-            "--sourcemap-output", file("$buildDir/../../../sourcemap.android.bundle.map"),
-            "--bundle-output", file("$buildDir/../../../sourcemap.android.bundle")
+            "--sourcemap-output", file("$buildDir/../../../index.android.bundle.map"),
+            "--bundle-output", file("$buildDir/../../../index.android.bundle")
         ]
 ]
 
@@ -154,16 +155,11 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support') {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion '25.3.1'
-            }
-        }
+ configurations.all {
+    resolutionStrategy {
+        force "com.airbnb.android:lottie:2.5.5"
     }
-}
+ }
 
 dependencies {
     compile project(':WebRTCModule')

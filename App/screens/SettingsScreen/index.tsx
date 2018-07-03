@@ -1,33 +1,25 @@
-import React, {Component} from 'react';
-import {
-	AsyncStorage,
-	ImageRequireSource,
-	ImageURISource,
-	InteractionManager,
-	Text,
-	TouchableOpacity,
-	View,
-	ViewAsyncStroage,
-} from 'react-native';
+import noop from 'lodash/noop';
+import React, {Component, RefObject} from 'react';
+import {AsyncStorage} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
 import SettingsScreenComponent from './screen';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
-import {addMediaHoc, createUpdateUserHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
+import {addMediaHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
 import {IUserDataResponse} from 'types/gql';
 
-import {IBlobData} from 'ipfslib';
 import {Signout} from 'utilities/amplify';
-import {addBlob} from 'utilities/ipfs';
+import {addFileBN} from 'utilities/ipfs';
+import {getUserAvatar} from 'utilities/userHelpers';
 
 import {ScreenHeaderButton} from 'components';
 import {ipfsConfig as base} from 'configuration/ipfs';
 import {Images} from 'theme';
 
 export interface SettingsData {
-	updatedAvatarImageBase64: string | null;
+	updatedAvatarImagePath: string | null;
 	aboutText: string;
 	firstName: string;
 	lastName: string;
@@ -59,7 +51,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		prevState: Readonly<IISettingsScreenState>,
 	) {
 		const {data} = nextProps;
-		if (!data.loading) {
+		if (!data.loading && data) {
 			const avatarImage = data.user.avatar
 				? {uri: `${base.ipfs_URL}${data.user.avatar.hash}`}
 				: Images.user_avatar_placeholder;
@@ -102,7 +94,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		email: '',
 	};
 
-	private screenRef: any;
+	private screenRef: RefObject<any> = React.createRef();
 
 	public render() {
 		const {data} = this.props;
@@ -116,34 +108,32 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				miningEnabled={false} // later update hc value
 				saveChanges={this.saveChanges}
 				isLoading={data.loading}
-				ref={(ref) => (this.screenRef = ref)}
+				ref={this.screenRef}
 			/>
 		);
 	}
 
-	private handleImageChange = async (updatedAvatarImageBase64: string | null) => {
-		const {addMedia} = this.props;
+	private handleImageChange = async (updatedAvatarImagePath: string | null, afterUpload: (mediaId: string) => void) => {
+		if (!updatedAvatarImagePath) {
+			afterUpload('');
+			return null;
+		}
 		try {
-			if (!updatedAvatarImageBase64) {
-				return null;
-			}
+			await addFileBN(updatedAvatarImagePath, noop, noop, noop, async (resp) => {
+				const {Hash, Size} = JSON.parse(resp.responseBody);
 
-			// NOTE: Uppload image to IPFS
-			let ipfsRes = await addBlob([
-				{filename: 'ProfileImage.jpeg', data: updatedAvatarImageBase64, name: 'ProfileImage'},
-			]);
-			ipfsRes = JSON.parse(ipfsRes.data);
-			// NOTE: Add Media file on AppSync
-			const qVar = {
-				variables: {
-					hash: ipfsRes.Hash,
-					type: 'ProfileImage',
-					size: parseInt(ipfsRes.Size, undefined),
-				},
-			};
+				// NOTE: Add Media file on AppSync
+				const qVar = {
+					variables: {
+						type: 'ProfileImage',
+						size: parseInt(Size, undefined),
+						hash: Hash,
+					},
+				};
 
-			const addRes = await addMedia(qVar);
-			return addRes.data.addMedia.id;
+				const addRes = await this.props.addMedia(qVar);
+				afterUpload(addRes.data.addMedia.id);
+			});
 		} catch (e) {
 			//
 			console.log(e);
@@ -154,39 +144,40 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
 
 		editingDataLoader();
-		try {
-			const avatar = (await this.handleImageChange(saveData.updatedAvatarImageBase64)) || '';
-			const bio = saveData.aboutText || '';
 
-			let mVar: any = null;
-			if (avatar) {
-				mVar = {
-					variables: {
-						name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
-						email: saveData.email,
-						bio,
-						avatar,
-					},
-				};
-			} else {
-				mVar = {
-					variables: {
-						name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
-						email: saveData.email,
-						bio,
-					},
-				};
+		await this.handleImageChange(saveData.updatedAvatarImagePath, async (avatar: string) => {
+			try {
+				const bio = saveData.aboutText || '';
+
+				let mVar: any = null;
+				if (avatar) {
+					mVar = {
+						variables: {
+							name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
+							email: saveData.email,
+							bio,
+							avatar,
+						},
+					};
+				} else {
+					mVar = {
+						variables: {
+							name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
+							email: saveData.email,
+							bio,
+						},
+					};
+				}
+				await updateUserData(mVar);
+				await data.refetch();
+
+				this.screenRef.current.getOriginalRef().current.resetChanges();
+			} catch (e) {
+				//
+				console.log(e);
 			}
-			await updateUserData(mVar);
-			await data.refetch();
-
-			this.screenRef.getOriginalRef().resetChanges();
-		} catch (e) {
-			//
-			console.log(e);
-		}
-
-		hideLoader();
+			hideLoader();
+		});
 	};
 }
 
@@ -201,7 +192,6 @@ const reduxWrapper = connect(
 )(SettingsScreen as any);
 const userDataWrapper = userHoc(reduxWrapper);
 const addMediaWrapper = addMediaHoc(userDataWrapper);
-// const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
 const updateUserWrapper = updateUserDataHoc(addMediaWrapper);
 
 export default updateUserWrapper;

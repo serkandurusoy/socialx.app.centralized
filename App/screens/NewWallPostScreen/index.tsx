@@ -1,7 +1,6 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {ActivityIndicator, Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import ImagePicker, {Image as PickerImage} from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 import {NavigationScreenProp} from 'react-navigation';
 
@@ -13,6 +12,7 @@ import {MediaTypeImage} from 'types';
 import style from './style';
 
 import {SharePostInput} from 'components';
+import {getCameraMediaObject, getGalleryMediaObject, PickerImage} from 'utilities';
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
 
 const PICK_FROM_GALLERY = 'Pick from gallery';
@@ -117,48 +117,26 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 				cancelButtonIndex: 2,
 				title: ACTION_SHEET_TITLE,
 			},
-			(buttonIndex: number) => {
+			async (buttonIndex: number) => {
 				switch (buttonIndex) {
 					case 0:
-						this.showGalleryPhotoPicker();
+						const galleryMediaObject = await getGalleryMediaObject();
+						this.addNewMediaObject(galleryMediaObject);
 						break;
 					case 1:
-						this.takeCameraPhoto();
+						const cameraMediaObject = await getCameraMediaObject();
+						this.addNewMediaObject(cameraMediaObject);
 						break;
 				}
 			},
 		);
 	};
 
-	// TODO: show the user that he has excceded the maximum file size
-	private checkFileSize = (mediaOb: any): boolean => mediaOb.size < 50000;
-
-	private showGalleryPhotoPicker = async () => {
-		try {
-			const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openPicker({
-				cropping: false,
-				mediaType: 'any',
-			});
-			this.addNewMediaObject(mediaObject as PickerImage);
-		} catch (ex) {
-			console.log(ex);
+	private addNewMediaObject = async (mediaObject: PickerImage | undefined) => {
+		if (!mediaObject) {
+			return;
 		}
-	};
 
-	private takeCameraPhoto = async () => {
-		try {
-			const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
-				cropping: false,
-				mediaType: 'any',
-				useFrontCamera: false,
-			});
-			this.addNewMediaObject(mediaObject as PickerImage);
-		} catch (ex) {
-			console.log(ex);
-		}
-	};
-
-	private addNewMediaObject = async (mediaObject: PickerImage) => {
 		const {mediaObjects} = this.state;
 
 		// if mediaObject is an image, upload 2 media files
@@ -225,7 +203,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		};
 
 		try {
-			const mediaPath = mediaObject.path.replace('file://', '');
+			const mediaPath = mediaObject.path;
 			let imageOptimizedPath = null;
 
 			if (mediaObject.mime.startsWith(MediaTypeImage.key)) {

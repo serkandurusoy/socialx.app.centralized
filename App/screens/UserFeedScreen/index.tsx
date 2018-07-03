@@ -28,7 +28,7 @@ import {
 	IUserDataResponse,
 	IUserQuery,
 } from 'types';
-import {CurrentUser} from 'utilities';
+import {CurrentUser, getUserAvatar} from 'utilities';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
@@ -103,8 +103,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
 
-		console.log(Items);
-
 		return (
 			<UserFeedScreenComponent
 				noPosts={noPosts}
@@ -152,20 +150,20 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private getAvatarImage = () => {
 		let ret = Images.user_avatar_placeholder;
 		const {data} = this.props;
-		const avatarHash = get(data, 'user.avatar.hash', null);
-		if (!data.loading && avatarHash) {
-			ret = {uri: base.ipfs_URL + avatarHash};
+		if (!data.loading) {
+			const avatarHash = data ? (data.user.avatar ? data.user.avatar.hash : null) : null;
+			if (avatarHash) {
+				ret = {uri: base.ipfs_URL + avatarHash};
+			}
 		}
 		return ret;
 	};
 
 	private showNewWallPostPage = () => {
-		const avatarUri = this.props.data.user.avatar
-			? {uri: base.ipfs_URL + this.props.data.user.avatar.hash}
-			: Images.user_avatar_placeholder;
+		const {data} = this.props;
 		this.props.navigation.navigate('NewWallPostScreen', {
-			fullName: this.props.data.user.name,
-			avatarImage: avatarUri,
+			fullName: data ? data.user.name : '',
+			avatarImage: this.getAvatarImage(),
 			postCreate: this.addWallPostHandler,
 		});
 	};

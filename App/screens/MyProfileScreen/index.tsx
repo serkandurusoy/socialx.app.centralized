@@ -10,7 +10,7 @@ import {TooltipDots} from 'components';
 import {getUserAvatar, Signout} from 'utilities';
 
 import {resetNavigationToRoute} from 'backend/actions';
-import {addMediaHoc, createUpdateUserHoc, userHoc} from 'backend/graphql';
+import {userHoc} from 'backend/graphql';
 import {Colors} from 'theme';
 import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
 
@@ -32,9 +32,6 @@ const INITIAL_STATE = {
 interface IMyProfileScreenProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
-	// todo
-	createUser: any;
-	addMedia: any;
 }
 
 interface IMyProfileScreenState {
@@ -55,7 +52,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		headerLeft: <View />,
 		headerRight: (
 			<View style={style.titleBarRightButton}>
-				<TooltipDots items={MyProfileScreen.getTooltipItems(props)} dotsColor={Colors.white} />
+				<TooltipDots items={MyProfileScreen.getTooltipItems(props)} iconColor={Colors.white} />
 			</View>
 		),
 	});
@@ -181,7 +178,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	};
 
 	private updateScreenData = (data: IUserDataResponse) => {
-		const {user} = data;
+		const user = data ? data.user : null;
 		const posts = get(data, 'user.posts', null);
 
 		const userImages = posts
@@ -189,7 +186,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			: 0;
 		const numOfLikes = posts ? posts.reduce((total: number, post: IPostsProps) => total + post.likes.length, 0) : 0;
 
-		const userAvatar = getUserAvatar(user);
+		const userAvatar = getUserAvatar(data);
 
 		this.setState({
 			numberOfPhotos: userImages,
@@ -197,8 +194,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			numberOfFollowers: 0,
 			numberOfFollowing: 0,
 			avatarURL: userAvatar,
-			fullName: user.name,
-			username: user.username,
+			fullName: user ? user.name : '',
+			username: user ? user.username : '',
 			loaded: true,
 			mediaObjects: posts ? this.preloadAllMediaObjects(posts) : [],
 		});
@@ -210,8 +207,4 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	};
 }
 
-const userDataWrapper = userHoc(MyProfileScreen);
-const addMediaWrapper = addMediaHoc(userDataWrapper);
-const updateUserWrapper = createUpdateUserHoc(addMediaWrapper);
-
-export default updateUserWrapper;
+export default userHoc(MyProfileScreen);

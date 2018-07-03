@@ -62,7 +62,7 @@ class PopoverTooltipItem extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
     itemContainer: {
-        padding: 10,
+        // padding: 10,
     },
 });
 

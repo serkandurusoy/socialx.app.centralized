@@ -1,7 +1,7 @@
 import {CommentCard} from 'components/Displayers/WallPostCard/CommentCard';
 import {CommentTextInput} from 'components/Inputs/CommentTextInput';
 import {OS_TYPES} from 'consts';
-import {withInlineLoader} from 'hoc';
+import {IWithLoaderProps, IWithResizeOnKeyboardShowProps, withInlineLoader} from 'hoc';
 import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component, RefObject} from 'react';
 import {Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
@@ -9,9 +9,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
 import {IWallPostCommentReply} from '../index';
 import style from './style';
-interface IRepliesScreenComponentProps {
+
+interface IRepliesScreenComponentProps extends IWithLoaderProps, IWithResizeOnKeyboardShowProps {
 	replies: IWallPostCommentReply[];
-	marginBottom: number;
 	onSendReply: (replyText: string) => void;
 	onReplyDelete: (replyData: IWallPostCommentReply) => void;
 	onReplyLike: (replyData: IWallPostCommentReply) => void;
@@ -76,4 +76,4 @@ class RepliesScreenComponent extends Component<IRepliesScreenComponentProps, IRe
 }
 
 // TODO: @jake @serkan consider using "recompose" to compose HOC's
-export default withResizeOnKeyboardShow(withInlineLoader(RepliesScreenComponent as any));
+export default withResizeOnKeyboardShow(withInlineLoader(RepliesScreenComponent));

@@ -3,11 +3,17 @@ import {Image, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {Colors, Images} from 'theme';
-import {getText} from 'utilities';
 import {ISlideProps} from '../index';
 import style from './style';
 
-export const WalkThroughFirst: React.SFC<ISlideProps> = ({width, height, topSpacer, bottomSpacer}) => (
+export const WalkThroughFirst: React.SFC<ISlideProps> = ({
+	width,
+	height,
+	topSpacer,
+	bottomSpacer,
+	title,
+	description,
+}) => (
 	<LinearGradient
 		style={[
 			style.container,
@@ -25,8 +31,8 @@ export const WalkThroughFirst: React.SFC<ISlideProps> = ({width, height, topSpac
 		<Image source={Images.IntroWalkThrough1Logo} style={style.logoImage} />
 		<Image source={Images.IntroWalkThrough1} style={style.slideImage} />
 		<View style={style.textContainer}>
-			<Text style={style.slideTitle}>{getText('introFirstSlideTitle')}</Text>
-			<Text style={style.slideDescription}>{getText('introFirstSlideDescription')}</Text>
+			<Text style={style.slideTitle}>{title}</Text>
+			<Text style={style.slideDescription}>{description}</Text>
 		</View>
 	</LinearGradient>
 );

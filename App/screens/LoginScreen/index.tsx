@@ -5,13 +5,14 @@ import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
+import {compose} from 'recompose';
 import {Colors} from 'theme/';
 import UploadKeyScreen from '../UploadKeyScreen';
 import style from './style';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
-import {ConfirmSignin, CurrentUserInfo, getText, Signin} from 'utilities';
+import {ConfirmSignin, CurrentUserInfo, IWithTranslationProps, Signin, withTranslations} from 'utilities';
 
 const PHONE_NUMBER = '+40721205279';
 
@@ -21,7 +22,7 @@ export interface ILoginScreenState {
 	showModalForSMSCode: boolean;
 }
 
-export interface ILoginScreenProps extends IWithResizeOnKeyboardShowProps {
+export interface ILoginScreenProps extends IWithResizeOnKeyboardShowProps, IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	SigninLoader: () => void;
 	ConfirmLoader: () => void;
@@ -29,6 +30,12 @@ export interface ILoginScreenProps extends IWithResizeOnKeyboardShowProps {
 }
 
 class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
+	private static navigationOptions = (props: ILoginScreenProps) => ({
+		// TODO: this is a bad hack, we should reconsider the architecture!
+		title: props.navigationOptions.getText('login.screen.title'),
+		headerRight: <View />,
+	});
+
 	public state = {
 		usernameValue: '',
 		passwordValue: '',
@@ -39,6 +46,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	private usernameInput: SXTextInput | null = null;
 
 	public render() {
+		const {getText} = this.props;
 		return (
 			<KeyboardAwareScrollView
 				style={style.keyboardView}
@@ -54,9 +62,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 					resendHandler={this.smsCodeResendHandler}
 					phoneNumber={PHONE_NUMBER}
 				/>
-				<Text style={style.welcomeText}>{getText('loginWelcomeMessage')}</Text>
+				<Text style={style.welcomeText}>{getText('login.welcome.message')}</Text>
 				<SXTextInput
-					placeholder={getText('loginUsernameInput')}
+					placeholder={getText('login.username.input')}
 					placeholderColor={Colors.postText}
 					returnKeyType={TRKeyboardKeys.next}
 					onSubmitPressed={this.usernameSubmitPressedHandler}
@@ -66,7 +74,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				/>
 				<View style={style.passwordContainer}>
 					<SXTextInput
-						placeholder={getText('loginPasswordInput')}
+						placeholder={getText('login.password.input')}
 						placeholderColor={Colors.postText}
 						returnKeyType={TRKeyboardKeys.go}
 						onSubmitPressed={this.fireSignin}
@@ -78,7 +86,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				</View>
 				<View style={style.fullWidth}>
 					<SXButton
-						label={getText('loginLoginButton')}
+						label={getText('login.login.button')}
 						onPress={this.fireSignin}
 						disabled={!this.state.passwordValue || !this.state.usernameValue}
 						borderColor={Colors.transparent}
@@ -88,7 +96,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 					onPress={() => this.safeNavigateToScreen('ForgotPasswordScreen')}
 					style={style.forgotPassword}
 				>
-					<Text style={style.forgotPasswordText}>{getText('loginForgotPassword')}</Text>
+					<Text style={style.forgotPasswordText}>{getText('login.forgot.password')}</Text>
 				</TouchableOpacity>
 				{/*<SXButton*/}
 				{/*label={'Or use unlock file'}*/}
@@ -97,9 +105,9 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				{/*disabled={false}*/}
 				{/*/>*/}
 				<View style={style.noAccountContainer}>
-					<Text style={style.noAccountQuestion}>{getText('loginNoAccountText')}</Text>
+					<Text style={style.noAccountQuestion}>{getText('login.no.account.text')}</Text>
 					<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
-						<Text style={style.signUpText}>{getText('loginSignUpButton')}</Text>
+						<Text style={style.signUpText}>{getText('login.signUp.button')}</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAwareScrollView>
@@ -147,11 +155,11 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				this.navigateToMainScreen();
 			} catch (ex) {
 				console.log(ex);
+				const {getText} = this.props;
 				ModalManager.safeRunAfterModalClosed(() => {
-					// better alert here
-					Alert.alert(getText('loginWrongCredentials'), undefined, [
+					Alert.alert(getText('login.wrong.credentials'), undefined, [
 						{
-							text: getText('buttonOK'),
+							text: getText('button.OK'),
 							onPress: () => {
 								if (this.usernameInput) {
 									this.usernameInput.focusInput();
@@ -169,6 +177,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		const {usernameValue} = this.state;
 		Keyboard.dismiss();
 		this.props.safeRunAfterKeyboardHide(async () => {
+			const {getText} = this.props;
 			this.props.SigninLoader();
 			try {
 				const res = await ConfirmSignin(usernameValue, code);
@@ -176,8 +185,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 				this.navigateToMainScreen();
 			} catch (ex) {
 				ModalManager.safeRunAfterModalClosed(() => {
-					// better alert here
-					Alert.alert(getText('loginWrongConfirmationCode')); // TODO: update here!
+					Alert.alert(getText('login.wrong.confirmation.code'));
 				});
 			}
 			this.props.HideLoader();
@@ -195,20 +203,17 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	};
 }
 
-const navigationOptions = {
-	title: 'LOGIN',
-	headerRight: <View />,
-};
-
-const MapDispatchToProps = (dispatch: any) => ({
-	SigninLoader: () => dispatch(showActivityIndicator(getText('loginProgressMessage'))),
-	ConfirmLoader: () => dispatch(showActivityIndicator(getText('loginCodeConfirmWait'))),
+const MapDispatchToProps = (dispatch: any, props: ILoginScreenProps) => ({
+	SigninLoader: () => dispatch(showActivityIndicator(props.getText('login.progress.message'))),
+	ConfirmLoader: () => dispatch(showActivityIndicator(props.getText('login.code.confirm.wait'))),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const loginScreenWithResize = withResizeOnKeyboardShow(LoginScreen, navigationOptions);
-const reduxWrapper = connect(
-	null,
-	MapDispatchToProps,
-)(loginScreenWithResize as any);
-export default reduxWrapper;
+export default compose(
+	withResizeOnKeyboardShow,
+	withTranslations,
+	connect(
+		null,
+		MapDispatchToProps,
+	),
+)(LoginScreen);

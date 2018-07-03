@@ -6,13 +6,22 @@ import {CheckBox} from 'native-base';
 import React, {Component} from 'react';
 import {Alert, Keyboard, Platform, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 import {Colors, Images, Sizes} from 'theme';
 import style from './style';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
-import {ConfirmSignup, ISignup, resendSignup, Signin, Signup, updateUserAttr} from 'utilities';
+import {
+	ConfirmSignup,
+	ISignup,
+	IWithTranslationProps,
+	resendSignup,
+	Signin,
+	Signup,
+	updateUserAttr,
+	withTranslations,
+} from 'utilities';
 
 import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from 'backend/graphql';
 import {createUserFunc} from 'types';
@@ -23,6 +32,8 @@ import {addFileBN} from 'utilities/ipfs';
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
 import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {compose} from 'recompose';
+import ValidatedPassword from './components/ValidatedPassword';
 
 interface ICountryData {
 	cca2: string;
@@ -45,10 +56,10 @@ export interface ISignUpScreenState {
 	termsAccepted: boolean;
 }
 
-export interface ISignUpScreenProps {
+export interface ISignUpScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	SignupLoading: () => void;
-	ConfirmSignupLoading: () => void;
+	CreatingUserProfile: () => void;
 	ResendCodeLoading: () => void;
 	HideLoader: () => void;
 	createUser: any;
@@ -58,13 +69,14 @@ export interface ISignUpScreenProps {
 }
 
 class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
-	private static navigationOptions: Partial<NavigationStackScreenOptions> = {
-		title: 'REGISTER',
+	private static navigationOptions = ({navigationOptions}) => ({
+		title: navigationOptions.getText('register.screen.title'),
 		headerRight: <View />,
-	};
+	});
 
 	private inputRefs: any = {};
 	private countryList: string[] = [];
+	private mounted = false;
 
 	// TODO: @serkan @jake let's simplify this and eliminate needless reinitialization with all countries like this
 	constructor(props: ISignUpScreenProps) {
@@ -95,7 +107,18 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		};
 	}
 
+	public componentDidMount(): void {
+		this.mounted = true;
+	}
+
+	public componentWillUnmount(): void {
+		this.mounted = false;
+	}
+
 	public render() {
+		const {getText} = this.props;
+		const {email, name, username, phone, password, confirmPassword} = this.state;
+		const signupEnabled = this.state.termsAccepted && email && name && username && phone && password && confirmPassword;
 		return (
 			<KeyboardAwareScrollView
 				style={style.keyboardView}
@@ -104,14 +127,16 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 				keyboardShouldPersistTaps={'handled'}
 				enableOnAndroid={true}
 			>
-				<ModalInputSMSCode
-					errorMessage={this.state.smsCodeErrorMessage}
-					visible={this.state.showModalForSMSCode}
-					confirmHandler={this.smsCodeConfirmedHandler}
-					declineHandler={this.smsCodeDeclinedHandler}
-					resendHandler={this.smsCodeResendHandler}
-					phoneNumber={this.getPhoneNumber()}
-				/>
+				{this.state.showModalForSMSCode && (
+					<ModalInputSMSCode
+						errorMessage={this.state.smsCodeErrorMessage}
+						visible={this.state.showModalForSMSCode}
+						confirmHandler={this.smsCodeConfirmedHandler}
+						declineHandler={this.smsCodeDeclinedHandler}
+						resendHandler={this.smsCodeResendHandler}
+						phoneNumber={this.getPhoneNumber()}
+					/>
+				)}
 				{/* <View style={style.buttonContainer}>
 					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
 				</View>
@@ -124,7 +149,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					<SXTextInput
 						iconColor={Colors.iron}
 						icon={'envelope'}
-						placeholder={'Email'}
+						placeholder={getText('register.email')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -140,7 +165,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						autoCorrect={true}
 						iconColor={Colors.iron}
 						icon={'user'}
-						placeholder={'Name'}
+						placeholder={getText('register.name')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -153,7 +178,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					<SXTextInput
 						iconColor={Colors.iron}
 						icon={'user'}
-						placeholder={'Username'}
+						placeholder={getText('register.username')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -174,12 +199,12 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 							onChange={this.updatedSelectedCountryHandler}
 							closeable={true}
 							filterable={true}
-							filterPlaceholder={'Search your country..'}
+							filterPlaceholder={getText('register.country.select')}
 						/>
 						<Text style={style.countryCode}>{`(+${this.state.countryCallingCode})`}</Text>
 					</View>
 					<TextInput
-						placeholder={'Phone number'}
+						placeholder={getText('register.phone.number')}
 						placeholderTextColor={Colors.postText}
 						style={style.phoneNumberInput}
 						returnKeyType={TRKeyboardKeys.next}
@@ -193,12 +218,13 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						clearButtonMode='while-editing'
 					/>
 				</View>
+				<ValidatedPassword value={this.state.password} />
 				<View style={style.textInputContainer}>
 					<SXTextInput
 						isPassword={true}
 						iconColor={Colors.iron}
 						icon={'lock'}
-						placeholder={'Password'}
+						placeholder={getText('register.password')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.next}
@@ -212,7 +238,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						isPassword={true}
 						iconColor={Colors.iron}
 						icon={'lock'}
-						placeholder={'Confirm Password'}
+						placeholder={getText('register.confirm.password')}
 						placeholderColor={Colors.postText}
 						borderColor={Colors.transparent}
 						returnKeyType={TRKeyboardKeys.go}
@@ -222,23 +248,10 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						blurOnSubmit={true}
 					/>
 				</View>
-				<View style={[style.buttonContainer, style.registerButtonContainer]}>
-					<SXButton
-						label={'REGISTER NOW!'}
-						borderColor={Colors.transparent}
-						onPress={this.startRegister}
-						disabled={!this.state.termsAccepted}
-					/>
-					<SXButton
-						label={'Already have the code? Click here!'}
-						borderColor={Colors.transparent}
-						onPress={this.alreadyHaveCode}
-					/>
-				</View>
-				<View style={style.termContainer}>
-					<Text style={style.acceptText}>{'Accept our'}</Text>
+				<View style={style.termsContainer}>
+					<Text style={style.acceptText}>{getText('register.accept.part1')}</Text>
 					<TouchableOpacity onPress={this.showTermsAndConditionsHandler}>
-						<Text style={style.acceptTextLink}>{'Terms and Conditions'}</Text>
+						<Text style={style.acceptTextLink}>{getText('register.accept.part2')}</Text>
 					</TouchableOpacity>
 					<CheckBox
 						checked={this.state.termsAccepted}
@@ -247,13 +260,28 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						style={style.acceptCheckbox}
 					/>
 				</View>
+				<View style={style.buttonContainer}>
+					<SXButton
+						label={getText('register.button.label')}
+						borderColor={Colors.transparent}
+						onPress={this.startRegister}
+						disabled={!signupEnabled}
+					/>
+				</View>
+				<View style={style.buttonContainer}>
+					<SXButton
+						label={getText('register.button.have.code')}
+						borderColor={Colors.transparent}
+						onPress={this.alreadyHaveCode}
+					/>
+				</View>
 			</KeyboardAwareScrollView>
 		);
 	}
 
 	private alreadyHaveCode = async () => {
 		if (!this.state.username) {
-			alert('Please fill in the username you entered before inside the \'Username\' field above and click this again!');
+			alert(this.props.getText('register.alert.username.missing'));
 		} else {
 			this.toggleVisibleModalSMS();
 		}
@@ -291,9 +319,11 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	private toggleVisibleModalSMS = (visible = true) => {
 		Keyboard.dismiss();
-		this.setState({
-			showModalForSMSCode: visible,
-		});
+		if (this.mounted) {
+			this.setState({
+				showModalForSMSCode: visible,
+			});
+		}
 	};
 
 	private smsCodeConfirmedHandler = async (code: string) => {
@@ -301,30 +331,33 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		const {createUser, addMedia} = this.props;
 
 		try {
-			this.props.ConfirmSignupLoading();
 			const res = await ConfirmSignup(this.state.username, code);
 
 			if (!this.state.password) {
-				Keyboard.dismiss();
-				this.toggleVisibleModalSMS(false);
 				resetNavigationToRoute('LoginScreen', this.props.navigation);
 			}
+
+			ModalManager.safeRunAfterModalClosed(() => {
+				this.props.CreatingUserProfile();
+			});
+			Keyboard.dismiss();
+			this.toggleVisibleModalSMS(false);
 
 			// signin to get access to appsync
 			await Signin(username, password);
 
 			await this.uploadAvatarAndCreateUser(updatedAvatarImagePath, addMedia, createUser, username, name, email);
-
-			Keyboard.dismiss();
-			this.toggleVisibleModalSMS(false);
-			resetNavigationToRoute('IntroScreen', this.props.navigation);
-			// this.props.navigation.navigate('SaveKeyScreen');
 		} catch (ex) {
 			console.log(ex);
 			this.setState({
 				smsCodeErrorMessage: ex.message,
 			});
+			this.props.HideLoader();
 		}
+	};
+
+	private afterUserCreate = () => {
+		resetNavigationToRoute('IntroScreen', this.props.navigation);
 		this.props.HideLoader();
 	};
 
@@ -335,12 +368,13 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	};
 
 	private smsCodeResendHandler = async () => {
+		const {getText} = this.props;
 		try {
 			this.props.ResendCodeLoading();
 			const res = await resendSignup(this.state.username);
 		} catch (ex) {
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('App error', 'Could not resend confirmation code: ' + ex);
+				Alert.alert(getText('app.error'), `${getText('register.could.not.resend.code')} ${ex}`);
 			});
 		}
 		this.props.HideLoader();
@@ -356,24 +390,24 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		}
 
 		const {email, name, username, password, confirmPassword, updatedAvatarImagePath} = this.state;
-		const {createUser, addMedia, checkUsername} = this.props;
+		const {createUser, addMedia, checkUsername, getText} = this.props;
 
 		// closing the modla when using alerts, issue MD-163
 		if (password !== confirmPassword) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Your passwords don\'t match');
+			Alert.alert(getText('validation.error'), getText('register.password.mismatch'));
 			return;
 		}
 
 		if (username.length < 4) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Enter a username bigger than 4 letters');
+			Alert.alert(getText('validation.error'), getText('register.username.length.error'));
 			return;
 		}
 
 		if (name.length < 4) {
 			this.toggleVisibleModalSMS();
-			Alert.alert('Validation error', 'Enter a name bigger than 4 letters');
+			Alert.alert(getText('validation.error'), getText('register.name.length.error'));
 			return;
 		}
 
@@ -397,7 +431,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		} catch (ex) {
 			console.log(ex);
 			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert('Register failed', ex.message);
+				Alert.alert(getText('register.failed'), ex.message);
 			});
 			this.toggleVisibleModalSMS(false);
 		}
@@ -437,6 +471,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						email,
 					},
 				});
+
+				this.afterUserCreate();
 			});
 		} else {
 			await createUser({
@@ -464,18 +500,19 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	};
 }
 
-const MapDispatchToProps = (dispatch: any) => ({
-	SignupLoading: () => dispatch(showActivityIndicator('Signing you up', 'please wait..')),
-	ConfirmSignupLoading: () => dispatch(showActivityIndicator('Confirming your code')),
-	ResendCodeLoading: () => dispatch(showActivityIndicator('Resending code..')),
+const MapDispatchToProps = (dispatch: any, {getText}: ISignUpScreenProps) => ({
+	SignupLoading: () => dispatch(showActivityIndicator(getText('register.signingUp'), getText('please.wait'))),
+	CreatingUserProfile: () => dispatch(showActivityIndicator(getText('register.confirming.code'))),
+	ResendCodeLoading: () => dispatch(showActivityIndicator(getText('register.resending.code'))),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(
-	null,
-	MapDispatchToProps,
-)(SignUpScreen as any);
-const createUpdateUserWrapper = createUpdateUserHoc(reduxWrapper);
-const addMediaWrapper = addMediaHoc(createUpdateUserWrapper);
-
-export default addMediaWrapper;
+export default compose(
+	withTranslations,
+	connect(
+		null,
+		MapDispatchToProps,
+	),
+	createUpdateUserHoc,
+	addMediaHoc,
+)(SignUpScreen);

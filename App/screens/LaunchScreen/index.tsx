@@ -1,9 +1,12 @@
+import {ApolloClient} from 'apollo-client';
 import React, {Component} from 'react';
+import {withApollo} from 'react-apollo';
 import {AsyncStorage, Image, Text, View} from 'react-native';
 import RNRestart from 'react-native-restart';
 import SplashScreen from 'react-native-smart-splash-screen';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
+import {compose} from 'recompose';
 
 import {SXButton, SXGradientButton, TextGradient} from 'components';
 import {Colors, Images} from 'theme';
@@ -13,12 +16,10 @@ import {hideModalConfirmation, resetNavigationToRoute, showModalConfirmation} fr
 import {getMaintenanceQuery} from 'backend/graphql';
 import {ModalManager} from 'hoc';
 import {IModalConfirmationProps} from 'types';
-import {CurrentUser, getText, setLanguage} from 'utilities';
+import {CurrentUser, IWithTranslationProps, setLanguage, withTranslations} from 'utilities';
+import {BugSnag} from '../../initializers';
 
-import {ApolloClient} from 'apollo-client';
-import {withApollo, WithApolloClient} from 'react-apollo';
-
-export interface ILaunchScreenProps {
+export interface ILaunchScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	showConfirm: (confirmationOptions: IModalConfirmationProps) => void;
 	hideConfirm: () => void;
@@ -62,19 +63,20 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	public render() {
+		const {getText} = this.props;
 		return (
 			<View style={style.container}>
 				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'} />
 				<View style={style.topPaddingContainer}>
 					<TextGradient
-						text={getText('appName')}
+						text={getText('app.name')}
 						colors={[Colors.fuchsiaBlue, Colors.pink]}
 						style={style.socialxGradient}
 					/>
-					<Text style={style.description}>{getText('launchDescription')}</Text>
+					<Text style={style.description}>{getText('launch.description')}</Text>
 				</View>
 				<TextGradient
-					text={getText('launchGetRewarded')}
+					text={getText('launch.get.rewarded')}
 					colors={[Colors.fuchsiaBlue, Colors.pink]}
 					style={style.getRewardedGradient}
 				/>
@@ -82,13 +84,13 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 					<SXGradientButton
 						colorStart={Colors.fuchsiaBlue}
 						colorEnd={Colors.pink}
-						label={getText('launchLogin')}
+						label={getText('launch.login')}
 						borderColor={Colors.transparent}
 						onPress={this.navigateToLoginScreen}
 					/>
 					<View style={style.signUpTopPadding}>
 						<SXButton
-							label={getText('launchSignUp')}
+							label={getText('launch.signUp')}
 							borderColor={Colors.transparent}
 							onPress={this.navigateToSignUpScreen}
 						/>
@@ -99,11 +101,13 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 	}
 
 	private navigateToLoginScreen = () => {
+		BugSnag.notify(new Error('Error when going to LoginScreen'));
 		this.props.navigation.navigate('LoginScreen');
 	};
 
 	private navigateToSignUpScreen = () => {
-		this.props.navigation.navigate('SignUpScreen');
+		// TODO: here an unhandled error to test BugSnag!
+		this.props.navigationn.navigate('SignUpScreen');
 	};
 
 	private closeSplashScreen = () => {
@@ -140,9 +144,11 @@ const mapDispatchToProps = (dispatch: any) => ({
 	hideConfirm: () => dispatch(hideModalConfirmation()),
 });
 
-const reduxWrapper = connect(
-	null,
-	mapDispatchToProps,
-)(LaunchScreen as any);
-
-export default withApollo(reduxWrapper as any);
+export default compose(
+	withTranslations,
+	connect(
+		null,
+		mapDispatchToProps,
+	),
+	withApollo,
+)(LaunchScreen);

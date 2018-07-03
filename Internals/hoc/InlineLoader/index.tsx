@@ -1,12 +1,9 @@
-import LottieView from 'lottie-react-native';
 import React from 'react';
-import {Animated, Easing} from 'react-native';
 
-import {globe2} from 'animation';
 import {Colors, Sizes} from 'theme';
+import {AnimatedOriginalComp} from './components/AnimatedOriginalComp';
+import {LottieLoader} from './components/LottieLoader';
 import style from './style';
-
-const FADE_ANIMATION_DURATION = 700;
 
 export enum SpinnerTypes {
 	NineCubeGrid = '9CubeGrid',
@@ -21,7 +18,7 @@ export enum SpinnerTypes {
 	FadingCircleAlt = 'FadingCircleAlt',
 }
 
-interface IInlineLoaderProps {
+export interface IWithLoaderProps {
 	isLoading: boolean;
 	animatedStyle?: any;
 	spinnerType?: SpinnerTypes;
@@ -29,68 +26,31 @@ interface IInlineLoaderProps {
 	spinnerColor?: string;
 }
 
-export interface IWithLoaderProps extends IInlineLoaderProps {
-	renderWithLoader: (node: any) => any;
-	isLoading: boolean;
-}
-
-export const withInlineLoader = (BaseComponent: React.ComponentType<IWithLoaderProps>, useRef = false) => {
-	return class extends React.Component<IInlineLoaderProps> {
-		private static defaultProps: Partial<IInlineLoaderProps> = {
+export const withInlineLoader = <P extends IWithLoaderProps>(BaseComponent: React.ComponentType<P>) => {
+	return class extends React.Component<P> {
+		private static defaultProps: Partial<IWithLoaderProps> = {
 			animatedStyle: style.animatedView,
 			spinnerType: SpinnerTypes.NineCubeGrid,
 			spinnerSize: Sizes.smartHorizontalScale(30),
 			spinnerColor: Colors.pink,
 		};
 
-		public state = {
-			fadeAnimation: new Animated.Value(0), // Initial value for opacity: 0
-		};
-
-		private originalRef: any = null;
+		private originalRef = React.createRef();
 
 		public render() {
-			const updatedProps: any = {...this.props, renderWithLoader: this.renderWithLoaderHandler};
-			if (useRef) {
-				updatedProps.ref = (ref) => (this.originalRef = ref);
+			if (this.props.isLoading) {
+				return <LottieLoader />;
 			}
-			return <BaseComponent {...updatedProps} />;
+
+			return (
+				<AnimatedOriginalComp animatedStyle={this.props.animatedStyle}>
+					<BaseComponent {...this.props} ref={this.originalRef} />
+				</AnimatedOriginalComp>
+			);
 		}
 
 		public getOriginalRef = () => {
 			return this.originalRef;
-		};
-
-		// TODO: @jake @serkan let's refactor this!
-		private renderWithLoaderHandler = (WrappedComponent: React.ComponentType) => {
-			if (this.props.isLoading) {
-				return <LottieView source={globe2} loop={true} style={style.lottieAnimation} ref={this.startAnimation} />;
-			} else {
-				const {fadeAnimation} = this.state;
-				return (
-					<Animated.View
-						style={[this.props.animatedStyle, {opacity: fadeAnimation}]}
-						onLayout={this.animatedViewOnLayoutHandler}
-					>
-						{WrappedComponent}
-					</Animated.View>
-				);
-			}
-		};
-
-		private animatedViewOnLayoutHandler = () => {
-			// TODO: not sure how safe is to start the animation with onLayout? best would be with componentDidMount
-			Animated.timing(this.state.fadeAnimation, {
-				toValue: 1,
-				easing: Easing.ease,
-				duration: FADE_ANIMATION_DURATION,
-			}).start();
-		};
-
-		private startAnimation = (anim: any) => {
-			if (anim) {
-				anim.play();
-			}
 		};
 	};
 };

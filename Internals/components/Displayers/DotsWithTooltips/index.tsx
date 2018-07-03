@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Image, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -13,45 +13,43 @@ export interface TooltipItem {
 }
 
 export interface ITooltipDotsProps {
-	items: TooltipItem[];
-	dotsColor?: string;
+	items?: TooltipItem[];
+	iconColor?: string;
+	iconName?: string;
+	getItems?: () => any;
 }
 
-export class TooltipDots extends Component<ITooltipDotsProps> {
-	private static defaultProps: Partial<ITooltipDotsProps> = {
-		dotsColor: Colors.postFullName,
-	};
+const ToolTipDotsButton: React.SFC<{iconColor: string; iconName: string}> = ({iconColor, iconName}) => (
+	<View style={style.container}>
+		<Icon name={iconName} color={iconColor} style={style.dotsIcon} />
+	</View>
+);
 
-	public render() {
-		return (
-			<PopoverTooltip
-				buttonComponent={this.getToolTipDotsButton()}
-				items={this.getTooltipItems()}
-				labelSeparatorColor={Colors.dustWhite}
-			/>
-		);
-	}
+const ToolTipLabel: React.SFC<{item: TooltipItem; index: number}> = ({item, index}) => (
+	<View key={index} style={style.lineContainer}>
+		{typeof item.icon === 'number' && <Image source={item.icon} style={style.icon} resizeMode={'contain'} />}
+		{typeof item.icon === 'string' && (
+			<Icon name={item.icon} color={Colors.postFullName} style={[style.icon, style.fontIcon]} />
+		)}
+		<Text style={style.label}>{item.label}</Text>
+	</View>
+);
 
-	private getToolTipDotsButton = () => {
-		return (
-			<View style={style.container}>
-				<Icon name={'ios-more'} color={this.props.dotsColor} style={style.dotsIcon} />
-			</View>
-		);
-	};
+const getTooltipItems = (items: TooltipItem[]) =>
+	items.map((item: TooltipItem, index: number) => ({
+		label: () => <ToolTipLabel index={index} item={item} />,
+		onPress: item.actionHandler,
+	}));
 
-	// todo @serkan @jake hmm component calling function calling function calling iterator function calling component...
-	private getTooltipItems = () =>
-		this.props.items.map((item: TooltipItem, index: any) => ({
-			label: () => (
-				<View key={index} style={style.lineContainer}>
-					{typeof item.icon === 'number' && <Image source={item.icon} style={style.icon} resizeMode={'contain'} />}
-					{typeof item.icon === 'string' && (
-						<Icon name={item.icon} color={Colors.postFullName} style={[style.icon, style.fontIcon]} />
-					)}
-					<Text style={style.label}>{item.label}</Text>
-				</View>
-			),
-			onPress: item.actionHandler,
-		}));
-}
+export const TooltipDots: React.SFC<ITooltipDotsProps> = ({iconColor, items, getItems, iconName}) => (
+	<PopoverTooltip
+		buttonComponent={<ToolTipDotsButton iconColor={iconColor} iconName={iconName} />}
+		items={getItems ? getItems() : getTooltipItems(items)}
+		labelSeparatorColor={Colors.dustWhite}
+	/>
+);
+
+TooltipDots.defaultProps = {
+	iconColor: Colors.postFullName,
+	iconName: 'ios-more',
+};

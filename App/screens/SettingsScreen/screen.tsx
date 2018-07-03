@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
-import {
-	AsyncStorage,
-	ImageRequireSource,
-	ImageURISource,
-	Text,
-	TouchableOpacity,
-	View,
-	ViewAsyncStroage,
-} from 'react-native';
+import {AsyncStorage, ImageRequireSource, ImageURISource, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -39,7 +31,7 @@ interface ISettingsScreenComponentState {
 	miningEnabled: boolean;
 	selectedImage: boolean;
 	hasChanges: boolean;
-	localAvatarBase64: string | null;
+	localAvatarPath: string | null;
 }
 
 class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, ISettingsScreenComponentState> {
@@ -69,20 +61,19 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 		miningEnabled: this.props.miningEnabled,
 		selectedImage: false,
 		hasChanges: false,
-		localAvatarBase64: null,
+		localAvatarPath: null,
 	};
 
 	public resetChanges = () => {
 		this.setState({
 			hasChanges: false,
-			localAvatarBase64: null,
+			localAvatarPath: null,
 		});
 	};
 
 	public render() {
 		// @ionut: todo -> add location-age fields
-		// TODO: @jake @serkan let's refactor this!
-		return this.props.renderWithLoader(
+		return (
 			<View style={{flex: 1}}>
 				<KeyboardAwareScrollView
 					style={style.keyboardView}
@@ -169,7 +160,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 					{/*</View>*/}
 				</KeyboardAwareScrollView>
 				{this.renderSaveButton()}
-			</View>,
+			</View>
 		);
 	}
 
@@ -191,13 +182,12 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 		return this.state.firstName + ' ' + this.state.lastName;
 	};
 
-	private updateAvatarImage = (base64Photo: string) => {
-		const base64 = base64Photo.substring(base64Photo.indexOf(',') + 1, base64Photo.length);
+	private updateAvatarImage = (localPhotoPath: string) => {
 		this.setState({
-			avatarImage: {uri: base64Photo},
+			avatarImage: {uri: localPhotoPath},
 			hasChanges: true,
 			selectedImage: true,
-			localAvatarBase64: base64,
+			localAvatarPath: localPhotoPath,
 		});
 	};
 
@@ -217,7 +207,7 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 
 	private saveChanges = () => {
 		const saveData: SettingsData = {
-			updatedAvatarImageBase64: this.state.localAvatarBase64,
+			updatedAvatarImagePath: this.state.localAvatarPath,
 			aboutText: this.state.aboutText,
 			firstName: this.state.firstName,
 			lastName: this.state.lastName,
@@ -228,4 +218,4 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 	};
 }
 
-export default withInlineLoader(SettingsScreenComponent as any, true);
+export default withInlineLoader(SettingsScreenComponent);

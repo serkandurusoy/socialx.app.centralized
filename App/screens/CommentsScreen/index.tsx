@@ -1,40 +1,29 @@
-import {ModalCloseButton} from 'components/Modals/CloseButton';
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {decodeBase64Text, getRandomImage, getUserAvatar} from 'utilities';
+import {decodeBase64Text, getUserAvatar, updateSortedComments} from 'utilities';
 import CommentsScreenComponent from './screen';
 
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
 
-import {ipfsConfig as base} from 'configuration';
-import {CommentType, IComments, ICommentsResponse, IUserDataResponse, IUserQuery} from 'types';
+import {
+	CommentsSortingOptions,
+	IComments,
+	ICommentsResponse,
+	IUserDataResponse,
+	IUserQuery,
+	IWallPostComment,
+} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-
-export interface IWallPostCommentReply {
-	id: string;
-	text: string;
-	user: {
-		fullName: string;
-		avatarURL?: string;
-		id: string;
-	};
-	timestamp: Date;
-	numberOfLikes: number;
-	likes: IUserQuery[];
-	likedByMe: boolean;
-}
-
-export interface IWallPostComment extends IWallPostCommentReply {
-	replies: IWallPostCommentReply[];
-}
+import {HeaderRight} from './HeaderRight';
 
 export interface IWallPostCommentsState {
 	allComments: IWallPostComment[];
 	noComments: boolean;
 	loading: boolean;
+	sortOption: CommentsSortingOptions;
 }
 
 export interface IWallPostCommentsProps {
@@ -52,8 +41,14 @@ export interface IWallPostCommentsProps {
 }
 
 class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostCommentsState> {
-	private static navigationOptions = (props: IWallPostCommentsProps) => ({
-		headerRight: <ModalCloseButton navigation={props.navigation} />,
+	private static navigationOptions = ({navigation}: IWallPostCommentsProps) => ({
+		headerRight: (
+			<HeaderRight
+				sortOption={navigation.state.params.sortOption}
+				onValueChange={navigation.state.params.onSelectionChange}
+				navigation={navigation}
+			/>
+		),
 		headerLeft: <View />,
 	});
 
@@ -61,10 +56,17 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		allComments: [],
 		noComments: false,
 		loading: true,
+		sortOption: CommentsSortingOptions.Likes,
 	};
 
 	public async componentDidMount() {
 		await this.preFetchComments();
+		InteractionManager.runAfterInteractions(() => {
+			this.props.navigation.setParams({
+				onSelectionChange: this.updateSortingHandler,
+				sortOption: this.state.sortOption,
+			});
+		});
 	}
 
 	public render() {
@@ -171,22 +173,23 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 			this.setState({
 				noComments: resComments.length === 0,
 				loading: false,
-				allComments: resComments.sort((a: any, b: any) => {
-					if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
-						a = a.numberOfLikes;
-						b = b.numberOfLikes;
-						return a > b ? -1 : a < b ? 1 : 0;
-					}
-					a = a.timestamp;
-					b = b.timestamp;
-					return a > b ? -1 : a < b ? 1 : 0;
-				}),
+				allComments: updateSortedComments(resComments, this.state.sortOption),
 			});
 		}
 	};
 
 	private navigateToUserProfile = (userId: string) => {
 		this.props.navigation.navigate('UserProfileScreen', {userId});
+	};
+
+	private updateSortingHandler = (value: CommentsSortingOptions) => {
+		this.setState({
+			sortOption: value,
+			allComments: updateSortedComments(this.state.allComments, value),
+		});
+		this.props.navigation.setParams({
+			sortOption: value,
+		});
 	};
 }
 
