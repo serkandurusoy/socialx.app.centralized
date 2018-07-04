@@ -6,6 +6,11 @@ PODS:
     - AppCenter/Core
   - AppCenterReactNativeShared (1.4.0):
     - AppCenter/Core (= 1.5.0)
+  - BugsnagReactNative (2.9.5):
+    - BugsnagReactNative/Core (= 2.9.5)
+    - React
+  - BugsnagReactNative/Core (2.9.5):
+    - React
   - FLAnimatedImage (1.0.12)
   - lottie-ios (2.5.0)
   - lottie-react-native (2.5.0):
@@ -70,6 +75,7 @@ DEPENDENCIES:
   - AppCenter/Analytics (~> 1.5.0)
   - AppCenter/Crashes (~> 1.5.0)
   - AppCenterReactNativeShared (~> 1.4.0)
+  - BugsnagReactNative (from `../node_modules/bugsnag-react-native`)
   - lottie-ios (from `../node_modules/lottie-ios`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - react-native-fast-image (from `../node_modules/react-native-fast-image`)
@@ -101,6 +107,8 @@ SPEC REPOS:
     - SDWebImage
 
 EXTERNAL SOURCES:
+  BugsnagReactNative:
+    :path: "../node_modules/bugsnag-react-native"
   lottie-ios:
     :path: "../node_modules/lottie-ios"
   lottie-react-native:
@@ -125,6 +133,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
   AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
+  BugsnagReactNative: 0b7626917d3612281d07aea84e5041f123290fee
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   lottie-ios: 9f24be3ecb13412223b6ac70d97437742b0e3de1
   lottie-react-native: db4bd75685428c4ad0ec2f913145abff3d38b640
@@ -140,6 +149,6 @@ SPEC CHECKSUMS:
   SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 03121ba97e8801a3d4786a5ec5bfd5c4cb827759
+PODFILE CHECKSUM: b028bdec05d815a3d26c601575377b98ae3c89b7
 
 COCOAPODS: 1.5.0

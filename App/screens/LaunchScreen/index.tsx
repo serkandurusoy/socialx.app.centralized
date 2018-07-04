@@ -37,7 +37,7 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 			if (currentUser) {
 				const {
 					data: {getMaintenanceMode},
-				} = await client.query<{getMaintenanceMode: boolean}>({
+				} = await client.query<{ getMaintenanceMode: boolean }>({
 					query: getMaintenanceQuery,
 					fetchPolicy: 'network-only',
 				});
@@ -64,7 +64,7 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 		const {getText} = this.props;
 		return (
 			<View style={style.container}>
-				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'} />
+				<Image source={Images.launch_screen_bg} style={style.background} resizeMode={'cover'}/>
 				<View style={style.topPaddingContainer}>
 					<TextGradient
 						text={getText('app.name')}

@@ -3,30 +3,33 @@
 # https://github.com/facebook/react-native/issues/19321
 # https://github.com/android-ndk/ndk/issues/700
 
-set -ex
+if [ -z "${APPCENTER_XCODE_SCHEME}" ]; then # this way we identify an Android build
 
-# set env vars
-export ANDROID_NDK_VERSION='r16b'
+    set -ex
 
-# create a temp working directory
-mkdir ./android-ndk-tmp
-cd ./android-ndk-tmp
+    # set env vars
+    export ANDROID_NDK_VERSION='r16b'
 
-# download ndk
-wget -q https://dl.google.com/android/repository/android-ndk-$ANDROID_NDK_VERSION-darwin-x86_64.zip
+    # create a temp working directory
+    mkdir ./android-ndk-tmp
+    cd ./android-ndk-tmp
 
-# uncompress
-unzip -o android-ndk-$ANDROID_NDK_VERSION-darwin-x86_64.zip
+    # download ndk
+    wget -q https://dl.google.com/android/repository/android-ndk-$ANDROID_NDK_VERSION-darwin-x86_64.zip
 
-# move to its final location
-rm -rf $ANDROID_HOME/ndk-bundle/*
-cp -rf ./android-ndk-$ANDROID_NDK_VERSION/* $ANDROID_HOME/ndk-bundle
+    # uncompress
+    unzip -o android-ndk-$ANDROID_NDK_VERSION-darwin-x86_64.zip
 
-ls -la $ANDROID_HOME/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/darwin-x86_64/bin
+    # move to its final location
+    rm -rf $ANDROID_HOME/ndk-bundle/*
+    cp -rf ./android-ndk-$ANDROID_NDK_VERSION/* $ANDROID_HOME/ndk-bundle
 
-# remove temp dir
-cd ..
-rm -rf ./android-ndk-tmp
+    ls -la $ANDROID_HOME/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/darwin-x86_64/bin
 
-# add to PATH
-export PATH=${PATH}:$ANDROID_HOME/ndk-bundle
+    # remove temp dir
+    cd ..
+    rm -rf ./android-ndk-tmp
+
+    # add to PATH
+    export PATH=${PATH}:$ANDROID_HOME/ndk-bundle
+fi
