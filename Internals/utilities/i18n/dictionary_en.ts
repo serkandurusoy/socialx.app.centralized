@@ -79,7 +79,7 @@ export default {
 	'intro.second.slide.title': 'Get rewarded for content',
 	'intro.second.slide.description':
 		'The Superlike feature allows you to receive SOCX tokens by publishing high-quality content',
-	'intro.third.slide.title': 'One wallet to rule them all',
-	'intro.third.slide.description': 'We make adoption to digital currencies easy and secure.',
+	'intro.third.slide.title': 'Your financial incentive',
+	'intro.third.slide.description': 'The days that firms make millions using your data are over',
 	'comments.order.title': 'Order by:',
 };

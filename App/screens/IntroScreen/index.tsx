@@ -51,7 +51,7 @@ const SLIDES = [
 		title: 'intro.third.slide.title',
 		description: 'intro.third.slide.description',
 		image: Images.IntroWalkThrough3,
-		gradient: [Colors.blueMarguerite, Colors.blueMarguerite, Colors.shuttleGray],
+		gradient: [Colors.pink, Colors.postHour],
 	},
 ];
 
@@ -60,14 +60,14 @@ const SkipButton: React.SFC<IWithTranslationProps> = withTranslations(({getText}
 ));
 
 const NextButton: React.SFC = () => (
-	<View style={[style.buttonCircle, style.buttonNext]}>
-		<Icon name='md-arrow-round-forward' style={style.whiteIcon} />
+	<View style={style.buttonCircle}>
+		<Icon name='ios-arrow-forward' style={style.pinkIcon} />
 	</View>
 );
 
 const DoneButton: React.SFC = () => (
-	<View style={[style.buttonCircle, style.buttonDone]}>
-		<Icon name='md-checkmark' style={style.whiteIcon} />
+	<View style={style.buttonCircle}>
+		<Icon name='md-checkmark' style={style.pinkIcon} />
 	</View>
 );
 

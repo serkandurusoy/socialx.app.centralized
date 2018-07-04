@@ -29,7 +29,7 @@ export const WalkThroughGeneric: React.SFC<IGenericSlide> = ({
 		start={{x: 0, y: 0}}
 		end={{x: 0, y: 1}}
 	>
-		<Image source={image} style={style.slideImage} />
+		<Image source={image} style={style.slideImage} resizeMode={'contain'} />
 		<View style={style.textContainer}>
 			<Text style={style.slideTitle}>{title}</Text>
 			<Text style={style.slideDescription}>{description}</Text>
