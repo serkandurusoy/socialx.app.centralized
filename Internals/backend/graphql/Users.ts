@@ -85,6 +85,7 @@ export const getUserPostsQ = gql`
 					id
 					hash
 					type
+					size
 				}
 				comments {
 					id
@@ -259,7 +260,7 @@ export const getUserPostHoc = (comp: any) =>
 				getPostsOwner: {
 					...pps.getUserPosts.getPostsOwner,
 					Items: getPostsOwner.Items.map((item: any) => {
-						const avatar = getUserAvatar({user: item ? item.owner : null})
+						const avatar = getUserAvatar({user: item ? item.owner : null});
 						const numComments = numberOfComments(item);
 						return {
 							id: item.id,

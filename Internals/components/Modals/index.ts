@@ -11,3 +11,4 @@ export * from './ReportProblem';
 export * from './ExternalShareOptions';
 export * from './OfflineOverlay';
 export * from './GovernancePost';
+export * from './MediaInfoOverlay';

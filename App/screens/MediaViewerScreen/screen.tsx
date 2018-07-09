@@ -1,15 +1,23 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {
+	Dimensions,
+	Platform,
+	SafeAreaView,
+	Text,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+	View,
+} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {MediaObjectViewer} from 'components';
+import {MediaInfoModal, MediaObjectViewer} from 'components';
 import {DeviceOrientations, OS_TYPES} from 'consts';
 import {Colors, Sizes} from 'theme';
-import {IMediaViewerObject} from 'types';
-import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
+import {IMediaProps, IMediaViewerObject} from 'types';
+import {getMediaObjectType, getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
 import style from './style';
 
 interface IMediaViewerScreenComponentProps {
@@ -27,7 +35,7 @@ interface IMediaViewerScreenComponentState {
 	showInfoOverlay: boolean;
 }
 
-export const MediaInfoOverlay: React.SFC<{
+const MediaInfoOverlay: React.SFC<{
 	onShowInfo: () => void;
 	onHideInfoButton: () => void;
 }> = ({onShowInfo, onHideInfoButton}) => (
@@ -39,6 +47,26 @@ export const MediaInfoOverlay: React.SFC<{
 		</View>
 	</TouchableWithoutFeedback>
 );
+
+const getCarouselItem = ({item, index}, itemWidth: number, activeSlide: number, showInfoButton: () => void) => {
+	const carouselImageStyles = [style.carouselMediaObject, {width: itemWidth}];
+	const mediaURL = getURLForMediaViewerObject(item, true);
+	const mediaTypeProps = getTypePropsForMediaViewerObject(item);
+	return (
+		<TouchableWithoutFeedback onPress={showInfoButton}>
+			<View>
+				<MediaObjectViewer
+					{...mediaTypeProps}
+					paused={index !== activeSlide}
+					uri={mediaURL}
+					style={carouselImageStyles}
+					resizeMode={'contain'}
+					resizeToChangeAspectRatio={true}
+				/>
+			</View>
+		</TouchableWithoutFeedback>
+	);
+};
 
 export default class MediaViewerScreenComponent extends Component<
 	IMediaViewerScreenComponentProps,
@@ -71,30 +99,41 @@ export default class MediaViewerScreenComponent extends Component<
 		return (
 			nextState.activeSlide !== this.state.activeSlide ||
 			nextProps.orientation !== this.props.orientation ||
-			nextState.showInfoButton !== this.state.showInfoButton
+			nextState.showInfoButton !== this.state.showInfoButton ||
+			nextState.showInfoOverlay !== this.state.showInfoOverlay
 		);
 	}
 
 	public render() {
 		const {showInfoButton} = this.state;
+		const currentMediaObject = this.props.mediaObjects[this.state.activeSlide] as IMediaProps;
 		return (
 			<SafeAreaView style={style.safeView}>
-				<TouchableWithoutFeedback onPress={this.toggleInfoButtonHandler}>
-					<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
-						<Carousel
-							ref={(c: any) => (this.carouselRef = c)}
-							// hack so that renderItem will use updated state value for activeSlide
-							activeSlide={this.state.activeSlide}
-							data={this.props.mediaObjects}
-							renderItem={this.renderCarouselItem}
-							sliderWidth={this.state.viewport.width}
-							itemWidth={this.state.viewport.width}
-							firstItem={this.props.startIndex}
-							onSnapToItem={this.handleSlideChanged}
-							{...this.getIOSCarouselProps()}
-						/>
-					</View>
-				</TouchableWithoutFeedback>
+				<MediaInfoModal
+					visible={this.state.showInfoOverlay}
+					closeHandler={this.closeInfoOverlay}
+					mediaHash={currentMediaObject.hash}
+					mediaSize={currentMediaObject.size}
+					mediaType={getMediaObjectType(currentMediaObject)}
+					mediaName={null}
+					mediaURL={getURLForMediaViewerObject(currentMediaObject, true)}
+				/>
+				<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
+					<Carousel
+						ref={(c: any) => (this.carouselRef = c)}
+						// hack so that renderItem will use updated state value for activeSlide
+						activeSlide={this.state.activeSlide}
+						data={this.props.mediaObjects}
+						renderItem={(item) =>
+							getCarouselItem(item, this.state.viewport.width, this.state.activeSlide, this.toggleInfoButtonHandler)
+						}
+						sliderWidth={this.state.viewport.width}
+						itemWidth={this.state.viewport.width}
+						firstItem={this.props.startIndex}
+						onSnapToItem={this.handleSlideChanged}
+						{...this.getIOSCarouselProps()}
+					/>
+				</View>
 				{this.renderCloseButton()}
 				<View style={style.screenFooter}>
 					{this.renderMediaInfoSection()}
@@ -186,23 +225,6 @@ export default class MediaViewerScreenComponent extends Component<
 		this.setState({activeSlide: index});
 	};
 
-	private renderCarouselItem = (itemData: {item: IMediaViewerObject; index: number}) => {
-		const carouselImageStyles = [style.carouselMediaObject, {width: this.state.viewport.width}];
-		const dataItem = itemData.item;
-		const mediaURL = getURLForMediaViewerObject(dataItem, true);
-		const mediaTypeProps = getTypePropsForMediaViewerObject(dataItem);
-		return (
-			<MediaObjectViewer
-				{...mediaTypeProps}
-				paused={itemData.index !== this.state.activeSlide}
-				uri={mediaURL}
-				style={carouselImageStyles}
-				resizeMode={'contain'}
-				resizeToChangeAspectRatio={true}
-			/>
-		);
-	};
-
 	private showMediaInfoHandler = () => {
 		this.setState({
 			showInfoOverlay: true,
@@ -211,9 +233,14 @@ export default class MediaViewerScreenComponent extends Component<
 	};
 
 	private toggleInfoButtonHandler = () => {
-		console.log('toggleInfoButtonHandler', !this.state.showInfoButton);
 		this.setState({
 			showInfoButton: !this.state.showInfoButton,
+		});
+	};
+
+	private closeInfoOverlay = () => {
+		this.setState({
+			showInfoOverlay: false,
 		});
 	};
 }

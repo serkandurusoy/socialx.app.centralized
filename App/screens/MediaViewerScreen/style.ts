@@ -54,9 +54,8 @@ const style: any = {
 		position: 'absolute',
 		width: '100%',
 		height: '100%',
-		backgroundColor: colorWithAlpha(Colors.black, 0.5), // TODO: remove this in the end
-		paddingHorizontal: Sizes.smartHorizontalScale(20),
-		paddingVertical: Sizes.smartVerticalScale(20),
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+		paddingVertical: Sizes.smartVerticalScale(10),
 		alignItems: 'flex-end',
 	},
 	infoIcon: {
