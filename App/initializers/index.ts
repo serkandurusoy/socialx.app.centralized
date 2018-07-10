@@ -41,10 +41,14 @@ const computeAppVersion = () => {
 	return Platform.OS === OS_TYPES.Android ? computedVersion * 10 + 2 : computedVersion * 10 + 1;
 };
 
-const bugSnagConf = new Configuration();
-bugSnagConf.appVersion = computeAppVersion().toString();
-bugSnagConf.autoCaptureSessions = true;
-const BugSnag = !__DEV__ ? new Client(bugSnagConf) : null;
+let BugSnag: Client | null = null;
+if (!__DEV__) {
+	const bugSnagConf = new Configuration();
+	bugSnagConf.appVersion = computeAppVersion().toString();
+	bugSnagConf.autoCaptureSessions = false;
+	BugSnag = new Client(bugSnagConf);
+	BugSnag.startSession();
+}
 
 // only use this helper method because in dev. mode BugSnag is not initialized to avoid unnecessary reports
 export const snagReport = (message: string) => {

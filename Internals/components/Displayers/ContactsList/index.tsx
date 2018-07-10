@@ -1,10 +1,10 @@
 import AlphabetListView from '@hawkrives/react-native-alphabetlistview';
 import React from 'react';
-import {Image, LayoutChangeEvent, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 
-import style, {ALPHABET_ITEM_FONT_SIZE, LIST_ITEM_HEIGHT, SECTION_HEADER_HEIGHT} from './style';
+import style, {LIST_ITEM_HEIGHT, SECTION_HEADER_HEIGHT} from './style';
 
-const LAYOUT_UPDATE_THRESHOLD = 10;
+const INITIALS = String.fromCharCode(...Array(91).keys()).slice(65).split('');
 
 export interface IContactListItem {
 	name: string;
@@ -18,7 +18,6 @@ interface IContactListItemProps {
 
 interface IContactListSectionItemRightProps {
 	title: string;
-	lineHeight: number;
 }
 
 interface IContactListSectionHeaderProps {
@@ -33,14 +32,14 @@ interface IContactsListProps {
 const ContactListItem: React.SFC<IContactListItemProps> = ({item, onSelect}) => {
 	return (
 		<TouchableOpacity style={style.contactListItemCell} onPress={() => onSelect(item)}>
-			<Image source={{uri: item.avatarURL}} style={style.avatarImg} />
+			<Image source={{uri: item.avatarURL}} style={style.avatarImg}/>
 			<Text style={style.fullName}>{item.name}</Text>
 		</TouchableOpacity>
 	);
 };
 
-const ContactListSectionItemRight: React.SFC<IContactListSectionItemRightProps> = ({title, lineHeight}) => {
-	return <Text style={[style.alphabetListItem, {lineHeight}]}>{title}</Text>;
+const ContactListSectionItemRight: React.SFC<IContactListSectionItemRightProps> = ({title}) => {
+	return <Text style={style.alphabetListItem}>{title}</Text>;
 };
 
 const ContactListSectionHeader: React.SFC<IContactListSectionHeaderProps> = (props) => {
@@ -65,48 +64,32 @@ const sortContactsList = (listData: IContactListItem[]) => {
 	});
 };
 
-const getFormattedData = (listData: IContactListItem[]) => {
+const partitionByInitial = (listData: IContactListItem[]) => {
 	const ret: any = {};
-	// todo: @serkan @jake what???
+	INITIALS.forEach((value: string) => {
+		ret[value] = [];
+	});
+	ret['#'] = [];
 	sortContactsList(listData).forEach((contact: IContactListItem) => {
 		const nameInitial = contact.name.substr(0, 1).toUpperCase();
-		if (!ret.hasOwnProperty(nameInitial)) {
-			ret[nameInitial] = [];
-		}
-		ret[nameInitial].push(contact);
+		ret[INITIALS.includes(nameInitial) ? nameInitial : '#'].push(contact);
 	});
 	return ret;
 };
 
-export class ContactsList extends React.Component<IContactsListProps> {
-	private sideLetterHeight = ALPHABET_ITEM_FONT_SIZE;
-	private layoutHeight = 0;
-
-	public render() {
-		const {listData, onContactSelect} = this.props;
-		return (
-			<AlphabetListView
-				onLayout={this.layoutHandler}
-				style={style.listElement}
-				data={getFormattedData(listData)}
-				cell={ContactListItem}
-				onCellSelect={onContactSelect}
-				cellHeight={LIST_ITEM_HEIGHT}
-				sectionListItem={(props) => <ContactListSectionItemRight {...props} lineHeight={this.sideLetterHeight} />}
-				sectionHeader={ContactListSectionHeader}
-				sectionHeaderHeight={SECTION_HEADER_HEIGHT}
-			/>
-		);
-	}
-
-	private layoutHandler = (event: LayoutChangeEvent) => {
-		const newLayoutHeight = event.nativeEvent.layout.height;
-		if (Math.abs(this.layoutHeight - newLayoutHeight) > LAYOUT_UPDATE_THRESHOLD) {
-			const {listData} = this.props;
-			const numberOfUniqueLetters = Object.keys(getFormattedData(listData)).length;
-			this.sideLetterHeight = Math.floor(event.nativeEvent.layout.height / numberOfUniqueLetters);
-			this.forceUpdate(); // can't make SFC because of this call!
-		}
-		this.layoutHeight = newLayoutHeight;
-	};
-}
+export const ContactsList: React.SFC<IContactsListProps> = ({listData, onContactSelect}) => (
+	<AlphabetListView
+		style={style.listElement}
+		data={partitionByInitial(listData)}
+		cell={ContactListItem}
+		onCellSelect={onContactSelect}
+		cellHeight={LIST_ITEM_HEIGHT}
+		/* TODO: any custom style will affect list go to section */
+		// sectionListStyle={{justifyContent: 'space-around', paddingVertical: 10}}
+		sectionListItem={(props: IContactListSectionItemRightProps) => (
+			<ContactListSectionItemRight {...props}/>
+		)}
+		sectionHeader={ContactListSectionHeader}
+		sectionHeaderHeight={SECTION_HEADER_HEIGHT}
+	/>
+);
