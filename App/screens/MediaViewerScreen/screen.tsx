@@ -1,14 +1,6 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {
-	Dimensions,
-	Platform,
-	SafeAreaView,
-	Text,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-	View,
-} from 'react-native';
+import {Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -31,40 +23,22 @@ interface IMediaViewerScreenComponentState {
 	viewport: {
 		width: number;
 	};
-	showInfoButton: boolean;
 	showInfoOverlay: boolean;
 }
 
-const MediaInfoOverlay: React.SFC<{
-	onShowInfo: () => void;
-	onHideInfoButton: () => void;
-}> = ({onShowInfo, onHideInfoButton}) => (
-	<TouchableWithoutFeedback onPress={onHideInfoButton}>
-		<View style={style.fullScreen}>
-			<TouchableOpacity style={style.infoButton} onPress={onShowInfo}>
-				<Icon name={'ios-information-circle-outline'} style={style.infoIcon} />
-			</TouchableOpacity>
-		</View>
-	</TouchableWithoutFeedback>
-);
-
-const getCarouselItem = ({item, index}, itemWidth: number, activeSlide: number, showInfoButton: () => void) => {
+const getCarouselItem = ({item, index}, itemWidth: number, activeSlide: number) => {
 	const carouselImageStyles = [style.carouselMediaObject, {width: itemWidth}];
 	const mediaURL = getURLForMediaViewerObject(item, true);
 	const mediaTypeProps = getTypePropsForMediaViewerObject(item);
 	return (
-		<TouchableWithoutFeedback onPress={showInfoButton}>
-			<View>
-				<MediaObjectViewer
-					{...mediaTypeProps}
-					paused={index !== activeSlide}
-					uri={mediaURL}
-					style={carouselImageStyles}
-					resizeMode={'contain'}
-					resizeToChangeAspectRatio={true}
-				/>
-			</View>
-		</TouchableWithoutFeedback>
+		<MediaObjectViewer
+			{...mediaTypeProps}
+			paused={index !== activeSlide}
+			uri={mediaURL}
+			style={carouselImageStyles}
+			resizeMode={'contain'}
+			resizeToChangeAspectRatio={true}
+		/>
 	);
 };
 
@@ -77,7 +51,6 @@ export default class MediaViewerScreenComponent extends Component<
 		viewport: {
 			width: Dimensions.get('window').width,
 		},
-		showInfoButton: false,
 		showInfoOverlay: false,
 	};
 
@@ -99,13 +72,11 @@ export default class MediaViewerScreenComponent extends Component<
 		return (
 			nextState.activeSlide !== this.state.activeSlide ||
 			nextProps.orientation !== this.props.orientation ||
-			nextState.showInfoButton !== this.state.showInfoButton ||
 			nextState.showInfoOverlay !== this.state.showInfoOverlay
 		);
 	}
 
 	public render() {
-		const {showInfoButton} = this.state;
 		const currentMediaObject = this.props.mediaObjects[this.state.activeSlide] as IMediaProps;
 		return (
 			<SafeAreaView style={style.safeView}>
@@ -133,15 +104,15 @@ export default class MediaViewerScreenComponent extends Component<
 						onSnapToItem={this.handleSlideChanged}
 						{...this.getIOSCarouselProps()}
 					/>
+					{this.renderCloseButton()}
+					<View style={style.screenFooter} pointerEvents={'none'}>
+						{this.renderMediaInfoSection()}
+						{this.renderPagination()}
+					</View>
+					<TouchableOpacity style={style.infoButton} onPress={this.showMediaInfoHandler}>
+						<Icon name={'ios-information-circle-outline'} style={style.infoIcon} />
+					</TouchableOpacity>
 				</View>
-				{this.renderCloseButton()}
-				<View style={style.screenFooter}>
-					{this.renderMediaInfoSection()}
-					{this.renderPagination()}
-				</View>
-				{showInfoButton && (
-					<MediaInfoOverlay onShowInfo={this.showMediaInfoHandler} onHideInfoButton={this.toggleInfoButtonHandler} />
-				)}
 			</SafeAreaView>
 		);
 	}
@@ -189,8 +160,8 @@ export default class MediaViewerScreenComponent extends Component<
 	private renderCloseButton = () => {
 		if (!this.isPortrait) {
 			return (
-				<TouchableOpacity onPress={this.exitFullScreenMode} style={style.closeIcon}>
-					<Icon name={'times'} size={Sizes.smartHorizontalScale(30)} color={Colors.white} />
+				<TouchableOpacity onPress={this.exitFullScreenMode} style={style.closeButton}>
+					<Icon name={'md-close'} size={Sizes.smartHorizontalScale(30)} color={Colors.white} />
 				</TouchableOpacity>
 			);
 		}
@@ -228,13 +199,6 @@ export default class MediaViewerScreenComponent extends Component<
 	private showMediaInfoHandler = () => {
 		this.setState({
 			showInfoOverlay: true,
-			showInfoButton: false,
-		});
-	};
-
-	private toggleInfoButtonHandler = () => {
-		this.setState({
-			showInfoButton: !this.state.showInfoButton,
 		});
 	};
 

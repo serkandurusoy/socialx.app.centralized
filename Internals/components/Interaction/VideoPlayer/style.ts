@@ -28,6 +28,7 @@ const style: any = {
 		position: 'absolute',
 		bottom: 0,
 		right: 0,
+		paddingBottom: Sizes.smartVerticalScale(10),
 	},
 	smallControlIcon: {
 		fontSize: Sizes.smartHorizontalScale(20),

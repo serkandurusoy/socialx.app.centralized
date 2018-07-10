@@ -19,5 +19,5 @@ const withFriendsUserFeed = (BaseComponent: React.ComponentType<IFeedProps>) => 
 	};
 };
 
-const withAllPosts = getFriendsPostsHoc(UserFeedScreen);
-export default withFriendsUserFeed(withAllPosts as any);
+const withFriendsPosts = getFriendsPostsHoc(UserFeedScreen);
+export default withFriendsUserFeed(withFriendsPosts as any);

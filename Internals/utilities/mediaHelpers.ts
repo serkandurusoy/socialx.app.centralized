@@ -137,7 +137,6 @@ export const getCameraMediaObject = async (options = {}): Promise<PickerImage | 
 };
 
 export const getMediaObjectType = (mediaObject: IMediaPropsWithIndex): MediaTypes => {
-	console.log('getMediaObjectType', mediaObject);
 	let mimeType: string | false = mime.lookup('.' + mediaObject.type);
 	if (!mimeType) {
 		// this case mediaObject.type is already a mimeType
