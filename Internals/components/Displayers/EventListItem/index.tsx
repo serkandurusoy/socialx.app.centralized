@@ -1,7 +1,9 @@
 import moment from 'moment';
 import React from 'react';
-import {StyleProp, Text, View, ViewStyle} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
+
 import {FriendsSearchResult} from 'types';
+import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
 export interface IEventData {
@@ -17,51 +19,83 @@ export interface IEventData {
 	description?: string;
 }
 
-export interface IEventListItemProps extends IEventData {
+interface IEventListItemProps extends IEventData, IWithTranslationProps {
 	navigateToEventDetailPage: () => void;
 }
 
-export const EventListItem: React.SFC<IEventListItemProps> = (props) => {
-	const getTitleWithLocation = () => {
-		let ret = props.title;
-		if (props.location) {
-			ret += ' at ' + props.location;
-		}
-		return ret;
-	};
+interface IEventTextProps extends IWithTranslationProps {
+	title: string;
+	startDate: Date;
+	endDate: Date;
+	allDay: boolean;
+	startTime?: Date;
+	endTime?: Date;
+}
 
-	const getEventSpanningText = () => {
-		let ret = '';
-		const isMultiDay = props.startDate.getTime() !== props.endDate.getTime();
-		if (props.allDay) {
-			ret = 'All Day';
-		} else if (props.startTime && !props.endTime) {
-			const startTimeWithFormat = moment(props.startTime).format('HH:mmA');
-			ret = `Start at ${startTimeWithFormat}`;
-		} else if (props.startTime && props.endTime) {
-			let dateFormat = 'HH:mmA';
-			if (isMultiDay) {
-				dateFormat = 'MMM D, YYYY, ' + dateFormat; // maybe better format here?
-			}
-			const startTimeWithFormat = moment(props.startTime).format(dateFormat);
-			const endTimeWithFormat = moment(props.endTime).format(dateFormat);
-			ret = `${startTimeWithFormat} - ${endTimeWithFormat}`;
-		} else {
-			ret = props.title;
-			// TODO: handle other possible combinations
+const EventSpanningTextComp: React.SFC<IEventTextProps> = ({
+	startDate,
+	endDate,
+	allDay,
+	startTime,
+	endTime,
+	title,
+	getText,
+}) => {
+	const isMultiDay = startDate.getTime() !== endDate.getTime();
+	let spanText = '';
+	if (allDay) {
+		spanText = getText('events.list.item.all.day');
+	} else if (startTime && !endTime) {
+		const startTimeWithFormat = moment(startTime).format('HH:mmA');
+		spanText = `${getText('events.list.item.start.at')} ${startTimeWithFormat}`;
+	} else if (startTime && endTime) {
+		let dateFormat = 'HH:mmA';
+		if (isMultiDay) {
+			dateFormat = 'MMM D, YYYY, ' + dateFormat; // maybe better format here?
 		}
-		return ret;
-	};
+		const startTimeWithFormat = moment(startTime).format(dateFormat);
+		const endTimeWithFormat = moment(endTime).format(dateFormat);
+		spanText = `${startTimeWithFormat} - ${endTimeWithFormat}`;
+	} else {
+		spanText = title;
+		// TODO: handle other possible combinations
+	}
 
-	return (
-		<View style={style.container}>
-			<View style={[style.eventDotColor, {backgroundColor: props.color}]} />
-			<View style={style.rightContainer}>
-				<TouchableOpacity onPress={props.navigateToEventDetailPage}>
-					<Text style={style.title}>{getTitleWithLocation()}</Text>
-				</TouchableOpacity>
-				<Text style={style.spanning}>{getEventSpanningText()}</Text>
-			</View>
-		</View>
-	);
+	return <Text style={style.spanning}>{spanText}</Text>;
 };
+
+const EventSpanningText = withTranslations(EventSpanningTextComp);
+
+const EventListItemComp: React.SFC<IEventListItemProps> = ({
+	title,
+	color,
+	startDate,
+	endDate,
+	allDay,
+	startTime,
+	endTime,
+	location,
+	invitedFriends,
+	description,
+	navigateToEventDetailPage,
+	getText,
+}) => (
+	<View style={style.container}>
+		<View style={[style.eventDotColor, {backgroundColor: color}]} />
+		<View style={style.rightContainer}>
+			<TouchableOpacity onPress={navigateToEventDetailPage}>
+				<Text style={style.title}>{title + (location ? ` ${getText('text.at')} ${location}` : '')}</Text>
+			</TouchableOpacity>
+			<EventSpanningText
+				allDay={allDay}
+				title={title}
+				startDate={startDate}
+				startTime={startTime}
+				endDate={endDate}
+				endTime={endTime}
+			/>
+		</View>
+	</View>
+);
+
+export const EventListItem = withTranslations(EventListItemComp);
