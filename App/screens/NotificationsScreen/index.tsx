@@ -117,8 +117,12 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		activityCards: [],
 	};
 
+	// TODO: @jake -> mask with the hoc
 	public componentWillReceiveProps({notifications}: INotificationsScreenProps) {
-		if (!notifications.loading) {
+		if (!notifications.loading && notifications) {
+			if (!notifications.myNotifications) {
+				return null;
+			}
 			if (this.state.activityCards.length < 1 && notifications.myNotifications.length > 0) {
 				const spine = notifications.myNotifications
 					.map(
