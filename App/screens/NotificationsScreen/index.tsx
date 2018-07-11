@@ -56,6 +56,7 @@ interface INotificationsScreenState {
 	refreshing: boolean;
 	loadingConfirmed: any;
 	loadingDeclined: any;
+	loadingNotificationCheck: any;
 }
 
 class NotificationsScreen extends Component<INotificationsScreenProps, INotificationsScreenState> {
@@ -68,6 +69,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 		activityCards: [],
 		loadingConfirmed: {},
 		loadingDeclined: {},
+		loadingNotificationCheck: {},
 	};
 
 	// TODO: @jake -> mask with the hoc
@@ -86,7 +88,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	public render() {
 		const {notifications} = this.props;
-		const {activityCards, refreshing, loadingConfirmed, loadingDeclined} = this.state;
+		const {activityCards, refreshing, loadingConfirmed, loadingDeclined, loadingNotificationCheck} = this.state;
 
 		return (
 			<NotificationsScreenComponent
@@ -104,6 +106,7 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 				onViewUserProfile={this.navigateToUserProfile}
 				loadingConfirmed={loadingConfirmed}
 				loadingDeclined={loadingDeclined}
+				loadingNotificationCheck={loadingNotificationCheck}
 			/>
 		);
 	}
@@ -180,9 +183,20 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	};
 
 	private checkNotification = async (requestId: string) => {
-		const {checkNotification} = this.props;
-		await checkNotification({variables: {request: requestId}});
-		await this.refreshNotifications();
+		const {checkNotification, getText} = this.props;
+		try {
+			this.setState({
+				loadingNotificationCheck: {...this.state.loadingNotificationCheck, [requestId]: true},
+			});
+			await checkNotification({variables: {request: requestId}});
+			await this.refreshNotifications();
+		} catch (ex) {
+			console.log(`ex: ${ex}`);
+			showToastMessage(getText('notifications.check.failed'));
+		}
+		const newChecked = {...this.state.loadingNotificationCheck};
+		delete newChecked[requestId];
+		this.setState({loadingNotificationCheck: newChecked});
 	};
 
 	private navigateToUserProfile = (userId: string) => {

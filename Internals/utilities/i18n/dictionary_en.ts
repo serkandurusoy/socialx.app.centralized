@@ -99,4 +99,11 @@ export default {
 	'media.info.type': 'Type',
 	'media.types.photo': 'Photo',
 	'media.types.video': 'Video',
+	'notifications.card.recent.comment.title': 'Commented on ${args[0]} recent posts',
+	'notifications.card.super.liked.part1': 'Superliked',
+	'notifications.card.super.liked.part2': '${args[0]} photos from your profile',
+	'notifications.card.group.request.title': 'Invited you to group',
+	'notifications.check.failed': 'Could not check notification at this time. Try again later..',
+	'notifications.card.generic.hide.notification': 'Hide notification?',
+	'notifications.card.generic.swipeout.label': 'Dismiss',
 };

@@ -28,6 +28,7 @@ interface INotificationsScreenComponentProps extends IWithLoaderProps {
 	onViewUserProfile: (userId: string) => void;
 	loadingConfirmed: {};
 	loadingDeclined: {};
+	loadingNotificationCheck: {};
 }
 
 interface IActivityCardsProps {
@@ -42,6 +43,7 @@ interface IActivityCardsProps {
 	onViewUserProfile: (userId: string) => void;
 	loadingConfirmed: {};
 	loadingDeclined: {};
+	loadingNotificationCheck: {};
 }
 
 const EmptyListComponent: React.SFC<IWithTranslationProps> = withTranslations(({getText}) => (
@@ -63,7 +65,9 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 	onSuperLikedPhotoPressed,
 	onGroupRequestConfirmed,
 	onGroupRequestDeclined,
+	loadingNotificationCheck,
 }) => {
+	const {requestId} = activityCardData;
 	switch (activityCardData.type) {
 		case NOTIFICATION_TYPES.RECENT_COMMENT:
 			return <ActivityRecentCommentCard {...activityCardData} onThumbPress={onPostThumbPressed} />;
@@ -72,10 +76,10 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 			return (
 				<FriendRequest
 					{...activityCardData}
-					loadingConfirmed={loadingConfirmed.hasOwnProperty(activityCardData.requestId)}
-					loadingDeclined={loadingDeclined.hasOwnProperty(activityCardData.requestId)}
-					onRequestConfirmed={() => onFriendRequestApproved(activityCardData.requestId)}
-					onRequestDeclined={() => onFriendRequestDeclined(activityCardData.requestId)}
+					loadingConfirmed={loadingConfirmed.hasOwnProperty(requestId)}
+					loadingDeclined={loadingDeclined.hasOwnProperty(requestId)}
+					onRequestConfirmed={() => onFriendRequestApproved(requestId)}
+					onRequestDeclined={() => onFriendRequestDeclined(requestId)}
 					onViewUserProfile={onViewUserProfile}
 				/>
 			);
@@ -86,6 +90,7 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 					{...activityCardData}
 					onCheckNotification={onCheckNotification}
 					onViewUserProfile={onViewUserProfile}
+					loading={loadingNotificationCheck.hasOwnProperty(requestId)}
 				/>
 			);
 
@@ -96,8 +101,8 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 			return (
 				<GroupRequest
 					{...activityCardData}
-					onGroupConfirmed={() => onGroupRequestConfirmed(activityCardData.requestId)}
-					onGroupDeclined={() => onGroupRequestDeclined(activityCardData.requestId)}
+					onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
+					onGroupDeclined={() => onGroupRequestDeclined(requestId)}
 				/>
 			);
 	}
@@ -120,6 +125,7 @@ const NotificationsScreenComponent: React.SFC<INotificationsScreenComponentProps
 	onViewUserProfile,
 	loadingConfirmed,
 	loadingDeclined,
+	loadingNotificationCheck,
 }) => (
 	<View style={style.container}>
 		<FlatList
@@ -138,12 +144,13 @@ const NotificationsScreenComponent: React.SFC<INotificationsScreenComponentProps
 					onSuperLikedPhotoPressed={onSuperLikedPhotoPressed}
 					onGroupRequestConfirmed={onGroupRequestConfirmed}
 					onGroupRequestDeclined={onGroupRequestDeclined}
+					loadingNotificationCheck={loadingNotificationCheck}
 				/>
 			)}
 			ListEmptyComponent={<EmptyListComponent />}
 			refreshing={refreshing}
 			onRefresh={refreshData}
-			extraData={{loadingDeclined, loadingConfirmed}}
+			extraData={{loadingDeclined, loadingConfirmed, loadingNotificationCheck}}
 		/>
 	</View>
 );

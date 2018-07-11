@@ -85,7 +85,7 @@ export const SAMPLE_ACTIVITY_CARDS = [
 		avatarURL: 'https://placeimg.com/160/160/people',
 		fullName: 'Teresa Lamb',
 		username: 'terlamb',
-		requestId: '981326537',
+		requestId: '981326538',
 		text: 'Friend request accepted.',
 	},
 	{

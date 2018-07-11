@@ -54,6 +54,7 @@ const style: any = {
 	},
 	leftSwipeContainer: {
 		backgroundColor: Colors.red,
+		flex: 1,
 		alignItems: 'flex-end',
 		justifyContent: 'center',
 	},
