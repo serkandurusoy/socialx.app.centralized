@@ -1,5 +1,3 @@
-import '../shim.js';
-
 import React, {Component} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {Platform, StatusBar} from 'react-native';

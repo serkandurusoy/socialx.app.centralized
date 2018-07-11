@@ -200,7 +200,6 @@ class UserProfileScreenComponent extends Component<IUserProfileScreenProps, IUse
 	};
 
 	private renderRecentPosts = () => {
-		console.log('props', this.props);
 		return this.props.recentPosts.map((post, i) => (
 			<View style={style.wallPostContainer} key={i}>
 				<WallPostCard

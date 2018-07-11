@@ -3,13 +3,13 @@ import React, {Component} from 'react';
 import {Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import Orientation from 'react-native-orientation';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import {MediaObjectViewer} from 'components';
+import {MediaInfoModal, MediaObjectViewer} from 'components';
 import {DeviceOrientations, OS_TYPES} from 'consts';
 import {Colors, Sizes} from 'theme';
-import {IMediaViewerObject} from 'types';
-import {getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
+import {IMediaProps, IMediaViewerObject} from 'types';
+import {getMediaObjectType, getTypePropsForMediaViewerObject, getURLForMediaViewerObject} from 'utilities';
 import style from './style';
 
 interface IMediaViewerScreenComponentProps {
@@ -23,7 +23,24 @@ interface IMediaViewerScreenComponentState {
 	viewport: {
 		width: number;
 	};
+	showInfoOverlay: boolean;
 }
+
+const getCarouselItem = ({item, index}, itemWidth: number, activeSlide: number) => {
+	const carouselImageStyles = [style.carouselMediaObject, {width: itemWidth}];
+	const mediaURL = getURLForMediaViewerObject(item, true);
+	const mediaTypeProps = getTypePropsForMediaViewerObject(item);
+	return (
+		<MediaObjectViewer
+			{...mediaTypeProps}
+			paused={index !== activeSlide}
+			uri={mediaURL}
+			style={carouselImageStyles}
+			resizeMode={'contain'}
+			resizeToChangeAspectRatio={true}
+		/>
+	);
+};
 
 export default class MediaViewerScreenComponent extends Component<
 	IMediaViewerScreenComponentProps,
@@ -34,6 +51,7 @@ export default class MediaViewerScreenComponent extends Component<
 		viewport: {
 			width: Dimensions.get('window').width,
 		},
+		showInfoOverlay: false,
 	};
 
 	private carouselRef: CarouselStatic<IMediaViewerObject> | null = null;
@@ -51,30 +69,49 @@ export default class MediaViewerScreenComponent extends Component<
 		nextState: Readonly<IMediaViewerScreenComponentState>,
 		nextContext: any,
 	): boolean {
-		return nextState.activeSlide !== this.state.activeSlide || nextProps.orientation !== this.props.orientation;
+		return (
+			nextState.activeSlide !== this.state.activeSlide ||
+			nextProps.orientation !== this.props.orientation ||
+			nextState.showInfoOverlay !== this.state.showInfoOverlay
+		);
 	}
 
 	public render() {
+		const currentMediaObject = this.props.mediaObjects[this.state.activeSlide] as IMediaProps;
 		return (
 			<SafeAreaView style={style.safeView}>
+				<MediaInfoModal
+					visible={this.state.showInfoOverlay}
+					closeHandler={this.closeInfoOverlay}
+					mediaHash={currentMediaObject.hash}
+					mediaSize={currentMediaObject.size}
+					mediaType={getMediaObjectType(currentMediaObject)}
+					mediaName={null}
+					mediaURL={getURLForMediaViewerObject(currentMediaObject, true)}
+				/>
 				<View style={style.carouselContainer} onLayout={this.carouselContainerOnLayoutHandler}>
 					<Carousel
 						ref={(c: any) => (this.carouselRef = c)}
 						// hack so that renderItem will use updated state value for activeSlide
 						activeSlide={this.state.activeSlide}
 						data={this.props.mediaObjects}
-						renderItem={this.renderCarouselItem}
+						renderItem={(item) =>
+							getCarouselItem(item, this.state.viewport.width, this.state.activeSlide, this.toggleInfoButtonHandler)
+						}
 						sliderWidth={this.state.viewport.width}
 						itemWidth={this.state.viewport.width}
 						firstItem={this.props.startIndex}
 						onSnapToItem={this.handleSlideChanged}
 						{...this.getIOSCarouselProps()}
 					/>
-				</View>
-				{this.renderCloseButton()}
-				<View style={style.screenFooter}>
-					{this.renderMediaInfoSection()}
-					{this.renderPagination()}
+					{this.renderCloseButton()}
+					<View style={style.screenFooter} pointerEvents={'none'}>
+						{this.renderMediaInfoSection()}
+						{this.renderPagination()}
+					</View>
+					<TouchableOpacity style={style.infoButton} onPress={this.showMediaInfoHandler}>
+						<Icon name={'ios-information-circle-outline'} style={style.infoIcon} />
+					</TouchableOpacity>
 				</View>
 			</SafeAreaView>
 		);
@@ -123,8 +160,8 @@ export default class MediaViewerScreenComponent extends Component<
 	private renderCloseButton = () => {
 		if (!this.isPortrait) {
 			return (
-				<TouchableOpacity onPress={this.exitFullScreenMode} style={style.closeIcon}>
-					<Icon name={'times'} size={Sizes.smartHorizontalScale(30)} color={Colors.white} />
+				<TouchableOpacity onPress={this.exitFullScreenMode} style={style.closeButton}>
+					<Icon name={'md-close'} size={Sizes.smartHorizontalScale(30)} color={Colors.white} />
 				</TouchableOpacity>
 			);
 		}
@@ -159,20 +196,15 @@ export default class MediaViewerScreenComponent extends Component<
 		this.setState({activeSlide: index});
 	};
 
-	private renderCarouselItem = (itemData: {item: IMediaViewerObject; index: number}) => {
-		const carouselImageStyles = [style.carouselMediaObject, {width: this.state.viewport.width}];
-		const dataItem = itemData.item;
-		const mediaURL = getURLForMediaViewerObject(dataItem, true);
-		const mediaTypeProps = getTypePropsForMediaViewerObject(dataItem);
-		return (
-			<MediaObjectViewer
-				{...mediaTypeProps}
-				paused={itemData.index !== this.state.activeSlide}
-				uri={mediaURL}
-				style={carouselImageStyles}
-				resizeMode={'contain'}
-				resizeToChangeAspectRatio={true}
-			/>
-		);
+	private showMediaInfoHandler = () => {
+		this.setState({
+			showInfoOverlay: true,
+		});
+	};
+
+	private closeInfoOverlay = () => {
+		this.setState({
+			showInfoOverlay: false,
+		});
 	};
 }

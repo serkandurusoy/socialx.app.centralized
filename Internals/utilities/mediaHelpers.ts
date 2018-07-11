@@ -4,7 +4,16 @@ import ImagePicker, {Image} from 'react-native-image-crop-picker';
 
 import {IMediaObjectViewerProps} from 'components';
 import {ipfsConfig as base} from 'configuration';
-import {IMediaProps, IMediaPropsWithIndex, IMediaViewerObject, ISimpleMediaObject} from 'types';
+import * as mime from 'react-native-mime-types';
+import {
+	IMediaProps,
+	IMediaPropsWithIndex,
+	IMediaViewerObject,
+	ISimpleMediaObject,
+	MediaTypeImage,
+	MediaTypes,
+	MediaTypeVideo,
+} from 'types';
 import {requestResourcePermission} from 'utilities';
 
 const REQUEST_SAVE_MEDIA_TITLE = 'Photo library save..';
@@ -125,4 +134,16 @@ export const getCameraMediaObject = async (options = {}): Promise<PickerImage | 
 	} catch (ex) {
 		console.log(ex);
 	}
+};
+
+export const getMediaObjectType = (mediaObject: IMediaPropsWithIndex): MediaTypes => {
+	let mimeType: string | false = mime.lookup('.' + mediaObject.type);
+	if (!mimeType) {
+		// this case mediaObject.type is already a mimeType
+		mimeType = mediaObject.type;
+	}
+	if (mimeType && mimeType.startsWith(MediaTypeVideo.key)) {
+		return MediaTypeVideo;
+	}
+	return MediaTypeImage;
 };

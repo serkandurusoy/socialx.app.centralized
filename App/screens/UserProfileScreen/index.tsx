@@ -81,7 +81,6 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 	public render() {
 		const {getUserQuery, getUserPosts} = this.props;
-		console.log('userPosts', getUserPosts)
 		return (
 			<UserProfileScreenComponent
 				isLoading={getUserQuery.loading || getUserPosts.loading}

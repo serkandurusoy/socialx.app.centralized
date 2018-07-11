@@ -26,3 +26,4 @@ import './stories/ChartListDataRow.stories';
 import './stories/CommentCard.stories';
 import './stories/VideoPlayer.stories';
 import './stories/GovernanceCard.stories';
+import './stories/MediaInfoOverlay.stories';

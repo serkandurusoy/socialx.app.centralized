@@ -73,6 +73,7 @@ const getPublicTrendingPostsQ = gql`
 					hash
 					optimizedHash
 					type
+					size
 				}
 				owner {
 					userId
@@ -132,6 +133,7 @@ const getPublicPostsQ = gql`
 					hash
 					optimizedHash
 					type
+					size
 				}
 				owner {
 					userId
@@ -192,6 +194,7 @@ const getFriendsPostsQ = gql`
 					hash
 					optimizedHash
 					type
+					size
 				}
 				owner {
 					userId
