@@ -10105,9 +10105,9 @@ react-native-tab-view@^0.0.74:
     process "^0.11.9"
     util "^0.10.3"
 
-react-native-text-gradient@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/react-native-text-gradient/-/react-native-text-gradient-0.0.8.tgz#c7779dc36fc67fe580f8496ec32069ac61474269"
+react-native-text-gradient@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-text-gradient/-/react-native-text-gradient-0.0.9.tgz#aa22bd6ef3f53e51ab381ffc55b03403f4e6ca04"
 
 react-native-textinput-effects@^0.4.2:
   version "0.4.2"
