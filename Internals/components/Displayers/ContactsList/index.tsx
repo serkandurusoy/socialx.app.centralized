@@ -4,7 +4,8 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 import style, {LIST_ITEM_HEIGHT, SECTION_HEADER_HEIGHT} from './style';
 
-const INITIALS = String.fromCharCode(...Array(91).keys()).slice(65).split('');
+// other versions that I tried here were not working on android, when dev. mode disconnected :(
+const ALPHABET_LETTERS = String.fromCharCode(...Array.from({length: 26}, (v, k) => k + 65)).split('');
 
 export interface IContactListItem {
 	name: string;
@@ -16,11 +17,15 @@ interface IContactListItemProps {
 	onSelect: (data: IContactListItem) => void;
 }
 
-interface IContactListSectionItemRightProps {
+interface ISectionWithData {
+	hasData: boolean;
+}
+
+interface IContactListSectionItemRightProps extends ISectionWithData {
 	title: string;
 }
 
-interface IContactListSectionHeaderProps {
+interface IContactListSectionHeaderProps extends ISectionWithData {
 	title: string;
 }
 
@@ -29,31 +34,32 @@ interface IContactsListProps {
 	onContactSelect: (data: IContactListItem) => void;
 }
 
-const ContactListItem: React.SFC<IContactListItemProps> = ({item, onSelect}) => {
-	return (
-		<TouchableOpacity style={style.contactListItemCell} onPress={() => onSelect(item)}>
-			<Image source={{uri: item.avatarURL}} style={style.avatarImg}/>
-			<Text style={style.fullName}>{item.name}</Text>
-		</TouchableOpacity>
-	);
-};
+const ContactListItem: React.SFC<IContactListItemProps> = ({item, onSelect}) => (
+	<TouchableOpacity style={style.contactListItemCell} onPress={() => onSelect(item)}>
+		<Image source={{uri: item.avatarURL}} style={style.avatarImg} />
+		<Text style={style.fullName}>{item.name}</Text>
+	</TouchableOpacity>
+);
 
-const ContactListSectionItemRight: React.SFC<IContactListSectionItemRightProps> = ({title}) => {
-	return <Text style={style.alphabetListItem}>{title}</Text>;
-};
+const ContactListSectionItemRight: React.SFC<IContactListSectionItemRightProps> = ({title, hasData}) => (
+	<View style={style.alphabetView}>
+		<Text style={[style.alphabetListItem, !hasData ? style.alphabetListItemDisabled : {}]}>{title}</Text>
+	</View>
+);
 
-const ContactListSectionHeader: React.SFC<IContactListSectionHeaderProps> = (props) => {
-	const sectionTitle = props.title;
-	return (
-		<View style={style.sectionHeaderContainer}>
-			<Text style={style.sectionHeaderText}>{sectionTitle}</Text>
-		</View>
-	);
-};
+const ContactListSectionHeader: React.SFC<IContactListSectionHeaderProps> = ({title, hasData}) => (
+	// Here is !hasData we should return null, to have an section header hidden,
+	// but that will affect side scrolling logic.
+	// Other option is to set enableEmptySections to false on AlphabetListView,
+	// but that is deprecated and will trigger warnings!
+	<View style={style.sectionHeaderContainer}>
+		<Text style={style.sectionHeaderText}>{title}</Text>
+	</View>
+);
 
-const sortContactsList = (listData: IContactListItem[]) => {
-	// TODO: we can skip this if list comes sorted by name from server side!
-	return listData.sort((item1: IContactListItem, item2: IContactListItem) => {
+// TODO: we can skip this if list comes sorted by name from server side!
+const sortContactsList = (listData: IContactListItem[]) =>
+	listData.sort((item1: IContactListItem, item2: IContactListItem) => {
 		let ret = 0;
 		if (item1.name < item2.name) {
 			ret = -1;
@@ -62,34 +68,38 @@ const sortContactsList = (listData: IContactListItem[]) => {
 		}
 		return ret;
 	});
-};
 
 const partitionByInitial = (listData: IContactListItem[]) => {
 	const ret: any = {};
-	INITIALS.forEach((value: string) => {
+	ALPHABET_LETTERS.forEach((value: string) => {
 		ret[value] = [];
 	});
 	ret['#'] = [];
 	sortContactsList(listData).forEach((contact: IContactListItem) => {
 		const nameInitial = contact.name.substr(0, 1).toUpperCase();
-		ret[INITIALS.includes(nameInitial) ? nameInitial : '#'].push(contact);
+		ret[ALPHABET_LETTERS.indexOf(nameInitial) >= 0 ? nameInitial : '#'].push(contact);
 	});
 	return ret;
 };
 
-export const ContactsList: React.SFC<IContactsListProps> = ({listData, onContactSelect}) => (
-	<AlphabetListView
-		style={style.listElement}
-		data={partitionByInitial(listData)}
-		cell={ContactListItem}
-		onCellSelect={onContactSelect}
-		cellHeight={LIST_ITEM_HEIGHT}
-		/* TODO: any custom style will affect list go to section */
-		// sectionListStyle={{justifyContent: 'space-around', paddingVertical: 10}}
-		sectionListItem={(props: IContactListSectionItemRightProps) => (
-			<ContactListSectionItemRight {...props}/>
-		)}
-		sectionHeader={ContactListSectionHeader}
-		sectionHeaderHeight={SECTION_HEADER_HEIGHT}
-	/>
-);
+export const ContactsList: React.SFC<IContactsListProps> = ({listData, onContactSelect}) => {
+	const partitionedNames = partitionByInitial(listData);
+	return (
+		<AlphabetListView
+			style={style.listElement}
+			data={partitionedNames}
+			cell={ContactListItem}
+			onCellSelect={onContactSelect}
+			cellHeight={LIST_ITEM_HEIGHT}
+			sectionListStyle={style.sectionListStyle}
+			sectionListItem={(props: IContactListSectionItemRightProps) => (
+				<ContactListSectionItemRight {...props} hasData={partitionedNames[props.title].length > 0} />
+			)}
+			sectionHeader={(props: IContactListSectionHeaderProps) => (
+				<ContactListSectionHeader {...props} hasData={partitionedNames[props.title].length > 0} />
+			)}
+			sectionHeaderHeight={SECTION_HEADER_HEIGHT}
+			enableEmptySections={true}
+		/>
+	);
+};
