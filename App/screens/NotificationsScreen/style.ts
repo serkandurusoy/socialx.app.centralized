@@ -8,8 +8,7 @@ const style: any = {
 		backgroundColor: Colors.white,
 	},
 	emptyContainer: {
-		width: '100%',
-		height: '100%',
+		flex: 1, // TODO: this should take full width in RN 0.56
 		alignItems: 'center',
 		justifyContent: 'center',
 	},

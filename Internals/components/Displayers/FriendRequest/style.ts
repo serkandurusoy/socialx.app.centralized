@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
 const ICON_SIZE = Sizes.smartHorizontalScale(25);
+const BUTTON_SIZE = Sizes.smartHorizontalScale(40);
 
 const style: any = {
 	container: {
@@ -47,7 +48,10 @@ const style: any = {
 		paddingTop: Sizes.smartVerticalScale(3),
 	},
 	iconTouch: {
-		padding: Sizes.smartHorizontalScale(5),
+		width: BUTTON_SIZE,
+		height: BUTTON_SIZE,
+		alignItems: 'center',
+		justifyContent: 'center',
 		marginLeft: Sizes.smartHorizontalScale(15),
 	},
 	iconImage: {

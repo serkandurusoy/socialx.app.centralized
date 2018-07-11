@@ -56,7 +56,7 @@ export interface IWithTranslationProps {
 export const withTranslations = compose(
 	hoistStatics(
 		withProps(() => ({
-			getText: (value: string, ...args: any[]) => getText(value, args),
+			getText: (value: string, ...args: any[]) => getText(value, ...args),
 		})),
 	),
 );
