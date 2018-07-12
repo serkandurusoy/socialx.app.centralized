@@ -111,7 +111,7 @@
     "react-native-tcp": "https://github.com/Shadyzpop/react-native-tcp",
     "react-native-text-gradient": "0.0.12",
     "react-native-textinput-effects": "^0.4.2",
-    "react-native-vector-icons": "^4.5.0",
+    "react-native-vector-icons": "4.6.0",
     "react-native-video": "^2.3.1",
     "react-native-webrtc": "^1.58.3",
     "react-navigation": "2.6.2",
