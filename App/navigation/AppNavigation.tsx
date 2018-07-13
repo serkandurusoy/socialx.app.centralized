@@ -1,10 +1,16 @@
 import React from 'react';
-import {NavigationSceneRendererProps, StackNavigator, TabNavigator, TransitionConfig} from 'react-navigation';
+import {
+	createBottomTabNavigator,
+	createMaterialTopTabNavigator,
+	createStackNavigator,
+	NavigationSceneRendererProps,
+	TransitionConfig,
+} from 'react-navigation';
 import LaunchScreen from '../screens/LaunchScreen';
 
-import {TabBarBottom} from 'components/Displayers';
-import {Animated, Easing} from 'react-native';
-import {ApplicationStyles, Colors} from 'theme';
+import {FeedTabBar, ScreenHeaderButton, TabBarBottom} from 'components';
+import {Animated, Easing, View} from 'react-native';
+import {ApplicationStyles, Colors, Icons} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen';
@@ -38,8 +44,9 @@ import SignUpScreen from '../screens/SignUpScreen';
 import SocialXAccountScreen from '../screens/SocialXAccountScreen';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import UploadKeyScreen from '../screens/UploadKeyScreen';
+import FriendsFeed from '../screens/UserFeedScreen/friendsUserFeed';
+import GlobalFeed from '../screens/UserFeedScreen/globalUserFeed';
 import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
-import TabbedFeed from '../screens/UserFeedScreen/TabbedFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
@@ -82,7 +89,7 @@ const slideFromLeftTransition = (): TransitionConfig => ({
 const getSingleScreenStack = (routeName: string, screen: any, stackConfig: any = {}) => {
 	const routeConfigMap: any = {};
 	routeConfigMap[routeName] = {screen};
-	return StackNavigator(routeConfigMap, {
+	return createStackNavigator(routeConfigMap, {
 		navigationOptions: navOptionsDefault,
 		...stackConfig,
 	});
@@ -106,13 +113,13 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		...screenConfigMap,
 		...modalsConfigMap,
 	};
-	return StackNavigator(updatedRouteConfig, {
+	return createStackNavigator(updatedRouteConfig, {
 		mode: 'modal',
 		headerMode: 'none',
 	});
 };
 
-const MediaLicenceStackNavigator = StackNavigator(
+const MediaLicenceStackNavigator = createStackNavigator(
 	{
 		MediaLicenceScreen: {screen: MediaLicenceScreen},
 		MediaLicenceFAQScreen: {screen: MediaLicenceFAQScreen},
@@ -122,7 +129,7 @@ const MediaLicenceStackNavigator = StackNavigator(
 	},
 );
 
-const EventsStackNavigator = StackNavigator(
+const EventsStackNavigator = createStackNavigator(
 	{
 		MyEventsScreen: {screen: MyEventsScreen},
 		CreateEventScreen: {screen: CreateEventScreen},
@@ -133,7 +140,7 @@ const EventsStackNavigator = StackNavigator(
 	},
 );
 
-const MyProfileStackNavigator = StackNavigator(
+const MyProfileStackNavigator = createStackNavigator(
 	{
 		MyProfileScreen: {screen: MyProfileScreen},
 		SettingsScreen: {screen: SettingsScreen},
@@ -147,7 +154,7 @@ const MyProfileStackNavigator = StackNavigator(
 	},
 );
 
-const CommentsStackNavigator = StackNavigator(
+const CommentsStackNavigator = createStackNavigator(
 	{
 		CommentsScreen: {screen: CommentsScreen},
 		RepliesScreen: {screen: RepliesScreen},
@@ -158,9 +165,41 @@ const CommentsStackNavigator = StackNavigator(
 	},
 );
 
-const UserFeedStackNavigator = StackNavigator(
+const TabbedFeedNavigator = createMaterialTopTabNavigator(
 	{
-		TabbedFeedScreen: {screen: TabbedFeed},
+		Friends: FriendsFeed,
+		Global: GlobalFeed,
+	},
+	{
+		animationEnabled: true,
+		swipeEnabled: true,
+		// lazy: true, // this is missing with createMaterialTopTabNavigator
+		tabBarComponent: (props: any) => <FeedTabBar navigation={props.navigation} />,
+	},
+);
+
+const UserFeedStackNavigator = createStackNavigator(
+	{
+		TabbedFeedScreen: {
+			screen: TabbedFeedNavigator,
+			navigationOptions: ({navigation}) => ({
+				headerLeft: (
+					<ScreenHeaderButton
+						iconName={'md-flame'}
+						// onPress={() => navigation.navigate('HotPostsFeedScreenStack')}
+						onPress={() => alert('Hot Posts.. Coming soon..')}
+					/>
+				),
+				// headerRight: (
+				// 	<ScreenHeaderButton
+				// 		onPress={() => navigation.navigate('MessagingScreen')}
+				// 		iconSource={Icons.messagingIcon}
+				// 	/>
+				// ),
+				headerRight: <View />,
+				title: 'FEED',
+			}),
+		},
 		MessagingScreen: {screen: MessagingScreen},
 		ChatThreadScreen: {screen: ChatThreadScreen},
 	},
@@ -169,7 +208,7 @@ const UserFeedStackNavigator = StackNavigator(
 	},
 );
 
-const MainScreenTabNavigation = TabNavigator(
+const MainScreenTabNavigation = createBottomTabNavigator(
 	{
 		UserFeedTab: UserFeedStackNavigator,
 		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
@@ -187,7 +226,7 @@ const MainScreenTabNavigation = TabNavigator(
 );
 
 const hotPostsSingleScreenStack = getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen);
-const MainScreenWithModal = StackNavigator(
+const MainScreenWithModal = createStackNavigator(
 	{
 		MainScreenTabNavigationWithModal: getMainStackWithModalsForScreen(
 			'MainScreenTabNavigation',
@@ -202,7 +241,7 @@ const MainScreenWithModal = StackNavigator(
 	},
 );
 
-const PreAuthNavigator = StackNavigator(
+const PreAuthNavigator = createStackNavigator(
 	{
 		LaunchScreen: {screen: LaunchScreen},
 		LoginScreen: {screen: LoginScreen},
@@ -220,7 +259,7 @@ const PreAuthNavigator = StackNavigator(
 );
 
 // Manifest of possible screens
-const PrimaryNav = StackNavigator(
+const PrimaryNav = createStackNavigator(
 	{
 		PreAuthScreen: {screen: PreAuthNavigator},
 		IntroScreen: {screen: IntroScreen},

@@ -1,13 +1,13 @@
 import React from 'react';
 import {ScrollView, View} from 'react-native';
 import {
+	createBottomTabNavigator,
 	NavigationAction,
 	NavigationActions,
 	NavigationContainer,
 	NavigationNavigateAction,
 	NavigationScreenProp,
 	NavigationState,
-	TabNavigator,
 } from 'react-navigation';
 
 import {SearchFilterButton} from 'components';
@@ -27,7 +27,8 @@ tabsRouteConfig[VotingTabs.Governance] = GovernanceTab;
 tabsRouteConfig[VotingTabs.Advertisement] = AdvertisementTab;
 tabsRouteConfig[VotingTabs.FeatureRequests] = FeatureRequestsTab;
 
-const VotingScreens = TabNavigator(tabsRouteConfig, {
+// TODO: get rid of this tab navigator. Same refactoring was done for the two tabs in UserFeedScreen
+const VotingScreens = createBottomTabNavigator(tabsRouteConfig, {
 	animationEnabled: true,
 	swipeEnabled: true,
 	lazy: true,

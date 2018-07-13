@@ -20,7 +20,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	onCommentPress: (postId: any, owner: any, startComment: boolean) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
-	hideShareSection?: boolean;
+	shareSectionPlaceholder: string | null;
 	onLikePress: (likedByMe?: boolean, postId?: string) => Promise<any>;
 	onPostDeletePress: any;
 	onUserPress: any;
@@ -75,18 +75,18 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	public render() {
-		const {avatarImage, showNewWallPostPage, hideShareSection} = this.props;
-		const sharePlaceHolder = hideShareSection
-			? 'Share with the world what you think'
-			: 'Share with your friends what you think';
+		const {avatarImage, showNewWallPostPage, shareSectionPlaceholder, noPosts} = this.props;
+
 		return (
 			<View style={style.container}>
-				<ShareSection
-					avatarImage={avatarImage}
-					showNewWallPostPage={showNewWallPostPage}
-					sharePlaceholder={sharePlaceHolder}
-				/>
-				{this.props.noPosts ? (
+				{shareSectionPlaceholder && (
+					<ShareSection
+						avatarImage={avatarImage}
+						showNewWallPostPage={showNewWallPostPage}
+						sharePlaceholder={shareSectionPlaceholder}
+					/>
+				)}
+				{noPosts ? (
 					<FeedWithNoPosts />
 				) : (
 					<FlatList

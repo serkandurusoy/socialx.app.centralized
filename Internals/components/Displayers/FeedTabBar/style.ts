@@ -3,15 +3,9 @@ import {Colors, Sizes} from 'theme';
 
 const style: any = {
 	container: {
-		flex: 1,
+		flexDirection: 'row',
 		width: '100%',
 		backgroundColor: Colors.white,
-	},
-	topBar: {
-		flexDirection: 'row',
-	},
-	topBarContent: {
-		minWidth: '100%',
 	},
 	tabButton: {
 		flex: 1,

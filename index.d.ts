@@ -9,7 +9,6 @@ declare module 'blob';
 
 declare module 'redux-axios-middleware';
 
-declare module 'react-navigation-redux-helpers';
 declare module 'react-native-vector-icons';
 declare module 'react-native-keyboard-spacer';
 declare module 'react-native-modal-dropdown';
