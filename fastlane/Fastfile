@@ -1,0 +1,51 @@
+fastlane_version '2.99.1'
+
+before_all do
+  ensure_git_branch(
+      branch: 'development'
+  )
+  #ensure_git_status_clean
+  #git_pull
+end
+
+platform :ios do
+
+  desc 'Fetch certificates'
+  lane :certificates do
+    get_certificates(
+        development: false,
+        username: "ionut.movila@sensidev.com", # TODO: use env.CERT_USERNAME
+        team_id: "WJ7HBS2562"
+    # TODO: for password consider using env.FASTLANE_PASSWORD
+    )
+  end
+
+  desc 'Fetch provisioning profiles'
+  lane :profiles do
+    get_provisioning_profile(
+        force: true,
+        app_identifier: "socialxnetwork",
+        username: "ionut.movila@sensidev.com", # TODO: use env.SIGH_USERNAME
+        team_id: "WJ7HBS2562",
+        provisioning_name: "socialxnetwork AppStore",
+    )
+  end
+
+  desc 'Build the iOS application.'
+  lane :build do
+    # certificates
+    # profiles
+    # increment_build_number(xcodeproj: './ios/name.xcodeproj')
+    gym(
+        scheme: 'SocialxTypeActress',
+        workspace: './ios/SocialxTypeActress.xcworkspace',
+        clean: true,
+        export_method: 'app-store'
+    )
+  end
+
+end
+
+platform :android do
+  # Android Lanes
+end

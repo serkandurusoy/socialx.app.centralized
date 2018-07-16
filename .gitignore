@@ -69,3 +69,8 @@ lerna-*.log
 *.bundle
 *.map
 *.bundle.meta
+
+# Fastlane artifacts
+*.cer
+*.p12
+*.certSigningRequest
