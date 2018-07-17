@@ -5,7 +5,34 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 import style, {LIST_ITEM_HEIGHT, SECTION_HEADER_HEIGHT} from './style';
 
 // other versions that I tried here were not working on android, when dev. mode disconnected :(
-const ALPHABET_LETTERS = String.fromCharCode(...Array.from({length: 26}, (v, k) => k + 65)).split('');
+const ALPHABET_LETTERS = [
+	'a',
+	'b',
+	'c',
+	'd',
+	'e',
+	'f',
+	'g',
+	'h',
+	'i',
+	'j',
+	'k',
+	'l',
+	'm',
+	'n',
+	'o',
+	'p',
+	'q',
+	'r',
+	's',
+	't',
+	'u',
+	'v',
+	'w',
+	'x',
+	'y',
+	'z',
+];
 
 export interface IContactListItem {
 	name: string;
