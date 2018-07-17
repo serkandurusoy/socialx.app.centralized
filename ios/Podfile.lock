@@ -1,11 +1,4 @@
 PODS:
-  - AppCenter/Analytics (1.5.0):
-    - AppCenter/Core
-  - AppCenter/Core (1.5.0)
-  - AppCenter/Crashes (1.5.0):
-    - AppCenter/Core
-  - AppCenterReactNativeShared (1.4.0):
-    - AppCenter/Core (= 1.5.0)
   - BugsnagReactNative (2.9.5):
     - BugsnagReactNative/Core (= 2.9.5)
     - React
@@ -64,17 +57,14 @@ PODS:
     - QBImagePickerController
     - React/Core
     - RSKImageCropper
-  - RSKImageCropper (2.0.1)
-  - SDWebImage/Core (4.3.3)
-  - SDWebImage/GIF (4.3.3):
+  - RSKImageCropper (2.1.0)
+  - SDWebImage/Core (4.4.1)
+  - SDWebImage/GIF (4.4.1):
     - FLAnimatedImage (~> 1.0)
     - SDWebImage/Core
   - yoga (0.55.4.React)
 
 DEPENDENCIES:
-  - AppCenter/Analytics (~> 1.5.0)
-  - AppCenter/Crashes (~> 1.5.0)
-  - AppCenterReactNativeShared (~> 1.4.0)
   - BugsnagReactNative (from `../node_modules/bugsnag-react-native`)
   - lottie-ios (from `../node_modules/lottie-ios`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
@@ -99,8 +89,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - AppCenter
-    - AppCenterReactNativeShared
     - FLAnimatedImage
     - QBImagePickerController
     - RSKImageCropper
@@ -131,8 +119,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga/yoga.podspec"
 
 SPEC CHECKSUMS:
-  AppCenter: 42c293f0de27e173aacd600a55a49da5317cd40e
-  AppCenterReactNativeShared: 056324303732841fff14f2a71c4a6839831b038b
   BugsnagReactNative: 0b7626917d3612281d07aea84e5041f123290fee
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   lottie-ios: 9f24be3ecb13412223b6ac70d97437742b0e3de1
@@ -145,10 +131,10 @@ SPEC CHECKSUMS:
   react-native-webrtc: 31b6d3f1e3e2ce373aa43fd682b04367250f807d
   RNDeviceInfo: 568c5641057313b4912d08a7742ff0b2f753ed5c
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
-  RSKImageCropper: 50d5a3e4160f0309b14d75b89d5ae2f496d56e0d
-  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
+  RSKImageCropper: 0d0c6d8525a2381f03fde32a47c6703817a2feed
+  SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: b028bdec05d815a3d26c601575377b98ae3c89b7
+PODFILE CHECKSUM: 436406b8dd16aa15ac82c11aee407f6ebb104466
 
 COCOAPODS: 1.5.0

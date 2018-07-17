@@ -52,13 +52,12 @@ Don't refresh the browser when you make changes, instead use know mechanisms for
 Make sure you don't commit index.js file with Storybook enabled.
 
 
-## Distributing signed builds using [AppCenter](https://appcenter.ms/apps)
+## Distributing signed builds:
 
 Signing configuration is required for each branch we want to use for distributing test builds.
 
-**Android:** All the setup for signing the APK is already made. In AppCenter just enable 'Sign builds' and check 
-'My Gradle settings are entirely set to handle signing automatically'
+**Android:** All the setup for signing the APK is already made, using gradle specific configuration.
 
-**iOS:** Here after enabling 'Sign builds' one must upload provisioning profile and exported .p12 certificate.
-Those can be found in Google Drive folder 'Corporate Identity/iOS signing files'. Password for p12 file is 'SocX2018' 
+**iOS:** In Google Drive folder 'Corporate Identity/iOS signing files' we have all the required files.
+ Password for p12 file is 'SocX2018' 
  
