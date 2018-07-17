@@ -3997,7 +3997,7 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.0.0"
     whatwg-url "^6.4.0"
 
-date-fns@^1.27.2, date-fns@^1.28.5:
+date-fns@^1.27.2:
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
 
@@ -10054,20 +10054,19 @@ react-native-spinkit@^1.1.1:
   dependencies:
     prop-types "^15.5.8"
 
-react-native-svg-charts@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-svg-charts/-/react-native-svg-charts-4.2.0.tgz#6d1bd34b3c767b7ce2450a55a99cc3e66c9a48a3"
+react-native-svg-charts@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-svg-charts/-/react-native-svg-charts-5.2.0.tgz#eda090136250d02f9d1d8c971663afaee4ed2f4f"
   dependencies:
     d3-array "^1.2.0"
     d3-interpolate-path "2.0.0"
     d3-scale "^1.0.6"
     d3-shape "^1.0.6"
-    date-fns "^1.28.5"
     prop-types "^15.6.0"
 
-react-native-svg@^6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-6.3.1.tgz#06a573f17c59ce953a56fd62e776fd79d632d765"
+react-native-svg@^6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-6.4.1.tgz#ba696d4da03000883d65a27d2bf8b1a30b252ffe"
   dependencies:
     color "^2.0.1"
     lodash "^4.16.6"
