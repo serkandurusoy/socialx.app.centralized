@@ -14,33 +14,24 @@ import {INotificationsResponse, NOTIFICATION_TYPES} from 'types';
 import {IWithTranslationProps, showToastMessage, withTranslations} from 'utilities';
 import NotificationsScreenComponent from './screen';
 
+const ACCEPTED_NOTIFICATION_TYPES = [NOTIFICATION_TYPES.FRIEND_REQUEST, NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE];
+
 const dataSpine = (notifications: any, getText: any) =>
 	notifications
-		.map(
-			({type, owner: {name: fullName, avatar, username, userId}, id: requestId, status}) =>
-				type === NOTIFICATION_TYPES.FRIEND_REQUEST
-					? {
-							type: NOTIFICATION_TYPES.FRIEND_REQUEST,
-							avatarURL: avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder,
-							fullName,
-							username,
-							requestId,
-							status,
-							userId,
-					  }
-					: type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE
-						? {
-								type: NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE,
-								avatarURL: avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder,
-								text: getText('notifications.friend.request.accepted', username, status),
-								fullName,
-								username,
-								requestId,
-								status,
-								userId,
-						  }
-						: null,
-		)
+		.filter(({type}) => ACCEPTED_NOTIFICATION_TYPES.includes(type))
+		.map(({type, owner: {name: fullName, avatar, username, userId}, id: requestId, status}) => ({
+			type,
+			avatarURL: avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder,
+			text:
+				type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE
+					? getText('notifications.friend.request.accepted', username, status)
+					: undefined,
+			fullName,
+			username,
+			requestId,
+			status,
+			userId,
+		}))
 		.filter((n) => n !== null);
 
 interface INotificationsScreenProps extends IWithTranslationProps {
@@ -113,8 +104,8 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	private refreshNotifications = async () => {
 		const {notifications, getText} = this.props;
+		this.setState({refreshing: true});
 		try {
-			this.setState({refreshing: true});
 			const results = await notifications.refetch();
 			const spine = dataSpine(results.data.myNotifications, getText);
 			this.setState({refreshing: false, activityCards: spine});
@@ -133,45 +124,52 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 	};
 
 	private friendRequestApprovedHandler = async (requestId: string) => {
-		const {acceptFriendRequest, getText} = this.props;
-		try {
-			this.setState({
-				loadingConfirmed: {...this.state.loadingConfirmed, [requestId]: true},
-			});
-			await acceptFriendRequest({
-				variables: {
-					request: requestId,
-				},
-			});
-			await this.refreshNotifications();
-		} catch (ex) {
-			console.log(`ex: ${ex}`);
-			showToastMessage(getText('notifications.friend.request.accept.failed'));
-		}
-		const newConfirmed = {...this.state.loadingConfirmed};
-		delete newConfirmed[requestId];
-		this.setState({loadingConfirmed: newConfirmed});
+		const {acceptFriendRequest} = this.props;
+		await this.genericNotificationAction(
+			requestId,
+			acceptFriendRequest,
+			'notifications.friend.request.accept.failed',
+			'loadingConfirmed',
+		);
 	};
 
 	private friendRequestDeclinedHandler = async (requestId: string) => {
-		const {declineFriendRequest, getText} = this.props;
+		const {declineFriendRequest} = this.props;
+		await this.genericNotificationAction(
+			requestId,
+			declineFriendRequest,
+			'notifications.friend.request.decline.failed',
+			'loadingDeclined',
+		);
+	};
+
+	private checkNotification = async (requestId: string) => {
+		const {checkNotification} = this.props;
+		await this.genericNotificationAction(
+			requestId,
+			checkNotification,
+			'notifications.check.failed',
+			'loadingNotificationCheck',
+		);
+	};
+
+	private genericNotificationAction = async (
+		requestId: string,
+		networkCallMethod: any,
+		errorKey: string,
+		stateKey: string, // TODO: this last arg. here kind of breaks TS
+	) => {
+		const {getText} = this.props;
+		this.setState({[stateKey]: {...this.state[stateKey], [requestId]: true}});
 		try {
-			this.setState({
-				loadingDeclined: {...this.state.loadingDeclined, [requestId]: true},
-			});
-			await declineFriendRequest({
-				variables: {
-					request: requestId,
-				},
-			});
+			await networkCallMethod({variables: {request: requestId}});
 			await this.refreshNotifications();
 		} catch (ex) {
 			console.log(`ex: ${ex}`);
-			showToastMessage(getText('notifications.friend.request.decline.failed'));
+			showToastMessage(getText(errorKey));
 		}
-		const newDeclined = {...this.state.loadingDeclined};
-		delete newDeclined[requestId];
-		this.setState({loadingDeclined: newDeclined});
+		const {[requestId]: rId, ...newChecked} = this.state[stateKey];
+		this.setState({[stateKey]: newChecked});
 	};
 
 	private groupRequestConfirmedHandler = (requestId: string) => {
@@ -180,23 +178,6 @@ class NotificationsScreen extends Component<INotificationsScreenProps, INotifica
 
 	private onGroupRequestDeclinedHandler = (requestId: string) => {
 		alert('onGroupRequestDeclinedHandler: ' + requestId);
-	};
-
-	private checkNotification = async (requestId: string) => {
-		const {checkNotification, getText} = this.props;
-		try {
-			this.setState({
-				loadingNotificationCheck: {...this.state.loadingNotificationCheck, [requestId]: true},
-			});
-			await checkNotification({variables: {request: requestId}});
-			await this.refreshNotifications();
-		} catch (ex) {
-			console.log(`ex: ${ex}`);
-			showToastMessage(getText('notifications.check.failed'));
-		}
-		const newChecked = {...this.state.loadingNotificationCheck};
-		delete newChecked[requestId];
-		this.setState({loadingNotificationCheck: newChecked});
 	};
 
 	private navigateToUserProfile = (userId: string) => {

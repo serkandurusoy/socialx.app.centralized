@@ -68,43 +68,39 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 	loadingNotificationCheck,
 }) => {
 	const {requestId} = activityCardData;
-	switch (activityCardData.type) {
-		case NOTIFICATION_TYPES.RECENT_COMMENT:
-			return <ActivityRecentCommentCard {...activityCardData} onThumbPress={onPostThumbPressed} />;
 
-		case NOTIFICATION_TYPES.FRIEND_REQUEST:
-			return (
-				<FriendRequest
-					{...activityCardData}
-					loadingConfirmed={loadingConfirmed.hasOwnProperty(requestId)}
-					loadingDeclined={loadingDeclined.hasOwnProperty(requestId)}
-					onRequestConfirmed={() => onFriendRequestApproved(requestId)}
-					onRequestDeclined={() => onFriendRequestDeclined(requestId)}
-					onViewUserProfile={onViewUserProfile}
-				/>
-			);
-
-		case NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE:
-			return (
-				<NotificationGI
-					{...activityCardData}
-					onCheckNotification={onCheckNotification}
-					onViewUserProfile={onViewUserProfile}
-					loading={loadingNotificationCheck.hasOwnProperty(requestId)}
-				/>
-			);
-
-		case NOTIFICATION_TYPES.SUPER_LIKED:
-			return <ActivitySuperLikedCard {...activityCardData} onThumbPress={onSuperLikedPhotoPressed} />;
-
-		case NOTIFICATION_TYPES.GROUP_REQUEST:
-			return (
-				<GroupRequest
-					{...activityCardData}
-					onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
-					onGroupDeclined={() => onGroupRequestDeclined(requestId)}
-				/>
-			);
+	if (activityCardData.type === NOTIFICATION_TYPES.RECENT_COMMENT) {
+		return <ActivityRecentCommentCard {...activityCardData} onThumbPress={onPostThumbPressed} />;
+	} else if (activityCardData.type === NOTIFICATION_TYPES.FRIEND_REQUEST) {
+		return (
+			<FriendRequest
+				{...activityCardData}
+				loadingConfirmed={loadingConfirmed.hasOwnProperty(requestId)}
+				loadingDeclined={loadingDeclined.hasOwnProperty(requestId)}
+				onRequestConfirmed={() => onFriendRequestApproved(requestId)}
+				onRequestDeclined={() => onFriendRequestDeclined(requestId)}
+				onViewUserProfile={onViewUserProfile}
+			/>
+		);
+	} else if (activityCardData.type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE) {
+		return (
+			<NotificationGI
+				{...activityCardData}
+				onCheckNotification={onCheckNotification}
+				onViewUserProfile={onViewUserProfile}
+				loading={loadingNotificationCheck.hasOwnProperty(requestId)}
+			/>
+		);
+	} else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
+		return (
+			<GroupRequest
+				{...activityCardData}
+				onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
+				onGroupDeclined={() => onGroupRequestDeclined(requestId)}
+			/>
+		);
+	} else if (activityCardData.type === NOTIFICATION_TYPES.SUPER_LIKED) {
+		return <ActivitySuperLikedCard {...activityCardData} onThumbPress={onSuperLikedPhotoPressed} />;
 	}
 	return null;
 };
