@@ -4,35 +4,35 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 import style, {LIST_ITEM_HEIGHT, SECTION_HEADER_HEIGHT} from './style';
 
-// other versions that I tried here were not working on android, when dev. mode disconnected :(
-const ALPHABET_LETTERS = [
-	'a',
-	'b',
-	'c',
-	'd',
-	'e',
-	'f',
-	'g',
-	'h',
-	'i',
-	'j',
-	'k',
-	'l',
-	'm',
-	'n',
-	'o',
-	'p',
-	'q',
-	'r',
-	's',
-	't',
-	'u',
-	'v',
-	'w',
-	'x',
-	'y',
-	'z',
-];
+const ALPHABET_LETTERS = {
+	"A": [],
+	"B": [],
+	"C": [],
+	"D": [],
+	"E": [],
+	"F": [],
+	"G": [],
+	"H": [],
+	"I": [],
+	"J": [],
+	"K": [],
+	"L": [],
+	"M": [],
+	"N": [],
+	"O": [],
+	"P": [],
+	"Q": [],
+	"R": [],
+	"S": [],
+	"T": [],
+	"U": [],
+	"V": [],
+	"W": [],
+	"X": [],
+	"Y": [],
+	"Z": [],
+	'#': [],
+};
 
 export interface IContactListItem {
 	name: string;
@@ -96,18 +96,15 @@ const sortContactsList = (listData: IContactListItem[]) =>
 		return ret;
 	});
 
-const partitionByInitial = (listData: IContactListItem[]) => {
-	const ret: any = {};
-	ALPHABET_LETTERS.forEach((value: string) => {
-		ret[value] = [];
-	});
-	ret['#'] = [];
-	sortContactsList(listData).forEach((contact: IContactListItem) => {
-		const nameInitial = contact.name.substr(0, 1).toUpperCase();
-		ret[ALPHABET_LETTERS.indexOf(nameInitial) >= 0 ? nameInitial : '#'].push(contact);
-	});
-	return ret;
-};
+const partitionByInitial = (listData: IContactListItem[]) =>
+	sortContactsList(listData).reduce((list, contact: IContactListItem, ix) => {
+		const initial = contact.name.split('')[0].toUpperCase();
+		const objectKey = Object.keys(ALPHABET_LETTERS).includes(initial) ? initial : '#';
+		return {
+			...list,
+			[objectKey]: [...(list[objectKey] || []), contact],
+		};
+	}, ALPHABET_LETTERS);
 
 export const ContactsList: React.SFC<IContactsListProps> = ({listData, onContactSelect}) => {
 	const partitionedNames = partitionByInitial(listData);
