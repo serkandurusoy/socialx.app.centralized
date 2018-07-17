@@ -31,8 +31,7 @@ const dataSpine = (notifications: any, getText: any) =>
 			requestId,
 			status,
 			userId,
-		}))
-		.filter((n) => n !== null);
+		}));
 
 interface INotificationsScreenProps extends IWithTranslationProps {
 	notifications: INotificationsResponse;
