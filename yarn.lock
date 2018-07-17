@@ -10178,7 +10178,7 @@ react-native-typescript-transformer@^1.2.3:
     semver "^5.4.1"
     source-map "^0.5.6"
 
-react-native-vector-icons@4.6.0, react-native-vector-icons@^4.5.0:
+react-native-vector-icons@4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.6.0.tgz#e4014311ffa6de397d914ffc31b7097a874cc8d5"
   dependencies:
@@ -10204,9 +10204,9 @@ react-native-version@^2.6.2:
     resolve-from "^4.0.0"
     semver "^5.5.0"
 
-react-native-video@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-2.3.1.tgz#d0df6f984945a67a0cbfc5ad45a5156e2472ccce"
+react-native-video@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-3.1.0.tgz#684f4436eff38e50869530cf6c14e5d08afdc7e4"
   dependencies:
     keymirror "0.1.1"
     prop-types "^15.5.10"
