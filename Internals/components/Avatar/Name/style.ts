@@ -1,13 +1,18 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
+export const CONTAINER_HEIGHT = Sizes.smartHorizontalScale(60);
+
 const style: any = {
+	container: {
+		height: CONTAINER_HEIGHT,
+		paddingVertical: Sizes.smartVerticalScale(10),
+		justifyContent: 'space-between',
+	},
 	fullName: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(16),
 		lineHeight: Sizes.smartHorizontalScale(20),
-		paddingTop: Sizes.smartVerticalScale(10),
-		paddingBottom: Sizes.smartVerticalScale(4),
 		textAlign: 'center',
 	},
 	username: {

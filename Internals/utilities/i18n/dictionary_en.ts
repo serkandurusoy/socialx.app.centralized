@@ -106,4 +106,8 @@ export default {
 	'notifications.check.failed': 'Could not check notification at this time. Try again later..',
 	'notifications.card.generic.hide.notification': 'Hide notification?',
 	'notifications.card.generic.swipeout.label': 'Dismiss',
+	'profile.statistics.photos': 'photos',
+	'profile.statistics.likes': 'likes',
+	'profile.statistics.followers': 'followers',
+	'profile.statistics.following': 'following',
 };

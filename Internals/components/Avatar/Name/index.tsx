@@ -2,7 +2,9 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {Colors} from 'theme';
-import style from './style';
+import style, {CONTAINER_HEIGHT} from './style';
+
+export const AVATAR_NAME_HEIGHT = CONTAINER_HEIGHT;
 
 export interface IAvatarNameProps {
 	fullName: string;
@@ -12,7 +14,7 @@ export interface IAvatarNameProps {
 }
 
 export const AvatarName: React.SFC<IAvatarNameProps> = ({fullName, username, fullNameColor, userNameColor}) => (
-	<View>
+	<View style={style.container}>
 		<Text style={[style.fullName, {color: fullNameColor}]}>{fullName}</Text>
 		{username && username !== '' && <Text style={[style.username, {color: userNameColor}]}>{'@' + username}</Text>}
 	</View>

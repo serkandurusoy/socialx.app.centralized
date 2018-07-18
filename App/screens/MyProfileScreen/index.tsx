@@ -2,20 +2,19 @@ import get from 'lodash/get';
 import React, {Component} from 'react';
 import {AsyncStorage, InteractionManager, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import MyProfileScreenComponent from './screen';
-import style from './style';
-
-import {TooltipDots} from 'components';
-
-import {getUserAvatar, Signout} from 'utilities';
+import {DataProvider} from 'recyclerlistview';
+import uuidv4 from 'uuid/v4';
 
 import {resetNavigationToRoute} from 'backend/actions';
 import {userHoc} from 'backend/graphql';
+import {TooltipDots} from 'components';
 import {Colors} from 'theme';
-import {IMediaProps, IPostsProps, IUserDataResponse} from 'types';
+import {IMediaProps, IMediaViewerObject, IPostsProps, IUserDataResponse, MediaTypeImage} from 'types';
+import {getMediaObjectType, getURLForMediaViewerObject, getUserAvatar, showToastMessage, Signout} from 'utilities';
+import MyProfileScreenComponent from './screen';
+import style from './style';
 
-const GRID_PAGE_SIZE = 20;
-const GRID_MAX_RESULTS = 500;
+const GRID_PAGE_SIZE = 30;
 
 const INITIAL_STATE = {
 	numberOfPhotos: 0,
@@ -27,6 +26,7 @@ const INITIAL_STATE = {
 	username: '',
 	loaded: false,
 	mediaObjects: [],
+	refreshing: false,
 };
 
 interface IMyProfileScreenProps {
@@ -44,6 +44,8 @@ interface IMyProfileScreenState {
 	username?: string;
 	loaded: boolean;
 	mediaObjects: IMediaProps[];
+	refreshing: boolean;
+	gridMediaProvider: DataProvider;
 }
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
@@ -104,10 +106,21 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		}
 	};
 
-	public state = INITIAL_STATE;
-
 	// todo @serkan @jake why?
 	private lastLoadedPhotoIndex = 0;
+
+	private readonly gridPhotosProvider: DataProvider;
+
+	constructor(props: IMyProfileScreenProps) {
+		super(props);
+		this.gridPhotosProvider = new DataProvider((row1: IMediaViewerObject, row2: IMediaViewerObject) => {
+			return row1.index !== row2.index;
+		});
+		this.state = {
+			...INITIAL_STATE,
+			gridMediaProvider: this.gridPhotosProvider,
+		};
+	}
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
@@ -130,8 +143,6 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		return (
 			<MyProfileScreenComponent
 				isLoading={data.loading}
-				totalNumberOfPhotos={GRID_MAX_RESULTS}
-				gridPageSize={GRID_PAGE_SIZE}
 				numberOfPhotos={this.state.numberOfPhotos}
 				numberOfLikes={this.state.numberOfLikes}
 				numberOfFollowers={this.state.numberOfFollowers}
@@ -139,25 +150,36 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 				avatarURL={this.state.avatarURL}
 				fullName={this.state.fullName}
 				username={this.state.username}
-				loadMorePhotosHandler={() => this.loadMorePhotosHandler(GRID_PAGE_SIZE, this.state.numberOfPhotos)}
+				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				getAllPhotos={this.state.mediaObjects}
 				navigation={this.props.navigation}
 				onRefresh={this.refreshPageHandler}
+				refreshing={this.state.refreshing}
+				gridMediaProvider={this.state.gridMediaProvider}
 			/>
 		);
 	}
 
 	// todo @serkan @jake what?
-	private loadMorePhotosHandler = (numberOfResults: number, maxResults: number): IMediaProps[] => {
-		const ret: IMediaProps[] = [];
-		const endIndex = this.lastLoadedPhotoIndex + numberOfResults;
-		for (let i = this.lastLoadedPhotoIndex; i < endIndex; i++) {
-			if (this.lastLoadedPhotoIndex < maxResults) {
-				ret.push(this.state.mediaObjects[i]);
-				this.lastLoadedPhotoIndex++;
-			}
+	private loadMorePhotosHandler = (forceLoad = false) => {
+		const {gridMediaProvider, mediaObjects, refreshing} = this.state;
+		if (this.lastLoadedPhotoIndex < mediaObjects.length && (!refreshing || forceLoad)) {
+			const loadedSize = gridMediaProvider.getSize();
+			const endIndex = this.lastLoadedPhotoIndex + GRID_PAGE_SIZE;
+			const loadedMedia = loadedSize === 0 ? [{index: uuidv4()}] : gridMediaProvider.getAllData();
+			const newMedia = mediaObjects
+				.slice(this.lastLoadedPhotoIndex, endIndex)
+				.map((mObject: IMediaProps, ix: number) => ({
+					url: getURLForMediaViewerObject(mObject),
+					index: this.lastLoadedPhotoIndex + ix,
+					type: getMediaObjectType(mObject),
+				}));
+			const allMedia = [...loadedMedia, ...newMedia];
+			this.setState({
+				gridMediaProvider: gridMediaProvider.cloneWithRows(allMedia),
+			});
+			this.lastLoadedPhotoIndex = allMedia.length;
 		}
-		return ret;
 	};
 
 	private preloadAllMediaObjects = (posts: IPostsProps[]) => {
@@ -199,11 +221,29 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			loaded: true,
 			mediaObjects: posts ? this.preloadAllMediaObjects(posts) : [],
 		});
+
+		this.lastLoadedPhotoIndex = 0;
+		this.setState(
+			{
+				gridMediaProvider: this.state.gridMediaProvider.cloneWithRows([{index: uuidv4()}]),
+			},
+			() => this.loadMorePhotosHandler(true),
+		);
 	};
 
 	private refreshPageHandler = async () => {
-		const res = await this.props.data.refetch();
-		this.updateScreenData(res.data);
+		this.setState({
+			refreshing: true,
+		});
+		try {
+			const res = await this.props.data.refetch();
+			this.updateScreenData(res.data);
+		} catch (ex) {
+			showToastMessage('Could not refresh your profile: ' + ex);
+		}
+		this.setState({
+			refreshing: false,
+		});
 	};
 }
 

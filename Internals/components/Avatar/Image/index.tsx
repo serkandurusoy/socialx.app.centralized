@@ -1,7 +1,9 @@
 import React from 'react';
 import {Image, StyleProp} from 'react-native';
 
-import style from './style';
+import style, {AVATAR_SIZE} from './style';
+
+export const DEFAULT_AVATAR_SIZE = AVATAR_SIZE;
 
 export interface IAvatarImageProps {
 	image: any;
@@ -9,7 +11,7 @@ export interface IAvatarImageProps {
 }
 
 export const AvatarImage: React.SFC<IAvatarImageProps> = ({image, style: customStyle}) => {
-	return <Image source={image} resizeMode={'cover'} style={customStyle}/>;
+	return <Image source={image} resizeMode={'cover'} style={customStyle} />;
 };
 
 AvatarImage.defaultProps = {

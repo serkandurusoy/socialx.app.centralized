@@ -1,6 +1,9 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
+export const USER_MEDIA_THUMB_SIZE = Sizes.getThumbSize();
+export const HEADER_TOP_PADDING = Sizes.smartVerticalScale(19);
+
 const style: any = {
 	container: {
 		backgroundColor: Colors.white,
@@ -11,7 +14,7 @@ const style: any = {
 		backgroundColor: Colors.white,
 	},
 	topContainer: {
-		paddingTop: Sizes.smartVerticalScale(19),
+		paddingTop: HEADER_TOP_PADDING,
 	},
 	aboutMeContainer: {
 		width: '100%',
@@ -61,6 +64,10 @@ const style: any = {
 	},
 	titleBarRightButton: {
 		marginRight: Sizes.smartHorizontalScale(10),
+	},
+	gridMediaThumb: {
+		width: USER_MEDIA_THUMB_SIZE,
+		height: USER_MEDIA_THUMB_SIZE,
 	},
 };
 
