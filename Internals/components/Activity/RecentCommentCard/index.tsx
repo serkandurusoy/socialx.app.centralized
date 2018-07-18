@@ -2,7 +2,8 @@ import moment from 'moment';
 import React from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
-import {AvatarImage} from '../../Avatar';
+import {AvatarImage} from 'components';
+import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
 export interface ActivityRecentCommentCardPosts {
@@ -10,7 +11,7 @@ export interface ActivityRecentCommentCardPosts {
 	postId: string;
 }
 
-export interface IActivityRecentCommentCardProps {
+export interface IActivityRecentCommentCardProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	timestamp: Date;
@@ -38,20 +39,27 @@ const WallPostThumbs: React.SFC<IWallPostsProps> = ({wallPosts, onThumbPress}) =
 	</ScrollView>
 );
 
-export const ActivityRecentCommentCard: React.SFC<IActivityRecentCommentCardProps> = (props) => (
+export const ActivityRecentComment: React.SFC<IActivityRecentCommentCardProps> = ({
+	avatarURL,
+	fullName,
+	timestamp,
+	wallPosts,
+	onThumbPress,
+	getText,
+}) => (
 	<View style={style.container}>
-		<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
+		<AvatarImage image={{uri: avatarURL}} style={style.avatarImage} />
 		<View style={style.rightContainer}>
 			<View style={style.topRightRow}>
-				<Text style={style.fullName}>{props.fullName}</Text>
-				<Text style={style.notificationTimestamp}>{moment(props.timestamp).fromNow()}</Text>
+				<Text style={style.fullName}>{fullName}</Text>
+				<Text style={style.notificationTimestamp}>{moment(timestamp).fromNow()}</Text>
 			</View>
 			<Text style={style.activityActionText}>
-				{'Commented on '}
-				{props.wallPosts.length}
-				{' recent posts'}
+				{getText('notifications.card.recent.comment.title', wallPosts.length)}
 			</Text>
-			<WallPostThumbs wallPosts={props.wallPosts} onThumbPress={props.onThumbPress} />
+			<WallPostThumbs wallPosts={wallPosts} onThumbPress={onThumbPress} />
 		</View>
 	</View>
 );
+
+export const ActivityRecentCommentCard = withTranslations(ActivityRecentComment);

@@ -3,106 +3,64 @@ import {ActivityIndicator, Image, Text, TouchableOpacity, View} from 'react-nati
 
 import {AvatarImage} from 'components';
 import {Icons} from 'theme';
-import {showToastMessage} from 'utilities';
+import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
-export interface IFriendRequestProps {
+export interface IFriendRequestProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;
 	userId: string;
-	onRequestConfirmed: () => Promise<any>;
-	onRequestDeclined: () => Promise<any>;
+	onRequestConfirmed: () => void;
+	onRequestDeclined: () => void;
 	onViewUserProfile: (userId: string) => void;
-}
-
-interface IFriendRequestState {
 	loadingConfirmed: boolean;
 	loadingDeclined: boolean;
 }
 
-export class FriendRequest extends React.Component<IFriendRequestProps, IFriendRequestState> {
-	public state = {
-		loadingConfirmed: false,
-		loadingDeclined: false,
-	};
+const InlineLoader: React.SFC = () => (
+	<View style={style.iconTouch}>
+		<ActivityIndicator size={'small'} />
+	</View>
+);
 
-	get isLoading() {
-		return this.state.loadingConfirmed || this.state.loadingDeclined;
-	}
-
-	public render() {
-		return (
-			<View style={style.container}>
-				<TouchableOpacity style={style.leftContainer} onPress={() => this.props.onViewUserProfile(this.props.userId)}>
-					<AvatarImage image={{uri: this.props.avatarURL}} style={style.avatarImage} />
-					<View style={style.avatarNameContainer}>
-						<Text style={style.fullName}>{this.props.fullName}</Text>
-						{this.renderUsername()}
-						<Text style={style.friendRequest}>{'Friend Request'}</Text>
-					</View>
+export const FriendRequestComp: React.SFC<IFriendRequestProps> = ({
+	loadingConfirmed,
+	loadingDeclined,
+	username,
+	fullName,
+	userId,
+	onViewUserProfile,
+	avatarURL,
+	onRequestConfirmed,
+	onRequestDeclined,
+	getText,
+}) => {
+	const isLoading = loadingConfirmed || loadingDeclined;
+	return (
+		<View style={style.container}>
+			<TouchableOpacity style={style.leftContainer} onPress={() => onViewUserProfile(userId)}>
+				<AvatarImage image={{uri: avatarURL}} style={style.avatarImage} />
+				<View style={style.avatarNameContainer}>
+					<Text style={style.fullName}>{fullName}</Text>
+					{username !== '' && <Text style={style.username}>{'@' + username}</Text>}
+					<Text style={style.friendRequest}>{getText('notifications.card.friend.request.title')}</Text>
+				</View>
+			</TouchableOpacity>
+			{!loadingConfirmed && (
+				<TouchableOpacity onPress={onRequestConfirmed} style={style.iconTouch} disabled={isLoading}>
+					<Image source={Icons.greenRoundCheck} style={style.iconImage} />
 				</TouchableOpacity>
-				{this.renderWithInlineLoader(
-					<TouchableOpacity onPress={this.requestConfirmedHandler} style={style.iconTouch} disabled={this.isLoading}>
-						<Image source={Icons.greenRoundCheck} style={style.iconImage} />
-					</TouchableOpacity>,
-					this.state.loadingConfirmed,
-				)}
-				{this.renderWithInlineLoader(
-					<TouchableOpacity onPress={this.requestDeclinedHandler} style={style.iconTouch} disabled={this.isLoading}>
-						<Image source={Icons.redRoundCross} style={style.iconImage} />
-					</TouchableOpacity>,
-					this.state.loadingDeclined,
-				)}
-			</View>
-		);
-	}
+			)}
+			{loadingConfirmed && <InlineLoader />}
+			{!loadingDeclined && (
+				<TouchableOpacity onPress={onRequestDeclined} style={style.iconTouch} disabled={isLoading}>
+					<Image source={Icons.redRoundCross} style={style.iconImage} />
+				</TouchableOpacity>
+			)}
+			{loadingDeclined && <InlineLoader />}
+		</View>
+	);
+};
 
-	private renderWithInlineLoader = (component: React.ReactElement<any>, loading: boolean) => {
-		if (!loading) {
-			return component;
-		}
-		return (
-			<View style={style.iconTouch}>
-				<ActivityIndicator size={'small'} />
-			</View>
-		);
-	};
-
-	private renderUsername = () => {
-		if (this.props.username !== '') {
-			return <Text style={style.username}>{'@' + this.props.username}</Text>;
-		}
-		return null;
-	};
-
-	private requestConfirmedHandler = async () => {
-		try {
-			this.setState({
-				loadingConfirmed: true,
-			});
-			await this.props.onRequestConfirmed();
-		} catch (ex) {
-			console.log(`ex: ${ex}`);
-			this.setState({
-				loadingConfirmed: false,
-			});
-			showToastMessage('Friend request could not be accepted at this time. Try again later..');
-		}
-	};
-
-	private requestDeclinedHandler = async () => {
-		try {
-			this.setState({
-				loadingDeclined: true,
-			});
-			await this.props.onRequestDeclined();
-		} catch (ex) {
-			console.log(`ex: ${ex}`);
-			this.setState({
-				loadingDeclined: false,
-			});
-			showToastMessage('Friend request could not be declined at this time. Try again later..');
-		}
-	};
-}
+export const FriendRequest = withTranslations(FriendRequestComp);

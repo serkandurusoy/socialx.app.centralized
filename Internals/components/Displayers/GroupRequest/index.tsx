@@ -3,9 +3,10 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 import {AvatarImage} from 'components';
 import {Icons} from 'theme';
+import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
-export interface IGroupRequestProps {
+export interface IGroupRequestProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	groupName: string;
@@ -13,23 +14,32 @@ export interface IGroupRequestProps {
 	onGroupDeclined: () => void;
 }
 
-export const GroupRequest: React.SFC<IGroupRequestProps> = (props) => {
+export const GroupRequestComp: React.SFC<IGroupRequestProps> = ({
+	avatarURL,
+	fullName,
+	groupName,
+	onGroupConfirmed,
+	onGroupDeclined,
+	getText,
+}) => {
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<AvatarImage image={{uri: props.avatarURL}} style={style.avatarImage} />
+				<AvatarImage image={{uri: avatarURL}} style={style.avatarImage} />
 				<View style={style.avatarNameContainer}>
-					<Text style={style.fullName}>{props.fullName}</Text>
-					<Text style={style.inviteText}>{'Invited you to group'}</Text>
-					<Text style={style.groupName}>{'@' + props.groupName}</Text>
+					<Text style={style.fullName}>{fullName}</Text>
+					<Text style={style.inviteText}>{getText('notifications.card.group.request.title')}</Text>
+					<Text style={style.groupName}>{'@' + groupName}</Text>
 				</View>
 			</View>
-			<TouchableOpacity onPress={props.onGroupConfirmed} style={style.iconTouch}>
+			<TouchableOpacity onPress={onGroupConfirmed} style={style.iconTouch}>
 				<Image source={Icons.greenRoundCheck} style={style.iconImage} />
 			</TouchableOpacity>
-			<TouchableOpacity onPress={props.onGroupDeclined} style={style.iconTouch}>
+			<TouchableOpacity onPress={onGroupDeclined} style={style.iconTouch}>
 				<Image source={Icons.redRoundCross} style={style.iconImage} />
 			</TouchableOpacity>
 		</View>
 	);
 };
+
+export const GroupRequest = withTranslations(GroupRequestComp);
