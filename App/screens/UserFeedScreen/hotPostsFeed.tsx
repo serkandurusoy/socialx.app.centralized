@@ -2,40 +2,27 @@ import {getAllPostsHoc} from 'backend/graphql';
 import {ScreenHeaderButton} from 'components';
 import React from 'react';
 import {View} from 'react-native';
-import {NavigationScreenProp, NavigationStackScreenOptions} from 'react-navigation';
+import {NavigationScreenProp} from 'react-navigation';
 import UserFeedScreen, {IFeedProps} from './index';
 
-interface IWithHotPostsFeedProps {
+interface IWithNavigationProps {
 	navigation: NavigationScreenProp<any>;
 }
 
-const withHotPostsFeed = (
-	BaseComponent: React.ComponentType<IFeedProps>,
-	navOptions: Partial<NavigationStackScreenOptions> = {},
-) => {
-	return class extends React.Component<IWithHotPostsFeedProps> {
-		private static navigationOptions = navOptions;
+const withHotPostsFeed = (BaseComponent: React.ComponentType<IFeedProps>) => {
+	return class extends React.Component {
+		private static navigationOptions = ({navigation}: IWithNavigationProps) => ({
+			title: 'HOT POSTS NOW',
+			headerRight: <ScreenHeaderButton onPress={() => navigation.goBack(null)} iconName={'ios-arrow-forward'} />,
+			headerLeft: <View />,
+		});
 
 		public render() {
-			return <BaseComponent navigation={this.props.navigation} hideShareSection={true} />;
+			return <BaseComponent shareSectionPlaceholder={null} {...this.props} />;
 		}
 	};
 };
 
-const navigationOptions = (props: any): Partial<NavigationStackScreenOptions> => {
-	return {
-		title: 'HOT POSTS NOW',
-		headerRight: <ScreenHeaderButton onPress={() => returnToRegularUserFeed(props)} iconName={'ios-arrow-forward'} />,
-		headerLeft: <View />,
-	};
-};
-
-const returnToRegularUserFeed = (props: IFeedProps) => {
-	// go back two times, not optimal but works!
-	props.navigation.goBack(null);
-	props.navigation.goBack(null);
-};
-
 // TODO @Jake: update posts hook here!
 const withHotPosts = getAllPostsHoc(UserFeedScreen);
-export default withHotPostsFeed(withHotPosts as any, navigationOptions as any);
+export default withHotPostsFeed(withHotPosts as any);

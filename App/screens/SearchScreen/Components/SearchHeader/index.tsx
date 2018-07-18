@@ -1,6 +1,7 @@
 import React from 'react';
-import {Keyboard, SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {Keyboard, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {SafeAreaView} from 'react-navigation';
 
 import {InputSizes, SXTextInput, TRKeyboardKeys} from 'components';
 import {Colors} from 'theme';

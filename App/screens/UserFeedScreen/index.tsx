@@ -42,9 +42,7 @@ import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/scree
 import {IMediaRec} from './types';
 
 export interface IFeedProps {
-	navigation: NavigationScreenProp<any>;
-	hideShareSection: boolean;
-	searchTerm: string;
+	shareSectionPlaceholder: string | null;
 }
 
 interface IUserFeedScreenProps extends IFeedProps {
@@ -67,6 +65,7 @@ interface IUserFeedScreenProps extends IFeedProps {
 	noPosts: boolean;
 	loadMore: () => any;
 	hasMore: boolean;
+	navigation: NavigationScreenProp<any>;
 }
 
 interface IUserFeedScreenState {
@@ -117,7 +116,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				loadMorePosts={this.onLoadMore}
 				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
-				hideShareSection={this.props.hideShareSection}
+				shareSectionPlaceholder={this.props.shareSectionPlaceholder}
 				onLikePress={this.onLikeButtonClickHandler}
 				onPostDeletePress={this.onPostDeleteClickHandler}
 				onUserPress={this.gotoUserProfile}

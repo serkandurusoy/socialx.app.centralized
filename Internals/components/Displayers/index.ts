@@ -29,3 +29,4 @@ export * from './MediaObject';
 export * from './NewGridPhotos';
 export * from './GovernanceCard';
 export * from './DotsWithTooltips';
+export * from './FeedTabBar';
