@@ -31,10 +31,24 @@ const style: any = {
 	},
 	alphabetListItem: {
 		...Fonts.centuryGothic,
-		color: Colors.postText,
+		color: Colors.tundora,
 		fontSize: ALPHABET_ITEM_FONT_SIZE,
 		width: Sizes.smartHorizontalScale(30),
 		textAlign: 'center',
+	},
+	alphabetView: {
+		// for this to work we need to fork the lib.
+		// and set in SectionComponent {flex:1} for View wrapping {child}
+		// else on smaller screens, see iPhoneSE list will get truncated
+		// flex: 1,
+		justifyContent: 'center',
+	},
+	sectionListStyle: {
+		justifyContent: 'space-between',
+		marginVertical: Sizes.smartVerticalScale(10),
+	},
+	alphabetListItemDisabled: {
+		opacity: 0.5,
 	},
 	sectionHeaderContainer: {
 		height: SECTION_HEADER_HEIGHT,

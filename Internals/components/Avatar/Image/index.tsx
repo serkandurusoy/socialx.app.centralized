@@ -8,8 +8,8 @@ export interface IAvatarImageProps {
 	style?: StyleProp<Image>;
 }
 
-export const AvatarImage: React.SFC<IAvatarImageProps> = (props) => {
-	return <Image source={props.image} resizeMode={'cover'} style={props.style} />;
+export const AvatarImage: React.SFC<IAvatarImageProps> = ({image, style: customStyle}) => {
+	return <Image source={image} resizeMode={'cover'} style={customStyle}/>;
 };
 
 AvatarImage.defaultProps = {

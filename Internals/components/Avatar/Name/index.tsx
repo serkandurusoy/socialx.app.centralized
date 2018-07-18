@@ -11,21 +11,12 @@ export interface IAvatarNameProps {
 	userNameColor?: string;
 }
 
-export const AvatarName: React.SFC<IAvatarNameProps> = (props) => {
-	const renderUserName = () => {
-		if (props.username && props.username !== '') {
-			return <Text style={[style.username, {color: props.userNameColor}]}>{'@' + props.username}</Text>;
-		}
-		return null;
-	};
-
-	return (
-		<View>
-			<Text style={[style.fullName, {color: props.fullNameColor}]}>{props.fullName}</Text>
-			{renderUserName()}
-		</View>
-	);
-};
+export const AvatarName: React.SFC<IAvatarNameProps> = ({fullName, username, fullNameColor, userNameColor}) => (
+	<View>
+		<Text style={[style.fullName, {color: fullNameColor}]}>{fullName}</Text>
+		{username && username !== '' && <Text style={[style.username, {color: userNameColor}]}>{'@' + username}</Text>}
+	</View>
+);
 
 AvatarName.defaultProps = {
 	fullNameColor: Colors.userAvatarFullName,

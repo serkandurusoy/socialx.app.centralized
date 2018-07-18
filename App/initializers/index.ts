@@ -31,20 +31,24 @@ export default async () => {
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
 		// tslint:disable-next-line
-		console.log = () => {
-		};
+		console.log = () => {};
 	}
 };
 
 const computeAppVersion = () => {
 	const packageVersion = DeviceInfo.getVersion();
 	const computedVersion = parseInt(packageVersion.replace(/\D/g, ''), 10);
-	return Platform.OS === OS_TYPES.Android ? computedVersion * 10 + 2 : computedVersion * 10 + 1
+	return Platform.OS === OS_TYPES.Android ? computedVersion * 10 + 2 : computedVersion * 10 + 1;
 };
 
-const bugSnagConf = new Configuration();
-bugSnagConf.appVersion = computeAppVersion().toString();
-const BugSnag = !(__DEV__) ? new Client(bugSnagConf) : null;
+let BugSnag: Client | null = null;
+if (!__DEV__) {
+	const bugSnagConf = new Configuration();
+	bugSnagConf.appVersion = computeAppVersion().toString();
+	bugSnagConf.autoCaptureSessions = false;
+	BugSnag = new Client(bugSnagConf);
+	BugSnag.startSession();
+}
 
 // only use this helper method because in dev. mode BugSnag is not initialized to avoid unnecessary reports
 export const snagReport = (message: string) => {

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 
 import {AvatarImage} from '../Image';
@@ -13,16 +13,15 @@ export interface IUserAvatarProps {
 	fullNameColor?: string;
 }
 
-export const UserAvatar: React.SFC<IUserAvatarProps> = (props) => {
-	return (
-		<View style={style.container}>
-			<AvatarImage image={props.avatarURL} />
-			<AvatarName
-				fullName={props.fullName}
-				username={props.username}
-				fullNameColor={props.fullNameColor}
-				userNameColor={props.usernameColor}
-			/>
-		</View>
-	);
-};
+export const UserAvatar: React.SFC<IUserAvatarProps> = ({
+	avatarURL,
+	fullName,
+	username,
+	usernameColor,
+	fullNameColor,
+}) => (
+	<View style={style.container}>
+		<AvatarImage image={avatarURL} />
+		<AvatarName fullName={fullName} username={username} fullNameColor={fullNameColor} userNameColor={usernameColor} />
+	</View>
+);

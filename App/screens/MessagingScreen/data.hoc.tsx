@@ -2,7 +2,6 @@ import {IContactListItem} from 'components/Displayers';
 import {MessagingFilterValues} from 'components/Messaging';
 import React from 'react';
 import {View} from 'react-native';
-import {NavigationStackScreenOptions} from 'react-navigation';
 import {DUMMY_CONTACTS_LIST} from '../../../storybook/stories/ContactsList.stories';
 import {IChatListEntry} from './index';
 
