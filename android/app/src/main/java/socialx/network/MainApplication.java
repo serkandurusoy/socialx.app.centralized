@@ -28,11 +28,8 @@ import com.rnfs.RNFSPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.cmcewen.blurview.BlurViewPackage;
-import com.microsoft.appcenter.reactnative.crashes.AppCenterReactNativeCrashesPackage;
 
 import com.amazonaws.RNAWSCognitoPackage;
-import com.microsoft.appcenter.reactnative.analytics.AppCenterReactNativeAnalyticsPackage;
-import com.microsoft.appcenter.reactnative.appcenter.AppCenterReactNativePackage;
 
 import com.oney.WebRTCModule.WebRTCModulePackage;
 
@@ -80,10 +77,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new RNFetchBlobPackage(),
                 new ReactNativeConfigPackage(),
                 new BlurViewPackage(),
-                new RNAWSCognitoPackage(),
-                new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
-                new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
-                new AppCenterReactNativePackage(MainApplication.this)
+                new RNAWSCognitoPackage()
             );
         }
 
