@@ -24,6 +24,8 @@ export const getUserQueryProfileQ = gql`
 					Media {
 						id
 						hash
+						type
+						size
 					}
 				}
 				avatar {

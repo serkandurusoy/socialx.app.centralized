@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, RefObject} from 'react';
 import {Image, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,6 +26,38 @@ interface IAddFriendButtonState {
 	kind: SearchResultKind;
 }
 
+const IsFriend: React.SFC = () => (
+	<Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isFiendIcon} />
+);
+
+const addButtonRef: RefObject<Animatable.View> = React.createRef();
+
+const AddFriend: React.SFC<{
+	loading: boolean;
+	addLabel: string;
+	onAddFriendHandler: () => void;
+}> = ({loading, addLabel, onAddFriendHandler}) => (
+	<Animatable.View ref={addButtonRef}>
+		<SXButton
+			loading={loading}
+			label={addLabel}
+			size={ButtonSizes.Small}
+			autoWidth={true}
+			borderColor={Colors.transparent}
+			onPress={onAddFriendHandler}
+		/>
+	</Animatable.View>
+);
+
+const RequestSent: React.SFC<{withAnimation: boolean}> = ({withAnimation}) => {
+	const ViewComponent = withAnimation ? Animatable.View : View;
+	return (
+		<ViewComponent animation={IN_ANIMATION_NAME} easing='ease-out' iterationCount={1} duration={IN_ANIMATION_DURATION}>
+			<Icon name={'ios-swap'} style={style.friendRequestSentIcon} />
+		</ViewComponent>
+	);
+};
+
 export class AddFriendButton extends Component<IAddFriendButtonProps, IAddFriendButtonState> {
 	private static defaultProps: Partial<IAddFriendButtonProps> = {
 		addLabel: 'Add',
@@ -37,56 +69,27 @@ export class AddFriendButton extends Component<IAddFriendButtonProps, IAddFriend
 		kind: this.props.kind,
 	};
 
-	private addButtonRef = null;
 	private renderWithAnimation = false;
 
 	public render() {
-		let ret = null;
-		if (this.state.kind === SearchResultKind.NotFriend) {
-			ret = this.renderAddFriend();
-		} else if (this.state.kind === SearchResultKind.Friend) {
-			ret = this.renderIsFriend();
-		} else if (this.state.kind === SearchResultKind.FriendRequestSent) {
-			ret = this.renderRequestSent();
-		} else if (this.state.kind === SearchResultKind.Group) {
-			ret = null;
+		const {kind, loading} = this.state;
+		const {addLabel} = this.props;
+
+		const withAnimation = this.renderWithAnimation;
+		if (kind === SearchResultKind.FriendRequestSent) {
+			this.renderWithAnimation = false;
 		}
-		return ret;
+
+		return (
+			<View>
+				{kind === SearchResultKind.NotFriend && (
+					<AddFriend loading={loading} addLabel={addLabel} onAddFriendHandler={this.onAddFriendHandler} />
+				)}
+				{kind === SearchResultKind.Friend && <IsFriend />}
+				{kind === SearchResultKind.FriendRequestSent && <RequestSent withAnimation={withAnimation} />}
+			</View>
+		);
 	}
-
-	private renderIsFriend = () => {
-		return <Image source={Icons.peopleSearchResultIsFriend} resizeMode={'contain'} style={style.isFiendIcon} />;
-	};
-
-	private renderAddFriend = () => {
-		return (
-			<Animatable.View ref={(ref: any) => (this.addButtonRef = ref)}>
-				<SXButton
-					loading={this.state.loading}
-					label={this.props.addLabel}
-					size={ButtonSizes.Small}
-					autoWidth={true}
-					borderColor={Colors.transparent}
-					onPress={this.onAddFriendHandler}
-				/>
-			</Animatable.View>
-		);
-	};
-
-	private renderRequestSent = () => {
-		const ViewComponent = this.renderWithAnimation ? Animatable.View : View;
-		this.renderWithAnimation = false;
-		return (
-			<ViewComponent
-				animation={IN_ANIMATION_NAME}
-				easing='ease-out'
-				iterationCount={1}
-				duration={IN_ANIMATION_DURATION}
-			>
-				<Icon name={'ios-swap'} style={style.friendRequestSentIcon} />
-			</ViewComponent>
-		);
-	};
 
 	private onAddFriendHandler = () => {
 		this.setState({
@@ -94,7 +97,7 @@ export class AddFriendButton extends Component<IAddFriendButtonProps, IAddFriend
 		});
 		this.props.onAddFriend().then(
 			() => {
-				this.addButtonRef.animate(this.props.outAnimation, OUT_ANIMATION_DURATION).then(() => {
+				addButtonRef.current.animate(this.props.outAnimation, OUT_ANIMATION_DURATION).then(() => {
 					this.renderWithAnimation = true;
 					this.setState({
 						loading: false,

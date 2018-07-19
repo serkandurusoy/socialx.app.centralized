@@ -285,13 +285,15 @@ class MediaLicenceScreenComponent extends Component<
 					<NewGridPhotos
 						thumbWidth={THUMB_WIDTH}
 						thumbHeight={THUMB_HEIGHT}
-						showsVerticalScrollIndicator={false}
 						renderGridItem={this.renderGridItemHandler}
 						onLoadMore={this.props.onLoadMoreSimilarMedia}
 						dataProvider={this.state.similarMediaDataProvider}
 						onScroll={this.gridScrollUpdatedHandler}
 						extendedState={{likeCounter: this.state.likeToggleCounter}}
-						scrollViewProps={{scrollEnabled: !this.state.scrollEnabled}}
+						scrollViewProps={{
+							scrollEnabled: !this.state.scrollEnabled,
+							showsVerticalScrollIndicator: false,
+						}}
 					/>
 				</View>
 			</View>

@@ -11,7 +11,7 @@ enum ViewTypes {
 	HEADER_LAYOUT = 1,
 }
 
-interface IHeaderType {
+export interface IHeaderType {
 	element: ReactElement<any>;
 	height: number;
 }
@@ -21,17 +21,18 @@ interface INewGridPhotosProps {
 	pageSize?: number;
 	thumbWidth?: number;
 	thumbHeight?: number;
-	onScroll?: (rawEvent: any, offsetX: number, offsetY: number) => void; // TODO: not needed?
 	renderGridItem: (type: ReactText, data: any) => JSX.Element;
 	bounces?: boolean;
 	dataProvider: DataProvider;
-	extendedState?: any; // TODO: remove here?
 	scrollViewProps?: any;
 	header?: IHeaderType;
+	// TODO: later revisit below two props for used in MediaLicenceScreenComponent
+	extendedState?: any;
+	onScroll?: (rawEvent: any, offsetX: number, offsetY: number) => void;
 }
 
 let gridProviderInstance: LayoutProvider | null = null;
-
+// TODO: @Serkan: any better options for a singleton here?
 const getGridProvider = (thumbWidth: number, thumbHeight: number, header: IHeaderType) => {
 	if (!gridProviderInstance) {
 		gridProviderInstance = new LayoutProvider(
@@ -39,7 +40,7 @@ const getGridProvider = (thumbWidth: number, thumbHeight: number, header: IHeade
 				if (header && index === 0) {
 					return ViewTypes.HEADER_LAYOUT;
 				}
-				return ViewTypes.ITEM_LAYOUT; // use different values if we need to render object with different types
+				return ViewTypes.ITEM_LAYOUT;
 			},
 			(type: ReactText, dim: any) => {
 				if (type === ViewTypes.HEADER_LAYOUT) {

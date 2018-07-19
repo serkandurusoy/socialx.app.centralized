@@ -1,11 +1,12 @@
 import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
-export const CONTAINER_HEIGHT = Sizes.smartHorizontalScale(60);
+export const CONTAINER_HEIGHT_FULL = Sizes.smartHorizontalScale(60);
+export const CONTAINER_HEIGHT_NAME_ONLY = Sizes.smartHorizontalScale(40);
 
 const style: any = {
 	container: {
-		height: CONTAINER_HEIGHT,
+		height: CONTAINER_HEIGHT_FULL,
 		paddingVertical: Sizes.smartVerticalScale(10),
 		justifyContent: 'space-between',
 	},

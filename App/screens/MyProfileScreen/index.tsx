@@ -1,20 +1,35 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {AsyncStorage, InteractionManager, View} from 'react-native';
+import {AsyncStorage, View} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
+import {compose} from 'recompose';
 import {DataProvider} from 'recyclerlistview';
 import uuidv4 from 'uuid/v4';
 
 import {resetNavigationToRoute} from 'backend/actions';
 import {userHoc} from 'backend/graphql';
-import {TooltipDots} from 'components';
-import {Colors} from 'theme';
-import {IMediaProps, IMediaViewerObject, IPostsProps, IUserDataResponse, MediaTypeImage} from 'types';
-import {getMediaObjectType, getURLForMediaViewerObject, getUserAvatar, showToastMessage, Signout} from 'utilities';
+import {
+	AVATAR_NAME_HEIGHT,
+	DEFAULT_AVATAR_SIZE,
+	HEADER_TOP_PADDING,
+	PROFILE_STATS_HEIGHT,
+	TooltipDots,
+} from 'components';
+import {Colors, Icons} from 'theme';
+import {IMediaProps, IMediaViewerObject, IPostsProps, IUserDataResponse} from 'types';
+import {
+	getMediaObjectType,
+	getURLForMediaViewerObject,
+	getUserAvatar,
+	IWithTranslationProps,
+	showToastMessage,
+	Signout,
+	withTranslations,
+} from 'utilities';
 import MyProfileScreenComponent from './screen';
 import style from './style';
 
-const GRID_PAGE_SIZE = 30;
+const GRID_PAGE_SIZE = 20;
 
 const INITIAL_STATE = {
 	numberOfPhotos: 0,
@@ -29,7 +44,7 @@ const INITIAL_STATE = {
 	refreshing: false,
 };
 
-interface IMyProfileScreenProps {
+interface IMyProfileScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	data: IUserDataResponse;
 }
@@ -48,59 +63,64 @@ interface IMyProfileScreenState {
 	gridMediaProvider: DataProvider;
 }
 
+const TOTAL_HEADER_HEIGHT = HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + AVATAR_NAME_HEIGHT + PROFILE_STATS_HEIGHT;
+
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
-	private static navigationOptions = (props: IMyProfileScreenProps) => ({
-		title: 'PROFILE',
+	private static navigationOptions = ({navigation, navigationOptions}) => ({
+		title: navigationOptions.getText('my.profile.screen.title'),
 		headerLeft: <View />,
 		headerRight: (
 			<View style={style.titleBarRightButton}>
-				<TooltipDots items={MyProfileScreen.getTooltipItems(props)} iconColor={Colors.white} />
+				<TooltipDots
+					items={MyProfileScreen.getTooltipItems(navigation, navigationOptions.getText)}
+					iconColor={Colors.white}
+				/>
 			</View>
 		),
 	});
 
-	private static getTooltipItems = (props: IMyProfileScreenProps) => {
+	private static getTooltipItems = (navigation: NavigationScreenProp<any>, getText: any) => {
 		return [
 			// {
-			// 	label: 'Profile Analytics',
+			// 	label: getText('my.profile.screen.menu.profile.analytics'),
 			// 	icon: Icons.iconProfileAnalytics,
-			// 	actionHandler: () => MyProfileScreen.goToProfileAnalyticsPage(props),
+			// 	actionHandler: () => MyProfileScreen.goToProfileAnalyticsPage(navigation),
 			// },
 			// {
-			// 	label: 'Wallet',
+			// 	label: getText('my.profile.screen.menu.wallet'),
 			// 	icon: Icons.iconWallet2,
-			// 	actionHandler: () => MyProfileScreen.goToWalletActivityPage(props),
+			// 	actionHandler: () => MyProfileScreen.goToWalletActivityPage(navigation),
 			// },
 			{
-				label: 'Settings',
+				label: getText('my.profile.screen.menu.settings'),
 				icon: 'ios-settings-outline',
-				actionHandler: () => MyProfileScreen.goToSettingsPage(props),
+				actionHandler: () => MyProfileScreen.goToSettingsPage(navigation),
 			},
 			{
-				label: 'Logout',
+				label: getText('my.profile.screen.menu.logout'),
 				icon: 'ios-log-out',
-				actionHandler: () => MyProfileScreen.logoutHandler(props),
+				actionHandler: () => MyProfileScreen.logoutHandler(navigation),
 			},
 		];
 	};
 
-	private static goToProfileAnalyticsPage = (props: IMyProfileScreenProps) => {
-		props.navigation.navigate('ProfileAnalyticsScreen');
+	private static goToProfileAnalyticsPage = (navigation: NavigationScreenProp<any>) => {
+		navigation.navigate('ProfileAnalyticsScreen');
 	};
 
-	private static goToWalletActivityPage = (props: IMyProfileScreenProps) => {
-		props.navigation.navigate('WalletActivityScreen');
+	private static goToWalletActivityPage = (navigation: NavigationScreenProp<any>) => {
+		navigation.navigate('WalletActivityScreen');
 	};
 
-	private static goToSettingsPage = (props: IMyProfileScreenProps) => {
-		props.navigation.navigate('SettingsScreen');
+	private static goToSettingsPage = (navigation: NavigationScreenProp<any>) => {
+		navigation.navigate('SettingsScreen');
 	};
 
-	private static logoutHandler = async (props: IMyProfileScreenProps) => {
+	private static logoutHandler = async (navigation: NavigationScreenProp<any>) => {
 		try {
 			await Signout();
 			await AsyncStorage.clear();
-			resetNavigationToRoute('PreAuthScreen', props.navigation);
+			resetNavigationToRoute('PreAuthScreen', navigation);
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -122,14 +142,6 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		};
 	}
 
-	public componentDidMount() {
-		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({
-				refreshScreen: this.props.data.refetch,
-			});
-		});
-	}
-
 	public componentWillReceiveProps(nextProps: IMyProfileScreenProps) {
 		const {data} = nextProps;
 		if (data.loading || this.state.loaded) {
@@ -140,22 +152,36 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 
 	public render() {
 		const {data} = this.props;
+		const {
+			numberOfPhotos,
+			numberOfLikes,
+			numberOfFollowers,
+			numberOfFollowing,
+			avatarURL,
+			fullName,
+			username,
+			refreshing,
+			gridMediaProvider,
+			mediaObjects,
+		} = this.state;
 		return (
 			<MyProfileScreenComponent
 				isLoading={data.loading}
-				numberOfPhotos={this.state.numberOfPhotos}
-				numberOfLikes={this.state.numberOfLikes}
-				numberOfFollowers={this.state.numberOfFollowers}
-				numberOfFollowing={this.state.numberOfFollowing}
-				avatarURL={this.state.avatarURL}
-				fullName={this.state.fullName}
-				username={this.state.username}
+				numberOfPhotos={numberOfPhotos}
+				numberOfLikes={numberOfLikes}
+				numberOfFollowers={numberOfFollowers}
+				numberOfFollowing={numberOfFollowing}
+				avatarURL={avatarURL}
+				fullName={fullName}
+				username={username}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
-				getAllPhotos={this.state.mediaObjects}
-				navigation={this.props.navigation}
 				onRefresh={this.refreshPageHandler}
-				refreshing={this.state.refreshing}
-				gridMediaProvider={this.state.gridMediaProvider}
+				refreshing={refreshing}
+				gridMediaProvider={gridMediaProvider}
+				hasPhotos={mediaObjects.length > 0}
+				emptyGalleryMessage={'my.profile.screen.empty.gallery'}
+				headerHeight={TOTAL_HEADER_HEIGHT}
+				onViewMediaFullScreen={this.onPhotoPressHandler}
 			/>
 		);
 	}
@@ -232,19 +258,34 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 	};
 
 	private refreshPageHandler = async () => {
-		this.setState({
-			refreshing: true,
-		});
-		try {
-			const res = await this.props.data.refetch();
-			this.updateScreenData(res.data);
-		} catch (ex) {
-			showToastMessage('Could not refresh your profile: ' + ex);
+		const {getText, data} = this.props;
+		if (!this.state.refreshing) {
+			this.setState({
+				refreshing: true,
+			});
+			try {
+				const res = await data.refetch();
+				this.updateScreenData(res.data);
+			} catch (ex) {
+				showToastMessage(`${getText('my.profile.screen.refresh.failed')}: ${ex.message}`);
+			}
+			this.setState({
+				refreshing: false,
+			});
 		}
-		this.setState({
-			refreshing: false,
+	};
+
+	private onPhotoPressHandler = (index: number) => {
+		const {navigation} = this.props;
+		const {mediaObjects} = this.state;
+		navigation.navigate('MediaViewerScreen', {
+			mediaObjects,
+			startIndex: index,
 		});
 	};
 }
 
-export default userHoc(MyProfileScreen);
+export default compose(
+	userHoc,
+	withTranslations,
+)(MyProfileScreen);
