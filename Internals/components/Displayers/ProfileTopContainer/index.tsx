@@ -19,6 +19,7 @@ export interface ITopContainerSharedProps {
 	numberOfLikes: number;
 	numberOfFollowers: number;
 	numberOfFollowing: number;
+	numberOfViews: number;
 	hasPhotos: boolean;
 	emptyGalleryMessage: string;
 	onAddFriend?: () => Promise<any>;
@@ -42,6 +43,7 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 	friendRequestStatus,
 	emptyGalleryMessage,
 	onViewProfilePhoto,
+	numberOfViews,
 }) => (
 	<View style={style.topContainer}>
 		<TouchableOpacity onPress={onViewProfilePhoto} disabled={!onViewProfilePhoto}>
@@ -52,6 +54,7 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 			numberOfLikes={numberOfLikes}
 			numberOfFollowers={numberOfFollowers}
 			numberOfFollowing={numberOfFollowing}
+			profileViews={numberOfViews}
 		/>
 		{friendRequestStatus &&
 			onAddFriend && (

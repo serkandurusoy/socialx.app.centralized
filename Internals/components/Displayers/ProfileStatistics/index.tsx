@@ -12,6 +12,7 @@ interface IProfileStatisticsProps {
 	numberOfLikes: number;
 	numberOfFollowers: number;
 	numberOfFollowing: number;
+	profileViews: number;
 }
 
 interface IStatisticItemProps extends IWithTranslationProps {
@@ -36,6 +37,7 @@ export const ProfileStatistics: React.SFC<IProfileStatisticsProps> = (props) => 
 			<StatisticItem name={'profile.statistics.likes'} value={props.numberOfLikes} />
 			<StatisticItem name={'profile.statistics.followers'} value={props.numberOfFollowers} />
 			<StatisticItem name={'profile.statistics.following'} value={props.numberOfFollowing} />
+			<StatisticItem name={'profile.statistics.view.count'} value={props.profileViews} />
 		</View>
 	);
 };

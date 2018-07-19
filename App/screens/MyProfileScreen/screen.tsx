@@ -36,6 +36,7 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 	numberOfLikes,
 	numberOfFollowing,
 	numberOfFollowers,
+	numberOfViews,
 	loadMorePhotosHandler,
 	gridMediaProvider,
 	onViewMediaFullScreen,
@@ -70,6 +71,7 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 						friendRequestStatus={friendRequestStatus}
 						hasPhotos={hasPhotos}
 						emptyGalleryMessage={emptyGalleryMessage}
+						numberOfViews={numberOfViews}
 					/>
 				),
 				height: headerHeight,

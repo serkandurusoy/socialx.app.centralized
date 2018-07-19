@@ -13,9 +13,9 @@ const style: any = {
 	},
 	statItem: {
 		flex: 1,
-		width: '25%',
 		alignItems: 'center',
 		justifyContent: 'space-between',
+		paddingHorizontal: Sizes.smartHorizontalScale(5),
 	},
 	statValue: {
 		...Fonts.centuryGothic,
@@ -26,6 +26,7 @@ const style: any = {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
 		color: Colors.postText,
+		textAlign: 'center',
 	},
 };
 

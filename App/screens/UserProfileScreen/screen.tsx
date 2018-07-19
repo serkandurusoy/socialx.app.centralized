@@ -26,6 +26,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProp
 	numberOfLikes: number;
 	numberOfFollowers: number;
 	numberOfFollowing: number;
+	numberOfViews: number;
 	onAddFriend: () => Promise<any>;
 	friendRequestStatus: SearchResultKind;
 	onViewProfilePhoto: () => void;
@@ -68,6 +69,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	onLikeClick,
 	aboutMeText,
 	getText,
+	numberOfViews,
 }) => (
 	<View style={style.container}>
 		{isFollowed && (
@@ -77,6 +79,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 				numberOfLikes={numberOfLikes}
 				numberOfFollowers={numberOfFollowers}
 				numberOfFollowing={numberOfFollowing}
+				numberOfViews={numberOfViews}
 				avatarURL={avatarURL}
 				fullName={fullName}
 				username={username}
@@ -107,6 +110,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 					numberOfFollowing={numberOfFollowing}
 					numberOfLikes={numberOfLikes}
 					numberOfPhotos={numberOfPhotos}
+					numberOfViews={numberOfViews}
 					onViewProfilePhoto={onViewProfilePhoto}
 					onAddFriend={onAddFriend}
 					friendRequestStatus={friendRequestStatus}

@@ -18,11 +18,9 @@ export interface IHeaderType {
 
 interface INewGridPhotosProps {
 	onLoadMore: () => void;
-	pageSize?: number;
 	thumbWidth?: number;
 	thumbHeight?: number;
 	renderGridItem: (type: ReactText, data: any) => JSX.Element;
-	bounces?: boolean;
 	dataProvider: DataProvider;
 	scrollViewProps?: any;
 	header?: IHeaderType;
@@ -73,7 +71,6 @@ export const NewGridPhotos: React.SFC<INewGridPhotosProps> = ({
 	renderGridItem,
 	onLoadMore,
 	onScroll,
-	bounces,
 	extendedState,
 	scrollViewProps,
 	thumbHeight,
@@ -96,5 +93,4 @@ export const NewGridPhotos: React.SFC<INewGridPhotosProps> = ({
 NewGridPhotos.defaultProps = {
 	thumbWidth: Sizes.getThumbSize(),
 	thumbHeight: Sizes.getThumbSize(),
-	pageSize: 20,
 };

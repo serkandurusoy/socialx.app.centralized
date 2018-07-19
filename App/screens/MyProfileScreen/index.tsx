@@ -36,6 +36,7 @@ const INITIAL_STATE = {
 	numberOfLikes: 0,
 	numberOfFollowers: 0,
 	numberOfFollowing: 0,
+	numberOfViews: 0,
 	avatarURL: '',
 	fullName: '',
 	username: '',
@@ -54,6 +55,7 @@ interface IMyProfileScreenState {
 	numberOfLikes: number;
 	numberOfFollowers: number;
 	numberOfFollowing: number;
+	numberOfViews: number;
 	avatarURL: any;
 	fullName: string;
 	username?: string;
@@ -157,6 +159,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			numberOfLikes,
 			numberOfFollowers,
 			numberOfFollowing,
+			numberOfViews,
 			avatarURL,
 			fullName,
 			username,
@@ -171,6 +174,7 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 				numberOfLikes={numberOfLikes}
 				numberOfFollowers={numberOfFollowers}
 				numberOfFollowing={numberOfFollowing}
+				numberOfViews={numberOfViews}
 				avatarURL={avatarURL}
 				fullName={fullName}
 				username={username}

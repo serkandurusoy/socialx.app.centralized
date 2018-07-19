@@ -21,6 +21,7 @@ const INITIAL_STATE = {
 	numberOfLikes: 0,
 	numberOfFollowers: 0,
 	numberOfFollowing: 0,
+	numberOfViews: 0,
 	avatarURL: null,
 	fullName: '',
 	username: '',
@@ -43,6 +44,7 @@ interface IUserProfileScreenState {
 	numberOfLikes: number;
 	numberOfFollowers: number;
 	numberOfFollowing: number;
+	numberOfViews: number;
 	isFollowed: boolean;
 	avatarURL: any;
 	fullName: string;
@@ -96,15 +98,16 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 	public render() {
 		const {getUserQuery, getUserPosts} = this.props;
-		const {refreshing, gridMediaProvider} = this.state;
+		const {refreshing, gridMediaProvider, numberOfFollowing, numberOfFollowers, isFollowed, numberOfViews} = this.state;
 		return (
 			<UserProfileScreenComponent
 				isLoading={getUserQuery.loading || getUserPosts.loading}
 				numberOfPhotos={getUserQuery.getUser.numberOfPhotos}
 				numberOfLikes={getUserQuery.getUser.numberOfLikes}
-				numberOfFollowers={this.state.numberOfFollowers}
-				numberOfFollowing={this.state.numberOfFollowing}
-				isFollowed={this.state.isFollowed}
+				numberOfFollowers={numberOfFollowers}
+				numberOfFollowing={numberOfFollowing}
+				numberOfViews={numberOfViews}
+				isFollowed={isFollowed}
 				avatarURL={getUserQuery.getUser.avatarURL}
 				fullName={getUserQuery.getUser.fullName}
 				username={getUserQuery.getUser.username}

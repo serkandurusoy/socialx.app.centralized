@@ -111,6 +111,7 @@ export default {
 	'profile.statistics.likes': 'likes',
 	'profile.statistics.followers': 'followers',
 	'profile.statistics.following': 'following',
+	'profile.statistics.view.count': 'views',
 	'my.profile.screen.title': 'PROFILE',
 	'my.profile.screen.menu.profile.analytics': 'Profile Analytics',
 	'my.profile.screen.menu.wallet': 'Wallet',
