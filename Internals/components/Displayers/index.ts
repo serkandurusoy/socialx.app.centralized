@@ -2,8 +2,6 @@ export * from './ContactsList';
 export * from './FriendRequest';
 export * from './NotificationGenericItem';
 
-export * from './GridPhotos';
-
 export * from './GroupCreateSearchResultEntry';
 export * from './GroupRequest';
 
