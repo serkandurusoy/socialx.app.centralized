@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {InteractionManager} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
+import {compose} from 'recompose';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc} from 'backend/graphql';
@@ -13,9 +14,17 @@ import {
 	IWallPostComment,
 	IWallPostCommentReply,
 } from 'types';
-import {decodeBase64Text, getUserAvatar, updateSortedComments} from 'utilities';
-import {HeaderRight} from '../HeaderRight';
-import RepliesScreenComponent from './screen';
+import {
+	decodeBase64Text,
+	getUserAvatar,
+	IWithTranslationProps,
+	updateSortedComments,
+	withTranslations,
+} from 'utilities';
+import {HeaderRight} from '../components/HeaderRight';
+import RepliesScreenComponent from './../screen';
+
+// TODO: @ionut: this should be removed and only use CommentsScreen/index.tsx
 
 // TODO @jake @serkan too much async work being done in components, these should all be moved out into
 // a data api, which can be redux or some other state manager, the current app architecture makes everything
@@ -31,7 +40,7 @@ interface IRepliesScreenNavScreenProps {
 	};
 }
 
-interface IRepliesScreenProps {
+interface IRepliesScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<IRepliesScreenNavScreenProps>;
 
 	getComments: any;
@@ -49,6 +58,9 @@ interface IRepliesScreenState {
 	noReplies: boolean;
 	loading: boolean;
 	sortOption: CommentsSortingOptions;
+	requestingLikeMap: any;
+	commentText: string;
+	showSendButton: boolean;
 }
 
 class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> {
@@ -68,6 +80,9 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		noReplies: false,
 		loading: true,
 		sortOption: CommentsSortingOptions.Likes,
+		requestingLikeMap: {},
+		commentText: '',
+		showSendButton: false,
 	};
 
 	public async componentDidMount() {
@@ -81,24 +96,35 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 	}
 
 	public render() {
-		const {replies} = this.state;
+		const {getText} = this.props;
+		const {replies, commentText, showSendButton, requestingLikeMap} = this.state;
 		return (
 			<RepliesScreenComponent
 				isLoading={this.state.loading}
-				noReplies={this.state.noReplies}
-				replies={replies}
-				startReply={this.props.navigation.state.params.startReply}
-				onReplyLike={this.onReplyLikeHandler}
-				onSendReply={this.onSendReplyHandler}
-				onReplyDelete={this.onReplyDeleteHandler}
-				onReplyComment={this.onCommentReplyHandler}
+				comments={replies}
+				noComments={this.state.noReplies}
+				onCommentLike={this.onReplyLikeHandler}
+				onCommentReply={this.onCommentReplyHandler}
+				onCommentSend={this.onSendReplyHandler}
+				onCommentDelete={this.onReplyDeleteHandler}
+				startComment={this.props.navigation.state.params.startReply}
 				onViewUserProfile={this.navigateToUserProfile}
+				requestingLikeMap={requestingLikeMap}
+				onCommentTextChange={this.onCommentTextChangeHandler}
+				commentText={commentText}
+				showSendButton={showSendButton}
+				noCommentsText={getText('replies.screen.no.comments')}
+				commentInputPlaceholder={getText('replies.screen.comment.input.placeholder')}
 			/>
 		);
 	}
 
 	private onReplyLikeHandler = async (comment: IWallPostCommentReply) => {
 		const {likeComment, removeCommentLike} = this.props;
+
+		this.setState({
+			requestingLikeMap: {...this.state.requestingLikeMap, [comment.id]: true},
+		});
 
 		const mVar = {variables: {commentId: comment.id}};
 		try {
@@ -111,21 +137,30 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 		} catch (ex) {
 			console.log(ex);
 		}
+		const {[comment.id]: cId, ...newRequestingLikeMap} = this.state.requestingLikeMap;
+		this.setState({
+			requestingLikeMap: newRequestingLikeMap,
+		});
 	};
 
 	private onReplyDeleteHandler = (reply: IWallPostCommentReply) => {
 		// console.log('TODO: onReplyDeleteHandler', reply.id);
 	};
 
-	private onSendReplyHandler = async (replyText: string) => {
+	private onSendReplyHandler = async () => {
 		const {loadCommenting, hideLoader, comment, navigation} = this.props;
 		const {commentId, afterAddReply} = navigation.state.params;
 
-		const mVar = {variables: {targetComment: commentId, text: replyText}};
+		const escapedComment = this.state.commentText.replace(/\n/g, '\\n');
+		const mVar = {variables: {targetComment: commentId, text: escapedComment}};
 		loadCommenting();
 		try {
 			await comment(mVar);
 			await this.preFetchComments();
+			this.setState({
+				commentText: '',
+				showSendButton: false,
+			});
 			afterAddReply();
 		} catch (ex) {
 			console.log(ex);
@@ -136,6 +171,7 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 
 	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
 		const {userId} = this.props.navigation.state.params;
+		// TODO: check why this doesn't work?
 		this.props.navigation.navigate('RepliesScreen', {
 			commentId: comment.id,
 			startReply,
@@ -146,28 +182,24 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 
 	private loadMoreComments = (comments: IComments[]): IWallPostCommentReply[] => {
 		const userId = this.props.navigation.state.params.userId;
-		return comments.map((comment: IComments) => {
-			const userAvatar = getUserAvatar(comment.owner);
-			return {
-				id: comment.id,
-				text: decodeBase64Text(comment.text),
-				user: {
-					fullName: comment.owner.name,
-					avatarURL: userAvatar,
-					id: comment.owner.userId,
-				},
-				timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
-				numberOfLikes: comment.likes ? comment.likes.length : 0,
-				likes: comment.likes,
-				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
-				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
-			};
-		});
+		return comments.map((comment: IComments) => ({
+			id: comment.id,
+			text: decodeBase64Text(comment.text),
+			user: {
+				fullName: comment.owner.name,
+				avatarURL: getUserAvatar(comment.owner),
+				id: comment.owner.userId,
+			},
+			timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
+			numberOfLikes: comment.likes ? comment.likes.length : 0,
+			likes: comment.likes,
+			replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
+			likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
+		}));
 	};
 
 	private preFetchComments = async () => {
-		const commentId = this.props.navigation.state.params.commentId;
-		const userId = this.props.navigation.state.params.userId;
+		const {commentId} = this.props.navigation.state.params;
 		const {getComments} = this.props;
 
 		const qVar = {variables: {targetComment: commentId}};
@@ -206,6 +238,13 @@ class RepliesScreen extends Component<IRepliesScreenProps, IRepliesScreenState> 
 			sortOption: value,
 		});
 	};
+
+	private onCommentTextChangeHandler = (value: string) => {
+		this.setState({
+			showSendButton: value !== '',
+			commentText: value,
+		});
+	};
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
@@ -213,15 +252,14 @@ const MapDispatchToProps = (dispatch: any) => ({
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(
-	null,
-	MapDispatchToProps,
+export default compose(
+	withTranslations,
+	removeCommentLikeHoc,
+	likeCommentHoc,
+	commentHoc,
+	getCommentsHoc,
+	connect(
+		null,
+		MapDispatchToProps,
+	),
 )(RepliesScreen as any);
-
-// TODO: @jake @serkan "recompose"
-const getCommentsWrapper = getCommentsHoc(reduxWrapper);
-const commentWrapper = commentHoc(getCommentsWrapper);
-const likeWrapper = likeCommentHoc(commentWrapper);
-const removeLikeWrapper = removeCommentLikeHoc(likeWrapper);
-
-export default removeLikeWrapper;

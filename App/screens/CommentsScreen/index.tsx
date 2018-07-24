@@ -1,38 +1,52 @@
 import React, {Component} from 'react';
-import {InteractionManager, View} from 'react-native';
+import {Platform, View} from 'react-native';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-import {decodeBase64Text, getUserAvatar, updateSortedComments} from 'utilities';
-import CommentsScreenComponent from './screen';
-
-import {commentHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
-
-import {CommentsSortingOptions, IComments, IUserDataResponse, IUserQuery, IWallPostComment} from 'types';
+import {compose} from 'recompose';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-import {HeaderRight} from './HeaderRight';
+import {commentHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
+import {OS_TYPES} from 'consts';
+import {
+	CommentsSortingOptions,
+	IComments,
+	ICommentsResponse,
+	IUserDataResponse,
+	IUserQuery,
+	IWallPostComment,
+} from 'types';
+import {
+	decodeBase64Text,
+	getUserAvatar,
+	IWithTranslationProps,
+	updateSortedComments,
+	withTranslations,
+} from 'utilities';
+import {HeaderRight} from './components/HeaderRight';
+import CommentsScreenComponent from './screen';
 
 export interface IWallPostCommentsState {
 	allComments: IWallPostComment[];
 	noComments: boolean;
 	loading: boolean;
 	sortOption: CommentsSortingOptions;
+	requestingLikeMap: any;
+	commentText: string;
+	showSendButton: boolean;
 }
 
 export interface IWithGetComments {
 	getComments: IComments[];
 }
 
-export interface IWallPostCommentsProps extends IWithGetComments {
+export interface IWallPostCommentsProps extends IWithTranslationProps, IWithGetComments {
 	navigation: NavigationScreenProp<any>;
 	comment: any;
-
 	likeComment: any;
 	removeCommentLike: any;
-
 	commentingLoader: () => void;
 	hideLoader: () => void;
-
 	data: IUserDataResponse;
 }
 
@@ -53,20 +67,31 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		noComments: false,
 		loading: true,
 		sortOption: CommentsSortingOptions.Likes,
+		requestingLikeMap: {},
+		commentText: '',
+		showSendButton: false,
 	};
 
 	public async componentDidMount() {
-		await this.preFetchComments();
-		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({
-				onSelectionChange: this.updateSortingHandler,
-				sortOption: this.state.sortOption,
-			});
+		this.props.navigation.setParams({
+			onSelectionChange: this.updateSortingHandler,
+			sortOption: this.state.sortOption,
 		});
+		if (Platform.OS === OS_TYPES.Android) {
+			AndroidKeyboardAdjust.setAdjustResize();
+		}
+		await this.preFetchComments();
+	}
+
+	public componentWillUnmount(): void {
+		if (Platform.OS === OS_TYPES.Android) {
+			AndroidKeyboardAdjust.setAdjustPan();
+		}
 	}
 
 	public render() {
-		const {allComments, noComments} = this.state;
+		const {getText} = this.props;
+		const {allComments, noComments, requestingLikeMap, commentText, showSendButton} = this.state;
 
 		return (
 			<CommentsScreenComponent
@@ -79,6 +104,12 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 				onCommentDelete={this.onCommentDeleteHandler}
 				startComment={this.props.navigation.state.params.startComment}
 				onViewUserProfile={this.navigateToUserProfile}
+				requestingLikeMap={requestingLikeMap}
+				onCommentTextChange={this.onCommentTextChangeHandler}
+				commentText={commentText}
+				showSendButton={showSendButton}
+				noCommentsText={getText('comments.screen.no.comments')}
+				commentInputPlaceholder={getText('comments.screen.comment.input.placeholder')}
 			/>
 		);
 	}
@@ -96,16 +127,24 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
 		const {likeComment, removeCommentLike} = this.props;
 		// TODO: add loading here
+		this.setState({
+			requestingLikeMap: {...this.state.requestingLikeMap, [comment.id]: true},
+		});
+		const mVar = {variables: {commentId: comment.id}};
 		try {
 			if (comment.likedByMe) {
-				await removeCommentLike({variables: {commentId: comment.id}});
+				await removeCommentLike(mVar);
 			} else {
-				await likeComment({variables: {commentId: comment.id}});
+				await likeComment(mVar);
 			}
 			await this.preFetchComments();
 		} catch (ex) {
 			console.log(ex);
 		}
+		const {[comment.id]: cId, ...newRequestingLikeMap} = this.state.requestingLikeMap;
+		this.setState({
+			requestingLikeMap: newRequestingLikeMap,
+		});
 	};
 
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
@@ -114,41 +153,41 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 
 	private loadMoreComments = (comments: IComments[]): IWallPostComment[] => {
 		const userId = this.props.data.user.userId;
-		return comments.map((comment: IComments) => {
-			const userAvatar = getUserAvatar(comment.owner);
-			return {
-				id: comment.id,
-				text: decodeBase64Text(comment.text),
-				user: {
-					fullName: comment.owner.name,
-					avatarURL: userAvatar,
-					id: comment.owner.userId,
-				},
-				timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
-				numberOfLikes: comment.likes ? comment.likes.length : 0,
-				likes: comment.likes,
-				replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
-				likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
-			};
-		});
+		return comments.map((comment: IComments) => ({
+			id: comment.id,
+			text: decodeBase64Text(comment.text),
+			user: {
+				fullName: comment.owner.name,
+				avatarURL: getUserAvatar(comment.owner),
+				id: comment.owner.userId,
+			},
+			timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
+			numberOfLikes: comment.likes ? comment.likes.length : 0,
+			likes: comment.likes,
+			replies: comment.comments ? this.loadMoreComments(comment.comments) : [],
+			likedByMe: comment.likes.some((x: IUserQuery) => x.userId === userId),
+		}));
 	};
 
-	private onCommentSendHandler = async (commentText: string) => {
+	private onCommentSendHandler = async () => {
 		const {comment, commentingLoader, hideLoader} = this.props;
 		const postId = this.props.navigation.state.params.postId;
 		commentingLoader();
 
 		try {
-			const mVars = {variables: {targetPost: postId, text: commentText}};
+			const escapedComment = this.state.commentText.replace(/\n/g, '\\n');
+			const mVars = {variables: {targetPost: postId, text: escapedComment}};
 			await comment(mVars);
-
 			await this.preFetchComments();
+			this.setState({
+				commentText: '',
+				showSendButton: false,
+			});
 		} catch (ex) {
 			//
 			console.log(ex);
 		}
 		hideLoader();
-		// console.log('onCommentSendHandler', commentText);
 	};
 
 	private preFetchComments = async () => {
@@ -179,23 +218,28 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 			sortOption: value,
 		});
 	};
+
+	private onCommentTextChangeHandler = (value: string) => {
+		this.setState({
+			showSendButton: value !== '',
+			commentText: value,
+		});
+	};
 }
 
-const MapDispatchToProps = (dispatch: any) => ({
-	commentingLoader: () => dispatch(showActivityIndicator('Submitting your comment')),
+const MapDispatchToProps = (dispatch: any, {getText}: IWallPostCommentsProps) => ({
+	commentingLoader: () => dispatch(showActivityIndicator(getText('comments.screen.sending.comment'))),
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(
-	null,
-	MapDispatchToProps,
+export default compose(
+	withTranslations,
+	removeCommentLikeHoc,
+	likeCommentHoc,
+	commentHoc,
+	userHoc,
+	connect(
+		null,
+		MapDispatchToProps,
+	),
 )(CommentsScreen as any);
-
-const currentUserDataWrapper = userHoc(reduxWrapper);
-
-const commentWrapper = commentHoc(currentUserDataWrapper);
-
-const likeCommentWrapper = likeCommentHoc(commentWrapper);
-const removeCommentLikeWrapper = removeCommentLikeHoc(likeCommentWrapper);
-
-export default removeCommentLikeWrapper;

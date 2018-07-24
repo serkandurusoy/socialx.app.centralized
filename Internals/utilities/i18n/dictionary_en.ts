@@ -124,4 +124,13 @@ export default {
 	'user.profile.screen.empty.gallery': 'User photo gallery is empty.',
 	'user.profile.screen.about.me': 'ABOUT ME',
 	'user.profile.screen.recent.posts': 'RECENT POSTS',
+	'comments.screen.no.comments': 'Be the first to comment here',
+	'comments.screen.comment.input.placeholder': 'Write a comment...',
+	'comments.screen.actions.like': 'Like',
+	'comments.screen.actions.unlike': 'Unlike',
+	'comments.screen.actions.reply': 'Reply',
+	'comments.screen.comment.card.view.more': 'View ${args[0]} more replies',
+	'comments.screen.sending.comment': 'Submitting your comment',
+	'replies.screen.no.comments': 'Be the first to reply here',
+	'replies.screen.comment.input.placeholder': 'Write a reply...',
 };
