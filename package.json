@@ -59,7 +59,7 @@
     "axios": "^0.18.0",
     "blob": "0.0.4",
     "buffer": "^5.1.0",
-    "bugsnag-react-native": "2.10.0",
+    "bugsnag-react-native": "2.10.1",
     "d3-interpolate": "^1.1.6",
     "d3-shape": "^1.2.0",
     "emoji-regex": "7.0.0",
@@ -199,12 +199,7 @@
       "tsx",
       "json"
     ],
-    "cacheDirectory": ".jest/cache",
-    "setupFiles": [
-      "./node_modules/appcenter/test/AppCenterMock.js",
-      "./node_modules/appcenter-crashes/test/AppCenterCrashesMock.js",
-      "./node_modules/appcenter-analytics/test/AppCenterAnalyticsMock.js"
-    ]
+    "cacheDirectory": ".jest/cache"
   },
   "rnpm": {
     "assets": [

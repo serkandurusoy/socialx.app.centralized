@@ -1,8 +1,8 @@
 PODS:
-  - BugsnagReactNative (2.10.0):
-    - BugsnagReactNative/Core (= 2.10.0)
+  - BugsnagReactNative (2.10.1):
+    - BugsnagReactNative/Core (= 2.10.1)
     - React
-  - BugsnagReactNative/Core (2.10.0):
+  - BugsnagReactNative/Core (2.10.1):
     - React
   - FLAnimatedImage (1.0.12)
   - lottie-ios (2.5.0)
