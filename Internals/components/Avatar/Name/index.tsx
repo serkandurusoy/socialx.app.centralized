@@ -2,7 +2,9 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {Colors} from 'theme';
-import style from './style';
+import style, {CONTAINER_HEIGHT_FULL, CONTAINER_HEIGHT_NAME_ONLY} from './style';
+
+export const AVATAR_NAME_HEIGHT = CONTAINER_HEIGHT_FULL;
 
 export interface IAvatarNameProps {
 	fullName: string;
@@ -11,12 +13,15 @@ export interface IAvatarNameProps {
 	userNameColor?: string;
 }
 
-export const AvatarName: React.SFC<IAvatarNameProps> = ({fullName, username, fullNameColor, userNameColor}) => (
-	<View>
-		<Text style={[style.fullName, {color: fullNameColor}]}>{fullName}</Text>
-		{username && username !== '' && <Text style={[style.username, {color: userNameColor}]}>{'@' + username}</Text>}
-	</View>
-);
+export const AvatarName: React.SFC<IAvatarNameProps> = ({fullName, username, fullNameColor, userNameColor}) => {
+	const hasUsername = username && username !== '';
+	return (
+		<View style={[style.container, !hasUsername ? {height: CONTAINER_HEIGHT_NAME_ONLY} : {}]}>
+			<Text style={[style.fullName, {color: fullNameColor}]}>{fullName}</Text>
+			{hasUsername && <Text style={[style.username, {color: userNameColor}]}>{'@' + username}</Text>}
+		</View>
+	);
+};
 
 AvatarName.defaultProps = {
 	fullNameColor: Colors.userAvatarFullName,

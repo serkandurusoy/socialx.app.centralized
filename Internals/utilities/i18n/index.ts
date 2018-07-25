@@ -60,3 +60,9 @@ export const withTranslations = compose(
 		})),
 	),
 );
+
+export const withTranslationsSimple = compose(
+	withProps(() => ({
+		getText: (value: string, ...args: any[]) => getText(value, ...args),
+	})),
+);

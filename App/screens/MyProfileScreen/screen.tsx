@@ -1,137 +1,88 @@
-import {UserAvatar} from 'components/Avatar';
-import {GridPhotos, ProfileStatistics} from 'components/Displayers';
-import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
-import React, {Component} from 'react';
-import {Dimensions, RefreshControl, ScrollView, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {NavigationScreenProp} from 'react-navigation';
-import {Colors, Metrics, Sizes} from 'theme';
-import {IMediaProps} from 'types';
-import {showToastMessage} from 'utilities';
-import MediaViewerScreen from '../MediaViewerScreen';
-import style from './style';
+import React, {ReactText} from 'react';
+import {RefreshControl, TouchableOpacity, View} from 'react-native';
+import {DataProvider} from 'recyclerlistview';
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const GRID_PHOTOS_SCROLL_THRESHOLD = 150;
+import {ITopContainerSharedProps, MediaObjectViewer, NewGridPhotos, ProfileTopContainer} from 'components';
+import {IWithLoaderProps, withInlineLoader} from 'hoc';
+import {ISimpleMediaObject} from 'types';
+import style, {USER_MEDIA_THUMB_SIZE} from './style';
 
-interface IMyProfileScreenProps extends IWithLoaderProps {
-	numberOfPhotos: number;
-	numberOfLikes: number;
-	numberOfFollowers: number;
-	numberOfFollowing: number;
-	avatarURL: any;
-	fullName: string;
-	username?: string;
-	loadMorePhotosHandler: () => IMediaProps[];
-	totalNumberOfPhotos: number;
-	gridPageSize: number;
-	getAllPhotos: IMediaProps[];
-	navigation: NavigationScreenProp<any>;
-	onRefresh: () => Promise<any>;
-}
-
-interface IIMyProfileScreenState {
+interface IMyProfileScreenProps extends ITopContainerSharedProps, IWithLoaderProps {
 	refreshing: boolean;
+	gridMediaProvider: DataProvider;
+	loadMorePhotosHandler: () => void;
+	onRefresh: () => Promise<any>;
+	onViewMediaFullScreen: (index: number) => void;
+	headerHeight: number;
 }
 
-class MyProfileScreenComponent extends Component<IMyProfileScreenProps, IIMyProfileScreenState> {
-	public state = {
-		refreshing: false,
-	};
+const GridItem: React.SFC<{
+	type: ReactText;
+	mediaData: ISimpleMediaObject;
+	onViewMediaFullScreen: (index: number) => void;
+}> = ({type, mediaData, onViewMediaFullScreen}) => (
+	<TouchableOpacity onPress={() => onViewMediaFullScreen(mediaData.index)}>
+		<MediaObjectViewer type={mediaData.type} uri={mediaData.url} style={style.gridMediaThumb} thumbOnly={true} />
+	</TouchableOpacity>
+);
 
-	private scrollView: any;
-	private isScrolled = false;
+const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
+	refreshing,
+	onRefresh,
+	avatarURL,
+	fullName,
+	username,
+	numberOfPhotos,
+	numberOfLikes,
+	numberOfFollowing,
+	numberOfFollowers,
+	numberOfViews,
+	loadMorePhotosHandler,
+	gridMediaProvider,
+	onViewMediaFullScreen,
+	headerHeight,
+	onViewProfilePhoto,
+	onAddFriend,
+	friendRequestStatus,
+	emptyGalleryMessage,
+	hasPhotos,
+}) => (
+	<View style={style.container}>
+		<NewGridPhotos
+			thumbWidth={USER_MEDIA_THUMB_SIZE}
+			thumbHeight={USER_MEDIA_THUMB_SIZE}
+			renderGridItem={(type: ReactText, data: ISimpleMediaObject) => (
+				<GridItem type={type} mediaData={data} onViewMediaFullScreen={onViewMediaFullScreen} />
+			)}
+			onLoadMore={loadMorePhotosHandler}
+			dataProvider={gridMediaProvider}
+			header={{
+				element: (
+					<ProfileTopContainer
+						avatarURL={avatarURL}
+						fullName={fullName}
+						username={username}
+						numberOfFollowers={numberOfFollowers}
+						numberOfFollowing={numberOfFollowing}
+						numberOfLikes={numberOfLikes}
+						numberOfPhotos={numberOfPhotos}
+						onViewProfilePhoto={onViewProfilePhoto}
+						onAddFriend={onAddFriend}
+						friendRequestStatus={friendRequestStatus}
+						hasPhotos={hasPhotos}
+						emptyGalleryMessage={emptyGalleryMessage}
+						numberOfViews={numberOfViews}
+					/>
+				),
+				height: headerHeight,
+			}}
+			scrollViewProps={{
+				bounces: true,
+				showsVerticalScrollIndicator: false,
+				refreshControl: <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />,
+			}}
+		/>
+	</View>
+);
 
-	public shouldComponentUpdate(nextProps: IMyProfileScreenProps, nextState: IIMyProfileScreenState) {
-		if (this.props !== nextProps) {
-			return true;
-		} else if (this.state !== nextState) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public render() {
-		const gridPhotosStyles = [
-			style.gridPhotosContainer,
-			...(this.props.totalNumberOfPhotos > this.props.gridPageSize
-				? [
-						{
-							height: SCREEN_HEIGHT - Metrics.navBarHeight,
-						},
-				  ]
-				: []),
-		];
-
-		return (
-			<View style={style.container}>
-				<ScrollView
-					scrollEnabled={true}
-					contentContainerStyle={style.scrollContainer}
-					showsVerticalScrollIndicator={false}
-					ref={(ref: any) => (this.scrollView = ref)}
-					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.pageRefreshHandler} />}
-				>
-					<View style={style.topContainer}>
-						<UserAvatar
-							avatarURL={{uri: this.props.avatarURL}}
-							fullName={this.props.fullName}
-							username={this.props.username}
-						/>
-						<ProfileStatistics
-							numberOfPhotos={this.props.numberOfPhotos}
-							numberOfLikes={this.props.numberOfLikes}
-							numberOfFollowers={this.props.numberOfFollowers}
-							numberOfFollowing={this.props.numberOfFollowing}
-						/>
-					</View>
-					{this.props.getAllPhotos.length === 0 ? (
-						<View style={style.noPhotosContainer}>
-							<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
-							<Text style={style.noPhotosText}>{'Your photo gallery is empty.'}</Text>
-						</View>
-					) : (
-						<View style={gridPhotosStyles}>
-							<GridPhotos
-								onScroll={this.scrollUpdated}
-								loadMorePhotos={this.props.loadMorePhotosHandler}
-								itemPressed={this.onPhotoPressHandler}
-							/>
-						</View>
-					)}
-				</ScrollView>
-			</View>
-		);
-	}
-
-	private scrollUpdated = (rawEvent: any, offsetX: number, offsetY: number) => {
-		if (offsetY > GRID_PHOTOS_SCROLL_THRESHOLD && !this.isScrolled) {
-			this.scrollView.scrollToEnd({animated: true});
-			this.isScrolled = true;
-		}
-		if (offsetY <= 0 && this.isScrolled) {
-			this.scrollView.scrollTo({x: 0, y: 0, animated: true});
-			this.isScrolled = false;
-		}
-	};
-
-	private onPhotoPressHandler = (index: number) => {
-		this.props.navigation.navigate('MediaViewerScreen', {
-			mediaObjects: this.props.getAllPhotos,
-			startIndex: index,
-		});
-	};
-
-	private pageRefreshHandler = async () => {
-		this.setState({refreshing: true});
-		try {
-			await this.props.onRefresh();
-		} catch (ex) {
-			showToastMessage('Could not refresh your profile: ' + ex);
-		}
-		this.setState({refreshing: false});
-	};
-}
-
-export default withInlineLoader(MyProfileScreenComponent);
+export default withInlineLoader(MyProfileScreenComponent, false);
