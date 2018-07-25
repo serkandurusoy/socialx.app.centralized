@@ -2000,8 +2000,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = socialxnetwork;
 				PRODUCT_NAME = SocialxTypeActress;
-				PROVISIONING_PROFILE = "bf3339f9-ac30-468e-890f-b950389db8cd";
-				PROVISIONING_PROFILE_SPECIFIER = "SocialX Distribution";
+				PROVISIONING_PROFILE = "4ebb8037-8c00-49c2-8e13-f5e161acda80";
+				PROVISIONING_PROFILE_SPECIFIER = "SocialX AppStore";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
