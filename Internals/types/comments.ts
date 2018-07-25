@@ -1,6 +1,6 @@
 import {IUserQuery} from 'types';
 
-export interface IWallPostCommentReply {
+export interface IWallPostComment {
 	id: string;
 	text: string;
 	user: {
@@ -12,13 +12,8 @@ export interface IWallPostCommentReply {
 	numberOfLikes: number;
 	likes: IUserQuery[];
 	likedByMe: boolean;
+	replies: IWallPostComment[];
 }
-
-export interface IWallPostComment extends IWallPostCommentReply {
-	replies: IWallPostCommentReply[];
-}
-
-export type ICommentOrReply = IWallPostComment | IWallPostCommentReply;
 
 export enum CommentsSortingOptions {
 	Likes = 'Likes',

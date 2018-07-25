@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AvatarImage} from 'components';
 import {AnimatedText} from 'configuration/animations';
 import {Colors, Sizes} from 'theme';
-import {ICommentOrReply, IWallPostCommentReply} from 'types';
+import {IWallPostComment} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
@@ -23,7 +23,7 @@ const COMMENT_OPTIONS_WITH_DELETE = [COMMENT_ADVANCED_ACTIONS.DELETE, ...COMMENT
 const PULSATE_PERIOD = 700;
 
 export interface ICommentCardProps extends IWithTranslationProps {
-	comment: ICommentOrReply;
+	comment: IWallPostComment;
 	onCommentLike: () => void;
 	onCommentReply: (startReply: boolean) => void;
 	onCommentDelete: () => void;
@@ -55,7 +55,7 @@ const ReplyButton: React.SFC<{
 );
 
 const CommentReply: React.SFC<{
-	reply: IWallPostCommentReply;
+	reply: IWallPostComment;
 	onCommentReply: (value: boolean) => void;
 	onViewUserProfile: (userId: string) => void;
 }> = ({reply, onViewUserProfile, onCommentReply}) => (
@@ -73,7 +73,7 @@ const CommentReply: React.SFC<{
 );
 
 interface ICommentRepliesProps extends IWithTranslationProps {
-	replies: IWallPostCommentReply[];
+	replies: IWallPostComment[];
 	onCommentReply: (value: boolean) => void;
 	onViewUserProfile: (userId: string) => void;
 }

@@ -131,6 +131,8 @@ export default {
 	'comments.screen.actions.reply': 'Reply',
 	'comments.screen.comment.card.view.more': 'View ${args[0]} more replies',
 	'comments.screen.sending.comment': 'Submitting your comment',
+	'replies.screen.title': 'Replies',
 	'replies.screen.no.comments': 'Be the first to reply here',
 	'replies.screen.comment.input.placeholder': 'Write a reply...',
+	'replies.screen.sending.reply': 'Submitting your reply',
 };

@@ -14,7 +14,6 @@ import {ApplicationStyles, Colors, Icons} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen/data.hoc';
-import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
 import CreateEventScreen from '../screens/CreateEventScreen';
 import EventDetailScreen from '../screens/EventDetailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
@@ -160,11 +159,9 @@ const MyProfileStackNavigator = createStackNavigator(
 	},
 );
 
-// TODO: later check gestures for comments stack, after MD-341 is integrated!
 const CommentsStackNavigator = createStackNavigator(
 	{
 		CommentsScreen: {screen: CommentsScreen},
-		RepliesScreen: {screen: RepliesScreen},
 	},
 	{
 		headerMode: 'screen',

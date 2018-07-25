@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
-import {NavigationScreenProp} from 'react-navigation';
+import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 import {compose} from 'recompose';
 
@@ -18,7 +18,7 @@ import {
 } from 'types';
 import {
 	decodeBase64Text,
-	getUserAvatar,
+	getUserAvatarNew,
 	IWithTranslationProps,
 	updateSortedComments,
 	withTranslations,
@@ -26,7 +26,18 @@ import {
 import {HeaderRight} from './components/HeaderRight';
 import CommentsScreenComponent from './screen';
 
-export interface IWallPostCommentsState {
+interface ICommentsScreenNavScreenProps {
+	params: {
+		commentId?: string; // only available for replies
+		postId?: string; // only for main comments screen
+		afterAddComment?: () => void; // only available for replies
+		startComment: boolean;
+		onSelectionChange: any;
+		sortOption: CommentsSortingOptions;
+	};
+}
+
+interface ICommentsScreenState {
 	allComments: IWallPostComment[];
 	noComments: boolean;
 	loading: boolean;
@@ -40,27 +51,37 @@ export interface IWithGetComments {
 	getComments: IComments[];
 }
 
-export interface IWallPostCommentsProps extends IWithTranslationProps, IWithGetComments {
-	navigation: NavigationScreenProp<any>;
+interface ICommentsScreenProps extends IWithTranslationProps, IWithGetComments{
+	navigation: NavigationScreenProp<ICommentsScreenNavScreenProps>;
+	navigationOptions: NavigationScreenConfig<any>;
 	comment: any;
 	likeComment: any;
 	removeCommentLike: any;
-	commentingLoader: () => void;
-	hideLoader: () => void;
+	showActivityIndicator: (title: string) => void;
+	hideActivityIndicator: () => void;
 	data: IUserDataResponse;
 }
 
-class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostCommentsState> {
-	private static navigationOptions = ({navigation}: IWallPostCommentsProps) => ({
-		headerRight: (
-			<HeaderRight
-				sortOption={navigation.state.params.sortOption}
-				onValueChange={navigation.state.params.onSelectionChange}
-				navigation={navigation}
-			/>
-		),
-		headerLeft: <View />,
-	});
+class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenState> {
+	private static navigationOptions = ({navigation, navigationOptions}: ICommentsScreenProps) => {
+		const navStateParams = navigation.state.params;
+		return {
+			title: CommentsScreen.isRepliesScreen(navigation) ? navigationOptions.getText('replies.screen.title') : '',
+			headerRight: (
+				<HeaderRight
+					sortOption={navStateParams.sortOption}
+					onValueChange={navStateParams.onSelectionChange}
+					navigation={navigation}
+				/>
+			),
+			headerLeft: CommentsScreen.isRepliesScreen(navigation) ? undefined : <View />,
+		};
+	};
+
+	private static isRepliesScreen(navigation: NavigationScreenProp<ICommentsScreenNavScreenProps>) {
+		const navStateParams = navigation.state.params;
+		return navStateParams.commentId !== undefined;
+	}
 
 	public state = {
 		allComments: [],
@@ -90,43 +111,51 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	}
 
 	public render() {
-		const {getText} = this.props;
-		const {allComments, noComments, requestingLikeMap, commentText, showSendButton} = this.state;
+		const {getText, navigation} = this.props;
+		const {allComments, noComments, requestingLikeMap, commentText, showSendButton, loading} = this.state;
+
+		const noCommentsText = CommentsScreen.isRepliesScreen(navigation)
+			? getText('replies.screen.no.comments')
+			: getText('comments.screen.no.comments');
+		const commentInputPlaceholder = CommentsScreen.isRepliesScreen(navigation)
+			? getText('replies.screen.comment.input.placeholder')
+			: getText('comments.screen.comment.input.placeholder');
 
 		return (
 			<CommentsScreenComponent
-				isLoading={this.state.loading}
+				isLoading={loading}
 				comments={allComments}
 				noComments={noComments}
 				onCommentLike={this.onCommentLikeHandler}
 				onCommentReply={this.onCommentReplyHandler}
 				onCommentSend={this.onCommentSendHandler}
 				onCommentDelete={this.onCommentDeleteHandler}
-				startComment={this.props.navigation.state.params.startComment}
+				startComment={navigation.state.params.startComment}
 				onViewUserProfile={this.navigateToUserProfile}
 				requestingLikeMap={requestingLikeMap}
 				onCommentTextChange={this.onCommentTextChangeHandler}
 				commentText={commentText}
 				showSendButton={showSendButton}
-				noCommentsText={getText('comments.screen.no.comments')}
-				commentInputPlaceholder={getText('comments.screen.comment.input.placeholder')}
+				noCommentsText={noCommentsText}
+				commentInputPlaceholder={commentInputPlaceholder}
 			/>
 		);
 	}
 
-	private onCommentReplyHandler = (comment: IWallPostComment, startReply: boolean) => {
-		const userId = this.props.data.user.userId;
-		this.props.navigation.navigate('RepliesScreen', {
-			commentId: comment.id,
-			startReply,
-			userId,
-			afterAddReply: this.preFetchComments,
+	private onCommentReplyHandler = (comment: IWallPostComment, startComment: boolean) => {
+		this.props.navigation.navigate({
+			routeName: 'CommentsScreen',
+			key: comment.id,
+			params: {
+				commentId: comment.id,
+				startComment,
+				afterAddComment: this.preFetchComments,
+			},
 		});
 	};
 
 	private onCommentLikeHandler = async (comment: IWallPostComment) => {
 		const {likeComment, removeCommentLike} = this.props;
-		// TODO: add loading here
 		this.setState({
 			requestingLikeMap: {...this.state.requestingLikeMap, [comment.id]: true},
 		});
@@ -158,7 +187,7 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 			text: decodeBase64Text(comment.text),
 			user: {
 				fullName: comment.owner.name,
-				avatarURL: getUserAvatar(comment.owner),
+				avatarURL: getUserAvatarNew(comment.owner),
 				id: comment.owner.userId,
 			},
 			timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
@@ -170,21 +199,34 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	};
 
 	private onCommentSendHandler = async () => {
-		const {comment, commentingLoader, hideLoader} = this.props;
-		const postId = this.props.navigation.state.params.postId;
-		commentingLoader();
-
+		const {
+			comment,
+			showActivityIndicator: showLoader,
+			hideActivityIndicator: hideLoader,
+			navigation,
+			getText,
+		} = this.props;
+		const {postId, afterAddComment, commentId} = navigation.state.params;
+		showLoader(
+			CommentsScreen.isRepliesScreen(navigation)
+				? getText('replies.screen.sending.reply')
+				: getText('comments.screen.sending.comment'),
+		);
 		try {
 			const escapedComment = this.state.commentText.replace(/\n/g, '\\n');
-			const mVars = {variables: {targetPost: postId, text: escapedComment}};
-			await comment(mVars);
+			const mVars = CommentsScreen.isRepliesScreen(navigation)
+				? {targetComment: commentId, text: escapedComment}
+				: {targetPost: postId, text: escapedComment};
+			await comment({variables: mVars});
 			await this.preFetchComments();
 			this.setState({
 				commentText: '',
 				showSendButton: false,
 			});
+			if (afterAddComment) {
+				afterAddComment();
+			}
 		} catch (ex) {
-			//
 			console.log(ex);
 		}
 		hideLoader();
@@ -227,11 +269,6 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 	};
 }
 
-const MapDispatchToProps = (dispatch: any, {getText}: IWallPostCommentsProps) => ({
-	commentingLoader: () => dispatch(showActivityIndicator(getText('comments.screen.sending.comment'))),
-	hideLoader: () => dispatch(hideActivityIndicator()),
-});
-
 export default compose(
 	withTranslations,
 	removeCommentLikeHoc,
@@ -240,6 +277,6 @@ export default compose(
 	userHoc,
 	connect(
 		null,
-		MapDispatchToProps,
+		{showActivityIndicator, hideActivityIndicator},
 	),
 )(CommentsScreen as any);
