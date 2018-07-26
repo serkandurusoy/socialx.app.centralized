@@ -16,21 +16,26 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
-### ios certificates
+### ios version
 ```
-fastlane ios certificates
+fastlane ios version
 ```
-Fetch certificates
-### ios profiles
-```
-fastlane ios profiles
-```
-Fetch provisioning profiles
+Create new version
 ### ios build
 ```
 fastlane ios build
 ```
 Build the iOS application.
+### ios send_testflight
+```
+fastlane ios send_testflight
+```
+Upload to Testflight.
+### ios bugsnag
+```
+fastlane ios bugsnag
+```
+Send sources to BugSnag
 
 ----
 
