@@ -25,17 +25,22 @@ Create new version
 ```
 fastlane ios build
 ```
-Build the iOS application.
+Build the iOS application
 ### ios send_testflight
 ```
 fastlane ios send_testflight
 ```
-Upload to Testflight.
+Upload to TestFlight
 ### ios bugsnag
 ```
 fastlane ios bugsnag
 ```
 Send sources to BugSnag
+### ios release
+```
+fastlane ios release
+```
+Entire build and upload flow
 
 ----
 
