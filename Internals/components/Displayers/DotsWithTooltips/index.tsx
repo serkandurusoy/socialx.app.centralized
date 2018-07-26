@@ -46,6 +46,7 @@ export const TooltipDots: React.SFC<ITooltipDotsProps> = ({iconColor, items, get
 		buttonComponent={<ToolTipDotsButton iconColor={iconColor} iconName={iconName} />}
 		items={getItems ? getItems() : getTooltipItems(items)}
 		labelSeparatorColor={Colors.dustWhite}
+		tooltipContainerStyle={style.tooltipContainer}
 	/>
 );
 

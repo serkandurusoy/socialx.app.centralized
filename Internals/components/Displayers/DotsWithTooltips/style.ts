@@ -27,6 +27,9 @@ const style: any = {
 		color: Colors.postFullName,
 		textAlign: 'left',
 	},
+	tooltipContainer: {
+		marginRight: Sizes.smartHorizontalScale(8),
+	},
 };
 
 export default StyleSheet.create(style);

@@ -4,9 +4,13 @@ import {Colors, Fonts, Sizes} from 'theme';
 const style: any = {
 	background: {
 		backgroundColor: Colors.white,
+		borderBottomWidth: Sizes.smartHorizontalScale(1),
+		borderBottomColor: Colors.iron2,
 	},
 	backgroundSelected: {
-		backgroundColor: Colors.searchFilterButtonSelectedBg,
+		backgroundColor: Colors.white,
+		borderBottomWidth: Sizes.smartHorizontalScale(1),
+		borderBottomColor: Colors.pink,
 	},
 	containerPadding: {
 		paddingHorizontal: Sizes.smartHorizontalScale(39),
@@ -18,10 +22,10 @@ const style: any = {
 		textAlign: 'center',
 	},
 	textSelected: {
-		color: Colors.postHour,
+		color: Colors.pink,
 	},
 	textUnselected: {
-		color: Colors.searchFilterButtonUnselectedText,
+		color: Colors.background,
 	},
 };
 

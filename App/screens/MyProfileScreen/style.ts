@@ -9,7 +9,7 @@ const style: any = {
 		flex: 1,
 	},
 	titleBarRightButton: {
-		marginRight: Sizes.smartHorizontalScale(10),
+		marginRight: Sizes.smartHorizontalScale(13),
 	},
 	gridMediaThumb: {
 		width: USER_MEDIA_THUMB_SIZE,
