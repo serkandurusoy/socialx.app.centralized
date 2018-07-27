@@ -1,3 +1,4 @@
+import LottieView from 'lottie-react-native';
 import moment from 'moment';
 import React, {Component} from 'react';
 import {Linking, Text, TouchableOpacity, View} from 'react-native';
@@ -6,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {compose} from 'recompose';
 
 import {blockUserHoc} from 'backend/graphql';
+import {HeartAnimation} from 'components';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
@@ -61,6 +63,7 @@ export interface IWallPostCardState {
 	hideGoToUserProfile: boolean;
 	hidePostActionsAndComments: boolean;
 	disableMediaFullScreen: boolean;
+	animation: boolean;
 }
 
 class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> {
@@ -80,6 +83,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 		hideGoToUserProfile: this.props.governanceVersion || false,
 		hidePostActionsAndComments: this.props.governanceVersion || false,
 		disableMediaFullScreen: this.props.governanceVersion || false,
+		animation: false,
 	};
 
 	public shouldComponentUpdate(
@@ -91,7 +95,8 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 			this.props.numberOfLikes !== nextProps.numberOfLikes ||
 			this.props.numberOfComments !== nextProps.numberOfComments ||
 			this.state.modalVisibleReportProblem !== nextState.modalVisibleReportProblem ||
-			this.state.fullTextVisible !== nextState.fullTextVisible
+			this.state.fullTextVisible !== nextState.fullTextVisible ||
+			this.state.animation !== nextState.animation
 		);
 	}
 
@@ -206,15 +211,28 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 		});
 	};
 
-	private renderWallPostMedia = () => {
-		return (
+	private onDoubleTapLikeHandler = async () => {
+		if (this.props.onLikeButtonClick) {
+			if (this.props.likedByMe) {
+				this.setState({animation: true});
+			} else {
+				this.setState({animation: true});
+				await this.props.onLikeButtonClick();
+			}
+		}
+	};
+
+	private renderWallPostMedia = () => (
+		<View>
+			{this.state.animation && <HeartAnimation ended={(status) => this.setState({animation: !status})} />}
 			<WallPostMedia
 				mediaObjects={this.props.Media || this.props.media}
 				onMediaObjectView={this.props.onImageClick}
+				onLikeButtonPressed={this.onDoubleTapLikeHandler}
 				noInteraction={this.state.disableMediaFullScreen}
 			/>
-		);
-	};
+		</View>
+	);
 
 	private renderPostText = () => {
 		const postText = this.props.text;
