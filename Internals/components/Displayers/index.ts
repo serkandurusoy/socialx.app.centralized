@@ -29,3 +29,4 @@ export * from './GovernanceCard';
 export * from './DotsWithTooltips';
 export * from './FeedTabBar';
 export * from './ProfileTopContainer';
+export * from './HeartAnimation';

@@ -9,6 +9,7 @@ import style from './style';
 interface IWallPostMediaProps {
 	mediaObjects: IMediaProps[];
 	onMediaObjectView?: (index: number) => void;
+	onLikeButtonPressed?: () => Promise<any>;
 	noInteraction?: boolean;
 }
 
@@ -33,6 +34,7 @@ export const WallPostMedia: React.SFC<IWallPostMediaProps> = (props) => {
 		return (
 			<MediaObjectViewer
 				{...getViewMediaProp(0)}
+				onDoublePress={props.onLikeButtonPressed}
 				thumbOnly={props.noInteraction}
 				uri={mediaURL}
 				style={style.postMediaContainerFullWidth}

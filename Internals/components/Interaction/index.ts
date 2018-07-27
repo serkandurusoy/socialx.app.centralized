@@ -7,3 +7,4 @@ export * from './ToggleIconButton';
 export * from './VideoPlayer';
 export * from './AddFriendButton';
 export * from './LikeAnimatingButton';
+export * from './TouchableWithDoublePress';
