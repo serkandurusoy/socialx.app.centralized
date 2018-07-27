@@ -1,6 +1,6 @@
 import {AppRegistry} from 'react-native';
 import App from './App';
-import Storybook from "./storybook";
+import Storybook from './storybook';
 
 AppRegistry.registerComponent('SocialxTypeActress', () => App);
 // TODO @serkan ask @jake why?

@@ -24,7 +24,7 @@ const dataSpine = (notifications: any, getText: any) =>
 			avatarURL: avatar ? base.ipfs_URL + avatar.hash : AvatarImagePlaceholder,
 			text:
 				type === NOTIFICATION_TYPES.FRIEND_REQUEST_RESPONSE
-					? getText('notifications.friend.request.accepted', username, status)
+					? getText('notifications.friend.request.accepted', username, status.toLowerCase())
 					: undefined,
 			fullName,
 			username,

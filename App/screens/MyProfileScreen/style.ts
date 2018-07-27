@@ -14,6 +14,13 @@ const style: any = {
 	gridMediaThumb: {
 		width: USER_MEDIA_THUMB_SIZE,
 		height: USER_MEDIA_THUMB_SIZE,
+		borderBottomWidth: 2,
+		borderColor: Colors.white,
+	},
+	centerGridItem: {
+		borderLeftWidth: 2,
+		borderRightWidth: 2,
+		borderColor: Colors.white,
 	},
 };
 

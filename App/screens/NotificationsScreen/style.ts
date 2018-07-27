@@ -11,6 +11,7 @@ const style: any = {
 		flex: 1, // TODO: this should take full width in RN 0.56
 		alignItems: 'center',
 		justifyContent: 'center',
+		paddingTop: Sizes.smartVerticalScale(30),
 	},
 	noNotificationsScrollContainer: {
 		flex: 1,

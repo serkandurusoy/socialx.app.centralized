@@ -35,7 +35,7 @@ const style: any = {
 	},
 	textInputSmall: {
 		paddingVertical: 0,
-		height: Sizes.smartHorizontalScale(29),
+		height: Sizes.smartHorizontalScale(30),
 	},
 	textInputLarge: {
 		paddingVertical: 0,
@@ -44,6 +44,7 @@ const style: any = {
 	iconContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
+		marginLeft: Sizes.smartHorizontalScale(5),
 	},
 	iconContainerNormal: {
 		width: Sizes.smartHorizontalScale(40),

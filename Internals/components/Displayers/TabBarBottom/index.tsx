@@ -41,8 +41,8 @@ const MENU_ITEMS: TabMenuItem[] = [
 		image: Icons.iconTabBarHome,
 		imageSelected: Icons.iconTabBarHomeSelected,
 		style: {
-			width: Sizes.smartHorizontalScale(20),
-			height: Sizes.smartHorizontalScale(16),
+			width: Sizes.smartHorizontalScale(28),
+			height: Sizes.smartHorizontalScale(28),
 		},
 		type: MENU_BUTTON_TYPE.MENU_BUTTON_SIMPLE,
 	},
@@ -51,16 +51,16 @@ const MENU_ITEMS: TabMenuItem[] = [
 		image: Icons.iconTabBarSearch,
 		imageSelected: Icons.iconTabBarSearchSelected,
 		style: {
-			width: Sizes.smartHorizontalScale(17),
-			height: Sizes.smartHorizontalScale(17),
+			width: Sizes.smartHorizontalScale(24),
+			height: Sizes.smartHorizontalScale(24),
 		},
 		type: MENU_BUTTON_TYPE.MENU_BUTTON_SIMPLE,
 	},
 	{
 		image: Icons.iconTabBarPhoto,
 		style: {
-			width: Sizes.smartHorizontalScale(22),
-			height: Sizes.smartHorizontalScale(18),
+			width: Sizes.smartHorizontalScale(28),
+			height: Sizes.smartHorizontalScale(26),
 		},
 		type: MENU_BUTTON_TYPE.MENU_BUTTON_CAMERA,
 	},
@@ -69,8 +69,8 @@ const MENU_ITEMS: TabMenuItem[] = [
 		image: Icons.iconTabBarNotifications,
 		imageSelected: Icons.iconTabBarNotificationsSelected,
 		style: {
-			width: Sizes.smartHorizontalScale(20),
-			height: Sizes.smartHorizontalScale(16),
+			width: Sizes.smartHorizontalScale(26),
+			height: Sizes.smartHorizontalScale(22),
 		},
 		type: MENU_BUTTON_TYPE.MENU_BUTTON_NOTIFICATIONS,
 	},
@@ -79,8 +79,8 @@ const MENU_ITEMS: TabMenuItem[] = [
 		image: Icons.iconTabBarProfile,
 		imageSelected: Icons.iconTabBarProfileSelected,
 		style: {
-			width: Sizes.smartHorizontalScale(16),
-			height: Sizes.smartHorizontalScale(18),
+			width: Sizes.smartHorizontalScale(22),
+			height: Sizes.smartHorizontalScale(24),
 		},
 		type: MENU_BUTTON_TYPE.MENU_BUTTON_SIMPLE,
 	},
@@ -168,16 +168,16 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 
 		const notificationsRender = () => {
 			if (!myNotifications) {
-				return (
-					<View />
-				);
+				return <View />;
 			}
-			return myNotifications.length > 0 && (
-				<View style={style.badgeBackground}>
-					<Text style={style.notificationBadge}>{myNotifications.length.toString()}</Text>
-				</View>
+			return (
+				myNotifications.length > 0 && (
+					<View style={style.badgeBackground}>
+						<Text style={style.notificationBadge}>{myNotifications.length.toString()}</Text>
+					</View>
+				)
 			);
-		}
+		};
 
 		return (
 			<View style={style.notificationsContainer}>

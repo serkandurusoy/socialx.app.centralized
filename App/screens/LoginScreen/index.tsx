@@ -1,7 +1,7 @@
 import {ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
 import {ModalManager} from 'hoc';
 import React, {Component} from 'react';
-import {Alert, AsyncStorage, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, AsyncStorage, Keyboard, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -48,69 +48,71 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	public render() {
 		const {getText} = this.props;
 		return (
-			<KeyboardAwareScrollView
-				style={style.keyboardView}
-				contentContainerStyle={style.container}
-				alwaysBounceVertical={false}
-				keyboardDismissMode='interactive'
-				keyboardShouldPersistTaps={'handled'}
-			>
-				<ModalInputSMSCode
-					visible={this.state.showModalForSMSCode}
-					confirmHandler={this.smsCodeConfirmedHandler}
-					declineHandler={this.smsCodeDeclinedHandler}
-					resendHandler={this.smsCodeResendHandler}
-					phoneNumber={PHONE_NUMBER}
-				/>
-				<Text style={style.welcomeText}>{getText('login.welcome.message')}</Text>
-				<SXTextInput
-					placeholder={getText('login.username.input')}
-					placeholderColor={Colors.postText}
-					returnKeyType={TRKeyboardKeys.next}
-					onSubmitPressed={this.usernameSubmitPressedHandler}
-					onChangeText={this.handleUsernameInputKeyPressed}
-					keyboardType={TKeyboardKeys.emailAddress}
-					ref={(component) => (this.usernameInput = component)}
-				/>
-				<View style={style.passwordContainer}>
-					<SXTextInput
-						placeholder={getText('login.password.input')}
-						placeholderColor={Colors.postText}
-						returnKeyType={TRKeyboardKeys.go}
-						onSubmitPressed={this.fireSignin}
-						onChangeText={this.handlePasswordInputKeyPressed}
-						isPassword={true}
-						ref={(component) => (this.passwordInput = component)}
-						blurOnSubmit={true}
-					/>
-				</View>
-				<View style={style.fullWidth}>
-					<SXButton
-						label={getText('login.login.button')}
-						onPress={this.fireSignin}
-						disabled={!this.state.passwordValue || !this.state.usernameValue}
-						borderColor={Colors.transparent}
-					/>
-				</View>
-				<TouchableOpacity
-					onPress={() => this.safeNavigateToScreen('ForgotPasswordScreen')}
-					style={style.forgotPassword}
+			<SafeAreaView style={style.safeAreaContainer}>
+				<KeyboardAwareScrollView
+					style={style.keyboardView}
+					contentContainerStyle={style.container}
+					alwaysBounceVertical={false}
+					keyboardDismissMode='interactive'
+					keyboardShouldPersistTaps={'handled'}
 				>
-					<Text style={style.forgotPasswordText}>{getText('login.forgot.password')}</Text>
-				</TouchableOpacity>
-				{/*<SXButton*/}
-				{/*label={'Or use unlock file'}*/}
-				{/*onPress={() => this.safeNavigateToScreen('UploadKeyScreen')}*/}
-				{/*borderColor={Colors.transparent}*/}
-				{/*disabled={false}*/}
-				{/*/>*/}
-				<View style={style.noAccountContainer}>
-					<Text style={style.noAccountQuestion}>{getText('login.no.account.text')}</Text>
-					<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
-						<Text style={style.signUpText}>{getText('login.signUp.button')}</Text>
+					<ModalInputSMSCode
+						visible={this.state.showModalForSMSCode}
+						confirmHandler={this.smsCodeConfirmedHandler}
+						declineHandler={this.smsCodeDeclinedHandler}
+						resendHandler={this.smsCodeResendHandler}
+						phoneNumber={PHONE_NUMBER}
+					/>
+					<Text style={style.welcomeText}>{getText('login.welcome.message')}</Text>
+					<SXTextInput
+						placeholder={getText('login.username.input')}
+						placeholderColor={Colors.postText}
+						returnKeyType={TRKeyboardKeys.next}
+						onSubmitPressed={this.usernameSubmitPressedHandler}
+						onChangeText={this.handleUsernameInputKeyPressed}
+						keyboardType={TKeyboardKeys.emailAddress}
+						ref={(component) => (this.usernameInput = component)}
+					/>
+					<View style={style.passwordContainer}>
+						<SXTextInput
+							placeholder={getText('login.password.input')}
+							placeholderColor={Colors.postText}
+							returnKeyType={TRKeyboardKeys.go}
+							onSubmitPressed={this.fireSignin}
+							onChangeText={this.handlePasswordInputKeyPressed}
+							isPassword={true}
+							ref={(component) => (this.passwordInput = component)}
+							blurOnSubmit={true}
+						/>
+					</View>
+					<View style={style.fullWidth}>
+						<SXButton
+							label={getText('login.login.button')}
+							onPress={this.fireSignin}
+							disabled={!this.state.passwordValue || !this.state.usernameValue}
+							borderColor={Colors.transparent}
+						/>
+					</View>
+					<TouchableOpacity
+						onPress={() => this.safeNavigateToScreen('ForgotPasswordScreen')}
+						style={style.forgotPassword}
+					>
+						<Text style={style.forgotPasswordText}>{getText('login.forgot.password')}</Text>
 					</TouchableOpacity>
-				</View>
-			</KeyboardAwareScrollView>
+					{/*<SXButton*/}
+					{/*label={'Or use unlock file'}*/}
+					{/*onPress={() => this.safeNavigateToScreen('UploadKeyScreen')}*/}
+					{/*borderColor={Colors.transparent}*/}
+					{/*disabled={false}*/}
+					{/*/>*/}
+					<View style={style.noAccountContainer}>
+						<Text style={style.noAccountQuestion}>{getText('login.no.account.text')}</Text>
+						<TouchableOpacity onPress={() => this.safeNavigateToScreen('SignUpScreen')}>
+							<Text style={style.signUpText}>{getText('login.signUp.button')}</Text>
+						</TouchableOpacity>
+					</View>
+				</KeyboardAwareScrollView>
+			</SafeAreaView>
 		);
 	}
 

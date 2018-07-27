@@ -57,6 +57,10 @@ const style: any = {
 	fullWidth: {
 		width: '100%',
 	},
+	safeAreaContainer: {
+		flex: 1,
+		backgroundColor: Colors.white,
+	},
 };
 
 export default StyleSheet.create(style);
