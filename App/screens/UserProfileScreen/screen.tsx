@@ -13,7 +13,7 @@ import {
 	WallPostCard,
 } from 'components';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
-import {SearchResultKind} from 'types';
+import {IUserQuery, SearchResultKind} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import MyProfileScreenComponent from '../MyProfileScreen/screen';
 import style from './style';
@@ -41,6 +41,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProp
 	refreshing: boolean;
 	gridMediaProvider: DataProvider;
 	onViewMediaFullScreen: (index: number) => void;
+	currentUserId: string;
 }
 
 const TOTAL_HEADER_HEIGHT =
@@ -70,6 +71,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	aboutMeText,
 	getText,
 	numberOfViews,
+	currentUserId,
 }) => (
 	<View style={style.container}>
 		{isFollowed && (
@@ -121,17 +123,22 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 					<Text style={style.aboutMeText}>{aboutMeText}</Text>
 				</View>
 				<Text style={style.recentPostsTitle}>{getText('user.profile.screen.recent.posts')}</Text>
-				{recentPosts.map((post, i) => (
-					<View style={style.wallPostContainer} key={i}>
-						<WallPostCard
-							{...post}
-							canDelete={false}
-							onCommentClick={() => onCommentClick(post.id, null)}
-							onImageClick={(index: number) => onImageClick(index, post.media || post.Media)}
-							// onLikeButtonClick={() => onLikeClick(post.likedByMe || false, post.id)}
-						/>
-					</View>
-				))}
+				{recentPosts.map((post, i) => {
+					const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === currentUserId);
+
+					return (
+						<View style={style.wallPostContainer} key={i}>
+							<WallPostCard
+								{...post}
+								likedByMe={likedByMe}
+								canDelete={false}
+								onCommentClick={() => onCommentClick(post.id, null)}
+								onImageClick={(index: number) => onImageClick(index, post.media || post.Media)}
+								onLikeButtonClick={() => onLikeClick(likedByMe, post.id)}
+							/>
+						</View>
+					);
+				})}
 			</ScrollView>
 		)}
 	</View>

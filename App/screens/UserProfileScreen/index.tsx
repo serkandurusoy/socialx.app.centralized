@@ -6,11 +6,18 @@ import {compose} from 'recompose';
 import {DataProvider} from 'recyclerlistview';
 import uuidv4 from 'uuid/v4';
 
-import {addFriendHoc, getUserPostHoc, getUserProfileHoc} from 'backend/graphql';
+import {
+	addFriendHoc,
+	getUserPostHoc,
+	getUserProfileHoc,
+	setLikedPostHoc,
+	unsetLikedPostHoc,
+	userHoc,
+} from 'backend/graphql';
 import {IWallPostCardProp, ModalCloseButton, ToggleIconButton} from 'components';
 import {ipfsConfig as base} from 'configuration';
 import {Icons} from 'theme';
-import {IMediaProps, IMediaViewerObject, MediaTypeImage} from 'types';
+import {IMediaProps, IMediaViewerObject, IUserDataResponse, MediaTypeImage} from 'types';
 import {getMediaObjectType, getURLForMediaViewerObject, IWithTranslationProps, showToastMessage} from 'utilities';
 import UserProfileScreenComponent from './screen';
 
@@ -37,6 +44,9 @@ interface IUserProfileScreenProps extends IWithTranslationProps {
 	addFriend: any;
 	getUserQuery: any;
 	getUserPosts: any;
+	setLikedPost: any;
+	unsetLikedPost: any;
+	data: IUserDataResponse;
 }
 
 interface IUserProfileScreenState {
@@ -97,8 +107,9 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	}
 
 	public render() {
-		const {getUserQuery, getUserPosts} = this.props;
+		const {getUserQuery, getUserPosts, data} = this.props;
 		const {refreshing, gridMediaProvider, numberOfFollowing, numberOfFollowers, isFollowed, numberOfViews} = this.state;
+
 		return (
 			<UserProfileScreenComponent
 				isLoading={getUserQuery.loading || getUserPosts.loading}
@@ -124,6 +135,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				onViewMediaFullScreen={this.onViewMediaFullScreen}
 				refreshing={refreshing}
 				gridMediaProvider={gridMediaProvider}
+				currentUserId={data.user.userId}
 			/>
 		);
 	}
@@ -182,16 +194,18 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		this.props.navigation.navigate('CommentsStack', {postId, userId});
 	};
 
-	private onLikeClickHandler = async (likedByMe: boolean, postId: string) => {
-		// TODO: later support likes on user profile!
-		// const {client} = this.props;
-		// const likeQuery = {variables: {postId}};
-		// const result = likedByMe ? await removeLikePost(likeQuery) : await likePost(likeQuery);
-		// console.log('result:', result);
-		// if (result.error) {
-		// 	console.log(result.error);
-		// 	return;
-		// }
+	private onLikeClickHandler = async (likedByMe: boolean, likedPostId: string) => {
+		const {setLikedPost, unsetLikedPost} = this.props;
+
+		const likeQuery = {variables: {likedPostId}};
+		const result = likedByMe ? await unsetLikedPost(likeQuery) : await setLikedPost(likeQuery);
+
+		if (result.error) {
+			console.log(result.error);
+			return likedByMe;
+		}
+
+		return !likedByMe;
 	};
 
 	private refreshScreenHandler = async () => {
@@ -233,4 +247,7 @@ export default compose(
 	getUserProfileHoc,
 	getUserPostHoc,
 	addFriendHoc,
+	userHoc,
+	setLikedPostHoc,
+	unsetLikedPostHoc,
 )(UserProfileScreen);
