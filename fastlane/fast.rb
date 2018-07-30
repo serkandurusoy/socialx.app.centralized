@@ -3,8 +3,10 @@ fastlane_version '2.99.1'
 APPLE_USER = 'christian@socialx.network'
 # ENV['FASTLANE_PASSWORD'] # TODO: decide if we want to have password hardcoded here or not?
 
-ENV['LC_ALL']='en_US.UTF-8'
-ENV['LANG']='en_US.UTF-8'
+GOOGLE_JSON_KEY_PATH = "#{Dir.pwd}/android_google_play/gp-api-key.json"
+
+ENV['LC_ALL'] = 'en_US.UTF-8'
+ENV['LANG'] = 'en_US.UTF-8'
 
 Dir.chdir("..") do
   ENV['BUNDLE_COPY_PATH'] = "#{Dir.pwd}"
@@ -17,17 +19,24 @@ before_all do
   git_pull
 end
 
-platform :ios do
-
-  desc 'Create new version'
-  lane :version do |options|
-    if options[:version]
-      sh("yarn version --no-git-tag-version --new-version #{options[:version]}")
-      sh('yarn run postversion')
-    else
-      UI.abort_with_message! 'Version parameter is missing'
-    end
+desc 'Project install: yarn + pods'
+lane :install_dev do
+  Dir.chdir("..") do
+    sh('./fastlane/scripts/project-install.sh')
   end
+end
+
+desc 'Create new version'
+lane :version do |options|
+  if options[:version]
+    sh("yarn version --no-git-tag-version --new-version #{options[:version]}")
+    sh('yarn run postversion')
+  else
+    UI.abort_with_message! 'Version parameter is missing'
+  end
+end
+
+platform :ios do
 
   desc 'Build the iOS application'
   lane :build do
@@ -54,12 +63,13 @@ platform :ios do
   desc 'Send sources to BugSnag'
   lane :bugsnag do
     Dir.chdir("..") do
-      sh('./ios-bugsnag.sh')
+      sh('./fastlane/scripts/ios-bugsnag.sh')
     end
   end
 
   desc 'Entire build and upload flow'
   lane :release do |options|
+    install_dev
     version options
     build
     send_testflight
@@ -69,5 +79,50 @@ platform :ios do
 end
 
 platform :android do
-  # TODO: Android Lanes
+
+  desc 'Ensure Android NDK r16b'
+  lane :pre_build do
+    sh('./scripts/install-android-ndk.sh')
+  end
+
+  desc 'Build the Android application'
+  lane :build do
+    gradle(
+        task: 'clean',
+        project_dir: 'android',
+    )
+    gradle(
+        task: 'assemble',
+        build_type: 'Release',
+        project_dir: 'android',
+    )
+  end
+
+  lane :send_play_store do
+    upload_to_play_store(
+        track: 'internal', # other options here: 'alpha', 'beta', 'production'
+        json_key: "#{GOOGLE_JSON_KEY_PATH}",
+        package_name: 'socialx.network',
+        apk: './android/app/build/outputs/apk/app-release.apk',
+    )
+  end
+
+  desc 'Send sources to BugSnag'
+  #  TODO: this needs update!
+  lane :bugsnag do
+    Dir.chdir("..") do
+      sh('./fastlane/scripts/android-bugsnag.sh')
+    end
+  end
+
+  desc 'Entire build and upload flow'
+  lane :release do |options|
+    # install_dev
+    version options
+    # pre_build
+    build
+    send_play_store
+    # bugsnag
+  end
+
 end
