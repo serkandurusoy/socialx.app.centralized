@@ -1,1 +1,0 @@
-Password for p12 files: SocialX2018
