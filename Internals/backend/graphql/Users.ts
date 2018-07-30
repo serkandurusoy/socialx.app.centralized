@@ -256,31 +256,33 @@ export const getUserPostHoc = (comp: any) =>
 			if (loading) {
 				return pps;
 			}
+
 			return {
 				...pps,
-				...pps.getUserPosts,
-				getPostsOwner: {
-					...pps.getUserPosts.getPostsOwner,
-					Items: getPostsOwner.Items.map((item: any) => {
-						const avatar = getUserAvatar({user: item ? item.owner : null});
-						const numComments = numberOfComments(item);
-						return {
-							id: item.id,
-							title: null,
-							text: item.text,
-							location: item.location,
-							smallAvatar: avatar,
-							fullName: item.owner.name,
-							timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
-							numberOfLikes: item.likes.length,
-							numberOfComments: numComments,
-							canDelete: false,
-							media: getPostMedia(item.Media, item.likes.length, numComments),
-							owner: item.owner,
-							bestComments: bestTwoComments(item),
-							likes: item.likes,
-						};
-					}),
+				getUserPosts: {
+					getPostsOwner: {
+						...pps.getUserPosts.getPostsOwner,
+						Items: getPostsOwner.Items.map((item: any) => {
+							const avatar = getUserAvatar({user: item ? item.owner : null});
+							const numComments = numberOfComments(item);
+							return {
+								id: item.id,
+								title: null,
+								text: item.text,
+								location: item.location,
+								smallAvatar: avatar,
+								fullName: item.owner.name,
+								timestamp: new Date(parseInt(item.createdAt, 10) * 1000),
+								numberOfLikes: item.likes.length,
+								numberOfComments: numComments,
+								canDelete: false,
+								media: getPostMedia(item.Media, item.likes.length, numComments),
+								owner: item.owner,
+								bestComments: bestTwoComments(item),
+								likes: item.likes,
+							};
+						}),
+					},
 				},
 			};
 		},
