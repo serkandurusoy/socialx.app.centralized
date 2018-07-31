@@ -1,8 +1,6 @@
 fastlane_version '2.99.1'
 
 APPLE_USER = 'christian@socialx.network'
-# ENV['FASTLANE_PASSWORD'] # TODO: decide if we want to have password hardcoded here or not?
-
 GOOGLE_JSON_KEY_PATH = "#{Dir.pwd}/android_google_play/gp-api-key.json"
 
 ENV['LC_ALL'] = 'en_US.UTF-8'
@@ -14,9 +12,9 @@ Dir.chdir("..") do
 end
 
 before_all do
-  ensure_git_branch(branch: 'beta/*') # here can have a regex
-  ensure_git_status_clean
-  git_pull
+  # ensure_git_branch(branch: 'beta/*') # here can have a regex
+  # ensure_git_status_clean
+  # git_pull
 end
 
 desc 'Project install: yarn + pods'
@@ -108,7 +106,6 @@ platform :android do
   end
 
   desc 'Send sources to BugSnag'
-  #  TODO: this needs update!
   lane :bugsnag do
     Dir.chdir("..") do
       sh('./fastlane/scripts/android-bugsnag.sh')
@@ -119,10 +116,10 @@ platform :android do
   lane :release do |options|
     # install_dev
     version options
-    # pre_build
+    pre_build
     build
-    send_play_store
-    # bugsnag
+    # send_play_store
+    bugsnag
   end
 
 end

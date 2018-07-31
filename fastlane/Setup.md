@@ -12,7 +12,8 @@ The certificates along with private keys will get into `Keychain` app.
 ## Building and distribution for iOS via TestFlight
 
 1. In project root folder run `bundle exec fastlane ios release version:1.0.9`. 
-For TestFlight you will need the AppStore connect password for account `christian@socialx.network` 
+For TestFlight you will need the AppStore connect password for account `christian@socialx.network`.
+The password can also be supplied by setting ENV variable FASTLANE_PASSWORD.
 The last parameter is the new version we want to create. The preconditions to build are: 
 - current branch starts with `beta/`
 - local branch is clean, with no local changes
