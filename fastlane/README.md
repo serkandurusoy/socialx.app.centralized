@@ -15,69 +15,29 @@ Install _fastlane_ using
 or alternatively using `brew cask install fastlane`
 
 # Available Actions
-### install_dev
+### release
 ```
-fastlane install_dev
+fastlane release
 ```
-Project install: yarn + pods
-### version
-```
-fastlane version
-```
-Create new version
+Android+iOS build and upload flow
 
 ----
 
 ## iOS
-### ios build
-```
-fastlane ios build
-```
-Build the iOS application
-### ios send_testflight
-```
-fastlane ios send_testflight
-```
-Upload to TestFlight
-### ios bugsnag
-```
-fastlane ios bugsnag
-```
-Send sources to BugSnag
 ### ios release
 ```
 fastlane ios release
 ```
-Entire build and upload flow
+iOS build and upload flow
 
 ----
 
 ## Android
-### android pre_build
-```
-fastlane android pre_build
-```
-Ensure Android NDK r16b
-### android build
-```
-fastlane android build
-```
-Build the Android application
-### android send_play_store
-```
-fastlane android send_play_store
-```
-
-### android bugsnag
-```
-fastlane android bugsnag
-```
-Send sources to BugSnag
 ### android release
 ```
 fastlane android release
 ```
-Entire build and upload flow
+Android build and upload flow
 
 ----
 
