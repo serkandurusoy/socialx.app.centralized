@@ -25,6 +25,7 @@ export interface ITopContainerSharedProps {
 	onAddFriend?: () => Promise<any>;
 	friendRequestStatus?: SearchResultKind;
 	onViewProfilePhoto?: () => void;
+	ownUser: boolean;
 }
 
 interface ITopContainerTranslatedProps extends ITopContainerSharedProps, IWithTranslationProps {}
@@ -44,6 +45,7 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 	emptyGalleryMessage,
 	onViewProfilePhoto,
 	numberOfViews,
+	ownUser,
 }) => (
 	<View style={style.topContainer}>
 		<TouchableOpacity onPress={onViewProfilePhoto} disabled={!onViewProfilePhoto}>
@@ -56,7 +58,8 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 			numberOfFollowing={numberOfFollowing}
 			profileViews={numberOfViews}
 		/>
-		{friendRequestStatus &&
+		{!ownUser &&
+			friendRequestStatus &&
 			onAddFriend && (
 				<View style={style.addFriendContainer}>
 					<AddFriendButton

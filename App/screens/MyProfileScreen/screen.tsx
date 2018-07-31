@@ -14,6 +14,7 @@ interface IMyProfileScreenProps extends ITopContainerSharedProps, IWithLoaderPro
 	onRefresh: () => Promise<any>;
 	onViewMediaFullScreen: (index: number) => void;
 	headerHeight: number;
+	ownUser: boolean;
 }
 
 const GridItem: React.SFC<{
@@ -46,6 +47,7 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 	friendRequestStatus,
 	emptyGalleryMessage,
 	hasPhotos,
+	ownUser,
 }) => (
 	<View style={style.container}>
 		<NewGridPhotos
@@ -72,6 +74,7 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 						hasPhotos={hasPhotos}
 						emptyGalleryMessage={emptyGalleryMessage}
 						numberOfViews={numberOfViews}
+						ownUser={ownUser}
 					/>
 				),
 				height: headerHeight,
