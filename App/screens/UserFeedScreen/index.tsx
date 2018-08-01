@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {InteractionManager} from 'react-native';
+import {InteractionManager, Dimensions, Platform} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationEventSubscription, NavigationScreenProp} from 'react-navigation';
@@ -40,6 +40,10 @@ import {ipfsConfig as base} from 'configuration';
 
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
+import {OS_TYPES} from 'consts';
+
+const AVAILABLE_SCREEN_HEIGHT = Dimensions.get('window').height;
+const TOTAL_SCREEN_HEIGHT = Dimensions.get('screen').height;
 
 export interface IFeedProps {
 	shareSectionPlaceholder: string | null;
@@ -82,9 +86,14 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private didFocusSubscription: NavigationEventSubscription | null = null;
+	private keyboardDidShowListener: any;
 
 	get isRefreshing() {
 		return this.state.refreshing || this.state.silentRefresh;
+	}
+
+	get isLoading() {
+		return this.state.refreshing || this.state.silentRefresh || this.state.loadingMore;
 	}
 
 	// public componentDidMount() {
@@ -122,6 +131,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onUserPress={this.gotoUserProfile}
 				onMediaPress={this.onMediaObjectPressHandler}
 				onCommentPress={this.onCommentsButtonClickHandler}
+				onAddCommentPress={this.onAddCommentPressHandler}
+				listLoading={this.isLoading}
 			/>
 		);
 	}
@@ -304,6 +315,44 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onCommentsButtonClickHandler = (postId: any, userId: any, startComment: boolean) => {
 		this.props.navigation.navigate('CommentsStack', {postId, userId, startComment});
+	};
+
+	private onAddCommentPressHandler = (scrollRef: any, index: number, cardHeight: number) => {
+		if (!this.isRefreshing) {
+			scrollRef.current.scrollToIndex({
+				animated: true,
+				index,
+				viewOffset: this.calculateScrollOffset(cardHeight, index),
+				viewPosition: 0,
+			});
+		}
+	};
+
+	private calculateScrollOffset = (cardHeight: number, index: number) => {
+		const baseScreenHeight = 667;
+		let idealOffset;
+		let idealCardHeight;
+		let diff;
+		if (AVAILABLE_SCREEN_HEIGHT >= 667) {
+			if (index === 0 && cardHeight < 300) {
+				return 0;
+			}
+
+			idealOffset = 220;
+			idealCardHeight = 490;
+			diff = idealCardHeight - cardHeight;
+		} else {
+			idealOffset = 250;
+			idealCardHeight = 480;
+			diff = idealCardHeight - cardHeight;
+		}
+		const offset = (baseScreenHeight * idealOffset) / AVAILABLE_SCREEN_HEIGHT;
+
+		if (Platform.OS === OS_TYPES.Android) {
+			const softwareButtonsBarHeight = TOTAL_SCREEN_HEIGHT - AVAILABLE_SCREEN_HEIGHT;
+			return -(offset - diff + softwareButtonsBarHeight - 10);
+		}
+		return -(offset - diff);
 	};
 }
 
