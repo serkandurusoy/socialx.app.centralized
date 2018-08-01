@@ -13,7 +13,7 @@ import {Animated, Easing, View} from 'react-native';
 import {ApplicationStyles, Colors, Icons} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
-import CommentsScreen from '../screens/CommentsScreen';
+import CommentsScreen from '../screens/CommentsScreen/data.hoc';
 import RepliesScreen from '../screens/CommentsScreen/RepliesScreen';
 import CreateEventScreen from '../screens/CreateEventScreen';
 import EventDetailScreen from '../screens/EventDetailScreen';
@@ -101,8 +101,8 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 		PhotoScreen: getSingleScreenStack('PhotoScreen', PhotoScreen),
 		MediaViewerScreen: getSingleScreenStack('MediaViewerScreen', MediaViewerScreen),
 		CommentsStack: {screen: CommentsStackNavigator},
-		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
 		UserProfileScreen: getSingleScreenStack('UserProfileScreen', UserProfileScreen),
+		MediaLicenceStack: {screen: MediaLicenceStackNavigator},
 		VotingScreen: getSingleScreenStack('VotingScreen', VotingScreen),
 		IncomingCallScreen: {screen: IncomingCallScreen},
 		OutgoingCallScreen: {screen: OutgoingCallScreen},
@@ -116,6 +116,9 @@ const getMainStackWithModalsForScreen = (routeName: string, screen: any) => {
 	return createStackNavigator(updatedRouteConfig, {
 		mode: 'modal',
 		headerMode: 'none',
+		navigationOptions: {
+			gesturesEnabled: true,
+		},
 	});
 };
 
@@ -150,10 +153,14 @@ const MyProfileStackNavigator = createStackNavigator(
 		RewardsScreen: {screen: RewardsScreen},
 	},
 	{
-		navigationOptions: navOptionsDefault,
+		navigationOptions: {
+			...navOptionsDefault,
+			gesturesEnabled: true,
+		},
 	},
 );
 
+// TODO: later check gestures for comments stack, after MD-341 is integrated!
 const CommentsStackNavigator = createStackNavigator(
 	{
 		CommentsScreen: {screen: CommentsScreen},
@@ -204,7 +211,10 @@ const UserFeedStackNavigator = createStackNavigator(
 		ChatThreadScreen: {screen: ChatThreadScreen},
 	},
 	{
-		navigationOptions: navOptionsDefault,
+		navigationOptions: {
+			...navOptionsDefault,
+			gesturesEnabled: true,
+		},
 	},
 );
 
@@ -225,14 +235,16 @@ const MainScreenTabNavigation = createBottomTabNavigator(
 	},
 );
 
-const hotPostsSingleScreenStack = getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen);
 const MainScreenWithModal = createStackNavigator(
 	{
 		MainScreenTabNavigationWithModal: getMainStackWithModalsForScreen(
 			'MainScreenTabNavigation',
 			MainScreenTabNavigation,
 		),
-		HotPostsStackWithModal: getMainStackWithModalsForScreen('HotPostsFeedScreenStack', hotPostsSingleScreenStack),
+		HotPostsStackWithModal: getMainStackWithModalsForScreen(
+			'HotPostsFeedScreenStack',
+			getSingleScreenStack('HotPostsFeedScreen', HotPostsFeedScreen),
+		),
 	},
 	{
 		mode: 'modal',
@@ -254,7 +266,10 @@ const PreAuthNavigator = createStackNavigator(
 	},
 	{
 		headerMode: 'screen',
-		navigationOptions: navOptionsDefault,
+		navigationOptions: {
+			...navOptionsDefault,
+			gesturesEnabled: true,
+		},
 	},
 );
 

@@ -5,16 +5,9 @@ import {connect} from 'react-redux';
 import {decodeBase64Text, getUserAvatar, updateSortedComments} from 'utilities';
 import CommentsScreenComponent from './screen';
 
-import {commentHoc, getCommentsHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
+import {commentHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
 
-import {
-	CommentsSortingOptions,
-	IComments,
-	ICommentsResponse,
-	IUserDataResponse,
-	IUserQuery,
-	IWallPostComment,
-} from 'types';
+import {CommentsSortingOptions, IComments, IUserDataResponse, IUserQuery, IWallPostComment} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {HeaderRight} from './HeaderRight';
@@ -26,9 +19,12 @@ export interface IWallPostCommentsState {
 	sortOption: CommentsSortingOptions;
 }
 
-export interface IWallPostCommentsProps {
+export interface IWithGetComments {
+	getComments: IComments[];
+}
+
+export interface IWallPostCommentsProps extends IWithGetComments {
 	navigation: NavigationScreenProp<any>;
-	getComments: any;
 	comment: any;
 
 	likeComment: any;
@@ -159,23 +155,15 @@ class CommentsScreen extends Component<IWallPostCommentsProps, IWallPostComments
 		const {postId, userId} = this.props.navigation.state.params;
 		const {getComments, data} = this.props;
 
-		const qVar = {variables: {targetPost: postId}};
+		await new Promise((resolve) => setTimeout(resolve, 1500));
 
-		const getResp: ICommentsResponse = await getComments(qVar);
+		const resComments: IWallPostComment[] = this.loadMoreComments(getComments);
 
-		if (getResp.data.getComments.length <= 0) {
-			this.setState({noComments: true, loading: false});
-		} else {
-			const comments: IComments[] = getResp.data.getComments;
-
-			const resComments: IWallPostComment[] = this.loadMoreComments(comments);
-
-			this.setState({
-				noComments: resComments.length === 0,
-				loading: false,
-				allComments: updateSortedComments(resComments, this.state.sortOption),
-			});
-		}
+		this.setState({
+			noComments: resComments.length === 0,
+			loading: false,
+			allComments: updateSortedComments(resComments, this.state.sortOption),
+		});
 	};
 
 	private navigateToUserProfile = (userId: string) => {
@@ -205,8 +193,7 @@ const reduxWrapper = connect(
 
 const currentUserDataWrapper = userHoc(reduxWrapper);
 
-const getCommentsWrapper = getCommentsHoc(currentUserDataWrapper);
-const commentWrapper = commentHoc(getCommentsWrapper);
+const commentWrapper = commentHoc(currentUserDataWrapper);
 
 const likeCommentWrapper = likeCommentHoc(commentWrapper);
 const removeCommentLikeWrapper = removeCommentLikeHoc(likeCommentWrapper);
