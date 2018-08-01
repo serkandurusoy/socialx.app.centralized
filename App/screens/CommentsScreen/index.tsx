@@ -8,14 +8,7 @@ import {compose} from 'recompose';
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {commentHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
 import {OS_TYPES} from 'consts';
-import {
-	CommentsSortingOptions,
-	IComments,
-	ICommentsResponse,
-	IUserDataResponse,
-	IUserQuery,
-	IWallPostComment,
-} from 'types';
+import {CommentsSortingOptions, IComments, IUserDataResponse, IUserQuery, IWallPostComment} from 'types';
 import {
 	decodeBase64Text,
 	getUserAvatarNew,
@@ -51,7 +44,7 @@ export interface IWithGetComments {
 	getComments: IComments[];
 }
 
-interface ICommentsScreenProps extends IWithTranslationProps, IWithGetComments{
+interface ICommentsScreenProps extends IWithTranslationProps, IWithGetComments {
 	navigation: NavigationScreenProp<ICommentsScreenNavScreenProps>;
 	navigationOptions: NavigationScreenConfig<any>;
 	comment: any;
