@@ -21,11 +21,14 @@ const GridItem: React.SFC<{
 	type: ReactText;
 	mediaData: ISimpleMediaObject;
 	onViewMediaFullScreen: (index: number) => void;
-}> = ({type, mediaData, onViewMediaFullScreen}) => (
-	<TouchableOpacity onPress={() => onViewMediaFullScreen(mediaData.index)}>
-		<MediaObjectViewer type={mediaData.type} uri={mediaData.url} style={style.gridMediaThumb} thumbOnly={true} />
-	</TouchableOpacity>
-);
+}> = ({type, mediaData, onViewMediaFullScreen}) => {
+	const styles = (mediaData.index - 1) % 3 === 0 ? [style.gridMediaThumb, style.centerGridItem] : style.gridMediaThumb;
+	return (
+		<TouchableOpacity onPress={() => onViewMediaFullScreen(mediaData.index)}>
+			<MediaObjectViewer type={mediaData.type} uri={mediaData.url} style={styles} thumbOnly={true} />
+		</TouchableOpacity>
+	);
+};
 
 const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 	refreshing,

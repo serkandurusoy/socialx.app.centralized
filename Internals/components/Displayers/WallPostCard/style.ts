@@ -94,7 +94,7 @@ const style: any = {
 	},
 	likedText: {
 		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
+		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postText,
 	},
 	likeTextBold: {
@@ -106,7 +106,7 @@ const style: any = {
 	},
 	viewAllCommentsText: {
 		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
+		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.grayText,
 	},
 	bestCommentsContainer: {
@@ -114,7 +114,7 @@ const style: any = {
 	},
 	commentContainer: {
 		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(14),
+		fontSize: Sizes.smartHorizontalScale(15),
 		color: Colors.postText,
 		paddingBottom: Sizes.smartVerticalScale(5),
 	},

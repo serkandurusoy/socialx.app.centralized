@@ -15,8 +15,8 @@ const style: any = {
 	backIcon: {
 		fontSize: Sizes.smartHorizontalScale(30),
 		color: Colors.white,
-		paddingHorizontal: Sizes.smartHorizontalScale(10),
-		marginRight: Sizes.smartHorizontalScale(5),
+		paddingLeft: Sizes.smartHorizontalScale(5),
+		paddingRight: Sizes.smartHorizontalScale(13),
 	},
 };
 
