@@ -1,13 +1,13 @@
-import LottieView from 'lottie-react-native';
 import moment from 'moment';
-import React, {Component} from 'react';
-import {Linking, Text, TouchableOpacity, View} from 'react-native';
+import React, {Component, RefObject} from 'react';
+import {Linking, Text, TouchableOpacity, Keyboard, View, Dimensions, Platform, Animated} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {compose} from 'recompose';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
 import {blockUserHoc} from 'backend/graphql';
-import {HeartAnimation} from 'components';
+import {HeartAnimation, SXTextInput, InputSizes, TRKeyboardKeys} from 'components';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
@@ -18,11 +18,15 @@ import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
+import {OS_TYPES} from 'consts';
 
 import ParsedText from 'lib/textParser';
 
 const POST_SHORT_LENGTH = 100;
 const POST_SHORT_MAX_LINES = 3;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 export interface ISimpleWallPostCardProps {
 	id: string;
@@ -35,6 +39,7 @@ export interface ISimpleWallPostCardProps {
 	timestamp: Date;
 	owner: IUserQuery;
 	blockUser: any;
+	currentUser: IUserQuery;
 }
 
 export interface IWallPostCardProp extends ISimpleWallPostCardProps, IWithTranslationProps {
@@ -48,12 +53,14 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps, IWithTransl
 	onDeleteClick?: (postId: string) => void;
 	onUserClick?: (userId: string) => void;
 	onCommentClick: (startComment: boolean) => void;
+	onAddComment: (height: number) => void;
 	likedByMe?: boolean;
 	canDelete?: boolean;
 	Media?: IMediaProps[];
 	media?: IMediaProps[];
 	likes?: any;
 	bestComments: ISimpleComment[];
+	listLoading: boolean;
 }
 
 export interface IWallPostCardState {
@@ -63,7 +70,12 @@ export interface IWallPostCardState {
 	hideGoToUserProfile: boolean;
 	hidePostActionsAndComments: boolean;
 	disableMediaFullScreen: boolean;
-	animation: boolean;
+	heartAnimation: boolean;
+	comment: string;
+	inputFocused: boolean;
+	inputBorderWidth: Animated.Value;
+	inputAvatarWidth: Animated.Value;
+	inputAvatarHeight: Animated.Value;
 }
 
 class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> {
@@ -83,8 +95,23 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 		hideGoToUserProfile: this.props.governanceVersion || false,
 		hidePostActionsAndComments: this.props.governanceVersion || false,
 		disableMediaFullScreen: this.props.governanceVersion || false,
-		animation: false,
+		heartAnimation: false,
+		comment: '',
+		inputFocused: false,
+		inputBorderWidth: new Animated.Value(0),
+		inputAvatarWidth: new Animated.Value(25),
+		inputAvatarHeight: new Animated.Value(25),
 	};
+
+	private readonly containerViewRef: RefObject<View> = React.createRef();
+	private keyboardDidHideListener: any;
+
+	public componentDidMount() {
+		if (Platform.OS === OS_TYPES.Android) {
+			AndroidKeyboardAdjust.setAdjustNothing();
+		}
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+	}
 
 	public shouldComponentUpdate(
 		nextProps: Readonly<IWallPostCardProp>,
@@ -96,13 +123,26 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 			this.props.numberOfComments !== nextProps.numberOfComments ||
 			this.state.modalVisibleReportProblem !== nextState.modalVisibleReportProblem ||
 			this.state.fullTextVisible !== nextState.fullTextVisible ||
-			this.state.animation !== nextState.animation
+			this.state.heartAnimation !== nextState.heartAnimation ||
+			this.state.comment !== nextState.comment ||
+			this.state.inputFocused !== nextState.inputFocused ||
+			this.state.inputBorderWidth !== nextState.inputBorderWidth ||
+			this.state.inputAvatarWidth !== nextState.inputAvatarHeight ||
+			this.state.inputAvatarHeight !== nextState.inputAvatarHeight ||
+			this.props.listLoading !== nextProps.listLoading
 		);
+	}
+
+	public componentWillUnmount() {
+		if (Platform.OS === OS_TYPES.Android) {
+			AndroidKeyboardAdjust.setAdjustPan();
+		}
+		this.keyboardDidHideListener.remove();
 	}
 
 	public render() {
 		return (
-			<View style={style.container}>
+			<View style={style.container} ref={this.containerViewRef}>
 				{this.renderModalReportProblem()}
 				{this.renderUserDetails()}
 				{this.renderPostText()}
@@ -111,6 +151,8 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 				{this.renderRecentLikes()}
 				{this.renderNumberOfComments()}
 				{this.renderTwoBestComments()}
+				{this.renderCommentInput()}
+				{this.renderPostedTime()}
 			</View>
 		);
 	}
@@ -214,9 +256,9 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	private onDoubleTapLikeHandler = async () => {
 		if (this.props.onLikeButtonClick) {
 			if (this.props.likedByMe) {
-				this.setState({animation: true});
+				this.setState({heartAnimation: true});
 			} else {
-				this.setState({animation: true});
+				this.setState({heartAnimation: true});
 				await this.props.onLikeButtonClick();
 			}
 		}
@@ -224,7 +266,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 
 	private renderWallPostMedia = () => (
 		<View>
-			{this.state.animation && <HeartAnimation ended={(status) => this.setState({animation: !status})} />}
+			{this.state.heartAnimation && <HeartAnimation ended={(status) => this.setState({heartAnimation: !status})} />}
 			<WallPostMedia
 				mediaObjects={this.props.Media || this.props.media}
 				onMediaObjectView={this.props.onImageClick}
@@ -399,6 +441,129 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 				</View>
 			);
 		}
+	};
+
+	private renderPostedTime = () => {
+		const formatedTimestamp = this.getFormatedPostTime(this.props.timestamp);
+		return (
+			<View style={style.postedTimeContainer}>
+				<Text style={style.postedTime}>{formatedTimestamp}</Text>
+			</View>
+		);
+	};
+
+	private keyboardDidHide = () => {
+		if (this.state.inputFocused) {
+			Animated.parallel([
+				Animated.timing(this.state.inputBorderWidth, {
+					toValue: 0,
+					duration: 250,
+				}),
+				Animated.timing(this.state.inputAvatarWidth, {
+					toValue: 25,
+					duration: 250,
+				}),
+				Animated.timing(this.state.inputAvatarHeight, {
+					toValue: 25,
+					duration: 250,
+				}),
+			]).start();
+			this.setState({inputFocused: false});
+		}
+	};
+
+	private onCommentInputPress = () => {
+		if (!this.props.listLoading && this.containerViewRef.current) {
+			this.containerViewRef.current.measure((x: number, y: number, width: number, height: number) => {
+				this.props.onAddComment(height);
+			});
+			if (!this.state.inputFocused) {
+				Animated.parallel([
+					Animated.timing(this.state.inputBorderWidth, {
+						toValue: 2,
+						duration: 350,
+					}),
+					Animated.timing(this.state.inputAvatarWidth, {
+						toValue: 35,
+						duration: 350,
+					}),
+					Animated.timing(this.state.inputAvatarHeight, {
+						toValue: 35,
+						duration: 350,
+					}),
+				]).start();
+				this.setState({inputFocused: true});
+			}
+		}
+	};
+
+	private onCommentInputChange = (comment: string) => {
+		if (!this.props.listLoading) {
+			this.setState({comment});
+		}
+	};
+
+	private renderCommentInput = () => {
+		const avatarURL = getUserAvatar({user: this.props.currentUser});
+		return (
+			<TouchableOpacity onPress={this.onCommentInputPress} activeOpacity={1} style={style.commentInputContainer}>
+				<AnimatedFastImage
+					source={{uri: avatarURL}}
+					style={[style.commentInputAvatar, {width: this.state.inputAvatarWidth, height: this.state.inputAvatarHeight}]}
+				/>
+				<Animated.View style={[style.commentInputView, {borderWidth: this.state.inputBorderWidth}]}>
+					<SXTextInput
+						width={SCREEN_WIDTH - 90}
+						borderWidth={0}
+						size={InputSizes.Small}
+						placeholder="Add a comment..."
+						value={this.state.comment}
+						onChangeText={this.onCommentInputChange}
+						focusUpdateHandler={this.onCommentInputPress}
+						returnKeyType={TRKeyboardKeys.done}
+						onSubmitPressed={Keyboard.dismiss}
+						blurOnSubmit
+						disabled={this.props.listLoading}
+					/>
+				</Animated.View>
+			</TouchableOpacity>
+		);
+	};
+
+	private getFormatedPostTime = (timestamp: Date) => {
+		const diff = moment(timestamp).fromNow();
+		const split = diff.split(/([0-9]+)/).filter(Boolean);
+		const value = split[0];
+		let type = split[1];
+
+		switch (type) {
+			case 's': {
+				type = +value === 1 ? 'SECOND' : 'SECONDS';
+				break;
+			}
+			case 'm': {
+				type = +value === 1 ? 'MINUTE' : 'MINUTES';
+				break;
+			}
+			case 'h': {
+				type = +value === 1 ? 'HOUR' : 'HOURS';
+				break;
+			}
+			case 'd': {
+				type = +value === 1 ? 'DAY' : 'DAYS';
+				break;
+			}
+			case 'm': {
+				type = +value === 1 ? 'MONTH' : 'MONTHS';
+				break;
+			}
+			default:
+				break;
+		}
+
+		split[0] = value;
+		split[1] = type;
+		return split.join(' ').concat(' AGO');
 	};
 
 	private toggleShowFullText = () => {

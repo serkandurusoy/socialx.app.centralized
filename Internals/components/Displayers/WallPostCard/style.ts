@@ -122,6 +122,30 @@ const style: any = {
 		...Fonts.centuryGothicBold,
 		marginRight: Sizes.smartHorizontalScale(10),
 	},
+	commentInputContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		marginTop: Sizes.smartVerticalScale(5),
+	},
+	commentInputView: {
+		borderRadius: Sizes.smartHorizontalScale(6),
+		borderColor: Colors.grayText,
+	},
+	commentInputAvatar: {
+		width: Sizes.smartHorizontalScale(25),
+		height: Sizes.smartHorizontalScale(25),
+		borderRadius: Sizes.smartHorizontalScale(40) / 2,
+		marginRight: Sizes.smartHorizontalScale(8),
+	},
+	postedTimeContainer: {
+		paddingHorizontal: Sizes.smartHorizontalScale(SIDE_PADDING),
+		marginVertical: Sizes.smartVerticalScale(10),
+	},
+	postedTime: {
+		fontSize: Sizes.smartHorizontalScale(10),
+		color: Colors.grayText,
+	},
 };
 
 export default StyleSheet.create(style);

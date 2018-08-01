@@ -1,7 +1,7 @@
 import {AvatarImage} from 'components/Avatar';
 import {IWallPostCardProp, WallPostCard} from 'components/Displayers';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
-import React, {Component} from 'react';
+import React, {Component, RefObject} from 'react';
 import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
@@ -26,6 +26,8 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	onUserPress: any;
 	loadingMore: Promise<boolean>;
 	hasMore: boolean;
+	onAddCommentPress: (scrollRef: any, scrollYOffset: number, cardHeight: number) => void;
+	listLoading: boolean;
 }
 
 interface IUserFeedScreenState {
@@ -90,6 +92,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					<FeedWithNoPosts />
 				) : (
 					<FlatList
+						ref={this.scrollRef}
 						windowSize={10}
 						refreshing={this.props.refreshing}
 						onRefresh={this.props.refreshData}
@@ -108,15 +111,18 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						alwaysBounceVertical={false}
 						keyboardShouldPersistTaps={'handled'}
 						ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
+						onScrollToIndexFailed={() => {}}
 					/>
 				)}
 			</View>
 		);
 	}
 
+	private readonly scrollRef: RefObject<FlatList<IWallPostCardProp>> = React.createRef();
+
 	private keyExtractor = (item: IWallPostCardProp, index: number) => item.id;
 
-	private renderWallPosts = (data: {item: IWallPostCardProp}) => {
+	private renderWallPosts = (data: {item: IWallPostCardProp; index: number}) => {
 		const canDelete = this.props.currentUser.userId === data.item.owner.userId;
 		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === this.props.currentUser.userId);
 		return (
@@ -125,6 +131,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					{...data.item}
 					canDelete={canDelete}
 					likedByMe={likedByMe}
+					listLoading={this.props.listLoading}
+					currentUser={this.props.currentUser}
 					onCommentClick={(startComment: boolean) =>
 						this.props.onCommentPress(data.item.id, data.item.owner.userId, startComment)
 					}
@@ -132,9 +140,14 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					onDeleteClick={() => this.props.onPostDeletePress(data.item.id)}
 					onLikeButtonClick={() => this.props.onLikePress(likedByMe, data.item.id)}
 					onUserClick={(userId: string) => this.props.onUserPress(userId)}
+					onAddComment={(cardHeight: number) => this.onAddCommentPressHandler(data.index, cardHeight)}
 				/>
 			</View>
 		);
+	};
+
+	private onAddCommentPressHandler = (index: number, cardHeight: number) => {
+		this.props.onAddCommentPress(this.scrollRef, index, cardHeight);
 	};
 }
 
