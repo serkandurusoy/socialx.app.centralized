@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 
-import {AnimatedIonicon} from 'configuration/animations';
+import {AnimatedFaIcon} from 'configuration/animations';
 import {Colors} from 'theme';
 import {showToastMessage} from 'utilities';
 import style from './style';
@@ -34,8 +34,8 @@ export class LikeAnimatingButton extends Component<ILikeAnimatingButtonProps, IL
 	private animating: boolean = false;
 
 	public render() {
-		const iconSource = this.state.likedByMe ? 'md-heart' : 'md-heart-outline';
-		const likeColor = this.state.likedByMe ? Colors.red : Colors.black;
+		const iconSource = this.state.likedByMe ? 'heart' : 'heart-o';
+		const likeColor = this.state.likedByMe ? Colors.pink : Colors.black;
 		const likeStyles = [style.likeButton, {color: likeColor}];
 		return (
 			<TouchableOpacity
@@ -43,7 +43,7 @@ export class LikeAnimatingButton extends Component<ILikeAnimatingButtonProps, IL
 				disabled={!this.props.onPress || this.state.touchDisabled}
 				onPress={this.buttonPressedHandler}
 			>
-				<AnimatedIonicon ref={(ref: any) => (this.animatedIcon = ref)} name={iconSource} style={likeStyles} />
+				<AnimatedFaIcon ref={(ref: any) => (this.animatedIcon = ref)} name={iconSource} style={likeStyles} />
 				{this.props.label && <Text style={style.label}>{this.props.label}</Text>}
 			</TouchableOpacity>
 		);
