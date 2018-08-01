@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "postversion": "react-native-version",
+    "postversion": "react-native-version --skip-tag --never-amend",
     "postinstall": "node node_modules/react-native-text-gradient/patch-rn.js",
     "test": "jest",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean --force",
