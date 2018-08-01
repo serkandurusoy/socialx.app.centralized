@@ -42,6 +42,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProp
 	gridMediaProvider: DataProvider;
 	onViewMediaFullScreen: (index: number) => void;
 	currentUserId: string;
+	ownUser: boolean;
 }
 
 const TOTAL_HEADER_HEIGHT =
@@ -72,6 +73,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	getText,
 	numberOfViews,
 	currentUserId,
+	ownUser,
 }) => (
 	<View style={style.container}>
 		{isFollowed && (
@@ -96,6 +98,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 				emptyGalleryMessage={'user.profile.screen.empty.gallery'}
 				onViewMediaFullScreen={onViewMediaFullScreen}
 				headerHeight={TOTAL_HEADER_HEIGHT}
+				ownUser={ownUser}
 			/>
 		)}
 		{!isFollowed && (
@@ -117,6 +120,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 					onAddFriend={onAddFriend}
 					friendRequestStatus={friendRequestStatus}
 					hasPhotos={true}
+					ownUser={ownUser}
 				/>
 				<View style={style.aboutMeContainer}>
 					<Text style={style.aboutMeTitle}>{getText('user.profile.screen.about.me')}</Text>

@@ -107,7 +107,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	}
 
 	public render() {
-		const {getUserQuery, getUserPosts, data} = this.props;
+		const {getUserQuery, getUserPosts, data, navigation} = this.props;
 		const {refreshing, gridMediaProvider, numberOfFollowing, numberOfFollowers, isFollowed, numberOfViews} = this.state;
 
 		return (
@@ -136,6 +136,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				refreshing={refreshing}
 				gridMediaProvider={gridMediaProvider}
 				currentUserId={data.user.userId}
+				ownUser={data.user.userId === navigation.state.params.userId}
 			/>
 		);
 	}
