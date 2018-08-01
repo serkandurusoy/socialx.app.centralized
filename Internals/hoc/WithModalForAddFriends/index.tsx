@@ -1,7 +1,8 @@
-import {ModalTagFriends} from 'components/Modals/TagFriends';
-import React from 'react';
-import {findNodeHandle, Keyboard, View} from 'react-native';
-import {NavigationStackScreenOptions} from 'react-navigation';
+import React, {RefObject} from 'react';
+import {findNodeHandle, View} from 'react-native';
+import {hoistStatics} from 'recompose';
+
+import {ModalTagFriends} from 'components';
 import {FriendsSearchResult} from 'types';
 import {SEARCH_RESULTS_TAG_FRIENDS} from 'utilities';
 
@@ -18,13 +19,8 @@ interface IWithModalForAddFriendsState {
 	taggedFriends: FriendsSearchResult[];
 }
 
-export const withModalForAddFriends = (
-	BaseComponent: React.ComponentType<IModalForAddFriendsProps>,
-	navOptions: Partial<NavigationStackScreenOptions>,
-) => {
+const withModalForAddFriendsInt = (BaseComponent: React.ComponentType<IModalForAddFriendsProps>) => {
 	return class extends React.Component<any, IWithModalForAddFriendsState> {
-		private static navigationOptions = navOptions;
-
 		public state = {
 			modalVisible: false,
 			blurViewRef: null,
@@ -33,7 +29,7 @@ export const withModalForAddFriends = (
 			taggedFriends: [],
 		};
 
-		private baseScreen: any = null;
+		private baseScreen: RefObject<any> = React.createRef();
 
 		public componentDidMount() {
 			const blurViewHandle = findNodeHandle(this.baseScreen);
@@ -57,7 +53,7 @@ export const withModalForAddFriends = (
 						addedFriends={this.state.taggedFriends}
 						showAddFriendsModal={this.showTagFriendsModal}
 						{...this.props}
-						ref={(ref) => (this.baseScreen = ref)}
+						ref={this.baseScreen}
 					/>
 				</View>
 			);
@@ -97,3 +93,5 @@ export const withModalForAddFriends = (
 		};
 	};
 };
+
+export const withModalForAddFriends = hoistStatics(withModalForAddFriendsInt);

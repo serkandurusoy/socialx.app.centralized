@@ -218,4 +218,4 @@ class SettingsScreenComponent extends Component<ISettingsScreenComponentProps, I
 	};
 }
 
-export default withInlineLoader(SettingsScreenComponent);
+export default withInlineLoader(SettingsScreenComponent, true);

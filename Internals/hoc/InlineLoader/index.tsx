@@ -14,7 +14,7 @@ export interface IWithLoaderProps {
 type BaseType<P> = React.ComponentType<P> | React.SFC<P>;
 
 // TODO: in the end useRef should be false in all cases, and we should no longer need hacky refs!
-export const withInlineLoader = <P extends IWithLoaderProps>(BaseComponent: BaseType<P>, useRef = true) => {
+export const withInlineLoader = <P extends IWithLoaderProps>(BaseComponent: BaseType<P>, useRef = false) => {
 	return class extends React.Component<P> {
 		private static defaultProps: Partial<IWithLoaderProps> = {
 			animatedStyle: style.animatedView,

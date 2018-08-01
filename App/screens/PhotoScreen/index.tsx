@@ -1,61 +1,65 @@
 import React, {Component, RefObject} from 'react';
 import {Alert, InteractionManager} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
+import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-
-import {ModalCloseButton} from 'components/Modals';
-import PhotoScreenComponent from './screen';
-import {SendPostButton} from './SendPostButton';
-
-import {addMediaHoc, createPostHoc, userHoc} from 'backend/graphql';
-import {IUserDataResponse, WallPostPhotoOptimized} from 'types';
+import {compose} from 'recompose';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-
-import {ModalManager} from 'hoc/ManagedModal/manager';
-
-import {ipfsConfig as base} from 'configuration';
+import {addMediaHoc, createPostHoc, userHoc} from 'backend/graphql';
+import {ModalCloseButton, ScreenHeaderButton} from 'components';
+import {IModalForAddFriendsProps, ModalManager, withModalForAddFriends} from 'hoc';
+import {FriendsSearchResult, IUserDataResponse, WallPostPhotoOptimized} from 'types';
+import {getUserAvatar, IWithTranslationProps, withTranslations} from 'utilities';
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
+import PhotoScreenComponent from './screen';
 
-import {AvatarImagePlaceholder} from 'consts';
-
-import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
-import {getUserAvatar, PickerImage} from 'utilities';
-
-export interface FriendsSearchResult {
-	id: string;
-	fullName: string;
-	location: string;
-	avatarURL?: string;
-}
-
-export interface WallPostPhoto {
+interface WallPostPhoto {
+	media: WallPostPhotoOptimized;
 	title?: string;
 	location?: string;
 	taggedFriends?: FriendsSearchResult[];
-	media: WallPostPhotoOptimized;
-	includeTaggedFriends: boolean;
 }
 
 interface IPhotoScreenNavParams {
 	params: {
-		mediaObject: PickerImage;
+		mediaObject: WallPostPhotoOptimized;
 		onSendPress: () => void;
 	};
 }
 
-interface IPhotoScreenProps extends IModalForAddFriendsProps {
+interface IPhotoScreenProps extends IModalForAddFriendsProps, IWithTranslationProps {
 	navigation: NavigationScreenProp<IPhotoScreenNavParams>;
+	navigationOptions: NavigationScreenConfig<any>;
 	data: IUserDataResponse;
 	addMedia: any;
 	createPost: any;
 	// redux
 	startMediaPost: any;
-	startPostadd: any;
+	startPostAdd: any;
 	stopLoading: any;
 }
 
-class PhotoScreen extends Component<IPhotoScreenProps> {
+interface IPhotoScreenState {
+	locationEnabled: boolean;
+	tagFriends: boolean;
+	location: string;
+	shareText: string;
+}
+
+class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
+	private static navigationOptions = (props: IPhotoScreenProps) => ({
+		title: props.navigationOptions.getText('photo.screen.title'),
+		headerLeft: <ModalCloseButton navigation={props.navigation} />,
+		headerRight: <ScreenHeaderButton iconName={'md-checkmark'} onPress={props.navigation.state.params.onSendPress} />,
+	});
+
+	public state = {
+		locationEnabled: false,
+		tagFriends: false,
+		location: '',
+		shareText: '',
+	};
+
 	private photoScreen: RefObject<any> = React.createRef();
 
 	public componentDidMount() {
@@ -65,34 +69,72 @@ class PhotoScreen extends Component<IPhotoScreenProps> {
 	}
 
 	public render() {
-		const {data} = this.props;
+		const {data, showAddFriendsModal, addedFriends, navigation} = this.props;
+		const {locationEnabled, location, tagFriends, shareText} = this.state;
 		return (
 			<PhotoScreenComponent
 				isLoading={data.loading}
-				showTagFriendsModal={this.props.showAddFriendsModal}
+				showTagFriendsModal={showAddFriendsModal}
 				avatarURL={getUserAvatar(data)}
-				mediaObject={this.props.navigation.state.params.mediaObject}
-				taggedFriends={this.props.addedFriends}
+				mediaObject={navigation.state.params.mediaObject}
+				taggedFriends={addedFriends}
 				ref={this.photoScreen}
+				locationEnabled={locationEnabled}
+				location={location}
+				tagFriends={tagFriends}
+				onTagFriendsToggle={this.onTagFriendsToggleHandler}
+				onLocationTextUpdate={this.onLocationTextUpdate}
+				onLocationToggle={this.onLocationToggle}
+				onShareTextUpdate={this.onShareTextUpdateHandler}
+				shareText={shareText}
 			/>
 		);
 	}
 
+	private onTagFriendsToggleHandler = () => {
+		this.setState({
+			tagFriends: !this.state.tagFriends,
+		});
+	};
+
+	private onLocationTextUpdate = (value: string) => {
+		this.setState({
+			location: value,
+		});
+	};
+
+	private onLocationToggle = () => {
+		this.setState({
+			locationEnabled: !this.state.locationEnabled,
+		});
+	};
+
+	private onShareTextUpdateHandler = (value: string) => {
+		this.setState({
+			shareText: value,
+		});
+	};
+
+	private getWallPostData = (): WallPostPhoto => {
+		const {tagFriends, shareText, locationEnabled, location} = this.state;
+		const {addedFriends} = this.props;
+
+		// TODO: get rid of replace in shareText after we sort out SOC-148
+		return {
+			media: this.props.navigation.state.params.mediaObject,
+			location: locationEnabled && location !== '' ? location : undefined,
+			taggedFriends: tagFriends && addedFriends.length > 0 ? addedFriends : undefined,
+			title: shareText ? shareText.replace(/\n/g, '\\n') : undefined,
+		};
+	};
+
 	private sendPostHandler = async () => {
-		const {addMedia, createPost, startMediaPost, startPostadd, stopLoading} = this.props;
+		const {addMedia, createPost, startMediaPost, startPostAdd, stopLoading} = this.props;
 
 		try {
-			const wallPostDataInScreen = this.photoScreen.current.getOriginalRef().current.getWallPostData();
-			const localPhotoData: Partial<WallPostPhoto> = {
-				media: this.props.navigation.state.params.mediaObject,
-			};
-			if (wallPostDataInScreen.includeTaggedFriends && this.props.addedFriends.length > 0) {
-				localPhotoData.taggedFriends = this.props.addedFriends;
-			}
-			const wallPostData: WallPostPhoto = {...wallPostDataInScreen, ...localPhotoData};
-			delete wallPostData.includeTaggedFriends;
+			const wallPostData = this.getWallPostData();
 
-			const {title, location, taggedFriends, media} = wallPostData;
+			const {title, location, media} = wallPostData;
 			const {mime, pathx, contentOptimizedPath} = media;
 
 			const onStart = () => {
@@ -143,7 +185,7 @@ class PhotoScreen extends Component<IPhotoScreenProps> {
 					const mediaId = addResp.data.addMedia.id;
 
 					// start adding post loading
-					startPostadd();
+					startPostAdd();
 					// create post
 					if (title) {
 						await createPost({variables: {text: title, Media: mediaId, location}});
@@ -168,36 +210,44 @@ class PhotoScreen extends Component<IPhotoScreenProps> {
 	};
 
 	private showErrorMessage = (ex: any) => {
-		this.props.stopLoading();
+		const {stopLoading, getText} = this.props;
+		stopLoading();
 		ModalManager.safeRunAfterModalClosed(() => {
-			Alert.alert('Something went wrong, try again');
+			Alert.alert(getText('photo.screen.create.post.error'));
 		});
 		console.log(ex);
 	};
 }
 
-const navigationOptions = (props: IPhotoScreenProps) => ({
-	title: 'ADD MEDIA',
-	headerLeft: <ModalCloseButton navigation={props.navigation} />,
-	headerRight: <SendPostButton navParams={props.navigation.state.params} />,
-});
+const MapDispatchToProps = (dispatch: any, props: IPhotoScreenProps) => {
+	const {getText} = props;
+	return {
+		startMediaPost: (progress: string) =>
+			dispatch(
+				showActivityIndicator(
+					getText('photo.screen.media.uploading.title'),
+					getText('photo.screen.media.uploading.message', progress),
+				),
+			),
+		startPostAdd: () =>
+			dispatch(
+				showActivityIndicator(
+					getText('photo.screen.creating.post.title'),
+					getText('photo.screen.creating.post.message'),
+				),
+			),
+		stopLoading: () => dispatch(hideActivityIndicator()),
+	};
+};
 
-const withAddFriends = withModalForAddFriends(PhotoScreen as any, navigationOptions as any);
-
-const MapDispatchToProps = (dispatch: any) => ({
-	startMediaPost: (progress: string) =>
-		dispatch(showActivityIndicator('Decentralizing your media', `Please wait..\n${progress} %`)),
-	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
-	stopLoading: () => dispatch(hideActivityIndicator()),
-});
-
-const reduxWrapper = connect(
-	null,
-	MapDispatchToProps,
-)(withAddFriends as any);
-
-const addMediaWrapper = addMediaHoc(reduxWrapper);
-const createPostWrapper = createPostHoc(addMediaWrapper);
-const userWrapper = userHoc(createPostWrapper);
-
-export default userWrapper;
+export default compose(
+	userHoc,
+	createPostHoc,
+	addMediaHoc,
+	withTranslations,
+	connect(
+		null,
+		MapDispatchToProps,
+	),
+	withModalForAddFriends,
+)(PhotoScreen as any);

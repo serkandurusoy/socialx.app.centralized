@@ -2,10 +2,11 @@ import {StyleSheet} from 'react-native';
 import {Colors, colorWithAlpha, Fonts, Sizes} from 'theme';
 
 const style: any = {
-	container: {
-		flex: 1,
-		width: '100%',
+	safeView: {
 		backgroundColor: Colors.white,
+		flex: 1,
+	},
+	container: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
@@ -13,7 +14,6 @@ const style: any = {
 	},
 	photosContainer: {
 		width: '100%',
-		height: Sizes.smartVerticalScale(90),
 		paddingBottom: Sizes.smartVerticalScale(10),
 	},
 	addMediaButton: {
@@ -34,8 +34,7 @@ const style: any = {
 	},
 	mediaObject: {
 		width: 100,
-		height: '100%',
-		maxHeight: 100,
+		height: Sizes.smartVerticalScale(90),
 		marginLeft: Sizes.smartHorizontalScale(10),
 	},
 	mediaUploadingPlaceholder: {

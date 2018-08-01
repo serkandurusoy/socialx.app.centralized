@@ -1,26 +1,20 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {ActivityIndicator, Image, Keyboard, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, View} from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
-import {NavigationScreenProp} from 'react-navigation';
+import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 
-import {MediaObjectViewer} from 'components/Displayers/MediaObject';
-import {ButtonSizes, SXButton} from 'components/Interaction';
-import {ModalCloseButton} from 'components/Modals';
-import {Colors, Icons, Sizes} from 'theme';
+import {ModalCloseButton} from 'components';
 import {MediaTypeImage} from 'types';
-import style from './style';
-
-import {SharePostInput} from 'components';
-import {getCameraMediaObject, getGalleryMediaObject, PickerImage} from 'utilities';
+import {
+	getCameraMediaObject,
+	getGalleryMediaObject,
+	IWithTranslationProps,
+	PickerImage,
+	withTranslations,
+} from 'utilities';
 import {addFileBN, addFilesBN} from 'utilities/ipfs';
-
-const PICK_FROM_GALLERY = 'Pick from gallery';
-const TAKE_A_PHOTO = 'Take a photo/video';
-const CANCEL = 'Cancel';
-const ACTION_SHEET_TITLE = 'Add media file';
-
-const DEFAULT_MARGIN_BOTTOM = Sizes.smartVerticalScale(20);
+import {NewWallPostScreenComponent} from './screen';
 
 export interface MediaObject {
 	path: string;
@@ -41,81 +35,67 @@ export interface NewWallPostData {
 	mediaObjects: MediaObject[];
 }
 
-interface INewWallPostScreenProps {
+interface INewWallPostScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
+	navigationOptions: NavigationScreenConfig<any>;
 }
 
 interface INewWallPostScreenState {
-	marginBottom: number;
 	mediaObjects: MediaObject[];
 	isUploading: boolean;
 	uploadProgress: number;
+	shareText: string;
 }
 
-export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWallPostScreenState> {
+class NewWallPostScreenInt extends Component<INewWallPostScreenProps, INewWallPostScreenState> {
 	private static navigationOptions = (props: INewWallPostScreenProps) => ({
-		title: 'MESSAGE',
+		title: props.navigationOptions.getText('new.wall.post.screen.title'),
 		headerRight: <ModalCloseButton navigation={props.navigation} />,
 		headerLeft: <View />,
 	});
 
 	public state = {
-		marginBottom: DEFAULT_MARGIN_BOTTOM,
-		mediaObjects: [] as MediaObject[],
+		mediaObjects: [],
 		isUploading: false,
 		uploadProgress: 0,
+		shareText: '',
 	};
 
-	private keyboardDidShowListener: any;
-	private sharePostInputRef: SharePostInput | null = null;
-
-	public componentDidMount() {
-		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
-	}
-
-	public componentWillUnmount() {
-		this.keyboardDidShowListener.remove();
-	}
-
 	public render() {
-		const {avatarImage} = this.props.navigation.state.params;
+		const {navigation} = this.props;
+		const {isUploading, shareText, mediaObjects, uploadProgress} = this.state;
+		const {avatarImage} = navigation.state.params;
 		return (
-			<View style={[style.container, {paddingBottom: this.state.marginBottom}]}>
-				<SharePostInput
-					ref={(ref) => (this.sharePostInputRef = ref)}
-					avatarSource={avatarImage}
-					placeholder={'Type a message'}
-				/>
-				<TouchableOpacity style={style.addMediaButton} onPress={this.addMediaHandler} disabled={this.state.isUploading}>
-					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
-					<Text style={style.addMediaText}>{'Attach Photo/Video'}</Text>
-				</TouchableOpacity>
-				<ScrollView style={style.photosContainer} horizontal={true}>
-					{this.renderPostMediaObjects()}
-				</ScrollView>
-				<SXButton
-					label={'SEND'}
-					size={ButtonSizes.Small}
-					width={Sizes.smartHorizontalScale(100)}
-					onPress={this.sendPostHandler}
-					disabled={this.state.isUploading}
-				/>
-			</View>
+			<NewWallPostScreenComponent
+				avatarImage={avatarImage}
+				shareText={shareText}
+				isUploading={isUploading}
+				mediaObjects={mediaObjects}
+				uploadProgress={uploadProgress}
+				onShareTextUpdate={this.onShareTextUpdateHandler}
+				onAddMedia={this.onAddMediaHandler}
+				onPostSend={this.onPostSendHandler}
+			/>
 		);
 	}
 
-	private keyboardDidShow = (event: any) => {
+	private onShareTextUpdateHandler = (value: string) => {
 		this.setState({
-			marginBottom: event.endCoordinates.height + DEFAULT_MARGIN_BOTTOM / 2,
+			shareText: value,
 		});
 	};
 
-	private addMediaHandler = () => {
+	private onAddMediaHandler = () => {
+		const {getText} = this.props;
 		ActionSheet.show(
 			{
-				options: [PICK_FROM_GALLERY, TAKE_A_PHOTO, CANCEL],
+				options: [
+					getText('new.wall.post.screen.menu.pick.from.gallery'),
+					getText('new.wall.post.screen.menu.take.photo'),
+					getText('button.CANCEL'),
+				],
 				cancelButtonIndex: 2,
-				title: ACTION_SHEET_TITLE,
+				title: getText('new.wall.post.screen.menu.title'),
 			},
 			async (buttonIndex: number) => {
 				switch (buttonIndex) {
@@ -133,6 +113,7 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 	};
 
 	private addNewMediaObject = async (mediaObject: PickerImage | undefined) => {
+		// TODO: @Serkan -> some hints to refactor this very big method?
 		if (!mediaObject) {
 			return;
 		}
@@ -227,33 +208,24 @@ export class NewWallPostScreen extends Component<INewWallPostScreenProps, INewWa
 		}
 	};
 
-	private renderPostMediaObjects = () => [
-		...this.state.mediaObjects.map((mediaObject: MediaObject, index) => (
-			<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />
-		)),
-		...(this.state.isUploading
-			? [
-					<View key={this.state.mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
-						<ActivityIndicator size={'large'} color={Colors.pink} />
-						<Text style={style.progressText}>{this.state.uploadProgress + ' %'}</Text>
-					</View>,
-			  ]
-			: []),
-	];
-
-	private sendPostHandler = () => {
-		if (this.sharePostInputRef) {
-			const title = this.sharePostInputRef.getTitle();
-			if (this.state.mediaObjects.length < 1 && !title) {
-				alert('Empty post not allowed, please add one photo and/or message!');
-			} else {
-				const wallPostData: NewWallPostData = {
-					text: title,
-					mediaObjects: this.state.mediaObjects,
-				};
-				this.props.navigation.state.params.postCreate(wallPostData);
-				this.props.navigation.goBack(null);
-			}
+	private onPostSendHandler = () => {
+		const {mediaObjects, shareText} = this.state;
+		const {navigation, getText} = this.props;
+		if (mediaObjects.length < 1 && !shareText) {
+			Alert.alert(
+				getText('new.wall.post.screen.post.not.allowed.title'),
+				getText('new.wall.post.screen.post.not.allowed.message'),
+			);
+		} else {
+			// TODO: get rid of replace in shareText after we sort out SOC-148
+			const wallPostData: NewWallPostData = {
+				text: shareText.replace(/\n/g, '\\n'),
+				mediaObjects,
+			};
+			navigation.state.params.postCreate(wallPostData);
+			navigation.goBack(null);
 		}
 	};
 }
+
+export const NewWallPostScreen = withTranslations(NewWallPostScreenInt);
