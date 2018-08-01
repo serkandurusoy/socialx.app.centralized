@@ -260,6 +260,7 @@ export const getUserPostHoc = (comp: any) =>
 			return {
 				...pps,
 				getUserPosts: {
+					...pps.getUserPosts,
 					getPostsOwner: {
 						...pps.getUserPosts.getPostsOwner,
 						Items: getPostsOwner.Items.map((item: any) => {

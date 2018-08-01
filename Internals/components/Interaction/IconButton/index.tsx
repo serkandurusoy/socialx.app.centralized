@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {Image, StyleProp, Text, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import style from './style';
 
 export interface IIconButtonProps {
 	label?: string;
-	iconSource: number | string; // use string for an Ionicon source
+	iconSource: number | string; // use string for an Ionicon or FontAwesome source
+	iconType: string; // use "io" or "fa"
 	onPress?: () => void;
 	iconStyle?: StyleProp<any>;
 }
@@ -30,17 +32,19 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 	public render() {
 		return (
 			<TouchableOpacity style={style.container} disabled={!this.props.onPress} onPress={this.buttonPressedHandler}>
-				{this.renderIcon()}
+				{this.renderIcon(this.props.iconType)}
 				{this.props.label && <Text style={style.label}>{this.props.label}</Text>}
 			</TouchableOpacity>
 		);
 	}
 
-	private renderIcon = () => {
+	private renderIcon = (type: string) => {
 		if (typeof this.props.iconSource === 'number') {
 			return <Image source={this.state.iconSource as number} style={this.state.iconStyle} resizeMode={'contain'} />;
-		} else {
-			return <Icon name={this.state.iconSource as string} style={this.state.iconStyle} />;
+		} else if (type === 'io') {
+			return <Ionicon name={this.state.iconSource as string} style={this.state.iconStyle} />;
+		} else if (type === 'fa') {
+			return <FontAwesome name={this.state.iconSource as string} style={this.state.iconStyle} />;
 		}
 	};
 
