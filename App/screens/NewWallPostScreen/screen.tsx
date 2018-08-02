@@ -58,7 +58,7 @@ const NewWallPostScreenComponentInt: React.SFC<INewWallPostScreenComponentProps>
 			<ScrollView style={style.photosContainer} horizontal={true}>
 				{[
 					...mediaObjects.map((mediaObject: MediaObject, index) => (
-						<MediaObjectViewer key={index} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />
+						<MediaObjectViewer key={mediaObject.path} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />
 					)),
 					...(isUploading
 						? [
