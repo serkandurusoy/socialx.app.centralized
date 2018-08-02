@@ -1,9 +1,10 @@
-import {IEventData} from 'components/Displayers/EventListItem';
-import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc/WithModalForAddFriends';
 import React, {Component} from 'react';
-import {Image, InteractionManager, Text, View} from 'react-native';
+import {InteractionManager} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
-import {SendPostButton} from '../PhotoScreen/SendPostButton';
+
+import {ScreenHeaderButton} from 'components';
+import {IEventData} from 'components/Displayers/EventListItem';
+import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc';
 import CreateEventScreenComponent from './screen';
 
 export interface ICreateEventScreenNavScreenProps {
@@ -19,6 +20,11 @@ export interface ICreateEventScreenProps extends IModalForAddFriendsProps {
 }
 
 class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
+	private static navigationOptions = (props: ICreateEventScreenProps) => ({
+		title: 'ADD EVENT',
+		headerRight: <ScreenHeaderButton iconName={'md-checkmark'} onPress={props.navigation.state.params.onSendPress} />,
+	});
+
 	private screenRef: CreateEventScreenComponent | null = null;
 
 	public componentDidMount() {
@@ -46,9 +52,4 @@ class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
 	};
 }
 
-const navigationOptions = (props: ICreateEventScreenProps) => ({
-	title: 'ADD EVENT',
-	headerRight: <SendPostButton navParams={props.navigation.state.params} />,
-});
-
-export default withModalForAddFriends(CreateEventScreen as any, navigationOptions as any);
+export default withModalForAddFriends(CreateEventScreen);

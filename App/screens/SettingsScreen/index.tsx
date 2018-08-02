@@ -171,6 +171,7 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 				await updateUserData(mVar);
 				await data.refetch();
 
+				// TODO: make sure to get rid of useRef in withInlineLoader!
 				this.screenRef.current.getOriginalRef().current.resetChanges();
 			} catch (e) {
 				//

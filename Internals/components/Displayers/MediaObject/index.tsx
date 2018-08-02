@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Platform, StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
+import {Image, Platform, StyleProp, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import * as mime from 'react-native-mime-types';
 

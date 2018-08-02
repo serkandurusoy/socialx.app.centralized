@@ -1,10 +1,11 @@
-import {IEventData} from 'components/Displayers/EventListItem';
 import moment from 'moment';
 import React from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import {IEventData} from 'components/Displayers/EventListItem';
 import {Icons} from 'theme';
-import {FriendsSearchResult} from '../PhotoScreen';
+import {FriendsSearchResult} from 'types';
 import style from './style';
 
 const DATE_FORMAT = 'D MMM, YYYY';
