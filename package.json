@@ -63,6 +63,7 @@
     "d3-interpolate": "^1.1.6",
     "d3-shape": "^1.2.0",
     "emoji-regex": "7.0.0",
+    "formik": "^1.0.2",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
     "hex-rgb": "^3.0.0",
@@ -126,7 +127,8 @@
     "socket.io-client": "^2.1.0",
     "typesafe-actions": "^1.1.2",
     "utility-types": "^2.0.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "yup": "^0.26.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "3.4.8",
@@ -157,6 +159,7 @@
     "@types/uuid": "^3.4.3",
     "@types/webpack-env": "^1.13.5",
     "@types/xdate": "^0.8.28",
+    "@types/yup": "^0.24.7",
     "babel-core": "^7.0.0-beta.53",
     "babel-jest": "^23.4.0",
     "babel-preset-env": "^1.7.0",
