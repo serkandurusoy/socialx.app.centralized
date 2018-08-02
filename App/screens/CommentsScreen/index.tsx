@@ -269,14 +269,11 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 				destructiveButtonIndex: menuOptions.length - 2,
 				cancelButtonIndex: menuOptions.length - 1,
 			},
-			async (buttonIndex: number) => {
-				switch (buttonIndex) {
-					case 0:
-						Clipboard.setString(comment.text);
-						break;
-					case 1:
-						this.onCommentDeleteHandler(comment);
-						break;
+			(buttonIndex: number) => {
+				if (buttonIndex === 0) {
+					Clipboard.setString(comment.text);
+				} else if (buttonIndex === 1) {
+					this.onCommentDeleteHandler(comment);
 				}
 			},
 		);
