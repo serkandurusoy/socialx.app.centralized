@@ -57,13 +57,13 @@ interface ICommentsScreenProps extends IWithTranslationProps, IWithGetComments {
 
 class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenState> {
 	private static navigationOptions = ({navigation, navigationOptions}: ICommentsScreenProps) => {
-		const navStateParams = navigation.state.params;
+		const {sortOption, onSelectionChange} = navigation.state.params;
 		return {
 			title: CommentsScreen.isRepliesScreen(navigation) ? navigationOptions.getText('replies.screen.title') : '',
 			headerRight: (
 				<HeaderRight
-					sortOption={navStateParams.sortOption}
-					onValueChange={navStateParams.onSelectionChange}
+					sortOption={sortOption}
+					onValueChange={onSelectionChange}
 					navigation={navigation}
 				/>
 			),
@@ -72,8 +72,7 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 	};
 
 	private static isRepliesScreen(navigation: NavigationScreenProp<ICommentsScreenNavScreenProps>) {
-		const navStateParams = navigation.state.params;
-		return navStateParams.commentId !== undefined;
+		return navigation.state.params.commentId !== undefined;
 	}
 
 	public state = {

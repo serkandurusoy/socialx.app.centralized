@@ -66,7 +66,7 @@ const CommentsScreenComponent: React.SFC<ICommentsScreenComponentProps> = ({
 							onCommentReply={(startReply: boolean) => onCommentReply(comment, startReply)}
 							onCommentDelete={() => onCommentDelete(comment)}
 							onViewUserProfile={onViewUserProfile}
-							requestingLike={requestingLikeMap.hasOwnProperty(comment.id)}
+							requestingLike={!!requestingLikeMap[comment.id]}
 						/>
 					))
 				)}
