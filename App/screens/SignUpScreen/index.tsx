@@ -347,6 +347,8 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 			await Signin(username, password);
 
 			await this.uploadAvatarAndCreateUser(updatedAvatarImagePath, addMedia, createUser, username, name, email);
+
+			this.afterUserCreate();
 		} catch (ex) {
 			console.log(ex);
 			this.setState({
@@ -471,8 +473,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 						email,
 					},
 				});
-
-				this.afterUserCreate();
 			});
 		} else {
 			await createUser({
