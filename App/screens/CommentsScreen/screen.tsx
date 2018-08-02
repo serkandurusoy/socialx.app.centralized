@@ -14,7 +14,6 @@ const scrollRef: RefObject<ScrollView> = React.createRef();
 interface ICommentsScreenComponentProps extends IWithLoaderProps, IWithResizeOnKeyboardShowProps {
 	comments: IWallPostComment[];
 	onCommentLike: (comment: IWallPostComment) => void;
-	onCommentDelete: (comment: IWallPostComment) => void;
 	onCommentReply: (comment: IWallPostComment, startReply: boolean) => void;
 	onCommentSend: () => void;
 	onCommentTextChange: (commentText: string) => void;
@@ -26,12 +25,12 @@ interface ICommentsScreenComponentProps extends IWithLoaderProps, IWithResizeOnK
 	showSendButton: boolean;
 	noCommentsText: string;
 	commentInputPlaceholder: string;
+	onShowOptionsMenu: (comment: IWallPostComment) => void;
 }
 
 const CommentsScreenComponent: React.SFC<ICommentsScreenComponentProps> = ({
 	comments,
 	onCommentLike,
-	onCommentDelete,
 	onCommentReply,
 	onCommentSend,
 	noComments,
@@ -44,6 +43,7 @@ const CommentsScreenComponent: React.SFC<ICommentsScreenComponentProps> = ({
 	onCommentTextChange,
 	noCommentsText,
 	commentInputPlaceholder,
+	onShowOptionsMenu,
 }) => {
 	const containerStyles = [style.container, ...(Platform.OS === OS_TYPES.IOS ? [{marginBottom}] : [])];
 
@@ -64,9 +64,9 @@ const CommentsScreenComponent: React.SFC<ICommentsScreenComponentProps> = ({
 							comment={comment}
 							onCommentLike={() => onCommentLike(comment)}
 							onCommentReply={(startReply: boolean) => onCommentReply(comment, startReply)}
-							onCommentDelete={() => onCommentDelete(comment)}
 							onViewUserProfile={onViewUserProfile}
 							requestingLike={!!requestingLikeMap[comment.id]}
+							onShowOptionsMenu={() => onShowOptionsMenu(comment)}
 						/>
 					))
 				)}

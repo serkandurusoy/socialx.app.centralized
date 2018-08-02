@@ -1,5 +1,6 @@
+import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Platform, View} from 'react-native';
+import {Clipboard, Platform, View} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -60,13 +61,7 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 		const {sortOption, onSelectionChange} = navigation.state.params;
 		return {
 			title: CommentsScreen.isRepliesScreen(navigation) ? navigationOptions.getText('replies.screen.title') : '',
-			headerRight: (
-				<HeaderRight
-					sortOption={sortOption}
-					onValueChange={onSelectionChange}
-					navigation={navigation}
-				/>
-			),
+			headerRight: <HeaderRight sortOption={sortOption} onValueChange={onSelectionChange} navigation={navigation} />,
 			headerLeft: CommentsScreen.isRepliesScreen(navigation) ? undefined : <View />,
 		};
 	};
@@ -121,7 +116,6 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 				onCommentLike={this.onCommentLikeHandler}
 				onCommentReply={this.onCommentReplyHandler}
 				onCommentSend={this.onCommentSendHandler}
-				onCommentDelete={this.onCommentDeleteHandler}
 				startComment={navigation.state.params.startComment}
 				onViewUserProfile={this.navigateToUserProfile}
 				requestingLikeMap={requestingLikeMap}
@@ -130,6 +124,7 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 				showSendButton={showSendButton}
 				noCommentsText={noCommentsText}
 				commentInputPlaceholder={commentInputPlaceholder}
+				onShowOptionsMenu={this.onShowOptionsMenuHandler}
 			/>
 		);
 	}
@@ -169,7 +164,7 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 	};
 
 	private onCommentDeleteHandler = (comment: IWallPostComment) => {
-		// console.log('TODO: delete comment with ID', comment.id);
+		console.log('TODO: delete comment with ID', comment.id);
 	};
 
 	private loadMoreComments = (comments: IComments[]): IWallPostComment[] => {
@@ -258,6 +253,33 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 			showSendButton: value !== '',
 			commentText: value,
 		});
+	};
+
+	private onShowOptionsMenuHandler = (comment: IWallPostComment) => {
+		const {getText} = this.props;
+		// TODO: delete option should be available only for own comments
+		const menuOptions = [
+			getText('comments.screen.advanced.menu.copy'),
+			getText('comments.screen.advanced.menu.delete'),
+			getText('button.CANCEL'),
+		];
+		ActionSheet.show(
+			{
+				options: menuOptions,
+				destructiveButtonIndex: menuOptions.length - 2,
+				cancelButtonIndex: menuOptions.length - 1,
+			},
+			async (buttonIndex: number) => {
+				switch (buttonIndex) {
+					case 0:
+						Clipboard.setString(comment.text);
+						break;
+					case 1:
+						this.onCommentDeleteHandler(comment);
+						break;
+				}
+			},
+		);
 	};
 }
 

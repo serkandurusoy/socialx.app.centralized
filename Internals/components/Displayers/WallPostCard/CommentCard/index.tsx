@@ -10,26 +10,16 @@ import {IWallPostComment} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
-// TODO: check what happened with implementation for SOC-45?
-enum COMMENT_ADVANCED_ACTIONS {
-	DELETE = 'Delete',
-	COPY = 'Copy',
-	CANCEL = 'Cancel',
-}
-
-const COMMENT_OPTIONS = [COMMENT_ADVANCED_ACTIONS.COPY, COMMENT_ADVANCED_ACTIONS.CANCEL];
-const COMMENT_OPTIONS_WITH_DELETE = [COMMENT_ADVANCED_ACTIONS.DELETE, ...COMMENT_OPTIONS];
-
 const PULSATE_PERIOD = 700;
 
 export interface ICommentCardProps extends IWithTranslationProps {
 	comment: IWallPostComment;
 	onCommentLike: () => void;
 	onCommentReply: (startReply: boolean) => void;
-	onCommentDelete: () => void;
 	isReply?: boolean;
 	onViewUserProfile: (userId: string) => void;
 	requestingLike: boolean;
+	onShowOptionsMenu: () => void;
 }
 
 const CommentLikes: React.SFC<{numberOfLikes: number; likedByMe: boolean}> = ({numberOfLikes, likedByMe}) => (
@@ -142,6 +132,7 @@ const CommentCardComp: React.SFC<ICommentCardProps> = ({
 	onCommentLike,
 	requestingLike,
 	getText,
+	onShowOptionsMenu,
 }) => {
 	const {likedByMe, numberOfLikes, replies, text, user, timestamp} = comment;
 	const commentTimestamp = moment(timestamp).fromNow();
@@ -155,12 +146,12 @@ const CommentCardComp: React.SFC<ICommentCardProps> = ({
 			</TouchableOpacity>
 			<View style={style.rightContainer}>
 				<View>
-					<View style={style.commentBackground}>
+					<TouchableOpacity style={style.commentBackground} onLongPress={onShowOptionsMenu}>
 						<Text style={style.userFullName} onPress={() => onViewUserProfile(user.id)}>
 							{user.fullName}
 						</Text>
 						<Text style={[style.commentText, numberOfLikes > 0 ? style.commentTextPadding : null]}>{text}</Text>
-					</View>
+					</TouchableOpacity>
 					{numberOfLikes > 0 && <CommentLikes numberOfLikes={numberOfLikes} likedByMe={likedByMe} />}
 				</View>
 				<View style={style.actionsContainer}>
