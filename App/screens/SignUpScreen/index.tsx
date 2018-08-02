@@ -482,6 +482,7 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 					email,
 				},
 			});
+			this.afterUserCreate();
 		}
 	};
 
