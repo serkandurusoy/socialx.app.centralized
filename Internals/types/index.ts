@@ -19,24 +19,6 @@ export interface FriendsSearchResult {
 	avatarURL?: string;
 }
 
-export interface IWallPostCommentReply {
-	id: string;
-	text: string;
-	user: {
-		fullName: string;
-		avatarURL?: string;
-		id: string;
-	};
-	timestamp: Date;
-	numberOfLikes: number;
-	likes: IUserQuery[];
-	likedByMe: boolean;
-}
-
-export interface IWallPostComment extends IWallPostCommentReply {
-	replies: IWallPostCommentReply[];
-}
-
 export enum SearchResultKind {
 	Friend = 'FRIEND',
 	NotFriend = 'NOT_FRIEND',

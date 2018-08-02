@@ -31,10 +31,10 @@ const style: any = {
 	likesContainer: {
 		position: 'absolute',
 		bottom: Sizes.smartHorizontalScale(-10),
-		width: '100%',
+		right: 0,
+		marginRight: Sizes.smartHorizontalScale(5),
 		zIndex: 1,
 		elevation: 3,
-		alignItems: 'flex-end',
 	},
 	likesBorder: {
 		flexDirection: 'row',
@@ -43,7 +43,6 @@ const style: any = {
 		borderColor: Colors.dustWhite,
 		borderWidth: 1,
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
-		marginRight: Sizes.smartHorizontalScale(5),
 		alignItems: 'center',
 	},
 	numberOfLikes: {
@@ -57,6 +56,7 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
 		lineHeight: Sizes.smartHorizontalScale(20),
+		alignSelf: 'flex-start',
 	},
 	commentText: {
 		...Fonts.centuryGothic,

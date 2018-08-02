@@ -1,4 +1,4 @@
-import {CommentsSortingOptions, ICommentOrReply, IMediaProps, ISimpleComment} from 'types';
+import {CommentsSortingOptions, IMediaProps, ISimpleComment, IWallPostComment} from 'types';
 
 export const bestTwoComments = (post: {comments: ISimpleComment[]}) => {
 	const comments = [...post.comments];
@@ -45,7 +45,7 @@ export const getPostMedia = (medias: IMediaProps[], numberOfLikes: number, numCo
 	return ret;
 };
 
-export const updateSortedComments = (comments: ICommentOrReply[], sortOption: CommentsSortingOptions) => {
+export const updateSortedComments = (comments: IWallPostComment[], sortOption: CommentsSortingOptions) => {
 	if (sortOption === CommentsSortingOptions.Recent) {
 		return sortCommentsByRecent(comments);
 	} else if (sortOption === CommentsSortingOptions.Likes) {
@@ -54,7 +54,7 @@ export const updateSortedComments = (comments: ICommentOrReply[], sortOption: Co
 	return comments;
 };
 
-const sortCommentsByLikes = (comments: ICommentOrReply[]) =>
+const sortCommentsByLikes = (comments: IWallPostComment[]) =>
 	comments.sort((a: any, b: any) => {
 		if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
 			a = a.numberOfLikes;
@@ -66,7 +66,7 @@ const sortCommentsByLikes = (comments: ICommentOrReply[]) =>
 		return a > b ? -1 : a < b ? 1 : 0;
 	});
 
-const sortCommentsByRecent = (comments: ICommentOrReply[]) =>
+const sortCommentsByRecent = (comments: IWallPostComment[]) =>
 	comments.sort((a: any, b: any) => {
 		a = a.timestamp;
 		b = b.timestamp;

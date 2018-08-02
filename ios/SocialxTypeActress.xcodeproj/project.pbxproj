@@ -1695,7 +1695,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\nJS_BUNDLE_FILE=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\nif [ -f \"${JS_BUNDLE_FILE}\" ]; then\necho \"Now copy JS bundle file to ${BUNDLE_COPY_PATH}\"\ncp ${JS_BUNDLE_FILE} ${BUNDLE_COPY_PATH}\nfi";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\nJS_BUNDLE_FILE=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\nif [ -f \"${JS_BUNDLE_FILE}\" && -n \"${BUNDLE_COPY_PATH}\" ]; then\necho \"Now copy JS bundle file to ${BUNDLE_COPY_PATH}\"\ncp ${JS_BUNDLE_FILE} ${BUNDLE_COPY_PATH}\nfi";
 		};
 		0F85E5A4A6BA85C34220D401 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
