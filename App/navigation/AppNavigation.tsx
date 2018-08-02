@@ -1,4 +1,5 @@
 import React from 'react';
+import {Animated, Easing, View} from 'react-native';
 import {
 	createBottomTabNavigator,
 	createMaterialTopTabNavigator,
@@ -6,10 +7,9 @@ import {
 	NavigationSceneRendererProps,
 	TransitionConfig,
 } from 'react-navigation';
-import LaunchScreen from '../screens/LaunchScreen';
 
-import {FeedTabBar, ScreenHeaderButton, TabBarBottom} from 'components';
-import {Animated, Easing, View} from 'react-native';
+import {FeedTabBar, HeaderLogo, ScreenHeaderButton, TabBarBottom} from 'components';
+
 import {ApplicationStyles, Colors, Icons} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
@@ -20,6 +20,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import GroupScreen from '../screens/GroupFeedScreen';
 import IncomingCallScreen from '../screens/IncomingCallScreen';
 import IntroScreen from '../screens/IntroScreen';
+import LaunchScreen from '../screens/LaunchScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MaintenanceScreen from '../screens/Maintenance';
 import MediaLicenceFAQScreen from '../screens/MediaLicenceFAQScreen';
@@ -49,6 +50,7 @@ import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
+
 import styles from './styles/NavigationStyles';
 
 const navOptionsDefault = {
@@ -201,7 +203,7 @@ const UserFeedStackNavigator = createStackNavigator(
 				// 	/>
 				// ),
 				headerRight: <View />,
-				title: 'FEED',
+				headerTitle: <HeaderLogo />,
 			}),
 		},
 		MessagingScreen: {screen: MessagingScreen},

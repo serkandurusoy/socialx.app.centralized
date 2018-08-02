@@ -30,5 +30,6 @@ export * from './DotsWithTooltips';
 export * from './FeedTabBar';
 export * from './ProfileTopContainer';
 export * from './HeartAnimation';
+export * from './HeaderLogo';
 export * from './CheckboxButtonWithIcon';
 export * from './AddFriendsList';

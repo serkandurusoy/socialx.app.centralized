@@ -6,9 +6,9 @@ import {AddFriendButton, ProfileStatistics, UserAvatar} from 'components';
 import {Colors, Sizes} from 'theme';
 import {SearchResultKind} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
-import style, {FRIEND_CONTAINER_HEIGHT, TOP_PADDING} from './style';
+import style, {FRIEND_CONTAINER_HEIGHT, REDESIGN_PADDING, TOP_PADDING} from './style';
 
-export const ADD_FRIEND_CONTAINER_HEIGHT = FRIEND_CONTAINER_HEIGHT;
+export const ADD_FRIEND_CONTAINER_HEIGHT = FRIEND_CONTAINER_HEIGHT + REDESIGN_PADDING;
 export const HEADER_TOP_PADDING = TOP_PADDING;
 
 export interface ITopContainerSharedProps {
@@ -26,6 +26,7 @@ export interface ITopContainerSharedProps {
 	friendRequestStatus?: SearchResultKind;
 	onViewProfilePhoto?: () => void;
 	ownUser: boolean;
+	onEditProfile?: () => void;
 }
 
 interface ITopContainerTranslatedProps extends ITopContainerSharedProps, IWithTranslationProps {}
@@ -46,10 +47,22 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 	onViewProfilePhoto,
 	numberOfViews,
 	ownUser,
+	onEditProfile,
 }) => (
-	<View style={style.topContainer}>
+	<View
+		style={style.topContainer}
+		onLayout={(event) => {
+			console.log(event.nativeEvent.layout.height);
+		}}
+	>
 		<TouchableOpacity onPress={onViewProfilePhoto} disabled={!onViewProfilePhoto}>
-			<UserAvatar avatarURL={{uri: avatarURL}} fullName={fullName} username={username} />
+			<UserAvatar
+				avatarURL={{uri: avatarURL}}
+				fullName={fullName}
+				username={username}
+				ownUser={ownUser}
+				onEditProfile={onEditProfile}
+			/>
 		</TouchableOpacity>
 		<ProfileStatistics
 			numberOfPhotos={numberOfPhotos}

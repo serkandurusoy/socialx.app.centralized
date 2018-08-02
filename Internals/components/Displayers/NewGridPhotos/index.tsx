@@ -30,8 +30,10 @@ interface INewGridPhotosProps {
 }
 
 let gridProviderInstance: LayoutProvider | null = null;
+let lastKnownGridHeight: number = 0;
 // TODO: @Serkan: any better options for a singleton here?
 const getGridProvider = (thumbWidth: number, thumbHeight: number, header: IHeaderType) => {
+	lastKnownGridHeight = header && header.height;
 	if (!gridProviderInstance) {
 		gridProviderInstance = new LayoutProvider(
 			(index: any) => {
@@ -43,13 +45,21 @@ const getGridProvider = (thumbWidth: number, thumbHeight: number, header: IHeade
 			(type: ReactText, dim: any) => {
 				if (type === ViewTypes.HEADER_LAYOUT) {
 					dim.width = SCREEN_WIDTH;
-					dim.height = header.height;
+					dim.height = lastKnownGridHeight;
 				} else {
 					dim.width = thumbWidth;
 					dim.height = thumbHeight;
 				}
 			},
 		);
+	} else {
+		if (header) {
+			gridProviderInstance.setLayoutForType(
+				ViewTypes.HEADER_LAYOUT,
+				{width: SCREEN_WIDTH, height: lastKnownGridHeight},
+				0,
+			);
+		}
 	}
 	return gridProviderInstance;
 };

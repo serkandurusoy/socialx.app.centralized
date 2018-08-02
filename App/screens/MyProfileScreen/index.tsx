@@ -65,7 +65,7 @@ interface IMyProfileScreenState {
 	gridMediaProvider: DataProvider;
 }
 
-const TOTAL_HEADER_HEIGHT = HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + AVATAR_NAME_HEIGHT + PROFILE_STATS_HEIGHT;
+const TOTAL_HEADER_HEIGHT = HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + PROFILE_STATS_HEIGHT;
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = ({navigation, navigationOptions}) => ({
@@ -186,6 +186,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 				emptyGalleryMessage={'my.profile.screen.empty.gallery'}
 				headerHeight={TOTAL_HEADER_HEIGHT}
 				onViewMediaFullScreen={this.onPhotoPressHandler}
+				onEditProfile={this.onEditProfilePressHandler}
+				ownUser={true}
 			/>
 		);
 	}
@@ -286,6 +288,11 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			mediaObjects,
 			startIndex: index,
 		});
+	};
+
+	private onEditProfilePressHandler = () => {
+		const {navigation} = this.props;
+		navigation.navigate('SettingsScreen');
 	};
 }
 

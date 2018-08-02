@@ -1,11 +1,13 @@
 import React, {ReactText} from 'react';
-import {RefreshControl, TouchableOpacity, View} from 'react-native';
+import {Dimensions, RefreshControl, TouchableOpacity, View} from 'react-native';
 import {DataProvider} from 'recyclerlistview';
 
 import {ITopContainerSharedProps, MediaObjectViewer, NewGridPhotos, ProfileTopContainer} from 'components';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {ISimpleMediaObject} from 'types';
 import style, {USER_MEDIA_THUMB_SIZE} from './style';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface IMyProfileScreenProps extends ITopContainerSharedProps, IWithLoaderProps {
 	refreshing: boolean;
@@ -15,6 +17,7 @@ interface IMyProfileScreenProps extends ITopContainerSharedProps, IWithLoaderPro
 	onViewMediaFullScreen: (index: number) => void;
 	headerHeight: number;
 	ownUser: boolean;
+	onEditProfile?: () => void;
 }
 
 const GridItem: React.SFC<{
@@ -51,6 +54,7 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 	emptyGalleryMessage,
 	hasPhotos,
 	ownUser,
+	onEditProfile,
 }) => (
 	<View style={style.container}>
 		<NewGridPhotos
@@ -78,9 +82,10 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 						emptyGalleryMessage={emptyGalleryMessage}
 						numberOfViews={numberOfViews}
 						ownUser={ownUser}
+						onEditProfile={onEditProfile}
 					/>
 				),
-				height: headerHeight,
+				height: hasPhotos ? headerHeight : SCREEN_HEIGHT,
 			}}
 			scrollViewProps={{
 				bounces: true,

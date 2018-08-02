@@ -19,6 +19,7 @@ export interface ISXButtonProps {
 	size?: ButtonSizes;
 	autoWidth?: boolean;
 	borderColor?: string;
+	textColor?: string;
 	loading?: boolean;
 	containerStyle?: StyleProp<ViewStyle>;
 }
@@ -43,7 +44,7 @@ export class SXButton extends Component<ISXButtonProps, any> {
 		return (
 			<TouchableOpacity disabled={this.isDisabled} onPress={this.props.onPress} style={this.getContainerWidth()}>
 				<View style={this.getContainerStyles()}>
-					<Text style={[style.text, style['text' + this.props.size]]}>{this.props.label}</Text>
+					<Text style={this.getTextStyles()}>{this.props.label}</Text>
 					{this.props.loading && (
 						<ActivityIndicator size={'small'} color={Colors.white} style={style.loadingIndicator} />
 					)}
@@ -67,5 +68,11 @@ export class SXButton extends Component<ISXButtonProps, any> {
 		{borderColor: this.props.borderColor},
 		...(this.props.containerStyle ? [this.props.containerStyle] : [style['container' + this.props.size]]),
 		...(this.isDisabled ? [style.disabledButton] : []),
+	];
+
+	protected getTextStyles = () => [
+		style.text,
+		{color: this.props.textColor ? this.props.textColor : Colors.white},
+		this.props.size ? style['text' + this.props.size] : null,
 	];
 }
