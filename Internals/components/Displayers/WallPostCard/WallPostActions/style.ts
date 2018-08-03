@@ -14,6 +14,10 @@ const style: any = {
 	rightContainer: {
 		flexDirection: 'row',
 	},
+	icon: {
+		fontSize: Sizes.smartHorizontalScale(24),
+		paddingBottom: Sizes.smartHorizontalScale(4),
+	},
 };
 
 export default StyleSheet.create(style);
