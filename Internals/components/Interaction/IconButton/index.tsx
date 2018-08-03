@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Image, StyleProp, Text, TouchableOpacity} from 'react-native';
-import Ionicon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 import style from './style';
 

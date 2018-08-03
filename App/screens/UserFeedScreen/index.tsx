@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import React, {Component} from 'react';
-import {InteractionManager, Dimensions, Platform} from 'react-native';
+import {Dimensions, InteractionManager, Platform} from 'react-native';
 import {connect} from 'react-redux';
 
 import {NavigationEventSubscription, NavigationScreenProp} from 'react-navigation';
@@ -38,9 +38,9 @@ import {addBlobFiles} from 'utilities/ipfs';
 
 import {ipfsConfig as base} from 'configuration';
 
+import {OS_TYPES} from 'consts';
 import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
 import {IMediaRec} from './types';
-import {OS_TYPES} from 'consts';
 
 const AVAILABLE_SCREEN_HEIGHT = Dimensions.get('window').height;
 const TOTAL_SCREEN_HEIGHT = Dimensions.get('screen').height;
@@ -88,14 +88,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private didFocusSubscription: NavigationEventSubscription | null = null;
 	private keyboardDidShowListener: any;
 
-	get isRefreshing() {
-		return this.state.refreshing || this.state.silentRefresh;
-	}
-
-	get isLoading() {
-		return this.state.refreshing || this.state.silentRefresh || this.state.loadingMore;
-	}
-
 	// public componentDidMount() {
 	// 	InteractionManager.runAfterInteractions(() => {
 	// 		this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.silentRefreshWallPosts);
@@ -132,10 +124,18 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				onMediaPress={this.onMediaObjectPressHandler}
 				onCommentPress={this.onCommentsButtonClickHandler}
 				onAddCommentPress={this.onAddCommentPressHandler}
-				listLoading={this.isLoading}
+				listLoading={this.isLoading()}
 			/>
 		);
 	}
+
+	private isRefreshing = () => {
+		return this.state.refreshing || this.state.silentRefresh;
+	};
+
+	private isLoading = () => {
+		return this.state.refreshing || this.state.silentRefresh || this.state.loadingMore;
+	};
 
 	private onLoadMore = async () => {
 		if (!this.state.loadingMore) {
@@ -240,7 +240,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private refreshWallPosts = async () => {
-		if (!this.isRefreshing) {
+		if (!this.isRefreshing()) {
 			this.setState({refreshing: true});
 			try {
 				await this.props.data.refetch();
@@ -256,7 +256,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private silentRefreshWallPosts = async () => {
-		if (!this.isRefreshing) {
+		if (!this.isRefreshing()) {
 			this.setState({silentRefresh: true});
 			try {
 				await this.props.refresh();
@@ -318,7 +318,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private onAddCommentPressHandler = (scrollRef: any, index: number, cardHeight: number) => {
-		if (!this.isRefreshing) {
+		if (!this.isLoading()) {
 			scrollRef.current.scrollToIndex({
 				animated: true,
 				index,

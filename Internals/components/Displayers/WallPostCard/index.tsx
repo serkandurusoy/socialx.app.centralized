@@ -1,13 +1,14 @@
 import moment from 'moment';
 import React, {Component, RefObject} from 'react';
-import {Linking, Text, TouchableOpacity, Keyboard, View, Dimensions, Platform, Animated} from 'react-native';
+import {Animated, Dimensions, Keyboard, Linking, Platform, Text, TouchableOpacity, View} from 'react-native';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {compose} from 'recompose';
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
 import {blockUserHoc} from 'backend/graphql';
-import {HeartAnimation, SXTextInput, InputSizes, TRKeyboardKeys} from 'components';
+import {HeartAnimation, InputSizes, SXTextInput, TRKeyboardKeys} from 'components';
+import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
@@ -18,15 +19,13 @@ import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
 import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
-import {OS_TYPES} from 'consts';
 
+import {AnimatedFastImage} from 'configuration';
 import ParsedText from 'lib/textParser';
 
 const POST_SHORT_LENGTH = 100;
 const POST_SHORT_MAX_LINES = 3;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-
-const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 export interface ISimpleWallPostCardProps {
 	id: string;
@@ -516,13 +515,13 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 						width={SCREEN_WIDTH - 90}
 						borderWidth={0}
 						size={InputSizes.Small}
-						placeholder="Add a comment..."
+						placeholder='Add a comment...'
 						value={this.state.comment}
 						onChangeText={this.onCommentInputChange}
 						focusUpdateHandler={this.onCommentInputPress}
 						returnKeyType={TRKeyboardKeys.done}
 						onSubmitPressed={Keyboard.dismiss}
-						blurOnSubmit
+						blurOnSubmit={true}
 						disabled={this.props.listLoading}
 					/>
 				</Animated.View>
