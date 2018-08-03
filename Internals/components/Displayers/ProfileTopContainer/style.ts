@@ -5,6 +5,7 @@ export const TOP_PADDING = Sizes.smartVerticalScale(19);
 const FRIEND_CONTAINER_V_PADDING = Sizes.smartVerticalScale(10);
 // just a rough estimate below, should suffice
 export const FRIEND_CONTAINER_HEIGHT = FRIEND_CONTAINER_V_PADDING * 2 + Sizes.smartVerticalScale(40);
+export const REDESIGN_PADDING = Sizes.smartVerticalScale(20);
 
 const style: any = {
 	topContainer: {

@@ -5,6 +5,7 @@ import {Colors} from 'theme/index';
 export default StyleSheet.create({
 	header: {
 		backgroundColor: Colors.pink,
-		height: Platform.OS === OS_TYPES.IOS ? 34 : 44,
+		height: 45,
+		// height: Platform.OS === OS_TYPES.IOS ? 34 : 44,
 	},
 });

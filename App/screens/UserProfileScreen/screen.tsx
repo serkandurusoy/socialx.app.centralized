@@ -46,7 +46,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProp
 }
 
 const TOTAL_HEADER_HEIGHT =
-	HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + AVATAR_NAME_HEIGHT + PROFILE_STATS_HEIGHT + ADD_FRIEND_CONTAINER_HEIGHT;
+	HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + PROFILE_STATS_HEIGHT + ADD_FRIEND_CONTAINER_HEIGHT;
 
 const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	isFollowed,
