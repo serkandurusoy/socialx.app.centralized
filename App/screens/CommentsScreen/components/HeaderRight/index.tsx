@@ -45,13 +45,18 @@ const getSortingItems = (selectedValue: CommentsSortingOptions, onValueChange: (
 		};
 	});
 
+const modalCloseHandler = (navigation: NavigationScreenProp<any>) => {
+	navigation.popToTop();
+	navigation.goBack(null);
+};
+
 const HeaderRightInt: React.SFC<IHeaderRightProps> = ({navigation, getText, sortOption, onValueChange}) => {
 	const headerItem = getSortingSectionHeaderItem(getText('comments.order.title'));
 	const menuItems = getSortingItems(sortOption, onValueChange);
 	return (
 		<View style={style.rightHeader}>
 			<TooltipDots getItems={() => headerItem.concat(menuItems)} iconName={'ios-funnel'} iconColor={Colors.white} />
-			{navigation && <ModalCloseButton navigation={navigation} />}
+			{navigation && <ModalCloseButton onClose={() => modalCloseHandler(navigation)} />}
 		</View>
 	);
 };

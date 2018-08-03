@@ -7,7 +7,7 @@ export interface IWithResizeOnKeyboardShowProps {
 	safeRunAfterKeyboardHide: (handler: () => void) => void;
 }
 
-export const withResizeOnKeyboardShowInt = <P extends IWithResizeOnKeyboardShowProps>(
+const withResizeOnKeyboardShowInt = <P extends IWithResizeOnKeyboardShowProps>(
 	BaseComponent: React.ComponentType<P>,
 ) => {
 	return class extends React.Component<P> {

@@ -1695,7 +1695,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\nJS_BUNDLE_FILE=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\nif [ -f \"${JS_BUNDLE_FILE}\" ]; then\necho \"Now copy JS bundle file to ${BUNDLE_COPY_PATH}\"\ncp ${JS_BUNDLE_FILE} ${BUNDLE_COPY_PATH}\nfi";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\nJS_BUNDLE_FILE=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\nif [ -f \"${JS_BUNDLE_FILE}\" && -n \"${BUNDLE_COPY_PATH}\" ]; then\necho \"Now copy JS bundle file to ${BUNDLE_COPY_PATH}\"\ncp ${JS_BUNDLE_FILE} ${BUNDLE_COPY_PATH}\nfi";
 		};
 		0F85E5A4A6BA85C34220D401 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2028,7 +2028,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Christian Josephs (BK72Q8YHQR)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Christian Josephs (BK72Q8YHQR)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = WJ7HBS2562;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
