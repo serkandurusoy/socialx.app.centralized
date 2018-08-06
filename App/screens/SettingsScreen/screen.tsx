@@ -1,48 +1,51 @@
-import {withFormik} from 'formik';
-import React, {Component} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {FormikErrors, FormikProps, withFormik} from 'formik';
+import React from 'react';
+import {ImageSourcePropType, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {compose} from 'recompose';
-import * as yup from 'yup';
+import {string} from 'yup';
 
-import {AvatarName, AvatarPicker, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
+import {
+	AvatarName,
+	AvatarPicker,
+	InputSizes,
+	SettingCheckbox,
+	SXTextInput,
+	TKeyboardKeys,
+	TRKeyboardKeys,
+} from 'components';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {IBlobData} from 'ipfslib';
 import {Colors, Sizes} from 'theme';
+import {IWithTranslationProps, withTranslations} from 'utilities';
+import {SettingsData} from './index';
 import style from './style';
 
-interface ISettingsScreenComponentProps extends IWithLoaderProps {
+const EMAIL_SCHEMA = string().email();
+
+interface ISettingsScreenComponentProps extends IWithLoaderProps, IWithTranslationProps {
 	aboutText: string;
 	firstName: string;
 	lastName: string;
 	email: string;
-	avatarImage: any;
-	username?: string;
-	onSaveChanges: () => void;
-	// miningEnabled: boolean;
+	miningEnabled: boolean;
+	avatarImage: ImageSourcePropType;
+	username: string;
+	onSaveChanges: (values: SettingsData) => Promise<void>;
 }
 
-// interface ISettingsScreenComponentState {
-// 	avatarImage: any;
-// 	aboutText: string;
-// 	firstName: string;
-// 	lastName: string;
-// 	email: string;
-// 	miningEnabled: boolean;
-// 	selectedImage: boolean;
-// 	localAvatarPath: string | null;
-// }
+interface TranslatedSettings extends SettingsData, IWithTranslationProps {}
 
-const SettingsScreenComponent = ({
-	values: {aboutText, firstName, lastName, email, avatarImage, username},
+const SettingsScreenComponent: React.SFC<FormikProps<TranslatedSettings>> = ({
+	values: {aboutText, firstName, lastName, email, avatarImage, username, miningEnabled, getText},
 	errors,
-	touched,
 	handleChange,
 	handleBlur,
 	handleSubmit,
 	isValid,
 	isSubmitting,
+	setFieldValue,
 }) => (
 	<View style={{flex: 1}}>
 		<KeyboardAwareScrollView
@@ -55,7 +58,7 @@ const SettingsScreenComponent = ({
 			<View style={style.pickerContainer}>
 				<AvatarPicker
 					avatarImage={avatarImage}
-					afterImagePick={this.updateAvatarImage}
+					afterImagePick={(localPhotoPath: string) => setFieldValue('avatarImage', {uri: localPhotoPath}, false)}
 					avatarSize={Sizes.smartHorizontalScale(103)}
 				/>
 			</View>
@@ -70,26 +73,30 @@ const SettingsScreenComponent = ({
 					autoCapitalize={'sentences'}
 					autoCorrect={true}
 					value={aboutText}
-					placeholder={'About you text'}
+					placeholder={getText('settings.screen.about.text.placeholder')}
 					borderColor={Colors.dustWhite}
 					multiline={true}
-					onChangeText={handleChange('email')}
-					focusUpdateHandler={(value) => !value && handleBlur('email')}
+					onChangeText={handleChange('aboutText')}
+					focusUpdateHandler={(value) => !value && handleBlur('aboutText')}
 				/>
 			</View>
-			<Text style={style.personalDetails}>{'PERSONAL DETAILS'}</Text>
+			<Text style={style.personalDetails}>{getText('settings.screen.personal.details')}</Text>
 			<View style={[style.textInputContainer, style.textInputContainerFirst]}>
 				<SXTextInput
 					autoCapitalize={'words'}
 					autoCorrect={true}
 					value={firstName}
 					iconColor={Colors.iron}
-					placeholder={'First name'}
+					placeholder={getText('settings.screen.first.name.placeholder')}
 					placeholderColor={Colors.postText}
+					size={InputSizes.Small}
 					borderColor={Colors.transparent}
 					blurOnSubmit={true}
 					returnKeyType={TRKeyboardKeys.done}
+					onChangeText={handleChange('firstName')}
+					focusUpdateHandler={(value) => !value && handleBlur('firstName')}
 				/>
+				{errors.firstName && <Text style={style.errorText}>{errors.firstName}</Text>}
 			</View>
 			<View style={[style.textInputContainer]}>
 				<SXTextInput
@@ -97,12 +104,16 @@ const SettingsScreenComponent = ({
 					autoCorrect={true}
 					value={lastName}
 					iconColor={Colors.iron}
-					placeholder={'Last name'}
+					placeholder={getText('settings.screen.last.name.placeholder')}
 					placeholderColor={Colors.postText}
 					borderColor={Colors.transparent}
+					size={InputSizes.Small}
 					blurOnSubmit={true}
 					returnKeyType={TRKeyboardKeys.done}
+					onChangeText={handleChange('lastName')}
+					focusUpdateHandler={(value) => !value && handleBlur('lastName')}
 				/>
+				{errors.lastName && <Text style={style.errorText}>{errors.lastName}</Text>}
 			</View>
 			<View style={[style.textInputContainer]}>
 				<SXTextInput
@@ -110,28 +121,32 @@ const SettingsScreenComponent = ({
 					autoCorrect={true}
 					value={email}
 					iconColor={Colors.iron}
-					placeholder={'Email'}
+					placeholder={getText('settings.screen.email.placeholder')}
 					placeholderColor={Colors.postText}
 					borderColor={Colors.transparent}
+					size={InputSizes.Small}
 					keyboardType={TKeyboardKeys.emailAddress}
 					blurOnSubmit={true}
 					returnKeyType={TRKeyboardKeys.done}
+					onChangeText={handleChange('email')}
+					focusUpdateHandler={(value) => !value && handleBlur('email')}
+				/>
+				{errors.email && <Text style={style.errorText}>{errors.email}</Text>}
+			</View>
+			<View style={style.miningContainer}>
+				<SettingCheckbox
+					title={getText('settings.screen.mining.title')}
+					description={getText('settings.screen.mining.description')}
+					value={miningEnabled}
+					onValueUpdated={() => setFieldValue('miningEnabled', !miningEnabled, false)}
 				/>
 			</View>
-			{/*<View style={style.miningContainer}>*/}
-			{/*<SettingCheckbox*/}
-			{/*title={'Mining (Beta)'}*/}
-			{/*description={'Get rewarded for validating transactions within SocialX network'}*/}
-			{/*initialValue={miningEnabled}*/}
-			{/*valueUpdated={this.toggleMiningSetting}*/}
-			{/*/>*/}
-			{/*</View>*/}
 		</KeyboardAwareScrollView>
-		{touched &&
-			isValid && (
+		{isValid &&
+			!isSubmitting && (
 				<View style={style.bottomContainer}>
 					<TouchableOpacity style={style.saveButton} onPress={handleSubmit}>
-						<Text style={style.saveButtonText}>{'Save'}</Text>
+						<Text style={style.saveButtonText}>{getText('settings.screen.save.button')}</Text>
 						<Icon name={'check'} size={Sizes.smartHorizontalScale(30)} color={Colors.green} />
 					</TouchableOpacity>
 				</View>
@@ -139,68 +154,52 @@ const SettingsScreenComponent = ({
 	</View>
 );
 
-class SettingsScreenComponent1 extends Component<ISettingsScreenComponentProps> {
-	private updateAvatarImage = (localPhotoPath: string) => {
-		this.setState({
-			avatarImage: {uri: localPhotoPath},
-			hasChanges: true,
-			selectedImage: true,
-			localAvatarPath: localPhotoPath,
-		});
-	};
-
-	private handleInputChangeText = (value: string, fieldName: string) => {
-		const newState: any = {};
-		newState[fieldName] = value;
-		newState.hasChanges = true;
-		this.setState(newState);
-	};
-
-	private toggleMiningSetting = (value: boolean) => {
-		this.setState({
-			hasChanges: true,
-			miningEnabled: value,
-		});
-	};
-
-	// private saveChanges = () => {
-	// 	const saveData: SettingsData = {
-	// 		updatedAvatarImagePath: this.state.localAvatarPath,
-	// 		aboutText: this.state.aboutText,
-	// 		firstName: this.state.firstName,
-	// 		lastName: this.state.lastName,
-	// 		email: this.state.email,
-	// 		miningEnabled: this.state.miningEnabled,
-	// 	};
-	// 	this.props.saveChanges(saveData);
-	// };
-}
-
-interface IFormValues {
-	aboutText: string;
-	firstName: string;
-	lastName: string;
-	email: string;
-}
-
 const formikForm = {
-	mapPropsToValues: (props: IFormValues) => ({aboutText: '', firstName: '', lastName: '', email: ''}),
-	validationSchema: yup.object().shape({
-		aboutText: yup.string(),
-		firstName: yup.string().required(),
-		lastName: yup.string().required(),
-		email: yup
-			.string()
-			.email()
-			.required(),
+	mapPropsToValues: ({
+		aboutText,
+		firstName,
+		lastName,
+		email,
+		avatarImage,
+		username,
+		miningEnabled,
+		getText,
+	}: ISettingsScreenComponentProps) => ({
+		aboutText,
+		firstName,
+		lastName,
+		email,
+		avatarImage,
+		username,
+		miningEnabled,
+		getText,
 	}),
-	handleSubmit: (values, {props, setSubmitting, setErrors, resetForm}) => {
-		console.log('handleSubmit props', props);
-		console.log('Send form with values', values);
+	validate: (values: TranslatedSettings) => {
+		const {firstName, lastName, email, getText} = values;
+		const errors: FormikErrors<TranslatedSettings> = {};
+		if (!email) {
+			errors.email = getText('settings.screen.email.required');
+		} else if (!EMAIL_SCHEMA.isValidSync(email)) {
+			errors.email = getText('settings.screen.email.invalid');
+		}
+		if (!firstName) {
+			errors.firstName = getText('settings.screen.first.name.required');
+		}
+		if (!lastName) {
+			errors.lastName = getText('settings.screen.last.name.required');
+		}
+		return errors;
+	},
+	handleSubmit: async (values: TranslatedSettings, {props, setSubmitting, resetForm, setErrors}) => {
+		setSubmitting(true);
+		await props.onSaveChanges(values);
+		setSubmitting(false);
+		resetForm(values);
 	},
 };
 
 export default compose(
 	withInlineLoader,
+	withTranslations,
 	withFormik(formikForm),
 )(SettingsScreenComponent as any);

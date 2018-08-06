@@ -1,33 +1,30 @@
 import {storiesOf} from '@storybook/react-native';
 import React from 'react';
-import {Images} from 'theme';
-import SettingsScreen, {SettingsData} from '../../App/screens/SettingsScreen';
+import {SettingsData} from '../../App/screens/SettingsScreen';
+import SettingsScreenComponent from '../../App/screens/SettingsScreen/screen';
 
 const saveHandler = (data: SettingsData) => {
-	alert('saveHandler');
-	// console.log('Save data', data);
-	// if (data.updatedAvatarLocalURL !== null) {
-	// 	console.log('TODO: upload updated profile picture', data.updatedAvatarLocalURL)
-	// }
+	alert('saveHandler: ' + JSON.stringify(data));
 };
 
-storiesOf('SettingsScreen', module).add('demo', () => {
+storiesOf('SettingsScreen', module).add('with random Github user', () => {
 	const aboutText = 'This is my very start on the SocialX network';
 	const firstName = 'Marcel';
 	const lastName = 'Fussinger';
 	const username = 'marcelfussinger';
 	const email = 'marcel@socialx.network';
 	const miningEnabled = false;
+	const avatarImage = {uri: 'https://avatars2.githubusercontent.com/u/' + Math.round(Math.random() * 10000)};
 	return (
-		<SettingsScreen
-			avatarImage={Images.user_avatar_placeholder}
+		<SettingsScreenComponent
 			aboutText={aboutText}
 			firstName={firstName}
 			lastName={lastName}
-			username={username}
 			email={email}
 			miningEnabled={miningEnabled}
-			saveChanges={saveHandler}
+			avatarImage={avatarImage}
+			username={username}
+			onSaveChanges={saveHandler}
 		/>
 	);
 });

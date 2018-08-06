@@ -32,6 +32,7 @@ const style: any = {
 	textInputContainer: {
 		width: '100%',
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
+		paddingVertical: Sizes.smartVerticalScale(5),
 		borderBottomWidth: 1,
 		borderBottomColor: Colors.dustWhite,
 	},
@@ -63,6 +64,13 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(14),
 		color: Colors.postFullName,
 		marginRight: Sizes.smartHorizontalScale(10),
+	},
+	errorText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(12),
+		lineHeight: Sizes.smartHorizontalScale(16),
+		color: Colors.monza,
+		paddingBottom: Sizes.smartVerticalScale(5),
 	},
 };
 
