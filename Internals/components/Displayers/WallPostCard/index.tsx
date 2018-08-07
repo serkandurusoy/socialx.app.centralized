@@ -349,7 +349,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 					numberOfWalletCoins={this.props.numberOfWalletCoins}
 					likeButtonPressed={this.props.onLikeButtonClick}
 					superLikeButtonPressed={this.superLikeButtonPressedHandler}
-					commentsButtonPressed={() => this.props.onCommentClick(true)}
+					commentsButtonPressed={() => this.props.onCommentClick(false)}
 					walletCoinsButtonPressed={this.walletCoinsButtonPressedHandler}
 				/>
 			);

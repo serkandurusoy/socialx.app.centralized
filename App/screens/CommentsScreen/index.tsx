@@ -1,15 +1,24 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
-import {Clipboard, Platform, View} from 'react-native';
+import {Clipboard, Platform, StatusBar} from 'react-native';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 import {compose} from 'recompose';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-import {commentHoc, likeCommentHoc, removeCommentLikeHoc, userHoc} from 'backend/graphql';
+import {
+	commentHoc,
+	getUserProfileHoc,
+	likeCommentHoc,
+	removeCommentLikeHoc,
+	setLikedPostHoc,
+	unsetLikedPostHoc,
+	userHoc,
+} from 'backend/graphql';
 import {OS_TYPES} from 'consts';
-import {CommentsSortingOptions, IComments, IUserDataResponse, IUserQuery, IWallPostComment} from 'types';
+import {Sizes} from 'theme';
+import {CommentsSortingOptions, IComments, IMediaProps, IUserDataResponse, IUserQuery, IWallPostComment} from 'types';
 import {
 	decodeBase64Text,
 	getUserAvatarNew,
@@ -17,8 +26,9 @@ import {
 	updateSortedComments,
 	withTranslations,
 } from 'utilities';
-import {HeaderRight} from './components/HeaderRight';
 import CommentsScreenComponent from './screen';
+
+const COMMENT_WIDTH_THRESHOLD = Sizes.smartHorizontalScale(150);
 
 interface ICommentsScreenNavScreenProps {
 	params: {
@@ -28,6 +38,7 @@ interface ICommentsScreenNavScreenProps {
 		startComment: boolean;
 		onSelectionChange: any;
 		sortOption: CommentsSortingOptions;
+		postData: object;
 	};
 }
 
@@ -39,6 +50,7 @@ interface ICommentsScreenState {
 	requestingLikeMap: any;
 	commentText: string;
 	showSendButton: boolean;
+	commentLikesPosition: object;
 }
 
 export interface IWithGetComments {
@@ -54,15 +66,20 @@ interface ICommentsScreenProps extends IWithTranslationProps, IWithGetComments {
 	showActivityIndicator: (title: string) => void;
 	hideActivityIndicator: () => void;
 	data: IUserDataResponse;
+	getUserQuery: any;
+	setLikedPost: any;
+	unsetLikedPost: any;
 }
 
 class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenState> {
 	private static navigationOptions = ({navigation, navigationOptions}: ICommentsScreenProps) => {
-		const {sortOption, onSelectionChange} = navigation.state.params;
 		return {
-			title: CommentsScreen.isRepliesScreen(navigation) ? navigationOptions.getText('replies.screen.title') : '',
-			headerRight: <HeaderRight sortOption={sortOption} onValueChange={onSelectionChange} navigation={navigation} />,
-			headerLeft: CommentsScreen.isRepliesScreen(navigation) ? undefined : <View />,
+			header: null,
+			// title: CommentsScreen.isRepliesScreen(navigation)
+			// 	? navigationOptions.getText('replies.screen.title')
+			// 	: 'COMMENTS',
+			// headerRight: <HeaderRight sortOption={sortOption} onValueChange={onSelectionChange} navigation={navigation} />,
+			// headerLeft: CommentsScreen.isRepliesScreen(navigation) ? undefined : <View />,
 		};
 	};
 
@@ -78,9 +95,14 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 		requestingLikeMap: {},
 		commentText: '',
 		showSendButton: false,
+		commentLikesPosition: {
+			bottom: Sizes.smartHorizontalScale(-18),
+			right: 0,
+		},
 	};
 
 	public async componentDidMount() {
+		StatusBar.setBarStyle('dark-content', true);
 		this.props.navigation.setParams({
 			onSelectionChange: this.updateSortingHandler,
 			sortOption: this.state.sortOption,
@@ -92,6 +114,7 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 	}
 
 	public componentWillUnmount(): void {
+		StatusBar.setBarStyle('light-content', true);
 		if (Platform.OS === OS_TYPES.Android) {
 			AndroidKeyboardAdjust.setAdjustPan();
 		}
@@ -99,6 +122,8 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 
 	public render() {
 		const {getText, navigation} = this.props;
+		const {postData, sortOption, onSelectionChange} = navigation.state.params;
+		const optionsProps = {sortOption, onSelectionChange};
 		const {allComments, noComments, requestingLikeMap, commentText, showSendButton, loading} = this.state;
 
 		const noCommentsText = CommentsScreen.isRepliesScreen(navigation)
@@ -125,6 +150,15 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 				noCommentsText={noCommentsText}
 				commentInputPlaceholder={commentInputPlaceholder}
 				onShowOptionsMenu={this.onShowOptionsMenuHandler}
+				postData={postData}
+				postOwner={this.props.getUserQuery.getUser}
+				onCommentsBackPress={this.onCommentsBackPressHandler}
+				onImagePress={this.onImagePressHandler}
+				onLikePress={this.onLikePressHandler}
+				currentUser={this.props.data.user}
+				getCommentContainerWidth={this.getCommentContainerWidthHandler}
+				commentLikesPosition={this.state.commentLikesPosition}
+				optionsProps={optionsProps}
 			/>
 		);
 	}
@@ -278,6 +312,45 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 			},
 		);
 	};
+
+	private onCommentsBackPressHandler = () => {
+		const {navigation} = this.props;
+		navigation.navigate('UserFeedTab');
+	};
+
+	private onImagePressHandler = (index: number, medias: IMediaProps[]) => {
+		const {navigation} = this.props;
+		navigation.navigate('MediaViewerScreen', {
+			mediaObjects: medias,
+			startIndex: index,
+		});
+	};
+
+	private onLikePressHandler = async (likedByMe: boolean, likedPostId: string) => {
+		const {setLikedPost, unsetLikedPost} = this.props;
+
+		const likeQuery = {variables: {likedPostId}};
+
+		const result = likedByMe ? await unsetLikedPost(likeQuery) : await setLikedPost(likeQuery);
+
+		if (result.error) {
+			console.log(result.error);
+			return likedByMe;
+		}
+
+		return !likedByMe;
+	};
+
+	private getCommentContainerWidthHandler = (width: number) => {
+		if (width < COMMENT_WIDTH_THRESHOLD) {
+			this.setState({
+				commentLikesPosition: {
+					bottom: Sizes.smartHorizontalScale(10),
+					right: Sizes.smartHorizontalScale(-30),
+				},
+			});
+		}
+	};
 }
 
 export default compose(
@@ -286,6 +359,9 @@ export default compose(
 	likeCommentHoc,
 	commentHoc,
 	userHoc,
+	getUserProfileHoc,
+	setLikedPostHoc,
+	unsetLikedPostHoc,
 	connect(
 		null,
 		{showActivityIndicator, hideActivityIndicator},

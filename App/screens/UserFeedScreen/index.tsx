@@ -313,8 +313,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 	};
 
-	private onCommentsButtonClickHandler = (postId: any, userId: any, startComment: boolean) => {
-		this.props.navigation.navigate('CommentsStack', {postId, userId, startComment});
+	private onCommentsButtonClickHandler = (postId: any, userId: any, startComment: boolean, postData: object) => {
+		this.props.navigation.navigate('CommentsStack', {postId, userId, startComment, postData});
 	};
 
 	private onAddCommentPressHandler = (scrollRef: any, index: number, cardHeight: number) => {
@@ -338,11 +338,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				return 0;
 			}
 
-			idealOffset = 220;
+			idealOffset = 235;
 			idealCardHeight = 490;
 			diff = idealCardHeight - cardHeight;
 		} else {
-			idealOffset = 250;
+			idealOffset = 265;
 			idealCardHeight = 480;
 			diff = idealCardHeight - cardHeight;
 		}
@@ -350,7 +350,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		if (Platform.OS === OS_TYPES.Android) {
 			const softwareButtonsBarHeight = TOTAL_SCREEN_HEIGHT - AVAILABLE_SCREEN_HEIGHT;
-			return -(offset - diff + softwareButtonsBarHeight - 10);
+			return -(offset - diff + softwareButtonsBarHeight);
 		}
 		return -(offset - diff);
 	};
