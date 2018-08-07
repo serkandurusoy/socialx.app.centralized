@@ -9,8 +9,9 @@ import {
 } from 'react-navigation';
 
 import {FeedTabBar, HeaderLogo, ScreenHeaderButton, TabBarBottom} from 'components';
+import {SearchHeader} from '../screens/SearchScreen/Components';
 
-import {ApplicationStyles, Colors, Icons} from 'theme';
+import {ApplicationStyles, Colors, Icons, Fonts} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen/data.hoc';
@@ -50,6 +51,10 @@ import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
+import {TopTab} from '../screens/SearchScreen/TopTab';
+import {PeopleTab} from '../screens/SearchScreen/PeopleTab';
+import {TagsTab} from '../screens/SearchScreen/TagsTab';
+import {PlacesTab} from '../screens/SearchScreen/PlacesTab';
 
 import styles from './styles/NavigationStyles';
 
@@ -180,7 +185,24 @@ const TabbedFeedNavigator = createMaterialTopTabNavigator(
 		animationEnabled: true,
 		swipeEnabled: true,
 		// lazy: true, // this is missing with createMaterialTopTabNavigator
-		tabBarComponent: (props: any) => <FeedTabBar navigation={props.navigation} />,
+		// tabBarComponent: (props: any) => <FeedTabBar navigation={props.navigation} />,
+		tabBarOptions: {
+			activeTintColor: Colors.pink,
+			inactiveTintColor: Colors.background,
+			indicatorStyle: {
+				height: 1,
+				backgroundColor: Colors.pink,
+			},
+			pressOpacity: 1,
+			upperCaseLabel: false,
+			labelStyle: {
+				fontSize: 14,
+				//...Fonts.centuryGothic,
+			},
+			style: {
+				backgroundColor: Colors.white,
+			},
+		},
 	},
 );
 
@@ -188,10 +210,10 @@ const UserFeedStackNavigator = createStackNavigator(
 	{
 		TabbedFeedScreen: {
 			screen: TabbedFeedNavigator,
-			navigationOptions: ({navigation}) => ({
+			navigationOptions: () => ({
 				headerLeft: (
 					<ScreenHeaderButton
-						iconName={'md-flame'}
+						iconName="md-flame"
 						// onPress={() => navigation.navigate('HotPostsFeedScreenStack')}
 						onPress={() => alert('Hot Posts.. Coming soon..')}
 					/>
@@ -217,10 +239,71 @@ const UserFeedStackNavigator = createStackNavigator(
 	},
 );
 
+const TabbedSearchNavigator = createMaterialTopTabNavigator(
+	{
+		Top: TopTab,
+		People: PeopleTab,
+		Tags: TagsTab,
+		Places: PlacesTab,
+	},
+	{
+		animationEnabled: true,
+		swipeEnabled: true,
+		tabBarOptions: {
+			activeTintColor: Colors.pink,
+			inactiveTintColor: Colors.background,
+			indicatorStyle: {
+				height: 1,
+				backgroundColor: Colors.pink,
+			},
+			pressOpacity: 1,
+			upperCaseLabel: false,
+			labelStyle: {
+				fontSize: 14,
+				//...Fonts.centuryGothic,
+			},
+			style: {
+				backgroundColor: Colors.white,
+			},
+		},
+	},
+);
+
+const UserSearchStackNavigator = createStackNavigator(
+	{
+		TabbedSearchScreen: {
+			screen: TabbedSearchNavigator,
+			navigationOptions: ({navigation}) => ({
+				header: () => {
+					const params = navigation.state.params || {};
+					// TODO: any other options here not to use 'navigation.state.params'?
+					console.log(navigation);
+					return (
+						<SearchHeader
+							backVisible={params.backVisible}
+							searchInputUpdated={params.searchInputUpdatedHandler}
+							onBack={params.backHandler}
+							onFocusUpdated={params.onSearchFocusUpdatedHandler}
+							searchValue={params.searchValue}
+						/>
+					);
+				},
+			}),
+		},
+	},
+	{
+		navigationOptions: {
+			...navOptionsDefault,
+			gesturesEnabled: true,
+		},
+	},
+);
+
 const MainScreenTabNavigation = createBottomTabNavigator(
 	{
 		UserFeedTab: UserFeedStackNavigator,
-		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		//SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		SearchTab: UserSearchStackNavigator,
 		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
 		MyProfileTab: {screen: MyProfileStackNavigator},
 	},
