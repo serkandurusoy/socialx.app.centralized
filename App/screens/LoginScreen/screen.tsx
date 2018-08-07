@@ -1,5 +1,5 @@
 import {FormikErrors, FormikProps, withFormik} from 'formik';
-import React, {Component, RefObject} from 'react';
+import React, {RefObject} from 'react';
 import {Alert, Keyboard, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {connect} from 'react-redux';
@@ -142,68 +142,63 @@ const LoginForm = withFormik({
 	},
 })(ValidatedLoginForm as any);
 
-class LoginScreenComponent extends Component<ILoginScreenComponentProps> {
-	public render() {
-		const {
-			getText,
-			showModalForSMSCode,
-			phoneNumber,
-			onSmsCodeConfirmed,
-			onSmsCodeDeclined,
-			onSmsCodeResend,
-			onStartLogin,
-			onNavigateToPasswordForgot,
-			onNavigateToRegister,
-			onNavigateToUploadKey,
-			safeRunAfterKeyboardHide,
-			loginLoader,
-			hideLoader,
-		} = this.props;
-		return (
-			<SafeAreaView style={style.safeAreaContainer}>
-				<KeyboardAwareScrollView
-					style={style.keyboardView}
-					contentContainerStyle={style.container}
-					alwaysBounceVertical={false}
-					keyboardDismissMode='interactive'
-					keyboardShouldPersistTaps={'handled'}
-				>
-					<ModalInputSMSCode
-						visible={showModalForSMSCode}
-						confirmHandler={onSmsCodeConfirmed}
-						declineHandler={onSmsCodeDeclined}
-						resendHandler={onSmsCodeResend}
-						phoneNumber={phoneNumber}
-					/>
-					<Text style={style.welcomeText}>{getText('login.welcome.message')}</Text>
-					<LoginForm
-						getText={getText}
-						onStartLogin={onStartLogin}
-						safeRunAfterKeyboardHide={safeRunAfterKeyboardHide}
-						marginBottom={0} // dummy value here
-						loginLoader={loginLoader}
-						hideLoader={hideLoader}
-					/>
-					<TouchableOpacity onPress={onNavigateToPasswordForgot} style={style.forgotPassword}>
-						<Text style={style.forgotPasswordText}>{getText('login.forgot.password')}</Text>
-					</TouchableOpacity>
-					<SXButton
-						label={getText('login.use.unlock.file')}
-						onPress={onNavigateToUploadKey}
-						borderColor={Colors.transparent}
-						disabled={false}
-					/>
-					<View style={style.noAccountContainer}>
-						<Text style={style.noAccountQuestion}>{getText('login.no.account.text')}</Text>
-						<TouchableOpacity onPress={onNavigateToRegister}>
-							<Text style={style.signUpText}>{getText('login.signUp.button')}</Text>
-						</TouchableOpacity>
-					</View>
-				</KeyboardAwareScrollView>
-			</SafeAreaView>
-		);
-	}
-}
+const LoginScreenComponent: React.SFC<ILoginScreenComponentProps> = ({
+	getText,
+	showModalForSMSCode,
+	phoneNumber,
+	onSmsCodeConfirmed,
+	onSmsCodeDeclined,
+	onSmsCodeResend,
+	onStartLogin,
+	onNavigateToPasswordForgot,
+	onNavigateToRegister,
+	onNavigateToUploadKey,
+	safeRunAfterKeyboardHide,
+	loginLoader,
+	hideLoader,
+}) => (
+	<SafeAreaView style={style.safeAreaContainer}>
+		<KeyboardAwareScrollView
+			style={style.keyboardView}
+			contentContainerStyle={style.container}
+			alwaysBounceVertical={false}
+			keyboardDismissMode='interactive'
+			keyboardShouldPersistTaps={'handled'}
+		>
+			<ModalInputSMSCode
+				visible={showModalForSMSCode}
+				confirmHandler={onSmsCodeConfirmed}
+				declineHandler={onSmsCodeDeclined}
+				resendHandler={onSmsCodeResend}
+				phoneNumber={phoneNumber}
+			/>
+			<Text style={style.welcomeText}>{getText('login.welcome.message')}</Text>
+			<LoginForm
+				getText={getText}
+				onStartLogin={onStartLogin}
+				safeRunAfterKeyboardHide={safeRunAfterKeyboardHide}
+				marginBottom={0} // dummy value here
+				loginLoader={loginLoader}
+				hideLoader={hideLoader}
+			/>
+			<TouchableOpacity onPress={onNavigateToPasswordForgot} style={style.forgotPassword}>
+				<Text style={style.forgotPasswordText}>{getText('login.forgot.password')}</Text>
+			</TouchableOpacity>
+			<SXButton
+				label={getText('login.use.unlock.file')}
+				onPress={onNavigateToUploadKey}
+				borderColor={Colors.transparent}
+				disabled={false}
+			/>
+			<View style={style.noAccountContainer}>
+				<Text style={style.noAccountQuestion}>{getText('login.no.account.text')}</Text>
+				<TouchableOpacity onPress={onNavigateToRegister}>
+					<Text style={style.signUpText}>{getText('login.signUp.button')}</Text>
+				</TouchableOpacity>
+			</View>
+		</KeyboardAwareScrollView>
+	</SafeAreaView>
+);
 
 const MapDispatchToProps = (dispatch: any, props: ILoginScreenComponentProps) => ({
 	loginLoader: () => dispatch(showActivityIndicator(props.getText('login.progress.message'))),

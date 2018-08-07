@@ -1,39 +1,26 @@
+import {CheckBox} from 'native-base';
+import React, {Component} from 'react';
+import {Alert, Keyboard, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
+import DeviceInfo from 'react-native-device-info';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {NavigationScreenProp} from 'react-navigation';
+import {connect} from 'react-redux';
+import {compose} from 'recompose';
+
+import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
+import {addMediaHoc, createUpdateUserHoc} from 'backend/graphql';
 import {AvatarPicker} from 'components/Avatar';
 import {SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
 import {SXButton} from 'components/Interaction';
 import {ModalInputSMSCode} from 'components/Modals';
-import {CheckBox} from 'native-base';
-import React, {Component} from 'react';
-import {Alert, Keyboard, Platform, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {NavigationScreenProp} from 'react-navigation';
-import {connect} from 'react-redux';
+import {ModalManager} from 'hoc';
 import {Colors, Images, Sizes} from 'theme';
-import style from './style';
-
-import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
-import {
-	ConfirmSignup,
-	ISignup,
-	IWithTranslationProps,
-	resendSignup,
-	Signin,
-	Signup,
-	updateUserAttr,
-	withTranslations,
-} from 'utilities';
-
-import {addMediaHoc, checkUsernameHoc, createUpdateUserHoc} from 'backend/graphql';
-import {createUserFunc} from 'types';
-
-import {ModalManager} from 'hoc/ManagedModal/manager';
+import {ConfirmSignup, IWithTranslationProps, resendSignup, Signin, Signup, withTranslations} from 'utilities';
 import {addFileBN} from 'utilities/ipfs';
-
-import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
-import DeviceInfo from 'react-native-device-info';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {compose} from 'recompose';
 import ValidatedPassword from './components/ValidatedPassword';
+import style from './style';
 
 interface ICountryData {
 	cca2: string;

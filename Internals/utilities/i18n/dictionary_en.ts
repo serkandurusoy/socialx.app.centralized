@@ -69,6 +69,12 @@ export default {
 	'register.password.invalid.uppercase': 'uppercase letters',
 	'register.password.invalid.symbols': 'special characters',
 	'register.password.invalid.policy': 'Password policy',
+	'register.screen.email.required': 'Email is required',
+	'register.screen.email.invalid': 'Please enter a valid email address',
+	'register.screen.name.required': 'Your name is required',
+	'register.screen.username.required': 'A username is required',
+	'register.screen.phone.number.required': 'Phone number is required',
+	'register.screen.confirm.password.required': 'Confirm password is required',
 	'terms.and.conditions.screen.title': 'Terms and Conditions',
 	'reset.password.screen.title': 'RESET PASSWORD',
 	'reset.password.description':

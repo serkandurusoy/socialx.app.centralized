@@ -16,8 +16,8 @@ const style: any = {
 	errorText: {
 		...Fonts.centuryGothic,
 		color: Colors.shuttleGray,
-		fontSize: Sizes.smartHorizontalScale(14),
-		lineHeight: Sizes.smartHorizontalScale(18),
+		fontSize: Sizes.smartHorizontalScale(12),
+		lineHeight: Sizes.smartHorizontalScale(16),
 	},
 	boldText: {
 		...Fonts.centuryGothicBold,
