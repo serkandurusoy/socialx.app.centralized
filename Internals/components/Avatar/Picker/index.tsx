@@ -1,17 +1,13 @@
-import React from 'react';
-
 import {ActionSheet} from 'native-base';
-import {TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {ImageSourcePropType, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {Colors, Sizes} from 'theme';
-import {getCameraMediaObject, getGalleryMediaObject} from 'utilities';
+import {getCameraMediaObject, getGalleryMediaObject, IWithTranslationProps, withTranslations} from 'utilities';
 import {AvatarImage} from '../Image';
 import style from './style';
 
-const PICK_FROM_GALLERY = 'Pick from gallery';
-const TAKE_A_PHOTO = 'Take a photo';
-const CANCEL = 'Cancel';
-const ACTION_SHEET_TITLE = 'Add profile photo';
 const IMAGE_CROP_SIZE = 300;
 
 const AVATAR_PICKER_OPTIONS = {
@@ -29,8 +25,8 @@ const AVATAR_CAMERA_OPTIONS = {
 	useFrontCamera: true,
 };
 
-export interface IAvatarPickerProps {
-	avatarImage: string;
+export interface IAvatarPickerProps extends IWithTranslationProps {
+	avatarImage: ImageSourcePropType;
 	afterImagePick: (image: string) => void;
 	avatarSize?: number;
 }
@@ -49,12 +45,15 @@ const takeCameraPhoto = async (afterImagePick: (image: string) => void) => {
 	}
 };
 
-const pickUserAvatar = (afterImagePick: (image: string) => void) => {
+const pickUserAvatar = (
+	afterImagePick: (image: string) => void,
+	getText: (value: string, ...args: any[]) => string,
+) => {
 	ActionSheet.show(
 		{
-			options: [PICK_FROM_GALLERY, TAKE_A_PHOTO, CANCEL],
+			options: [getText('avatar.picker.pick.from.gallery'), getText('avatar.picker.take.photo')],
 			cancelButtonIndex: 2,
-			title: ACTION_SHEET_TITLE,
+			title: getText('avatar.picker.title'),
 		},
 		(buttonIndex: number) => {
 			switch (buttonIndex) {
@@ -69,25 +68,26 @@ const pickUserAvatar = (afterImagePick: (image: string) => void) => {
 	);
 };
 
-export const AvatarPicker: React.SFC<IAvatarPickerProps> = ({avatarImage, avatarSize, afterImagePick}) => {
+const AvatarPickerInt: React.SFC<IAvatarPickerProps> = ({avatarImage, avatarSize, afterImagePick, getText}) => {
 	const avatarSizeStyle = {
 		width: avatarSize,
 		height: avatarSize,
 		borderRadius: avatarSize / 2,
 	};
-
 	const iconSize = Math.min(35, Math.round(avatarSize / 5));
 
 	return (
 		<View>
 			<AvatarImage image={avatarImage} style={[style.avatarImage, avatarSizeStyle]} />
-			<TouchableOpacity onPress={() => pickUserAvatar(afterImagePick)} style={style.editIcon}>
+			<TouchableOpacity onPress={() => pickUserAvatar(afterImagePick, getText)} style={style.editIcon}>
 				<Icon name={'camera'} size={iconSize} color={Colors.postFullName} />
 			</TouchableOpacity>
 		</View>
 	);
 };
 
-AvatarPicker.defaultProps = {
+AvatarPickerInt.defaultProps = {
 	avatarSize: Sizes.smartHorizontalScale(80),
 };
+
+export const AvatarPicker = withTranslations(AvatarPickerInt as any);

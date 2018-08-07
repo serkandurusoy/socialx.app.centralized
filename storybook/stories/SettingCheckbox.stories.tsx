@@ -13,8 +13,13 @@ const containerStyle = {
 storiesOf('SettingCheckbox', module)
 	.addDecorator((getStory: any) => <CenterView style={containerStyle}>{getStory()}</CenterView>)
 	.addDecorator(withKnobs)
-	.add('with editable props', () => {
+	.add('toggle on', () => {
 		const title = text('Title', 'Mining (Beta)');
 		const description = text('Description', 'Get rewarded for validating transactions within SocialX network');
-		return <SettingCheckbox title={title} description={description} />;
+		return <SettingCheckbox title={title} description={description} value={true} />;
+	})
+	.add('toggle off', () => {
+		const title = text('Title', 'Mining (Beta)');
+		const description = text('Description', 'Get rewarded for validating transactions within SocialX network');
+		return <SettingCheckbox title={title} description={description} value={false} />;
 	});

@@ -1,127 +1,78 @@
 import noop from 'lodash/noop';
-import React, {Component, RefObject} from 'react';
-import {AsyncStorage} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
+import React from 'react';
+import {AsyncStorage, ImageSourcePropType, ImageURISource} from 'react-native';
+import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-
-import SettingsScreenComponent from './screen';
+import {compose} from 'recompose';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {addMediaHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
-import {IUserDataResponse} from 'types/gql';
-
-import {Signout} from 'utilities/amplify';
-import {addFileBN} from 'utilities/ipfs';
-import {getUserAvatar} from 'utilities/userHelpers';
-
 import {ScreenHeaderButton} from 'components';
 import {ipfsConfig as base} from 'configuration/ipfs';
+import {ModalManager} from 'hoc';
 import {Images} from 'theme';
+import {IUserDataResponse} from 'types/gql';
+import {IWithTranslationProps, withTranslations} from 'utilities';
+import {Signout} from 'utilities/amplify';
+import {addFileBN} from 'utilities/ipfs';
+import SettingsScreenComponent from './screen';
 
 export interface SettingsData {
-	updatedAvatarImagePath: string | null;
 	aboutText: string;
 	firstName: string;
 	lastName: string;
 	email: string;
 	miningEnabled: boolean;
+	avatarImage: ImageSourcePropType;
+	username: string;
 }
 
-interface ISettingsScreenProps {
+interface ISettingsScreenProps extends IWithTranslationProps {
 	data: IUserDataResponse;
-	// todo
 	updateUserData: any;
 	addMedia: any;
 	navigation: NavigationScreenProp<any>;
+	navigationOptions: NavigationScreenConfig<any>;
 	editingDataLoader: () => void;
 	hideLoader: () => void;
 }
 
-interface IISettingsScreenState {
-	avatarImage: any;
-	aboutText?: string;
-	firstName: string;
-	lastName: string;
-	email: string;
-}
+// TODO: this is a workaround to know when avatar image was updated and requires upload at save
+// why? because in Formik handleSubmit there is no proper way to know what fields were touched?
+let lastSavedAvatarImage: string;
 
-class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenState> {
-	public static getDerivedStateFromProps(
-		nextProps: Readonly<ISettingsScreenProps>,
-		prevState: Readonly<IISettingsScreenState>,
-	) {
-		const {data} = nextProps;
-		if (!data.loading && data) {
-			const avatarImage = data.user.avatar
-				? {uri: `${base.ipfs_URL}${data.user.avatar.hash}`}
-				: Images.user_avatar_placeholder;
-			console.log(`AvatarImage: ${avatarImage.uri}`);
-			// if (prevState.avatarImage) {
-			// 	console.log(`Previous avatar: ${prevState.avatarImage.uri}`);
-			// }
-			return {
-				avatarImage,
-				aboutText: data.user.bio,
-				firstName: data.user.name.split(' ')[0] || '',
-				lastName: data.user.name.split(' ')[1] || '',
-				email: data.user.email || '',
-			};
-		}
+const runLogoutHandler = async (navigation: NavigationScreenProp<any>) => {
+	try {
+		await Signout();
+		await AsyncStorage.clear();
+		resetNavigationToRoute('PreAuthScreen', navigation);
+	} catch (e) {
+		console.log(e);
+	}
+};
+
+const saveErrorHandler = (e: Error, hideLoader: () => void) => {
+	console.log(e);
+	hideLoader();
+	ModalManager.safeRunAfterModalClosed(() => {
+		alert('Save error: ' + e.message);
+	});
+};
+
+const uploadAvatarImage = async (
+	updatedAvatarImagePath: string | undefined,
+	addMedia: any,
+	hideLoader: () => void,
+	afterUpload: (mediaId: string) => void,
+) => {
+	if (!updatedAvatarImagePath) {
+		afterUpload('');
 		return null;
 	}
-
-	private static navigationOptions = (props: ISettingsScreenProps) => ({
-		title: 'SETTINGS',
-		headerRight: <ScreenHeaderButton iconName={'ios-log-out'} onPress={() => SettingsScreen.runLogoutHandler(props)} />,
-	});
-
-	private static runLogoutHandler = async (props: ISettingsScreenProps) => {
-		try {
-			await Signout();
-			await AsyncStorage.clear();
-			resetNavigationToRoute('PreAuthScreen', props.navigation);
-		} catch (ex) {
-			//
-			console.log(ex);
-		}
-	};
-
-	public state = {
-		avatarImage: null,
-		aboutText: '',
-		firstName: '',
-		lastName: '',
-		email: '',
-	};
-
-	private screenRef: RefObject<any> = React.createRef();
-
-	public render() {
-		const {data} = this.props;
-		return (
-			<SettingsScreenComponent
-				avatarImage={this.state.avatarImage}
-				aboutText={this.state.aboutText}
-				firstName={this.state.firstName}
-				lastName={this.state.lastName}
-				email={this.state.email}
-				miningEnabled={false} // later update hc value
-				saveChanges={this.saveChanges}
-				isLoading={data.loading}
-				ref={this.screenRef}
-			/>
-		);
-	}
-
-	private handleImageChange = async (updatedAvatarImagePath: string | null, afterUpload: (mediaId: string) => void) => {
-		if (!updatedAvatarImagePath) {
-			afterUpload('');
-			return null;
-		}
-		try {
-			await addFileBN(updatedAvatarImagePath, noop, noop, noop, async (resp) => {
+	try {
+		await addFileBN(updatedAvatarImagePath, noop, noop, noop, async (resp) => {
+			try {
 				const {Hash, Size} = JSON.parse(resp.responseBody);
-
 				// NOTE: Add Media file on AppSync
 				const qVar = {
 					variables: {
@@ -130,69 +81,101 @@ class SettingsScreen extends Component<ISettingsScreenProps, IISettingsScreenSta
 						hash: Hash,
 					},
 				};
-
-				const addRes = await this.props.addMedia(qVar);
+				const addRes = await addMedia(qVar);
+				lastSavedAvatarImage = updatedAvatarImagePath;
 				afterUpload(addRes.data.addMedia.id);
-			});
-		} catch (e) {
-			//
-			console.log(e);
-		}
-	};
-
-	private saveChanges = async (saveData: SettingsData) => {
-		const {updateUserData, editingDataLoader, hideLoader, data} = this.props;
-
-		editingDataLoader();
-
-		await this.handleImageChange(saveData.updatedAvatarImagePath, async (avatar: string) => {
-			try {
-				const bio = saveData.aboutText || '';
-
-				let mVar: any = null;
-				if (avatar) {
-					mVar = {
-						variables: {
-							name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
-							email: saveData.email,
-							bio,
-							avatar,
-						},
-					};
-				} else {
-					mVar = {
-						variables: {
-							name: `${saveData.firstName || ''} ${saveData.lastName || ''}`,
-							email: saveData.email,
-							bio,
-						},
-					};
-				}
-				await updateUserData(mVar);
-				await data.refetch();
-
-				// TODO: make sure to get rid of useRef in withInlineLoader!
-				this.screenRef.current.getOriginalRef().current.resetChanges();
 			} catch (e) {
-				//
-				console.log(e);
+				saveErrorHandler(e, hideLoader);
 			}
-			hideLoader();
 		});
-	};
-}
+	} catch (e) {
+		saveErrorHandler(e, hideLoader);
+	}
+};
 
-const MapDispatchToProp = (dispatch: any) => ({
-	editingDataLoader: () => dispatch(showActivityIndicator('Saving Your Data...')),
+const saveChanges = async (saveData: SettingsData, props: ISettingsScreenProps) => {
+	// TODO: check with @Serkan what is the best error handling for save.
+	// Here save is a sample case with many async calls + callbacks.
+	// TODO: later decide if we have any server side field errors
+
+	const updatedLocalAvatarImage =
+		!!saveData.avatarImage.uri && saveData.avatarImage.uri !== lastSavedAvatarImage
+			? (saveData.avatarImage as ImageURISource).uri
+			: undefined;
+
+	const {updateUserData, editingDataLoader, hideLoader, addMedia} = props;
+
+	editingDataLoader();
+
+	await uploadAvatarImage(updatedLocalAvatarImage, addMedia, hideLoader, async (avatar: string) => {
+		try {
+			const baseVar = {
+				name: `${saveData.firstName} ${saveData.lastName}`,
+				email: saveData.email,
+				bio: saveData.aboutText,
+			};
+			await updateUserData({variables: avatar ? {...baseVar, avatar} : baseVar});
+			hideLoader();
+		} catch (e) {
+			saveErrorHandler(e, hideLoader);
+		}
+	});
+};
+
+const SettingsScreen: React.SFC<ISettingsScreenProps> = (props) => {
+	const {data} = props;
+	let aboutText = '';
+	let firstName = '';
+	let lastName = '';
+	let userEmail = '';
+	let userName = '';
+	let avatarImage = Images.user_avatar_placeholder;
+	const miningEnabled = false; // later update HC value here!
+	if (!data.loading && data && data.user) {
+		const {bio, name, email, username, avatar} = data.user;
+		if (avatar) {
+			lastSavedAvatarImage = `${base.ipfs_URL}${avatar.hash}`;
+			avatarImage = {uri: `${base.ipfs_URL}${avatar.hash}`};
+		}
+		aboutText = bio || '';
+		firstName = name.split(' ')[0] || '';
+		lastName = name.split(' ')[1] || '';
+		userEmail = email || '';
+		userName = username;
+	}
+
+	return (
+		<SettingsScreenComponent
+			isLoading={data.loading}
+			aboutText={aboutText}
+			firstName={firstName}
+			lastName={lastName}
+			email={userEmail}
+			miningEnabled={miningEnabled}
+			avatarImage={avatarImage}
+			username={userName}
+			onSaveChanges={(saveData: SettingsData) => saveChanges(saveData, props)}
+		/>
+	);
+};
+
+SettingsScreen.navigationOptions = ({navigation, navigationOptions}: ISettingsScreenProps) => ({
+	title: navigationOptions.getText('settings.screen.title'),
+	headerRight: <ScreenHeaderButton iconName={'ios-log-out'} onPress={() => runLogoutHandler(navigation)} />,
+});
+
+const MapDispatchToProp = (dispatch: any, {getText}: ISettingsScreenProps) => ({
+	editingDataLoader: () => dispatch(showActivityIndicator(getText('settings.screen.saving.data'))),
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
 
-const reduxWrapper = connect(
-	null,
-	MapDispatchToProp,
+export default compose(
+	updateUserDataHoc,
+	addMediaHoc,
+	userHoc,
+	withTranslations,
+	connect(
+		null,
+		MapDispatchToProp,
+	),
 )(SettingsScreen as any);
-const userDataWrapper = userHoc(reduxWrapper);
-const addMediaWrapper = addMediaHoc(userDataWrapper);
-const updateUserWrapper = updateUserDataHoc(addMediaWrapper);
-
-export default updateUserWrapper;
