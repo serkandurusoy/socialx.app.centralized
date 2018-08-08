@@ -1,5 +1,6 @@
-import {FormikErrors, FormikProps, withFormik} from 'formik';
+import {FormikBag, FormikErrors, FormikProps, withFormik} from 'formik';
 import {CheckBox} from 'native-base';
+import PasswordValidator from 'password-validator';
 import React, {RefObject} from 'react';
 import {ImageSourcePropType, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
@@ -11,19 +12,22 @@ import {string} from 'yup';
 import {AvatarPicker, ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
 import {Colors, Images, Sizes} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
-import ValidatedPassword from './components/ValidatedPassword';
+import {RegisterData} from './index';
 import style from './style';
 
-interface ISignUpScreenComponentProps extends IWithTranslationProps {
-	// showModalForSMSCode: boolean;
-	// smsCodeErrorMessage: string;
-	// avatarImage: ImageSourcePropType;
-	// onSmsCodeConfirmed: (code: string) => void;
-	// onSmsCodeDeclined: () => void;
-	// onSmsCodeResend: () => void;
-	// onStartRegister: (...args: any[]) => Promise<void>; // TODO: define params here!
+interface ISignUpFormikProps extends IWithTranslationProps {
 	onAlreadyHaveCode: () => void;
 	onNavigateToTermsAndConditions: () => void;
+	onStartRegister: (userData: RegisterData) => void;
+}
+
+interface ISignUpScreenComponentProps extends ISignUpFormikProps {
+	showModalForSMSCode: boolean;
+	smsCodeErrorMessage: string;
+	phoneNumber: string;
+	onSmsCodeConfirmed: (code: string) => void;
+	onSmsCodeDeclined: () => void;
+	onSmsCodeResend: () => void;
 }
 
 interface ISignUpFormProps extends IWithTranslationProps {
@@ -46,6 +50,27 @@ interface ICountryData {
 	callingCode: string;
 }
 
+const MIN_PASSWORD_LENGTH = 8;
+const VALIDATOR_SCHEMA = new PasswordValidator()
+	.is()
+	.min(MIN_PASSWORD_LENGTH)
+	.has()
+	.lowercase()
+	.has()
+	.uppercase()
+	.has()
+	.digits()
+	.has()
+	.symbols();
+
+const ERROR_MESSAGES: {[key: string]: string} = {
+	min: 'register.password.min.length',
+	uppercase: 'register.password.invalid.uppercase',
+	lowercase: 'register.password.invalid.lowercase',
+	digits: 'register.password.invalid.numbers',
+	symbols: 'register.password.invalid.symbols',
+};
+
 const nameRef: RefObject<SXTextInput> = React.createRef();
 const usernameRef: RefObject<SXTextInput> = React.createRef();
 const phoneNumberRef: RefObject<TextInput> = React.createRef();
@@ -62,7 +87,7 @@ const DEVICE_COUNTRY_CALLING_CODE = ALL_COUNTRIES.reduce(
 	'',
 );
 
-const ErrorMessage: React.SFC<{text: string; visible: boolean}> = ({text, visible}) => (
+const ErrorMessage: React.SFC<{text: any; visible: boolean}> = ({text, visible}) => (
 	<React.Fragment>
 		{visible && (
 			<View style={style.errorContainer}>
@@ -85,8 +110,6 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 		countryCCA2,
 		countryCallingCode,
 		getText,
-		// showModalForSMSCode, smsCodeErrorMessage,
-		// onSmsCodeConfirmed, onSmsCodeDeclined, onSmsCodeResend, onStartRegister,
 		onAlreadyHaveCode,
 		onNavigateToTermsAndConditions,
 	},
@@ -94,31 +117,14 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 	touched,
 	handleSubmit,
 	isValid,
-	isSubmitting,
 	setFieldTouched,
 	setFieldValue,
 }) => (
-	<KeyboardAwareScrollView
-		style={style.keyboardView}
-		contentContainerStyle={style.container}
-		alwaysBounceVertical={false}
-		keyboardShouldPersistTaps={'handled'}
-		enableOnAndroid={true}
-	>
-		{/*{showModalForSMSCode && (*/}
-		{/*<ModalInputSMSCode*/}
-		{/*errorMessage={smsCodeErrorMessage}*/}
-		{/*visible={true}*/}
-		{/*confirmHandler={onSmsCodeConfirmed}*/}
-		{/*declineHandler={onSmsCodeDeclined}*/}
-		{/*resendHandler={onSmsCodeResend}*/}
-		{/*phoneNumber={phoneNumber}*/}
-		{/*/>*/}
-		{/*)}*/} /*TODO modal*/
-		{/* <View style={style.buttonContainer}>
-					<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true} />
-				</View>
-				<Text style={style.orText}>{'or'}</Text> */}
+	<React.Fragment>
+		{/*<View style={style.buttonContainer}>*/}
+		{/*<SXButton label={'IMPORT FROM DOCK.IO'} borderColor={Colors.transparent} disabled={true}/>*/}
+		{/*</View>*/}
+		{/*<Text style={style.orText}>{'or'}</Text>*/}
 		<View style={style.avatarPickerContainer}>
 			<AvatarPicker
 				avatarImage={avatarImage}
@@ -222,8 +228,8 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 				/>
 			</View>
 		</View>
-		<ValidatedPassword value={password} />
 		<View style={style.textInputContainer}>
+			<ErrorMessage text={errors.password} visible={!!touched.password && !!errors.password} />
 			<SXTextInput
 				isPassword={true}
 				iconColor={Colors.iron}
@@ -242,6 +248,7 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 			/>
 		</View>
 		<View style={style.textInputContainer}>
+			<ErrorMessage text={errors.confirmPassword} visible={!!touched.confirmPassword && !!errors.confirmPassword} />
 			<SXTextInput
 				isPassword={true}
 				iconColor={Colors.iron}
@@ -267,7 +274,7 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 			</TouchableOpacity>
 			<CheckBox
 				checked={termsAccepted}
-				onPress={() => setFieldValue('termsAccepted', !termsAccepted, false)}
+				onPress={() => setFieldValue('termsAccepted', !termsAccepted)}
 				color={Colors.pink}
 				style={style.acceptCheckbox}
 			/>
@@ -276,28 +283,29 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 			<SXButton
 				label={getText('register.button.label')}
 				onPress={handleSubmit}
-				disabled={!isValid || isSubmitting}
+				disabled={!(isValid && termsAccepted)}
 				borderColor={Colors.transparent}
 			/>
 		</View>
 		<View style={style.buttonContainer}>
 			<SXButton
 				label={getText('register.button.have.code')}
-				borderColor={Colors.transparent}
 				onPress={onAlreadyHaveCode}
+				disabled={username === '' || !!errors.username}
+				borderColor={Colors.transparent}
 			/>
 		</View>
-	</KeyboardAwareScrollView>
+	</React.Fragment>
 );
 
-const SignUpScreenComponent = withFormik({
-	mapPropsToValues: ({getText, onAlreadyHaveCode, onNavigateToTermsAndConditions}: ISignUpScreenComponentProps) => ({
-		email: '',
-		name: '',
+const SignUpFormik = withFormik({
+	mapPropsToValues: ({getText, onAlreadyHaveCode, onNavigateToTermsAndConditions}: ISignUpFormikProps) => ({
+		email: 'ionut.movila@gmail.com',
+		name: 'Ionut Movila',
 		username: '',
-		phoneNumber: '',
-		password: '',
-		confirmPassword: '',
+		phoneNumber: '721205279',
+		password: 'Socx@0000',
+		confirmPassword: 'Socx@0000',
 		termsAccepted: false,
 		avatarImage: Images.user_avatar_placeholder,
 		getText,
@@ -323,14 +331,77 @@ const SignUpScreenComponent = withFormik({
 		if (!phoneNumber) {
 			errors.phoneNumber = getText('register.screen.phone.number.required');
 		}
+		if (!password) {
+			errors.password = getText('register.screen.confirm.password.required');
+		} else {
+			const passwordErrors = VALIDATOR_SCHEMA.validate(password, {list: true});
+			if (passwordErrors.length > 0) {
+				errors.password = (
+					<React.Fragment>
+						<Text style={style.boldText}>{`${getText('register.password.invalid.policy')}: `}</Text>
+						{passwordErrors.map((error: string) => getText(ERROR_MESSAGES[error])).join(', ')}
+					</React.Fragment>
+				);
+			}
+		}
 		if (!confirmPassword) {
 			errors.confirmPassword = getText('register.screen.confirm.password.required');
+		} else if (!errors.password && confirmPassword !== password) {
+			errors.confirmPassword = getText('register.screen.confirm.password.mismatch');
 		}
 		return errors;
 	},
-	handleSubmit: async (values: ISignUpFormProps, {props, setSubmitting, setTouched}) => {
-		console.log('Submit register', values);
+	handleSubmit: async (
+		{email, name, username, phoneNumber, countryCallingCode, password, avatarImage}: ISignUpFormProps,
+		{props}: FormikBag<ISignUpFormikProps, ISignUpFormProps>,
+	) => {
+		props.onStartRegister({
+			email,
+			name,
+			username,
+			phoneNumber: `+${countryCallingCode}${phoneNumber}`,
+			password,
+			avatarImage,
+		});
 	},
 })(SignUpForm as any);
+
+const SignUpScreenComponent: React.SFC<ISignUpScreenComponentProps> = ({
+	showModalForSMSCode,
+	smsCodeErrorMessage,
+	onSmsCodeConfirmed,
+	onSmsCodeDeclined,
+	onSmsCodeResend,
+	phoneNumber,
+	onAlreadyHaveCode,
+	onNavigateToTermsAndConditions,
+	onStartRegister,
+	getText,
+}) => (
+	<KeyboardAwareScrollView
+		style={style.keyboardView}
+		contentContainerStyle={style.container}
+		alwaysBounceVertical={false}
+		keyboardShouldPersistTaps={'handled'}
+		enableOnAndroid={true}
+	>
+		{showModalForSMSCode && (
+			<ModalInputSMSCode
+				errorMessage={smsCodeErrorMessage}
+				visible={true}
+				confirmHandler={onSmsCodeConfirmed}
+				declineHandler={onSmsCodeDeclined}
+				resendHandler={onSmsCodeResend}
+				phoneNumber={phoneNumber}
+			/>
+		)}
+		<SignUpFormik
+			onAlreadyHaveCode={onAlreadyHaveCode}
+			onNavigateToTermsAndConditions={onNavigateToTermsAndConditions}
+			onStartRegister={onStartRegister}
+			getText={getText}
+		/>
+	</KeyboardAwareScrollView>
+);
 
 export default withTranslations(SignUpScreenComponent as any);

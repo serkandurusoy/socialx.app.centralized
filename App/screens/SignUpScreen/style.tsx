@@ -86,20 +86,20 @@ const style: any = {
 	},
 	errorText: {
 		...Fonts.centuryGothic,
-		color: Colors.shuttleGray,
+		color: Colors.monza,
 		fontSize: Sizes.smartHorizontalScale(12),
 		lineHeight: Sizes.smartHorizontalScale(16),
 	},
 	errorContainer: {
-		backgroundColor: colorWithAlpha(Colors.red, 0.2),
-		borderColor: Colors.red,
-		borderWidth: Sizes.smartHorizontalScale(1),
-		borderRadius: Sizes.smartHorizontalScale(5),
+		zIndex: 1,
 		marginHorizontal: '5%',
-		marginVertical: Sizes.smartVerticalScale(5),
+		marginTop: Sizes.smartVerticalScale(5),
+		marginBottom: -Sizes.smartVerticalScale(5),
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
-		paddingVertical: Sizes.smartVerticalScale(5),
 		width: '90%',
+	},
+	boldText: {
+		...Fonts.centuryGothicBold,
 	},
 };
 
