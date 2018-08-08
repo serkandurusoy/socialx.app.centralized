@@ -44,11 +44,12 @@ export const CommentTextInput: React.SFC<ICommentTextInputProps> = ({
 				underlineColorAndroid={Colors.transparent}
 				autoCapitalize='none'
 				value={commentText}
+				placeholderTextColor={Colors.postFullName}
 			/>
 			{showSendButton && (
 				<View style={style.sendButtonContainer}>
 					<TouchableOpacity onPress={() => sendCommentHandler(onCommentSend)} style={style.sendButton}>
-						<Icon name={'md-send'} size={Sizes.smartHorizontalScale(30)} color={Colors.fuchsiaBlue} />
+						<Icon name='md-send' size={Sizes.smartHorizontalScale(30)} color={Colors.pink} />
 					</TouchableOpacity>
 				</View>
 			)}

@@ -1,40 +1,41 @@
+import {OS_TYPES} from 'consts';
 import {Platform, StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme';
 
 const INPUT_MIN_HEIGHT = Sizes.smartHorizontalScale(35);
 const INPUT_CONTAINER_VERTICAL_PADDING = Sizes.smartVerticalScale(5);
-const TOTAL_INPUT_HEIGHT = INPUT_MIN_HEIGHT + 2 * INPUT_CONTAINER_VERTICAL_PADDING;
 
 const style: any = {
 	inputContainer: {
+		flexDirection: 'row',
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 		paddingVertical: INPUT_CONTAINER_VERTICAL_PADDING,
 		borderTopColor: Colors.silverSand,
-		borderTopWidth: 1,
+		borderTopWidth: 0.5,
 		maxHeight: Sizes.smartVerticalScale(110),
 	},
 	textInput: {
+		flex: 8,
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(16),
 		color: Colors.postFullName,
 		backgroundColor: Colors.dustWhite,
-		borderRadius: Sizes.smartHorizontalScale(15),
+		borderRadius: Sizes.smartHorizontalScale(25),
 		borderColor: Colors.silverSand,
-		borderWidth: 1,
-		paddingRight: Sizes.smartHorizontalScale(50),
-		paddingLeft: Sizes.smartHorizontalScale(10),
+		borderWidth: 0.5,
+		paddingHorizontal: Sizes.smartHorizontalScale(15),
 		minHeight: INPUT_MIN_HEIGHT,
-		paddingVertical: 0, // we need this for Android
+		paddingVertical: Sizes.smartVerticalScale(5),
+		paddingTop: Platform.OS === OS_TYPES.IOS ? Sizes.smartVerticalScale(7) : Sizes.smartVerticalScale(5),
+		textAlignVertical: 'center',
 	},
 	sendButtonContainer: {
-		height: TOTAL_INPUT_HEIGHT,
-		position: 'absolute',
-		right: Sizes.smartHorizontalScale(10),
-		justifyContent: 'center',
-		bottom: 0,
+		flex: 1,
+		justifyContent: 'flex-end',
 	},
 	sendButton: {
-		paddingHorizontal: Sizes.smartHorizontalScale(5),
+		paddingVertical: Platform.OS === OS_TYPES.Android ? Sizes.smartVerticalScale(5) : 0,
+		paddingLeft: Sizes.smartHorizontalScale(10),
 	},
 };
 

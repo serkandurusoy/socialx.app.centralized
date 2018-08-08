@@ -17,11 +17,11 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
 	onMediaPress: (index: any, medias: IMediaProps[]) => void;
-	onCommentPress: (postId: any, owner: any, startComment: boolean) => void;
+	onCommentPress: (postId: any, owner: any, startComment: boolean, postData: object) => void;
 	currentUser: IUserQuery;
 	noPosts: boolean;
 	shareSectionPlaceholder: string | null;
-	onLikePress: (likedByMe?: boolean, postId?: string) => Promise<any>;
+	onLikePress: (likedByMe: boolean, postId: string) => Promise<any>;
 	onPostDeletePress: any;
 	onUserPress: any;
 	loadingMore: Promise<boolean>;
@@ -134,7 +134,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 					listLoading={this.props.listLoading}
 					currentUser={this.props.currentUser}
 					onCommentClick={(startComment: boolean) =>
-						this.props.onCommentPress(data.item.id, data.item.owner.userId, startComment)
+						this.props.onCommentPress(data.item.id, data.item.owner.userId, startComment, data.item)
 					}
 					onImageClick={(index: number) => this.props.onMediaPress(index, data.item.media)}
 					onDeleteClick={() => this.props.onPostDeletePress(data.item.id)}

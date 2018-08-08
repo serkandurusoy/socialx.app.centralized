@@ -25,7 +25,7 @@ const style: any = {
 		justifyContent: 'center',
 	},
 	fullName: {
-		...Fonts.centuryGothic,
+		...Fonts.centuryGothicBold,
 		fontSize: Sizes.smartHorizontalScale(14),
 		lineHeight: Sizes.smartHorizontalScale(24),
 		color: Colors.postFullName,

@@ -13,6 +13,8 @@ interface IHeaderRightProps extends IWithTranslationProps {
 	navigation?: NavigationScreenProp<any>;
 	sortOption: CommentsSortingOptions;
 	onValueChange: (value: string) => void;
+	icon?: string;
+	iconColor?: string;
 }
 
 const HeaderItem: React.SFC<{title: string}> = ({title}) => <Text style={style.headerLabel}>{title}</Text>;
@@ -30,7 +32,7 @@ const SortingItem: React.SFC<{optionValue: string; selectedValue: CommentsSortin
 }) => (
 	<View style={style.lineContainer}>
 		<View style={style.iconView}>
-			{selectedValue === optionValue ? <Icon name={'md-checkmark'} style={style.selectedIcon} /> : null}
+			{selectedValue === optionValue ? <Icon name='md-checkmark' style={style.selectedIcon} /> : null}
 		</View>
 		<Text style={style.label}>{optionValue}</Text>
 	</View>
@@ -50,12 +52,23 @@ const modalCloseHandler = (navigation: NavigationScreenProp<any>) => {
 	navigation.goBack(null);
 };
 
-const HeaderRightInt: React.SFC<IHeaderRightProps> = ({navigation, getText, sortOption, onValueChange}) => {
+const HeaderRightInt: React.SFC<IHeaderRightProps> = ({
+	navigation,
+	getText,
+	sortOption,
+	onValueChange,
+	icon,
+	iconColor,
+}) => {
 	const headerItem = getSortingSectionHeaderItem(getText('comments.order.title'));
 	const menuItems = getSortingItems(sortOption, onValueChange);
 	return (
 		<View style={style.rightHeader}>
-			<TooltipDots getItems={() => headerItem.concat(menuItems)} iconName={'ios-funnel'} iconColor={Colors.white} />
+			<TooltipDots
+				getItems={() => headerItem.concat(menuItems)}
+				iconName={icon || 'ios-funnel'}
+				iconColor={iconColor || Colors.white}
+			/>
 			{navigation && <ModalCloseButton onClose={() => modalCloseHandler(navigation)} />}
 		</View>
 	);

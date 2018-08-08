@@ -20,16 +20,20 @@ export interface ICommentCardProps extends IWithTranslationProps {
 	onViewUserProfile: (userId: string) => void;
 	requestingLike: boolean;
 	onShowOptionsMenu: () => void;
+	getCommentContainerWidth: (value: number) => void;
+	commentLikesPosition: object;
 }
 
-const CommentLikes: React.SFC<{numberOfLikes: number; likedByMe: boolean}> = ({numberOfLikes, likedByMe}) => (
-	<View style={style.likesContainer}>
+const CommentLikes: React.SFC<{numberOfLikes: number; likedByMe: boolean; commentLikesPosition: object}> = ({
+	numberOfLikes,
+	likedByMe,
+	commentLikesPosition,
+}) => (
+	<View style={[style.likesContainer, commentLikesPosition]}>
 		<View style={style.likesBorder}>
-			<Icon
-				name={'md-thumbs-up'}
-				size={Sizes.smartHorizontalScale(25)}
-				color={likedByMe ? Colors.pink : Colors.fuchsiaBlue}
-			/>
+			<View style={style.iconContainer}>
+				<Icon name='md-thumbs-up' size={Sizes.smartHorizontalScale(16)} color={Colors.white} />
+			</View>
 			<Text style={style.numberOfLikes}>{numberOfLikes}</Text>
 		</View>
 	</View>
@@ -133,6 +137,8 @@ const CommentCardComp: React.SFC<ICommentCardProps> = ({
 	requestingLike,
 	getText,
 	onShowOptionsMenu,
+	getCommentContainerWidth,
+	commentLikesPosition,
 }) => {
 	const {likedByMe, numberOfLikes, replies, text, user, timestamp} = comment;
 	const commentTimestamp = moment(timestamp).fromNow();
@@ -150,11 +156,20 @@ const CommentCardComp: React.SFC<ICommentCardProps> = ({
 						<Text style={style.userFullName} onPress={() => onViewUserProfile(user.id)}>
 							{user.fullName}
 						</Text>
-						<Text style={[style.commentText, numberOfLikes > 0 ? style.commentTextPadding : null]}>{text}</Text>
+						<Text style={style.commentText}>{text}</Text>
 					</TouchableOpacity>
-					{numberOfLikes > 0 && <CommentLikes numberOfLikes={numberOfLikes} likedByMe={likedByMe} />}
+					{numberOfLikes > 0 && (
+						<CommentLikes
+							numberOfLikes={numberOfLikes}
+							likedByMe={likedByMe}
+							commentLikesPosition={commentLikesPosition}
+						/>
+					)}
 				</View>
-				<View style={style.actionsContainer}>
+				<View
+					style={style.actionsContainer}
+					onLayout={(event) => getCommentContainerWidth(event.nativeEvent.layout.width)}
+				>
 					<Text style={style.timestamp}>{commentTimestamp}</Text>
 					<TouchableOpacity
 						onPress={() => onCommentLikeHandler(onCommentLike, requestingLike, animatedText)}

@@ -23,6 +23,8 @@ export * from './TitleWithSubtitle';
 export * from './TransactionItem';
 export * from './WallPostCard';
 export * from './WallPostCard/CommentCard';
+export * from './WallPostCard/WallPostActions';
+export * from './WallPostCard/WallPostMedia';
 export * from './MediaObject';
 export * from './NewGridPhotos';
 export * from './GovernanceCard';
