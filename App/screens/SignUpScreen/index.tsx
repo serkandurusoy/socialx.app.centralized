@@ -14,6 +14,7 @@ import SignUpScreenComponent from './screen';
 
 interface ISignUpScreenState {
 	registerData?: RegisterData;
+	resendingCode: boolean;
 	showModalForSMSCode: boolean;
 	smsCodeErrorMessage: string | null;
 }
@@ -23,7 +24,6 @@ interface ISignUpScreenProps extends IWithTranslationProps {
 	navigationOptions: NavigationScreenConfig<any>;
 	RegisterLoading: () => void;
 	CreatingUserProfile: () => void;
-	ResendCodeLoading: () => void;
 	HideLoader: () => void;
 	createUser: any;
 	addMedia: any;
@@ -48,15 +48,17 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 
 	public state = {
 		registerData: undefined,
+		resendingCode: false,
 		showModalForSMSCode: false,
 		smsCodeErrorMessage: null,
 	};
 
 	public render() {
-		const {showModalForSMSCode, smsCodeErrorMessage, registerData} = this.state;
+		const {showModalForSMSCode, smsCodeErrorMessage, registerData, resendingCode} = this.state;
 		return (
 			<SignUpScreenComponent
 				phoneNumber={registerData !== undefined ? registerData.phoneNumber : ''}
+				resendingCode={resendingCode}
 				showModalForSMSCode={showModalForSMSCode}
 				smsCodeErrorMessage={smsCodeErrorMessage}
 				onSmsCodeConfirmed={this.smsCodeConfirmedHandler}
@@ -121,21 +123,14 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 		const {createUser, addMedia} = this.props;
 
 		try {
-			const res = await ConfirmSignup(username, code);
+			await ConfirmSignup(username, code);
 
-			// console.log('ConfirmSignup', res);
-
-			ModalManager.safeRunAfterModalClosed(() => {
-				// console.log('Now show CreatingUserProfile', this.props);
-				this.props.CreatingUserProfile(); // TODO: check why this does not show!
-			});
+			ModalManager.safeRunAfterModalClosed(this.props.CreatingUserProfile);
 			Keyboard.dismiss();
 			this.toggleVisibleModalSMS(false);
 
 			// signin to get access to appsync
-			const signInRes = await Signin(username, password);
-
-			// console.log('Signin res', signInRes);
+			await Signin(username, password);
 
 			const avatarImagePath = typeof avatarImage === 'object' ? (avatarImage as ImageURISource).uri : undefined;
 
@@ -152,20 +147,24 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 	private smsCodeDeclinedHandler = () => {
 		// TODO: do something here.. (remove user data?)
 		this.toggleVisibleModalSMS(false);
-		// console.log('TODO: smsCodeDeclinedHandler');
 	};
 
 	private smsCodeResendHandler = async () => {
 		const {getText} = this.props;
+		this.setState({
+			resendingCode: true,
+			smsCodeErrorMessage: null,
+		});
 		try {
-			// this.props.ResendCodeLoading(); // TODO: can't show loader while modal is visible!
-			const res = await resendSignup(this.state.registerData!.username);
+			await resendSignup(this.state.registerData!.username); // TODO: same TS error here, why?
 		} catch (ex) {
-			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(getText('app.error'), `${getText('register.could.not.resend.code')} ${ex}`);
+			this.setState({
+				smsCodeErrorMessage: `${getText('register.could.not.resend.code')} ${ex}`,
 			});
 		}
-		this.props.HideLoader();
+		this.setState({
+			resendingCode: false,
+		});
 	};
 
 	private uploadAvatarAndCreateUser = async (
@@ -223,7 +222,6 @@ class SignUpScreen extends Component<ISignUpScreenProps, ISignUpScreenState> {
 const MapDispatchToProps = (dispatch: any, {getText}: ISignUpScreenProps) => ({
 	RegisterLoading: () => dispatch(showActivityIndicator(getText('register.signingUp'), getText('please.wait'))),
 	CreatingUserProfile: () => dispatch(showActivityIndicator(getText('register.confirming.code'))),
-	ResendCodeLoading: () => dispatch(showActivityIndicator(getText('register.resending.code'))),
 	HideLoader: () => dispatch(hideActivityIndicator()),
 });
 

@@ -57,7 +57,6 @@ export default {
 	'register.failed': 'Register failed',
 	'register.signingUp': 'Signing you up',
 	'register.confirming.code': 'Creating your profile',
-	'register.resending.code': 'Resending code..',
 	'register.password.min.length': 'minimum length 8',
 	'register.password.invalid.numbers': 'numbers',
 	'register.password.invalid.lowercase': 'lowercase letters',
@@ -180,4 +179,7 @@ export default {
 	'avatar.picker.title': 'Add profile photo',
 	'avatar.picker.take.photo': 'Take a photo',
 	'avatar.picker.pick.from.gallery': 'Pick from gallery',
+	'modal.sms.code.title': 'Verification Code',
+	'modal.sms.code.type.code.message': 'Please type the verification code sent to',
+	'modal.sms.code.resend.button': 'Resend Code',
 };

@@ -285,7 +285,6 @@ const PrimaryNav = createStackNavigator(
 	},
 	{
 		headerMode: 'none',
-		initialRouteName: 'PreAuthScreen',
 	},
 );
 

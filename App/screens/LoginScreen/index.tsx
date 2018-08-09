@@ -31,7 +31,7 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 		return (
 			<LoginScreenComponent
 				showModalForSMSCode={showModalForSMSCode}
-				phoneNumber={'+38163544805'}
+				phoneNumber={'+38163544805'} // TODO: check this value if we will use SMS code login!
 				onSmsCodeConfirmed={this.smsCodeConfirmedHandler}
 				onSmsCodeDeclined={this.smsCodeDeclinedHandler}
 				onSmsCodeResend={this.smsCodeResendHandler}
@@ -61,7 +61,6 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 	};
 
 	private onStartLoginHandler = async (username: string, password: string) => {
-		console.log('onStartLoginHandler', username, password);
 		const res = await Signin(username, password);
 
 		await AsyncStorage.setItem('jwtToken', res.signInUserSession.idToken.jwtToken);
@@ -73,31 +72,15 @@ class LoginScreen extends Component<ILoginScreenProps, ILoginScreenState> {
 
 	private smsCodeConfirmedHandler = (code: string) => {
 		// TODO: later check if this will be used or not!
-		// Keyboard.dismiss();
-		// this.props.safeRunAfterKeyboardHide(async () => {
-		// 	const {getText} = this.props;
-		// 	this.props.SigninLoader();
-		// 	try {
-		// 		const res = await ConfirmSignin(this.username, code);
-		// 		this.toggleVisibleModalSMS(false);
-		// 		this.navigateToMainScreen();
-		// 	} catch (ex) {
-		// 		ModalManager.safeRunAfterModalClosed(() => {
-		// 			Alert.alert(getText('login.wrong.confirmation.code'));
-		// 		});
-		// 	}
-		// 	this.props.HideLoader();
-		// });
+		// 	It can be implemented similar with SignuUpScreen!
 	};
 
 	private smsCodeDeclinedHandler = () => {
 		this.toggleVisibleModalSMS(false);
-		// console.log('TODO: smsCodeDeclinedHandler');
 	};
 
 	private smsCodeResendHandler = () => {
 		this.toggleVisibleModalSMS(false);
-		// console.log('TODO: smsCodeResendHandler');
 	};
 }
 

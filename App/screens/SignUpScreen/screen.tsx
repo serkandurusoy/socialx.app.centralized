@@ -28,6 +28,7 @@ interface ISignUpScreenComponentProps extends ISignUpFormikProps {
 	onSmsCodeConfirmed: (code: string) => void;
 	onSmsCodeDeclined: () => void;
 	onSmsCodeResend: () => void;
+	resendingCode: boolean;
 }
 
 interface ISignUpFormProps extends IWithTranslationProps {
@@ -300,12 +301,12 @@ const SignUpForm: React.SFC<FormikProps<ISignUpFormProps>> = ({
 
 const SignUpFormik = withFormik({
 	mapPropsToValues: ({getText, onAlreadyHaveCode, onNavigateToTermsAndConditions}: ISignUpFormikProps) => ({
-		email: 'ionut.movila@gmail.com',
-		name: 'Ionut Movila',
+		email: '',
+		name: '',
 		username: '',
-		phoneNumber: '721205279',
-		password: 'Socx@0000',
-		confirmPassword: 'Socx@0000',
+		phoneNumber: '',
+		password: '',
+		confirmPassword: '',
 		termsAccepted: false,
 		avatarImage: Images.user_avatar_placeholder,
 		getText,
@@ -369,6 +370,7 @@ const SignUpFormik = withFormik({
 const SignUpScreenComponent: React.SFC<ISignUpScreenComponentProps> = ({
 	showModalForSMSCode,
 	smsCodeErrorMessage,
+	resendingCode,
 	onSmsCodeConfirmed,
 	onSmsCodeDeclined,
 	onSmsCodeResend,
@@ -385,16 +387,15 @@ const SignUpScreenComponent: React.SFC<ISignUpScreenComponentProps> = ({
 		keyboardShouldPersistTaps={'handled'}
 		enableOnAndroid={true}
 	>
-		{showModalForSMSCode && (
-			<ModalInputSMSCode
-				errorMessage={smsCodeErrorMessage}
-				visible={true}
-				confirmHandler={onSmsCodeConfirmed}
-				declineHandler={onSmsCodeDeclined}
-				resendHandler={onSmsCodeResend}
-				phoneNumber={phoneNumber}
-			/>
-		)}
+		<ModalInputSMSCode
+			errorMessage={smsCodeErrorMessage}
+			visible={showModalForSMSCode}
+			confirmHandler={onSmsCodeConfirmed}
+			declineHandler={onSmsCodeDeclined}
+			resendHandler={onSmsCodeResend}
+			phoneNumber={phoneNumber}
+			resendingCode={resendingCode}
+		/>
 		<SignUpFormik
 			onAlreadyHaveCode={onAlreadyHaveCode}
 			onNavigateToTermsAndConditions={onNavigateToTermsAndConditions}
