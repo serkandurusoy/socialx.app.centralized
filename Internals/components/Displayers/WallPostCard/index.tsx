@@ -516,7 +516,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 						width={SCREEN_WIDTH - 90}
 						borderWidth={0}
 						size={InputSizes.Small}
-						placeholder='Add a comment...'
+						placeholder="Add a comment..."
 						value={this.state.comment}
 						onChangeText={this.onCommentInputChange}
 						focusUpdateHandler={this.onCommentInputPress}
@@ -553,7 +553,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 				type = +value === 1 ? 'DAY' : 'DAYS';
 				break;
 			}
-			case 'm': {
+			case 'month': {
 				type = +value === 1 ? 'MONTH' : 'MONTHS';
 				break;
 			}

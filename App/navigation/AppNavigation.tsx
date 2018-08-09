@@ -9,8 +9,10 @@ import {
 } from 'react-navigation';
 
 import {FeedTabBar, HeaderLogo, ScreenHeaderButton, TabBarBottom} from 'components';
+import {SearchHeader} from '../screens/SearchScreen/Components';
+import {TrendingScreen} from '../screens/SearchScreen/TrendingScreen';
 
-import {ApplicationStyles, Colors, Icons} from 'theme';
+import {ApplicationStyles, Colors, Fonts, Icons} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen/data.hoc';
@@ -38,6 +40,10 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import {RewardsScreen} from '../screens/RewardsScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
+import {PeopleTab} from '../screens/SearchScreen/PeopleTab';
+import {PlacesTab} from '../screens/SearchScreen/PlacesTab';
+import {TagsTab} from '../screens/SearchScreen/TagsTab';
+import {TopTab} from '../screens/SearchScreen/TopTab';
 import SendCoinsScreen from '../screens/SendCoinsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignUpScreen from '../screens/SignUpScreen';
@@ -84,6 +90,21 @@ const slideFromLeftTransition = (): TransitionConfig => ({
 		});
 
 		return {transform: [{translateX}]};
+	},
+});
+
+const fadeIn = (): TransitionConfig => ({
+	screenInterpolator: (sceneProps: NavigationSceneRendererProps) => {
+		const {position, scene} = sceneProps;
+
+		const sceneIndex = scene.index;
+
+		const opacity = position.interpolate({
+			inputRange: [sceneIndex - 1, sceneIndex],
+			outputRange: [0, 1],
+		});
+
+		return {opacity};
 	},
 });
 
@@ -180,7 +201,24 @@ const TabbedFeedNavigator = createMaterialTopTabNavigator(
 		animationEnabled: true,
 		swipeEnabled: true,
 		// lazy: true, // this is missing with createMaterialTopTabNavigator
-		tabBarComponent: (props: any) => <FeedTabBar navigation={props.navigation} />,
+		// tabBarComponent: (props: any) => <FeedTabBar navigation={props.navigation} />,
+		tabBarOptions: {
+			activeTintColor: Colors.pink,
+			inactiveTintColor: Colors.background,
+			indicatorStyle: {
+				height: 1,
+				backgroundColor: Colors.pink,
+			},
+			pressOpacity: 1,
+			upperCaseLabel: false,
+			labelStyle: {
+				fontSize: 14,
+				// ...Fonts.centuryGothic,
+			},
+			style: {
+				backgroundColor: Colors.white,
+			},
+		},
 	},
 );
 
@@ -188,10 +226,10 @@ const UserFeedStackNavigator = createStackNavigator(
 	{
 		TabbedFeedScreen: {
 			screen: TabbedFeedNavigator,
-			navigationOptions: ({navigation}) => ({
+			navigationOptions: () => ({
 				headerLeft: (
 					<ScreenHeaderButton
-						iconName={'md-flame'}
+						iconName='md-flame'
 						// onPress={() => navigation.navigate('HotPostsFeedScreenStack')}
 						onPress={() => alert('Hot Posts.. Coming soon..')}
 					/>
@@ -217,10 +255,64 @@ const UserFeedStackNavigator = createStackNavigator(
 	},
 );
 
+const TabbedSearchNavigator = createMaterialTopTabNavigator(
+	{
+		Top: TopTab,
+		People: PeopleTab,
+		Tags: TagsTab,
+		Places: PlacesTab,
+	},
+	{
+		animationEnabled: true,
+		swipeEnabled: true,
+		tabBarOptions: {
+			activeTintColor: Colors.pink,
+			inactiveTintColor: Colors.background,
+			indicatorStyle: {
+				height: 1,
+				backgroundColor: Colors.pink,
+			},
+			pressOpacity: 1,
+			upperCaseLabel: false,
+			labelStyle: {
+				fontSize: 14,
+				// ...Fonts.centuryGothic,
+			},
+			style: {
+				backgroundColor: Colors.white,
+			},
+		},
+	},
+);
+
+const UserSearchStackNavigator = createStackNavigator(
+	{
+		Trending: {
+			screen: TrendingScreen,
+			navigationOptions: ({navigation}) => ({
+				header: () => <SearchHeader navigation={navigation} />,
+			}),
+		},
+		TabbedSearchScreen: {
+			screen: TabbedSearchNavigator,
+			navigationOptions: ({navigation}) => ({
+				header: () => <SearchHeader navigation={navigation} cancel={true} />,
+			}),
+		},
+	},
+	{
+		navigationOptions: {
+			gesturesEnabled: false,
+		},
+		transitionConfig: fadeIn,
+	},
+);
+
 const MainScreenTabNavigation = createBottomTabNavigator(
 	{
 		UserFeedTab: UserFeedStackNavigator,
-		SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		// SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		SearchTab: UserSearchStackNavigator,
 		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
 		MyProfileTab: {screen: MyProfileStackNavigator},
 	},

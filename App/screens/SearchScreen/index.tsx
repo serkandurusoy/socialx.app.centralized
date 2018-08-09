@@ -32,21 +32,21 @@ interface ISearchScreenState {
 }
 
 class SearchScreen extends Component<ISearchScreenProps, ISearchScreenState> {
-	private static navigationOptions = (props: ISearchScreenProps) => ({
-		header: () => {
-			const params = props.navigation.state.params || {};
-			// TODO: any other options here not to use 'navigation.state.params'?
-			return (
-				<SearchHeader
-					backVisible={params.backVisible}
-					searchInputUpdated={params.searchInputUpdatedHandler}
-					onBack={params.backHandler}
-					onFocusUpdated={params.onSearchFocusUpdatedHandler}
-					searchValue={params.searchValue}
-				/>
-			);
-		},
-	});
+	// private static navigationOptions = (props: ISearchScreenProps) => ({
+	// 	header: () => {
+	// 		const params = props.navigation.state.params || {};
+	// 		// TODO: any other options here not to use 'navigation.state.params'?
+	// 		return (
+	// 			<SearchHeader
+	// 				backVisible={params.backVisible}
+	// 				searchInputUpdated={params.searchInputUpdatedHandler}
+	// 				onBack={params.backHandler}
+	// 				onFocusUpdated={params.onSearchFocusUpdatedHandler}
+	// 				searchValue={params.searchValue}
+	// 			/>
+	// 		);
+	// 	},
+	// });
 
 	public state = {
 		searchTerm: '',

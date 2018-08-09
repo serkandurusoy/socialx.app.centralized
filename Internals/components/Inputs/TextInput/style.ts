@@ -1,7 +1,7 @@
 import {Colors, Fonts, Sizes} from 'theme';
 
 import {OS_TYPES} from 'consts';
-import {Platform, PlatformOSType, StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 const INPUT_FONT_SIZE = Sizes.smartHorizontalScale(14);
 
@@ -59,11 +59,12 @@ const style: any = {
 		opacity: 0.5,
 	},
 	cancelButton: {
-		paddingHorizontal: Sizes.smartHorizontalScale(16),
+		paddingHorizontal: Sizes.smartHorizontalScale(6),
+		paddingLeft: Sizes.smartHorizontalScale(12),
 	},
 	cancelButtonText: {
 		...Fonts.centuryGothic,
-		fontSize: INPUT_FONT_SIZE,
+		fontSize: Sizes.smartHorizontalScale(16),
 	},
 };
 

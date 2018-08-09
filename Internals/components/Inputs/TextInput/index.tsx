@@ -54,6 +54,8 @@ export interface ISXTextInputProps {
 	focusUpdateHandler?: (hasFocus: boolean) => void;
 	autoCorrect?: boolean;
 	autoCapitalize?: 'none' | 'sentences' | 'characters' | 'words';
+	persistCancel?: boolean;
+	onPressCancel?: () => void;
 }
 
 export interface ISXTextInputState {
@@ -83,6 +85,7 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 		multiline: false,
 		autoCorrect: false,
 		autoCapitalize: 'none',
+		persistCancel: false,
 	};
 
 	public state = {
@@ -170,7 +173,13 @@ export class SXTextInput extends Component<ISXTextInputProps, ISXTextInputState>
 	};
 
 	private renderCancelButton = () => {
-		if (this.state.hasFocus && this.props.canCancel && Platform.OS === OS_TYPES.IOS) {
+		if (this.props.persistCancel && this.props.canCancel && Platform.OS === OS_TYPES.IOS) {
+			return (
+				<TouchableOpacity style={style.cancelButton} onPress={this.props.onPressCancel}>
+					<Text style={[style.cancelButtonText, {color: this.props.cancelButtonTextColor}]}>Cancel</Text>
+				</TouchableOpacity>
+			);
+		} else if (this.state.hasFocus && this.props.canCancel && Platform.OS === OS_TYPES.IOS) {
 			return (
 				<TouchableOpacity style={style.cancelButton} onPress={() => Keyboard.dismiss()}>
 					<Text style={[style.cancelButtonText, {color: this.props.cancelButtonTextColor}]}>Cancel</Text>
