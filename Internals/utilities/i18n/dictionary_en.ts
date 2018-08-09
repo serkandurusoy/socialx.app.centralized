@@ -41,6 +41,7 @@ export default {
 	'forgot.password.send.button': 'Send reset code',
 	'forgot.password.requesting': 'Requesting Password Code..',
 	'forgot.password.request.error': 'Something went wrong, ${args[0]}',
+	'forgot.password.username.required': 'Username is required',
 	'register.screen.title': 'REGISTER',
 	'register.email': 'Email',
 	'register.name': 'Name',

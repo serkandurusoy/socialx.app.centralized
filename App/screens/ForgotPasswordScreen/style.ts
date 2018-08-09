@@ -18,6 +18,15 @@ const style: any = {
 	usernameInputContainer: {
 		paddingVertical: Sizes.smartVerticalScale(20),
 	},
+	errorText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(12),
+		lineHeight: Sizes.smartHorizontalScale(16),
+		color: Colors.monza,
+		paddingVertical: Sizes.smartVerticalScale(3),
+		// alignSelf: 'flex-start',
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+	},
 };
 
 export default StyleSheet.create(style);
