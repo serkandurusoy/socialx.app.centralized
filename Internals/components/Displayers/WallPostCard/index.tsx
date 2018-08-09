@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {compose} from 'recompose';
 
 import {blockUserHoc} from 'backend/graphql';
-import {HeartAnimation, InputSizes, SXTextInput, TRKeyboardKeys} from 'components';
+import {HeartAnimation, InputSizes, ISuggestionCardItem, SXTextInput, TRKeyboardKeys} from 'components';
 import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
@@ -60,6 +60,7 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps, IWithTransl
 	likes?: any;
 	bestComments: ISimpleComment[];
 	listLoading: boolean;
+	suggested?: ISuggestionCardItem[];
 }
 
 export interface IWallPostCardState {

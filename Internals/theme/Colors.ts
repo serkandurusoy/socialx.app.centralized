@@ -48,6 +48,7 @@ export const Colors = {
 	blueMarguerite: '#6162C7',
 	amethyst: '#9863D3',
 	blueGem: '#4813A0',
+	wildSand: '#F6F6F6',
 };
 
 export const colorWithAlpha = (color: string, alpha: number) => {

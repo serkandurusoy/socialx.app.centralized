@@ -1,5 +1,4 @@
-import {AvatarImage} from 'components/Avatar';
-import {IWallPostCardProp, WallPostCard} from 'components/Displayers';
+import {AvatarImage, IWallPostCardProp, SuggestionsCarousel, WallPostCard} from 'components';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component, RefObject} from 'react';
 import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
@@ -64,14 +63,6 @@ const ShareSection: React.SFC<any> = ({sharePlaceholder, avatarImage, showNewWal
 );
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
-	// public shouldComponentUpdate(nextProps: IUserFeedScreenProps) {
-	// 	if (nextProps.wallPosts.length !== this.props.wallPosts.length) {
-	// 		return true;
-	// 	} else {
-	// 		return false;
-	// 	}
-	// }
-
 	public state = {
 		fetchingMore: false,
 	};
@@ -123,6 +114,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private keyExtractor = (item: IWallPostCardProp, index: number) => item.id;
 
 	private renderWallPosts = (data: {item: IWallPostCardProp; index: number}) => {
+		if (data.item.suggested) {
+			return <SuggestionsCarousel items={data.item.suggested} />;
+		}
+
 		const canDelete = this.props.currentUser.userId === data.item.owner.userId;
 		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === this.props.currentUser.userId);
 		return (

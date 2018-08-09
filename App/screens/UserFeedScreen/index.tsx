@@ -1,49 +1,33 @@
-import get from 'lodash/get';
 import React, {Component} from 'react';
-import {Dimensions, InteractionManager, Platform} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
+import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
-
-import {NavigationEventSubscription, NavigationScreenProp} from 'react-navigation';
-import {Images} from 'theme';
-import {NewWallPostData} from '../NewWallPostScreen';
-import UserFeedScreenComponent from './screen';
 
 import {
 	addMediaHoc,
 	createPostHoc,
 	deleteOwnPostHoc,
-	getUserPostsHoc,
 	setLikedPostHoc,
 	unsetLikedPostHoc,
 	userHoc,
 } from 'backend/graphql';
-import {graphql} from 'react-apollo';
-import {
-	IAllPostsDataResponse,
-	IComments,
-	ICommentsResponse,
-	IMediaProps,
-	IPaginatedPosts,
-	IPostsProps,
-	IUserDataResponse,
-	IUserQuery,
-} from 'types';
-import {CurrentUser, getUserAvatar} from 'utilities';
+import {IWallPostCardProp} from 'components';
+import {Images} from 'theme';
+import {NewWallPostData} from '../NewWallPostScreen';
+import UserFeedScreenComponent from './screen';
+
+import {IMediaProps, IUserDataResponse} from 'types';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 
-// import {IBlobData} from '../../lib/ipfs';
-import {IBlobData} from 'ipfslib';
-import {addBlobFiles} from 'utilities/ipfs';
-
 import {ipfsConfig as base} from 'configuration';
-
 import {OS_TYPES} from 'consts';
-import {IWalletActivityScreenComponentProps} from '../WalletActivityScreen/screen';
-import {IMediaRec} from './types';
+import {MOCK_SUGGESTED} from 'utilities';
 
 const AVAILABLE_SCREEN_HEIGHT = Dimensions.get('window').height;
 const TOTAL_SCREEN_HEIGHT = Dimensions.get('screen').height;
+const SUGGESTIONS_POSTS_INTERVAL = 20;
+let SUGGESTIONS_MULTIPLIER = 1;
 
 export interface IFeedProps {
 	shareSectionPlaceholder: string | null;
@@ -74,7 +58,6 @@ interface IUserFeedScreenProps extends IFeedProps {
 
 interface IUserFeedScreenState {
 	refreshing: boolean;
-	silentRefresh: boolean;
 	loadingMore: boolean;
 }
 
@@ -82,26 +65,22 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public state = {
 		refreshing: false,
 		loadingMore: false,
-		silentRefresh: false,
 	};
 
-	private didFocusSubscription: NavigationEventSubscription | null = null;
-	private keyboardDidShowListener: any;
-
-	// public componentDidMount() {
-	// 	InteractionManager.runAfterInteractions(() => {
-	// 		this.didFocusSubscription = this.props.navigation.addListener('didFocus', this.silentRefreshWallPosts);
-	// 	});
-	// }
-
-	public componentWillUnmount(): void {
-		if (this.didFocusSubscription) {
-			this.didFocusSubscription.remove();
-		}
-	}
-
 	public render() {
-		const {data, loading, noPosts, refresh, loadMore, Items, hasMore} = this.props;
+		const {data, loading, noPosts, Items, hasMore} = this.props;
+
+		// Temporary, the backend should send all the data
+		if (Items && Items.length > SUGGESTIONS_MULTIPLIER * SUGGESTIONS_POSTS_INTERVAL) {
+			Items.map((item: IWallPostCardProp, index: number) => {
+				if (index === SUGGESTIONS_MULTIPLIER * SUGGESTIONS_POSTS_INTERVAL && !item.suggested) {
+					item.suggested = MOCK_SUGGESTED;
+					return item;
+				}
+				return item;
+			});
+			SUGGESTIONS_MULTIPLIER++;
+		}
 
 		return (
 			<UserFeedScreenComponent
@@ -130,11 +109,11 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	}
 
 	private isRefreshing = () => {
-		return this.state.refreshing || this.state.silentRefresh;
+		return this.state.refreshing;
 	};
 
 	private isLoading = () => {
-		return this.state.refreshing || this.state.silentRefresh || this.state.loadingMore;
+		return this.state.refreshing || this.state.loadingMore;
 	};
 
 	private onLoadMore = async () => {
@@ -144,7 +123,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				this.setState({
 					loadingMore: true,
 				});
-				const loadResult: any = await loadMore();
+				await loadMore();
 				this.setState({
 					loadingMore: false,
 				});
@@ -205,9 +184,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 
 	private addWallPostHandler = async (data: NewWallPostData) => {
-		const {addMedia, startMediaPost, startPostadd, stopLoading} = this.props;
-
-		const ipfsHashes: any = [];
+		const {addMedia, startPostadd, stopLoading} = this.props;
 		const mediaIds: string[] = [];
 
 		// start creating post loading
@@ -255,23 +232,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		}
 	};
 
-	private silentRefreshWallPosts = async () => {
-		if (!this.isRefreshing()) {
-			this.setState({silentRefresh: true});
-			try {
-				await this.props.refresh();
-				this.setState({
-					silentRefresh: false,
-				});
-			} catch (Ex) {
-				this.setState({silentRefresh: false});
-				console.log('ex', Ex);
-			}
-		}
-	};
-
 	private onLikeButtonClickHandler = async (likedByMe: boolean, likedPostId: string) => {
-		const {setLikedPost, unsetLikedPost, Items, refresh} = this.props;
+		const {setLikedPost, unsetLikedPost} = this.props;
 
 		const likeQuery = {variables: {likedPostId}};
 
