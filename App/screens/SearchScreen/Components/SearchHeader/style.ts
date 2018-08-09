@@ -18,6 +18,12 @@ const style: any = {
 		paddingLeft: Sizes.smartHorizontalScale(5),
 		paddingRight: Sizes.smartHorizontalScale(13),
 	},
+	inputOverlay: {
+		backgroundColor: Colors.transparent,
+		width: '100%',
+		height: '100%',
+		position: 'absolute',
+	},
 };
 
 export default StyleSheet.create(style);

@@ -1,12 +1,6 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 
-// import style from './style';
+import styles from './style';
 
-interface ITagsTabProps {}
-
-export const TagsTab: React.SFC<ITagsTabProps> = () => (
-	<View>
-		<Text>TagsTab</Text>
-	</View>
-);
+export const TagsTab: React.SFC = () => <View />;

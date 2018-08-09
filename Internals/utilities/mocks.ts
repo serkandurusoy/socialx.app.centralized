@@ -153,69 +153,42 @@ export const MOCK_SUGGESTED = [
 		userId: '101',
 		name: 'test user 1',
 		username: 'testname',
-		avatar: {
-			id: '2a098fd6-03b2-4b88-9bbb-8356727b480f',
-			hash: 'QmcPjeRF774dU5oMrF7j3ceuKJcwp8wKFwrdu74z6MnpsY',
-			type: 'image/jpeg',
-			size: 123,
-		},
+		avatarURL: 'https://i2.wp.com/www.ahfirstaid.org/wp-content/uploads/2014/07/avatar-placeholder.png',
+		friend: true,
 	},
 	{
 		userId: '102',
 		name: 'test user 2',
 		username: 'testname',
-		avatar: {
-			id: '2a098fd6-03b2-4b88-9bbb-8356727b480f',
-			hash: 'QmcPjeRF774dU5oMrF7j3ceuKJcwp8wKFwrdu74z6MnpsY',
-			type: 'image/jpeg',
-			size: 123,
-		},
+		avatarURL: 'https://i2.wp.com/www.ahfirstaid.org/wp-content/uploads/2014/07/avatar-placeholder.png',
+		friend: false,
 	},
 	{
 		userId: '103',
 		name: 'test user 3',
 		username: 'testname',
-		avatar: {
-			id: '2a098fd6-03b2-4b88-9bbb-8356727b480f',
-			hash: 'QmcPjeRF774dU5oMrF7j3ceuKJcwp8wKFwrdu74z6MnpsY',
-			type: 'image/jpeg',
-			size: 123,
-		},
+		avatarURL: 'https://i2.wp.com/www.ahfirstaid.org/wp-content/uploads/2014/07/avatar-placeholder.png',
+		friend: true,
 	},
-];
-
-export const MOCK_RECENT = [
 	{
 		userId: '104',
 		name: 'test user 4',
 		username: 'testname',
-		avatar: {
-			id: '2a098fd6-03b2-4b88-9bbb-8356727b480f',
-			hash: 'QmcPjeRF774dU5oMrF7j3ceuKJcwp8wKFwrdu74z6MnpsY',
-			type: 'image/jpeg',
-			size: 123,
-		},
+		avatarURL: 'https://i2.wp.com/www.ahfirstaid.org/wp-content/uploads/2014/07/avatar-placeholder.png',
+		friend: true,
 	},
 	{
 		userId: '105',
 		name: 'test user 5',
 		username: 'testname',
-		avatar: {
-			id: '2a098fd6-03b2-4b88-9bbb-8356727b480f',
-			hash: 'QmcPjeRF774dU5oMrF7j3ceuKJcwp8wKFwrdu74z6MnpsY',
-			type: 'image/jpeg',
-			size: 123,
-		},
+		avatarURL: 'https://i2.wp.com/www.ahfirstaid.org/wp-content/uploads/2014/07/avatar-placeholder.png',
+		friend: false,
 	},
 	{
 		userId: '106',
 		name: 'test user 6',
 		username: 'testname',
-		avatar: {
-			id: '2a098fd6-03b2-4b88-9bbb-8356727b480f',
-			hash: 'QmcPjeRF774dU5oMrF7j3ceuKJcwp8wKFwrdu74z6MnpsY',
-			type: 'image/jpeg',
-			size: 123,
-		},
+		avatarURL: 'https://i2.wp.com/www.ahfirstaid.org/wp-content/uploads/2014/07/avatar-placeholder.png',
+		friend: false,
 	},
 ];

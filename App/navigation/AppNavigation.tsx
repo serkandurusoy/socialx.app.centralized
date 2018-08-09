@@ -10,8 +10,9 @@ import {
 
 import {FeedTabBar, HeaderLogo, ScreenHeaderButton, TabBarBottom} from 'components';
 import {SearchHeader} from '../screens/SearchScreen/Components';
+import {TrendingScreen} from '../screens/SearchScreen/TrendingScreen';
 
-import {ApplicationStyles, Colors, Icons, Fonts} from 'theme';
+import {ApplicationStyles, Colors, Fonts, Icons} from 'theme';
 import {getText} from 'utilities';
 import ChatThreadScreen from '../screens/ChatThreadScreen';
 import CommentsScreen from '../screens/CommentsScreen/data.hoc';
@@ -39,6 +40,10 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import {RewardsScreen} from '../screens/RewardsScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
 import SearchScreen from '../screens/SearchScreen';
+import {PeopleTab} from '../screens/SearchScreen/PeopleTab';
+import {PlacesTab} from '../screens/SearchScreen/PlacesTab';
+import {TagsTab} from '../screens/SearchScreen/TagsTab';
+import {TopTab} from '../screens/SearchScreen/TopTab';
 import SendCoinsScreen from '../screens/SendCoinsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignUpScreen from '../screens/SignUpScreen';
@@ -51,10 +56,6 @@ import HotPostsFeedScreen from '../screens/UserFeedScreen/hotPostsFeed';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import VotingScreen from '../screens/VotingScreen';
 import WalletActivityScreen from '../screens/WalletActivityScreen';
-import {TopTab} from '../screens/SearchScreen/TopTab';
-import {PeopleTab} from '../screens/SearchScreen/PeopleTab';
-import {TagsTab} from '../screens/SearchScreen/TagsTab';
-import {PlacesTab} from '../screens/SearchScreen/PlacesTab';
 
 import styles from './styles/NavigationStyles';
 
@@ -89,6 +90,21 @@ const slideFromLeftTransition = (): TransitionConfig => ({
 		});
 
 		return {transform: [{translateX}]};
+	},
+});
+
+const fadeIn = (): TransitionConfig => ({
+	screenInterpolator: (sceneProps: NavigationSceneRendererProps) => {
+		const {position, scene} = sceneProps;
+
+		const sceneIndex = scene.index;
+
+		const opacity = position.interpolate({
+			inputRange: [sceneIndex - 1, sceneIndex],
+			outputRange: [0, 1],
+		});
+
+		return {opacity};
 	},
 });
 
@@ -197,7 +213,7 @@ const TabbedFeedNavigator = createMaterialTopTabNavigator(
 			upperCaseLabel: false,
 			labelStyle: {
 				fontSize: 14,
-				//...Fonts.centuryGothic,
+				// ...Fonts.centuryGothic,
 			},
 			style: {
 				backgroundColor: Colors.white,
@@ -213,7 +229,7 @@ const UserFeedStackNavigator = createStackNavigator(
 			navigationOptions: () => ({
 				headerLeft: (
 					<ScreenHeaderButton
-						iconName="md-flame"
+						iconName='md-flame'
 						// onPress={() => navigation.navigate('HotPostsFeedScreenStack')}
 						onPress={() => alert('Hot Posts.. Coming soon..')}
 					/>
@@ -260,7 +276,7 @@ const TabbedSearchNavigator = createMaterialTopTabNavigator(
 			upperCaseLabel: false,
 			labelStyle: {
 				fontSize: 14,
-				//...Fonts.centuryGothic,
+				// ...Fonts.centuryGothic,
 			},
 			style: {
 				backgroundColor: Colors.white,
@@ -271,38 +287,31 @@ const TabbedSearchNavigator = createMaterialTopTabNavigator(
 
 const UserSearchStackNavigator = createStackNavigator(
 	{
+		Trending: {
+			screen: TrendingScreen,
+			navigationOptions: ({navigation}) => ({
+				header: () => <SearchHeader navigation={navigation} />,
+			}),
+		},
 		TabbedSearchScreen: {
 			screen: TabbedSearchNavigator,
 			navigationOptions: ({navigation}) => ({
-				header: () => {
-					const params = navigation.state.params || {};
-					// TODO: any other options here not to use 'navigation.state.params'?
-					console.log(navigation);
-					return (
-						<SearchHeader
-							backVisible={params.backVisible}
-							searchInputUpdated={params.searchInputUpdatedHandler}
-							onBack={params.backHandler}
-							onFocusUpdated={params.onSearchFocusUpdatedHandler}
-							searchValue={params.searchValue}
-						/>
-					);
-				},
+				header: () => <SearchHeader navigation={navigation} cancel={true} />,
 			}),
 		},
 	},
 	{
 		navigationOptions: {
-			...navOptionsDefault,
-			gesturesEnabled: true,
+			gesturesEnabled: false,
 		},
+		transitionConfig: fadeIn,
 	},
 );
 
 const MainScreenTabNavigation = createBottomTabNavigator(
 	{
 		UserFeedTab: UserFeedStackNavigator,
-		//SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
+		// SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
 		SearchTab: UserSearchStackNavigator,
 		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
 		MyProfileTab: {screen: MyProfileStackNavigator},

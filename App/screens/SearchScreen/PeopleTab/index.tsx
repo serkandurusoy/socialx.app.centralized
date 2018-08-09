@@ -1,12 +1,12 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 
-// import style from './style';
+import {Suggested} from '../Components';
+import styles from './style';
 
-interface IPeopleTabProps {}
+import {MOCK_SUGGESTED} from 'utilities';
 
-export const PeopleTab: React.SFC<IPeopleTabProps> = () => (
-	<View>
-		<Text>PeopleTab</Text>
-	</View>
-);
+interface IPeopleTabProps {
+	items: object[];
+}
+
+export const PeopleTab: React.SFC<IPeopleTabProps> = () => <Suggested items={MOCK_SUGGESTED} />;
