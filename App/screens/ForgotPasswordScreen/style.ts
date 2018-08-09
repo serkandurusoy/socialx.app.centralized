@@ -24,7 +24,6 @@ const style: any = {
 		lineHeight: Sizes.smartHorizontalScale(16),
 		color: Colors.monza,
 		paddingVertical: Sizes.smartVerticalScale(3),
-		// alignSelf: 'flex-start',
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
 	},
 };

@@ -118,7 +118,6 @@ const SettingsScreenComponent: React.SFC<FormikProps<TranslatedSettings>> = ({
 			<View style={[style.textInputContainer]}>
 				<SXTextInput
 					autoCapitalize={'words'}
-					autoCorrect={true}
 					value={email}
 					iconColor={Colors.iron}
 					placeholder={getText('settings.screen.email.placeholder')}
