@@ -1,95 +1,54 @@
-import React, {Component} from 'react';
-import {Alert, ScrollView, Text, View} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
+import React from 'react';
+import {Alert, View} from 'react-native';
+import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 import {compose} from 'recompose';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-import {SXButton, SXTextInput, TRKeyboardKeys} from 'components';
 import {ModalManager} from 'hoc';
-import {Colors} from 'theme';
 import {ForgotPassword, IWithTranslationProps, withTranslations} from 'utilities';
-import style from './style';
+import ForgotPasswordScreenComponent from './screen';
 
 interface IForgotPasswordScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
+	navigationOptions: NavigationScreenConfig<any>;
 	showLoader: (message: string) => void;
 	hideLoader: () => void;
 }
 
-interface IForgotPasswordScreenState {
-	username: string;
-	requested: boolean;
-}
-
-class ForgotPasswordScreen extends Component<IForgotPasswordScreenProps, IForgotPasswordScreenState> {
-	private static navigationOptions = (props: IForgotPasswordScreenProps) => ({
-		// TODO: this is a bad hack, we should reconsider the architecture!
-		title: props.navigationOptions.getText('forgot.password.screen.title'),
-		headerRight: <View />,
-	});
-
-	public state = {
-		username: '',
-		requested: false,
-	};
-
-	public render() {
-		const {getText} = this.props;
-		return (
-			<ScrollView
-				contentContainerStyle={style.container}
-				alwaysBounceVertical={false}
-				keyboardShouldPersistTaps={'handled'}
-			>
-				<Text style={style.descriptionText}>{getText('forgot.password.instructions')}</Text>
-				<View style={style.usernameInputContainer}>
-					<SXTextInput
-						placeholder={getText('forgot.password.username')}
-						iconColor={Colors.iron}
-						icon={'user'}
-						blurOnSubmit={true}
-						returnKeyType={TRKeyboardKeys.go}
-						onSubmitPressed={this.sendResetCodeHandler}
-						onChangeText={this.usernameUpdated}
-					/>
-				</View>
-				<SXButton
-					disabled={this.state.username.length === 0 || this.state.requested}
-					label={getText('forgot.password.send.button')}
-					autoWidth={true}
-					borderColor={Colors.transparent}
-					onPress={this.sendResetCodeHandler}
-				/>
-			</ScrollView>
-		);
-	}
-
-	private usernameUpdated = (value: string) => {
-		this.setState({
-			username: value,
+const sendResetCodeHandler = async (
+	username: string,
+	getText: (value: string, ...args: any[]) => string,
+	showLoader: (message: string) => void,
+	hideLoader: () => void,
+	navigation: NavigationScreenProp<any>,
+) => {
+	showLoader(getText('forgot.password.requesting'));
+	try {
+		await ForgotPassword(username);
+		navigation.navigate('ResetPasswordScreen', {username});
+	} catch (ex) {
+		ModalManager.safeRunAfterModalClosed(() => {
+			Alert.alert(getText('forgot.password.request.error', ex.message));
 		});
-	};
+	}
+	hideLoader();
+};
 
-	private sendResetCodeHandler = async () => {
-		const {username} = this.state;
-		const {showLoader, hideLoader, getText} = this.props;
-
-		showLoader(getText('forgot.password.requesting'));
-		try {
-			const forgotRes = await ForgotPassword(username);
-			this.setState({requested: true});
-			this.props.navigation.navigate('ResetPasswordScreen', {username});
-		} catch (ex) {
-			ModalManager.safeRunAfterModalClosed(() => {
-				Alert.alert(getText('forgot.password.request.error', ex.message));
-			});
+const ForgotPasswordScreen: React.SFC<IForgotPasswordScreenProps> = ({getText, navigation, showLoader, hideLoader}) => (
+	<ForgotPasswordScreenComponent
+		onSendResetCode={async (username: string) =>
+			sendResetCodeHandler(username, getText, showLoader, hideLoader, navigation)
 		}
-		hideLoader();
-	};
-}
+	/>
+);
 
-const MapDispatchToState = (dispatch: any) => ({
+ForgotPasswordScreen.navigationOptions = ({navigationOptions}: IForgotPasswordScreenProps) => ({
+	title: navigationOptions.getText('forgot.password.screen.title'),
+	headerRight: <View />,
+});
+
+const MapDispatchToProps = (dispatch: any) => ({
 	showLoader: (message: string) => dispatch(showActivityIndicator(message)),
 	hideLoader: () => dispatch(hideActivityIndicator()),
 });
@@ -98,6 +57,6 @@ export default compose(
 	withTranslations,
 	connect(
 		null,
-		MapDispatchToState,
+		MapDispatchToProps,
 	),
 )(ForgotPasswordScreen as any);

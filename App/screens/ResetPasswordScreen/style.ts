@@ -25,6 +25,17 @@ const style: any = {
 	inputContainer: {
 		paddingBottom: Sizes.smartVerticalScale(20),
 	},
+	errorText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(12),
+		lineHeight: Sizes.smartHorizontalScale(16),
+		color: Colors.monza,
+		paddingVertical: Sizes.smartVerticalScale(3),
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+	},
+	boldText: {
+		...Fonts.centuryGothicBold,
+	},
 };
 
 export default StyleSheet.create(style);

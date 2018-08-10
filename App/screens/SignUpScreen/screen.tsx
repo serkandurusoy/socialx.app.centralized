@@ -1,6 +1,5 @@
 import {FormikBag, FormikErrors, FormikProps, withFormik} from 'formik';
 import {CheckBox} from 'native-base';
-import PasswordValidator from 'password-validator';
 import React, {RefObject} from 'react';
 import {ImageSourcePropType, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import CountryPicker, {getAllCountries} from 'react-native-country-picker-modal';
@@ -11,7 +10,7 @@ import {string} from 'yup';
 
 import {AvatarPicker, ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
 import {Colors, Images, Sizes} from 'theme';
-import {IWithTranslationProps, withTranslations} from 'utilities';
+import {IWithTranslationProps, PASSWORD_ERROR_MESSAGES, PASSWORD_VALIDATOR_SCHEMA, withTranslations} from 'utilities';
 import {RegisterData} from './index';
 import style from './style';
 
@@ -50,27 +49,6 @@ interface ICountryData {
 	cca2: string;
 	callingCode: string;
 }
-
-const MIN_PASSWORD_LENGTH = 8;
-const VALIDATOR_SCHEMA = new PasswordValidator()
-	.is()
-	.min(MIN_PASSWORD_LENGTH)
-	.has()
-	.lowercase()
-	.has()
-	.uppercase()
-	.has()
-	.digits()
-	.has()
-	.symbols();
-
-const ERROR_MESSAGES: {[key: string]: string} = {
-	min: 'register.password.min.length',
-	uppercase: 'register.password.invalid.uppercase',
-	lowercase: 'register.password.invalid.lowercase',
-	digits: 'register.password.invalid.numbers',
-	symbols: 'register.password.invalid.symbols',
-};
 
 const nameRef: RefObject<SXTextInput> = React.createRef();
 const usernameRef: RefObject<SXTextInput> = React.createRef();
@@ -335,12 +313,12 @@ const SignUpFormik = withFormik({
 		if (!password) {
 			errors.password = getText('register.screen.confirm.password.required');
 		} else {
-			const passwordErrors = VALIDATOR_SCHEMA.validate(password, {list: true});
+			const passwordErrors = PASSWORD_VALIDATOR_SCHEMA.validate(password, {list: true});
 			if (passwordErrors.length > 0) {
 				errors.password = (
 					<React.Fragment>
 						<Text style={style.boldText}>{`${getText('register.password.invalid.policy')}: `}</Text>
-						{passwordErrors.map((error: string) => getText(ERROR_MESSAGES[error])).join(', ')}
+						{passwordErrors.map((error: string) => getText(PASSWORD_ERROR_MESSAGES[error])).join(', ')}
 					</React.Fragment>
 				);
 			}
