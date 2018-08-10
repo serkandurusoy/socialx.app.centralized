@@ -41,16 +41,17 @@ const style: any = {
 		borderTopColor: Colors.mercury,
 	},
 	buttonsContainer: {
-		flexDirection: 'row',
 		alignItems: 'center',
+		justifyContent: 'center',
 		borderTopWidth: Sizes.smartVerticalScale(1),
 		borderTopColor: Colors.mercury,
+		flexDirection: 'row',
+		width: '100%',
 	},
 	button: {
 		alignItems: 'center',
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
 		paddingVertical: Sizes.smartVerticalScale(16),
-		flex: 1,
 	},
 	leftButton: {
 		borderRightColor: Colors.mercury,
@@ -61,6 +62,9 @@ const style: any = {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(16),
 		lineHeight: Sizes.smartHorizontalScale(18),
+	},
+	flexButton: {
+		flex: 1,
 	},
 	buttonTextConfirm: {
 		color: Colors.postHour,
@@ -94,11 +98,18 @@ const style: any = {
 	errorMessage: {
 		...Fonts.centuryGothic,
 		fontSize: Sizes.smartHorizontalScale(14),
-		color: Colors.red,
+		color: Colors.monza,
 		lineHeight: Sizes.smartHorizontalScale(24),
 		width: '100%',
 		textAlign: 'center',
 		paddingBottom: Sizes.smartHorizontalScale(5),
+	},
+	disabledButton: {
+		opacity: 0.4,
+	},
+	activityResend: {
+		marginLeft: Sizes.smartHorizontalScale(20),
+		// justifyContent: 'center',
 	},
 };
 

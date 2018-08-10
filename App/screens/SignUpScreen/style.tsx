@@ -1,5 +1,6 @@
 import {OS_TYPES} from 'consts';
 import {Platform, StyleSheet} from 'react-native';
+import {colorWithAlpha} from 'theme';
 import {Colors, Fonts, Sizes} from 'theme/';
 
 const style: any = {
@@ -26,11 +27,13 @@ const style: any = {
 		width: '100%',
 		borderBottomWidth: 1,
 		borderBottomColor: Colors.dustWhite,
-		flexDirection: 'row',
 	},
 	textInputContainerFirst: {
 		borderTopWidth: 1,
 		borderTopColor: Colors.dustWhite,
+	},
+	directionRow: {
+		flexDirection: 'row',
 	},
 	avatarPickerContainer: {
 		padding: Sizes.smartHorizontalScale(10),
@@ -80,6 +83,23 @@ const style: any = {
 	acceptCheckbox: {
 		left: 0,
 		marginLeft: Sizes.smartHorizontalScale(5),
+	},
+	errorText: {
+		...Fonts.centuryGothic,
+		color: Colors.monza,
+		fontSize: Sizes.smartHorizontalScale(12),
+		lineHeight: Sizes.smartHorizontalScale(16),
+	},
+	errorContainer: {
+		zIndex: 1,
+		marginHorizontal: '5%',
+		marginTop: Sizes.smartVerticalScale(5),
+		marginBottom: -Sizes.smartVerticalScale(5),
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+		width: '90%',
+	},
+	boldText: {
+		...Fonts.centuryGothicBold,
 	},
 };
 

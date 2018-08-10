@@ -27,3 +27,5 @@ import './stories/CommentCard.stories';
 import './stories/VideoPlayer.stories';
 import './stories/GovernanceCard.stories';
 import './stories/MediaInfoOverlay.stories';
+import './stories/LoginScreen.stories';
+import './stories/SignUpScreen.stories';
