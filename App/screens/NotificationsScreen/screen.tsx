@@ -37,8 +37,8 @@ interface IActivityCardsProps {
 	onSuperLikedPhotoPressed: (postId: string) => void;
 	onFriendRequestApproved: (requestId: string) => void;
 	onFriendRequestDeclined: (requestId: string) => void;
-	onGroupRequestConfirmed: (requestId: string) => void;
-	onGroupRequestDeclined: (requestId: string) => void;
+	// onGroupRequestConfirmed: (requestId: string) => void;
+	// onGroupRequestDeclined: (requestId: string) => void;
 	onCheckNotification: (requestId: string) => void;
 	onViewUserProfile: (userId: string) => void;
 	loadingConfirmed: {};
@@ -63,8 +63,8 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 	onViewUserProfile,
 	onCheckNotification,
 	onSuperLikedPhotoPressed,
-	onGroupRequestConfirmed,
-	onGroupRequestDeclined,
+	// onGroupRequestConfirmed,
+	// onGroupRequestDeclined,
 	loadingNotificationCheck,
 }) => {
 	const {requestId} = activityCardData;
@@ -91,14 +91,14 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 				loading={loadingNotificationCheck.hasOwnProperty(requestId)}
 			/>
 		);
-	} else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
-		return (
-			<GroupRequest
-				{...activityCardData}
-				onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
-				onGroupDeclined={() => onGroupRequestDeclined(requestId)}
-			/>
-		);
+		// } else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
+		// 	return (
+		// 		<GroupRequest
+		// 			{...activityCardData}
+		// 			onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
+		// 			onGroupDeclined={() => onGroupRequestDeclined(requestId)}
+		// 		/>
+		// 	);
 	} else if (activityCardData.type === NOTIFICATION_TYPES.SUPER_LIKED) {
 		return <ActivitySuperLikedCard {...activityCardData} onThumbPress={onSuperLikedPhotoPressed} />;
 	}
@@ -115,8 +115,8 @@ const NotificationsScreenComponent: React.SFC<INotificationsScreenComponentProps
 	onSuperLikedPhotoPressed,
 	onFriendRequestApproved,
 	onFriendRequestDeclined,
-	onGroupRequestConfirmed,
-	onGroupRequestDeclined,
+	// onGroupRequestConfirmed,
+	// onGroupRequestDeclined,
 	onCheckNotification,
 	onViewUserProfile,
 	loadingConfirmed,
@@ -138,8 +138,8 @@ const NotificationsScreenComponent: React.SFC<INotificationsScreenComponentProps
 					onViewUserProfile={onViewUserProfile}
 					onCheckNotification={onCheckNotification}
 					onSuperLikedPhotoPressed={onSuperLikedPhotoPressed}
-					onGroupRequestConfirmed={onGroupRequestConfirmed}
-					onGroupRequestDeclined={onGroupRequestDeclined}
+					// onGroupRequestConfirmed={onGroupRequestConfirmed}
+					// onGroupRequestDeclined={onGroupRequestDeclined}
 					loadingNotificationCheck={loadingNotificationCheck}
 				/>
 			)}

@@ -1,11 +1,13 @@
-import {AvatarImage, IWallPostCardProp, SuggestionsCarousel, WallPostCard} from 'components';
+import {IWallPostCardProp, SuggestionsCarousel, WallPostCard} from 'components';
 import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
 import React, {Component, RefObject} from 'react';
-import {ActivityIndicator, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {ActivityIndicator, Animated, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {AnimatedValue, NavigationScreenProp} from 'react-navigation';
 import {Colors, Sizes} from 'theme';
 import {IMediaProps, IUserQuery} from 'types';
-import style from './style';
+
+import style, {SHARE_SECTION_BORDER_WIDTH, SHARE_SECTION_HEIGHT} from './style';
 
 interface IUserFeedScreenProps extends IWithLoaderProps {
 	avatarImage: any;
@@ -27,6 +29,7 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	hasMore: boolean;
 	onAddCommentPress: (scrollRef: any, scrollYOffset: number, cardHeight: number) => void;
 	listLoading: boolean;
+	navigation: NavigationScreenProp<any>;
 }
 
 interface IUserFeedScreenState {
@@ -51,24 +54,64 @@ const LoadingFooter: React.SFC<any> = ({hasMore}) => {
 	return null;
 };
 
-const ShareSection: React.SFC<any> = ({sharePlaceholder, avatarImage, showNewWallPostPage}) => (
-	<View style={style.shareMessageContainer}>
-		<AvatarImage image={avatarImage} style={style.avatarImage} />
-		<TouchableWithoutFeedback onPress={showNewWallPostPage}>
-			<View style={style.shareTextContainer}>
-				<Text style={style.shareTextPlaceholder}>{sharePlaceholder}</Text>
-			</View>
-		</TouchableWithoutFeedback>
-	</View>
-);
+const ShareSection: React.SFC<any> = ({
+	sharePlaceholder,
+	avatarImage,
+	showNewWallPostPage,
+	height,
+	opacity,
+	border,
+	avatarOpacity,
+}) => {
+	const containerStyle = [style.shareMessageContainer, {height, opacity, borderBottomWidth: border}];
+	const avatarStyle = [style.avatarImage, {opacity: avatarOpacity}];
+
+	return (
+		<Animated.View style={containerStyle}>
+			<Animated.Image source={avatarImage} resizeMode="cover" style={avatarStyle} />
+			<TouchableWithoutFeedback onPress={showNewWallPostPage}>
+				<View style={style.shareTextContainer}>
+					<Text style={style.shareTextPlaceholder}>{sharePlaceholder}</Text>
+				</View>
+			</TouchableWithoutFeedback>
+		</Animated.View>
+	);
+};
 
 class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenState> {
 	public state = {
 		fetchingMore: false,
 	};
 
+	private readonly scrollRef: RefObject<FlatList<IWallPostCardProp>> = React.createRef();
+	private scrollY: AnimatedValue = new Animated.Value(0);
+
 	public render() {
 		const {avatarImage, showNewWallPostPage, shareSectionPlaceholder, noPosts} = this.props;
+
+		const shareSectionHeightInterpolation = this.scrollY.interpolate({
+			inputRange: [0, SHARE_SECTION_HEIGHT],
+			outputRange: [SHARE_SECTION_HEIGHT, 0],
+			extrapolate: 'clamp',
+		});
+
+		const shareSectionOpacityInterpolation = this.scrollY.interpolate({
+			inputRange: [0, SHARE_SECTION_HEIGHT],
+			outputRange: [1, 0],
+			extrapolate: 'clamp',
+		});
+
+		const shareSectionBorderInterpolation = this.scrollY.interpolate({
+			inputRange: [0, SHARE_SECTION_HEIGHT],
+			outputRange: [SHARE_SECTION_BORDER_WIDTH, 0],
+			extrapolate: 'clamp',
+		});
+
+		const shareSectionAvatarOpacityInterpolation = this.scrollY.interpolate({
+			inputRange: [0, SHARE_SECTION_HEIGHT],
+			outputRange: [1, 0],
+			extrapolate: 'clamp',
+		});
 
 		return (
 			<View style={style.container}>
@@ -77,6 +120,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						avatarImage={avatarImage}
 						showNewWallPostPage={showNewWallPostPage}
 						sharePlaceholder={shareSectionPlaceholder}
+						height={shareSectionHeightInterpolation}
+						opacity={shareSectionOpacityInterpolation}
+						border={shareSectionBorderInterpolation}
+						avatarOpacity={shareSectionAvatarOpacityInterpolation}
 					/>
 				)}
 				{noPosts ? (
@@ -103,13 +150,13 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						keyboardShouldPersistTaps={'handled'}
 						ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
 						onScrollToIndexFailed={() => {}}
+						onScroll={this.onScrollHandler}
+						scrollEventThrottle={16}
 					/>
 				)}
 			</View>
 		);
 	}
-
-	private readonly scrollRef: RefObject<FlatList<IWallPostCardProp>> = React.createRef();
 
 	private keyExtractor = (item: IWallPostCardProp, index: number) => item.id;
 
@@ -120,6 +167,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 		const canDelete = this.props.currentUser.userId === data.item.owner.userId;
 		const likedByMe = !!data.item.likes.find((like: IUserQuery) => like.userId === this.props.currentUser.userId);
+
 		return (
 			<View style={style.wallPostContainer}>
 				<WallPostCard
@@ -143,6 +191,10 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onAddCommentPressHandler = (index: number, cardHeight: number) => {
 		this.props.onAddCommentPress(this.scrollRef, index, cardHeight);
+	};
+
+	private onScrollHandler = (event: any) => {
+		this.scrollY.setValue(event.nativeEvent.contentOffset.y);
 	};
 }
 
