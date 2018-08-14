@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedValue, NavigationScreenProp} from 'react-navigation';
 
 import {Colors, Sizes} from 'theme';
-import {AnimatedFlatList} from 'configuration/animations';
 import {IMediaProps, IUserQuery} from 'types';
 import style, {SHARE_SECTION_HEIGHT} from './style';
 
@@ -92,16 +91,16 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				{noPosts ? (
 					<FeedWithNoPosts />
 				) : (
-					<AnimatedFlatList
+					<FlatList
 						ListHeaderComponent={
-							shareSectionPlaceholder && (
+							shareSectionPlaceholder ? (
 								<ShareSection
 									avatarImage={avatarImage}
 									showNewWallPostPage={showNewWallPostPage}
 									sharePlaceholder={shareSectionPlaceholder}
 									opacity={shareSectionOpacityInterpolation}
 								/>
-							)
+							) : null
 						}
 						ref={this.scrollRef}
 						windowSize={10}
@@ -123,8 +122,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						keyboardShouldPersistTaps={'handled'}
 						ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
 						onScrollToIndexFailed={() => {}}
-						onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollY}}}], {useNativeDriver: true})}
-						scrollEventThrottle={1}
+						onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollY}}}])}
+						scrollEventThrottle={16}
 						showsVerticalScrollIndicator={false}
 					/>
 				)}

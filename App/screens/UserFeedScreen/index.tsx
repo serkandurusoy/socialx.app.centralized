@@ -24,8 +24,6 @@ import {ipfsConfig as base} from 'configuration';
 import {OS_TYPES} from 'consts';
 import {MOCK_SUGGESTED} from 'utilities';
 
-import {SHARE_SECTION_HEIGHT} from './style';
-
 const AVAILABLE_SCREEN_HEIGHT = Dimensions.get('window').height;
 const TOTAL_SCREEN_HEIGHT = Dimensions.get('screen').height;
 const SUGGESTIONS_POSTS_INTERVAL = 20;
@@ -317,7 +315,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			return -(offset - diff + softwareButtonsBarHeight);
 		}
 
-		return -(offset - diff - SHARE_SECTION_HEIGHT);
+		return -(offset - diff);
 	};
 }
 
