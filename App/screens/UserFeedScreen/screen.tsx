@@ -59,7 +59,7 @@ const ShareSection: React.SFC<any> = ({sharePlaceholder, avatarImage, showNewWal
 
 	return (
 		<Animated.View style={containerStyle}>
-			<Animated.Image source={avatarImage} resizeMode="cover" style={[style.avatarImage, {opacity}]} />
+			<Animated.Image source={avatarImage} resizeMode='cover' style={[style.avatarImage, {opacity}]} />
 			<TouchableWithoutFeedback onPress={showNewWallPostPage}>
 				<View style={style.shareTextContainer}>
 					<Animated.Text style={[style.shareTextPlaceholder, {opacity}]}>{sharePlaceholder}</Animated.Text>
