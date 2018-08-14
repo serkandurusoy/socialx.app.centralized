@@ -1,4 +1,4 @@
-import {Animated, Image, Text} from 'react-native';
+import {Animated, Image, Text, FlatList} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import FastImage from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -9,6 +9,7 @@ export const AnimatedText = Animatable.createAnimatableComponent(Text);
 export const AnimatedIonicon = Animatable.createAnimatableComponent(Ionicon);
 export const AnimatedFaIcon = Animatable.createAnimatableComponent(FontAwesome);
 export const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
+export const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 export const Animations = {
 	pulsate: {

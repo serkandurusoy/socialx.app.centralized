@@ -4,10 +4,11 @@ import React, {Component, RefObject} from 'react';
 import {ActivityIndicator, Animated, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedValue, NavigationScreenProp} from 'react-navigation';
-import {Colors, Sizes} from 'theme';
-import {IMediaProps, IUserQuery} from 'types';
 
-import style, {SHARE_SECTION_BORDER_WIDTH, SHARE_SECTION_HEIGHT} from './style';
+import {Colors, Sizes} from 'theme';
+import {AnimatedFlatList} from 'configuration/animations';
+import {IMediaProps, IUserQuery} from 'types';
+import style, {SHARE_SECTION_HEIGHT} from './style';
 
 interface IUserFeedScreenProps extends IWithLoaderProps {
 	avatarImage: any;
@@ -54,24 +55,15 @@ const LoadingFooter: React.SFC<any> = ({hasMore}) => {
 	return null;
 };
 
-const ShareSection: React.SFC<any> = ({
-	sharePlaceholder,
-	avatarImage,
-	showNewWallPostPage,
-	height,
-	opacity,
-	border,
-	avatarOpacity,
-}) => {
-	const containerStyle = [style.shareMessageContainer, {height, opacity, borderBottomWidth: border}];
-	const avatarStyle = [style.avatarImage, {opacity: avatarOpacity}];
+const ShareSection: React.SFC<any> = ({sharePlaceholder, avatarImage, showNewWallPostPage, opacity}) => {
+	const containerStyle = [style.shareMessageContainer, {opacity}];
 
 	return (
 		<Animated.View style={containerStyle}>
-			<Animated.Image source={avatarImage} resizeMode="cover" style={avatarStyle} />
+			<Animated.Image source={avatarImage} resizeMode="cover" style={[style.avatarImage, {opacity}]} />
 			<TouchableWithoutFeedback onPress={showNewWallPostPage}>
 				<View style={style.shareTextContainer}>
-					<Text style={style.shareTextPlaceholder}>{sharePlaceholder}</Text>
+					<Animated.Text style={[style.shareTextPlaceholder, {opacity}]}>{sharePlaceholder}</Animated.Text>
 				</View>
 			</TouchableWithoutFeedback>
 		</Animated.View>
@@ -89,47 +81,28 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	public render() {
 		const {avatarImage, showNewWallPostPage, shareSectionPlaceholder, noPosts} = this.props;
 
-		const shareSectionHeightInterpolation = this.scrollY.interpolate({
-			inputRange: [0, SHARE_SECTION_HEIGHT],
-			outputRange: [SHARE_SECTION_HEIGHT, 0],
-			extrapolate: 'clamp',
-		});
-
 		const shareSectionOpacityInterpolation = this.scrollY.interpolate({
-			inputRange: [0, SHARE_SECTION_HEIGHT],
-			outputRange: [1, 0],
-			extrapolate: 'clamp',
-		});
-
-		const shareSectionBorderInterpolation = this.scrollY.interpolate({
-			inputRange: [0, SHARE_SECTION_HEIGHT],
-			outputRange: [SHARE_SECTION_BORDER_WIDTH, 0],
-			extrapolate: 'clamp',
-		});
-
-		const shareSectionAvatarOpacityInterpolation = this.scrollY.interpolate({
-			inputRange: [0, SHARE_SECTION_HEIGHT],
-			outputRange: [1, 0],
+			inputRange: [0, SHARE_SECTION_HEIGHT / 2, SHARE_SECTION_HEIGHT],
+			outputRange: [1, 0.3, 0],
 			extrapolate: 'clamp',
 		});
 
 		return (
 			<View style={style.container}>
-				{shareSectionPlaceholder && (
-					<ShareSection
-						avatarImage={avatarImage}
-						showNewWallPostPage={showNewWallPostPage}
-						sharePlaceholder={shareSectionPlaceholder}
-						height={shareSectionHeightInterpolation}
-						opacity={shareSectionOpacityInterpolation}
-						border={shareSectionBorderInterpolation}
-						avatarOpacity={shareSectionAvatarOpacityInterpolation}
-					/>
-				)}
 				{noPosts ? (
 					<FeedWithNoPosts />
 				) : (
-					<FlatList
+					<AnimatedFlatList
+						ListHeaderComponent={
+							shareSectionPlaceholder && (
+								<ShareSection
+									avatarImage={avatarImage}
+									showNewWallPostPage={showNewWallPostPage}
+									sharePlaceholder={shareSectionPlaceholder}
+									opacity={shareSectionOpacityInterpolation}
+								/>
+							)
+						}
 						ref={this.scrollRef}
 						windowSize={10}
 						refreshing={this.props.refreshing}
@@ -150,8 +123,9 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 						keyboardShouldPersistTaps={'handled'}
 						ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
 						onScrollToIndexFailed={() => {}}
-						onScroll={this.onScrollHandler}
-						scrollEventThrottle={16}
+						onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollY}}}], {useNativeDriver: true})}
+						scrollEventThrottle={1}
+						showsVerticalScrollIndicator={false}
 					/>
 				)}
 			</View>
@@ -191,10 +165,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 
 	private onAddCommentPressHandler = (index: number, cardHeight: number) => {
 		this.props.onAddCommentPress(this.scrollRef, index, cardHeight);
-	};
-
-	private onScrollHandler = (event: any) => {
-		this.scrollY.setValue(event.nativeEvent.contentOffset.y);
 	};
 }
 
