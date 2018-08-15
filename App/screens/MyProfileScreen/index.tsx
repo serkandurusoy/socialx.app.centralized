@@ -9,7 +9,7 @@ import uuidv4 from 'uuid/v4';
 import {resetNavigationToRoute} from 'backend/actions';
 import {userHoc} from 'backend/graphql';
 import {DEFAULT_AVATAR_SIZE, HEADER_TOP_PADDING, IconButton, PROFILE_STATS_HEIGHT, TooltipDots} from 'components';
-import {Colors} from 'theme';
+import {Colors, Icons} from 'theme';
 import {IMediaProps, IMediaViewerObject, IPostsProps, IUserDataResponse} from 'types';
 import {
 	getMediaObjectType,
@@ -67,8 +67,8 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 		headerLeft: (
 			<View style={style.titleBarLeftButton}>
 				<IconButton
-					iconSource="md-share"
-					iconType="io"
+					iconSource={Icons.shareIconWhite}
+					iconType='image'
 					iconStyle={style.icon}
 					onPress={() => MyProfileScreen.goToReferralPage(navigation)}
 				/>

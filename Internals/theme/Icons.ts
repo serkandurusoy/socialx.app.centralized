@@ -67,4 +67,6 @@ export const Icons = {
 	videoCallMicrophoneOn: require('./assets/icons/video_call_microphone_on.png'),
 	videoCallMicrophoneOff: require('./assets/icons/video_call_microphone_off.png'),
 	videoCallCameraSwap: require('./assets/icons/video_call_camera_swap.png'),
+	shareIconWhite: require('./assets/icons/share_icon_white.png'),
+	shareIconGradient: require('./assets/icons/share_icon_gradient.png'),
 };

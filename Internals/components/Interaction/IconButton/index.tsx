@@ -39,7 +39,7 @@ export class IconButton extends Component<IIconButtonProps, IIconButtonState> {
 	}
 
 	private renderIcon = (type: string) => {
-		if (typeof this.props.iconSource === 'number') {
+		if (type === 'image') {
 			return <Image source={this.state.iconSource as number} style={this.state.iconStyle} resizeMode={'contain'} />;
 		} else if (type === 'io') {
 			return <Ionicon name={this.state.iconSource as string} style={this.state.iconStyle} />;

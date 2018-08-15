@@ -163,18 +163,20 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			const loadedMedia = loadedSize === 0 ? headerElement : gridMediaProvider.getAllData();
 			const newMedia = mediaObjects
 				.slice(this.lastLoadedPhotoIndex, endIndex)
-				.map((mObject: IMediaProps, ix: number) => ({
-					// url: 'https://avatars2.githubusercontent.com/u/' + (this.lastLoadedPhotoIndex + ix),
+				.map((mObject: IMediaProps, index: number) => ({
+					// url: 'https://avatars2.githubusercontent.com/u/' + (this.lastLoadedPhotoIndex + index),
 					// type: MediaTypeImage, // just to test gallery is fast with proper resources!
 					url: getURLForMediaViewerObject(mObject),
 					type: getMediaObjectType(mObject),
-					index: this.lastLoadedPhotoIndex + ix,
+					index: this.lastLoadedPhotoIndex + index,
 				}));
+
 			const allMedia = [...loadedMedia, ...newMedia];
+
 			this.setState({
 				gridMediaProvider: gridMediaProvider.cloneWithRows(allMedia),
 			});
-			this.lastLoadedPhotoIndex = allMedia.length;
+			this.lastLoadedPhotoIndex = allMedia.length - 1;
 		}
 	};
 

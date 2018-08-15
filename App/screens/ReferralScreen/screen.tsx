@@ -28,7 +28,7 @@ const ReferralScreenComponent: React.SFC<IReferralScreenComponentProps> = ({copy
 		<View style={styles.footer}>
 			<Text style={styles.text}>{INVITE}</Text>
 			<TouchableOpacity onPress={onShare} style={styles.iconContainer}>
-				<Image source={Icons.envelope} style={styles.icon} />
+				<Image source={Icons.shareIconGradient} style={styles.icon} resizeMode='contain' />
 			</TouchableOpacity>
 		</View>
 	</View>

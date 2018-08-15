@@ -51,7 +51,7 @@ export class SuggestionsCarousel extends Component<ISuggestionsCarouselProps, IS
 					enableSnap={false}
 					enableMomentum={true}
 					decelerationRate={0.9}
-					activeSlideAlignment="start"
+					activeSlideAlignment='start'
 					inactiveSlideScale={1}
 					inactiveSlideOpacity={1}
 					containerCustomStyle={styles.carouselContainer}

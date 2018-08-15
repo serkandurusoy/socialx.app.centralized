@@ -22,8 +22,8 @@ const styles: any = {
 		letterSpacing: Sizes.smartHorizontalScale(2),
 	},
 	icon: {
-		width: Sizes.smartHorizontalScale(70),
-		height: Sizes.smartHorizontalScale(50),
+		width: Sizes.smartHorizontalScale(60),
+		height: Sizes.smartHorizontalScale(60),
 	},
 };
 
