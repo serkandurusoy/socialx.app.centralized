@@ -29,7 +29,7 @@ export class SuggestionsCarousel extends Component<ISuggestionsCarouselProps, IS
 		items: [],
 	};
 
-	private static getDerivedStateFromProps(props: ISuggestionsCarouselProps, state: ISuggestionsCarouselState) {
+	public static getDerivedStateFromProps(props: ISuggestionsCarouselProps, state: ISuggestionsCarouselState) {
 		if (props.items && state.items.length === 0) {
 			return {
 				items: props.items,
@@ -51,7 +51,7 @@ export class SuggestionsCarousel extends Component<ISuggestionsCarouselProps, IS
 					enableSnap={false}
 					enableMomentum={true}
 					decelerationRate={0.9}
-					activeSlideAlignment='start'
+					activeSlideAlignment="start"
 					inactiveSlideScale={1}
 					inactiveSlideOpacity={1}
 					containerCustomStyle={styles.carouselContainer}

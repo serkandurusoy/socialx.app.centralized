@@ -1,5 +1,6 @@
 // leave off @2x/@3x
 export const Icons = {
+	envelope: require('./assets/icons/envelope_icon.png'),
 	likeIconBlueOutline: require('./assets/icons/like_blue_outline.png'),
 	likeIconBlueFilled: require('./assets/icons/like_blue_filled.png'),
 	iconPostSuperLike: require('./assets/icons/post_super_like.png'),

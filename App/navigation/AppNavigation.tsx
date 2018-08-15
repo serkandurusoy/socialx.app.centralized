@@ -36,6 +36,7 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import OutgoingCallScreen from '../screens/OutgoingCallScreen';
 import PhotoScreen from '../screens/PhotoScreen';
 import ProfileAnalyticsScreen from '../screens/ProfileAnalyticsScreen';
+import ReferralScreen from '../screens/ReferralScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import {RewardsScreen} from '../screens/RewardsScreen';
 import SaveKeyScreen from '../screens/SaveKeyScreen';
@@ -173,6 +174,7 @@ const MyProfileStackNavigator = createStackNavigator(
 		SocialXAccountScreen: {screen: SocialXAccountScreen},
 		ProfileAnalyticsScreen: {screen: ProfileAnalyticsScreen},
 		RewardsScreen: {screen: RewardsScreen},
+		ReferralScreen: {screen: ReferralScreen},
 	},
 	{
 		navigationOptions: {
@@ -314,7 +316,7 @@ const MainScreenTabNavigation = createBottomTabNavigator(
 		// SearchTab: getSingleScreenStack('SearchScreen', SearchScreen),
 		SearchTab: UserSearchStackNavigator,
 		NotificationsTab: getSingleScreenStack('NotificationsScreen', NotificationsScreen),
-		MyProfileTab: {screen: MyProfileStackNavigator},
+		MyProfileTab: MyProfileStackNavigator,
 	},
 	{
 		tabBarPosition: 'bottom',

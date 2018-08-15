@@ -11,6 +11,13 @@ const style: any = {
 	titleBarRightButton: {
 		marginRight: Sizes.smartHorizontalScale(13),
 	},
+	titleBarLeftButton: {
+		marginLeft: Sizes.smartHorizontalScale(13),
+	},
+	icon: {
+		fontSize: Sizes.smartHorizontalScale(25),
+		color: Colors.white,
+	},
 	gridMediaThumb: {
 		width: USER_MEDIA_THUMB_SIZE,
 		height: USER_MEDIA_THUMB_SIZE,
