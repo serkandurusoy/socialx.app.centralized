@@ -29,7 +29,7 @@ export class SuggestionsCarousel extends Component<ISuggestionsCarouselProps, IS
 		items: [],
 	};
 
-	private static getDerivedStateFromProps(props: ISuggestionsCarouselProps, state: ISuggestionsCarouselState) {
+	public static getDerivedStateFromProps(props: ISuggestionsCarouselProps, state: ISuggestionsCarouselState) {
 		if (props.items && state.items.length === 0) {
 			return {
 				items: props.items,

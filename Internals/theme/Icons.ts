@@ -1,5 +1,6 @@
 // leave off @2x/@3x
 export const Icons = {
+	envelope: require('./assets/icons/envelope_icon.png'),
 	likeIconBlueOutline: require('./assets/icons/like_blue_outline.png'),
 	likeIconBlueFilled: require('./assets/icons/like_blue_filled.png'),
 	iconPostSuperLike: require('./assets/icons/post_super_like.png'),
@@ -66,4 +67,6 @@ export const Icons = {
 	videoCallMicrophoneOn: require('./assets/icons/video_call_microphone_on.png'),
 	videoCallMicrophoneOff: require('./assets/icons/video_call_microphone_off.png'),
 	videoCallCameraSwap: require('./assets/icons/video_call_camera_swap.png'),
+	shareIconWhite: require('./assets/icons/share_icon_white.png'),
+	shareIconGradient: require('./assets/icons/share_icon_gradient.png'),
 };

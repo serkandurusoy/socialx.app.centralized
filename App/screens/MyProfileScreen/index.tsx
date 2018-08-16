@@ -8,13 +8,7 @@ import uuidv4 from 'uuid/v4';
 
 import {resetNavigationToRoute} from 'backend/actions';
 import {userHoc} from 'backend/graphql';
-import {
-	AVATAR_NAME_HEIGHT,
-	DEFAULT_AVATAR_SIZE,
-	HEADER_TOP_PADDING,
-	PROFILE_STATS_HEIGHT,
-	TooltipDots,
-} from 'components';
+import {DEFAULT_AVATAR_SIZE, HEADER_TOP_PADDING, IconButton, PROFILE_STATS_HEIGHT, TooltipDots} from 'components';
 import {Colors, Icons} from 'theme';
 import {IMediaProps, IMediaViewerObject, IPostsProps, IUserDataResponse} from 'types';
 import {
@@ -70,7 +64,16 @@ const TOTAL_HEADER_HEIGHT = HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + PROFILE_S
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = ({navigation, navigationOptions}) => ({
 		title: navigationOptions.getText('my.profile.screen.title'),
-		headerLeft: <View />,
+		headerLeft: (
+			<View style={style.titleBarLeftButton}>
+				<IconButton
+					iconSource={Icons.shareIconWhite}
+					iconType='image'
+					iconStyle={style.icon}
+					onPress={() => MyProfileScreen.goToReferralPage(navigation)}
+				/>
+			</View>
+		),
 		headerRight: (
 			<View style={style.titleBarRightButton}>
 				<TooltipDots
@@ -116,6 +119,10 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 
 	private static goToSettingsPage = (navigation: NavigationScreenProp<any>) => {
 		navigation.navigate('SettingsScreen');
+	};
+
+	private static goToReferralPage = (navigation: NavigationScreenProp<any>) => {
+		navigation.navigate('ReferralScreen');
 	};
 
 	private static logoutHandler = async (navigation: NavigationScreenProp<any>) => {
@@ -299,4 +306,4 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 export default compose(
 	userHoc,
 	withTranslations,
-)(MyProfileScreen);
+)(MyProfileScreen as any);
