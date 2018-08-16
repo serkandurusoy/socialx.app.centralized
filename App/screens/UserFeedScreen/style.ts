@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {Colors, Fonts, Sizes} from 'theme/';
 
 const USER_AVATAR_SIZE = Sizes.smartHorizontalScale(40);
+export const SHARE_SECTION_HEIGHT = Sizes.smartVerticalScale(80);
 
 const style: any = {
 	container: {
@@ -14,9 +15,9 @@ const style: any = {
 	},
 	shareMessageContainer: {
 		width: '100%',
+		height: SHARE_SECTION_HEIGHT,
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingVertical: Sizes.smartVerticalScale(16),
 		paddingHorizontal: Sizes.smartHorizontalScale(16),
 		borderBottomColor: Colors.geyser,
 		borderBottomWidth: Sizes.smartHorizontalScale(8),

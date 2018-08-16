@@ -227,6 +227,12 @@ const UserFeedStackNavigator = createStackNavigator(
 		TabbedFeedScreen: {
 			screen: TabbedFeedNavigator,
 			navigationOptions: () => ({
+				// headerRight: (
+				// 	<ScreenHeaderButton
+				// 		onPress={() => navigation.navigate('MessagingScreen')}
+				// 		iconSource={Icons.messagingIcon}
+				// 	/>
+				// ),
 				headerLeft: (
 					<ScreenHeaderButton
 						iconName='md-flame'
@@ -234,12 +240,6 @@ const UserFeedStackNavigator = createStackNavigator(
 						onPress={() => alert('Hot Posts.. Coming soon..')}
 					/>
 				),
-				// headerRight: (
-				// 	<ScreenHeaderButton
-				// 		onPress={() => navigation.navigate('MessagingScreen')}
-				// 		iconSource={Icons.messagingIcon}
-				// 	/>
-				// ),
 				headerRight: <View />,
 				headerTitle: <HeaderLogo />,
 			}),

@@ -314,6 +314,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 			const softwareButtonsBarHeight = TOTAL_SCREEN_HEIGHT - AVAILABLE_SCREEN_HEIGHT;
 			return -(offset - diff + softwareButtonsBarHeight);
 		}
+
 		return -(offset - diff);
 	};
 }
