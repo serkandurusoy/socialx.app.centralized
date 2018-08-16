@@ -11,7 +11,7 @@ const style: any = {
 		justifyContent: 'space-between',
 	},
 	fullName: {
-		...Fonts.centuryGothic,
+		...Fonts.centuryGothicBold,
 		fontSize: Sizes.smartHorizontalScale(16),
 		lineHeight: Sizes.smartHorizontalScale(20),
 		textAlign: 'center',

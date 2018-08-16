@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from 'theme/';
+import {Colors, Fonts, Sizes} from 'theme';
 
 const style: any = {
 	container: {
-		backgroundColor: Colors.white,
 		flex: 1,
+		backgroundColor: Colors.pink,
 	},
 	scrollContainer: {
 		width: '100%',
@@ -40,6 +40,26 @@ const style: any = {
 	},
 	wallPostContainer: {
 		paddingBottom: Sizes.smartVerticalScale(25),
+	},
+	contentContainer: {
+		flex: 1,
+		flexDirection: 'row',
+	},
+	postsContainer: {
+		width: '100%',
+	},
+	gridContainer: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		minHeight: 1,
+		width: '100%',
+	},
+	whiteBottomView: {
+		position: 'absolute',
+		backgroundColor: Colors.white,
+		width: '100%',
+		bottom: 0,
 	},
 };
 

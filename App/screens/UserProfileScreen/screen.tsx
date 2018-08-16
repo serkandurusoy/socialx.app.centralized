@@ -1,23 +1,19 @@
 import React from 'react';
-import {RefreshControl, ScrollView, Text, View} from 'react-native';
+import {Animated, Dimensions, RefreshControl, ScrollView, View} from 'react-native';
+import {AnimatedValue} from 'react-navigation';
 import {DataProvider} from 'recyclerlistview';
 
-import {
-	ADD_FRIEND_CONTAINER_HEIGHT,
-	DEFAULT_AVATAR_SIZE,
-	HEADER_TOP_PADDING,
-	IWallPostCardProp,
-	PROFILE_STATS_HEIGHT,
-	ProfileTopContainer,
-	WallPostCard,
-} from 'components';
+import {IWallPostCardProp, NoPhotos, PhotoGrid, ProfileTopContainer, WallPostCard} from 'components';
+import {PROFILE_TAB_ICON_TYPES} from 'consts';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
+import {Colors} from 'theme';
 import {IUserQuery, SearchResultKind} from 'types';
-import {IWithTranslationProps, withTranslations} from 'utilities';
-import MyProfileScreenComponent from '../MyProfileScreen/screen';
+
 import style from './style';
 
-interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProps {
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+interface IUserProfileScreenProps extends IWithLoaderProps {
 	avatarURL: any;
 	fullName: string;
 	username?: string;
@@ -43,13 +39,15 @@ interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProp
 	onViewMediaFullScreen: (index: number) => void;
 	currentUserId: string;
 	ownUser: boolean;
+	onIconPress: (tab: string) => void;
+	listTranslate: AnimatedValue;
+	gridTranslate: AnimatedValue;
+	activeTab: string;
+	containerHeight: number;
+	onLayoutChange: (height: number) => void;
 }
 
-const TOTAL_HEADER_HEIGHT =
-	HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + PROFILE_STATS_HEIGHT + ADD_FRIEND_CONTAINER_HEIGHT;
-
 const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
-	isFollowed,
 	refreshing,
 	gridMediaProvider,
 	avatarURL,
@@ -71,42 +69,39 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	onImageClick,
 	onLikeClick,
 	aboutMeText,
-	getText,
 	numberOfViews,
 	currentUserId,
 	ownUser,
-}) => (
-	<View style={style.container}>
-		{isFollowed && (
-			<MyProfileScreenComponent
-				isLoading={false}
-				numberOfPhotos={numberOfPhotos}
-				numberOfLikes={numberOfLikes}
-				numberOfFollowers={numberOfFollowers}
-				numberOfFollowing={numberOfFollowing}
-				numberOfViews={numberOfViews}
-				avatarURL={avatarURL}
-				fullName={fullName}
-				username={username}
-				loadMorePhotosHandler={loadMorePhotosHandler}
-				onRefresh={onRefresh}
-				refreshing={refreshing}
-				gridMediaProvider={gridMediaProvider}
-				onViewProfilePhoto={onViewProfilePhoto}
-				onAddFriend={onAddFriend}
-				friendRequestStatus={friendRequestStatus}
-				hasPhotos={gridMediaProvider.getSize() > 1}
-				emptyGalleryMessage={'user.profile.screen.empty.gallery'}
-				onViewMediaFullScreen={onViewMediaFullScreen}
-				headerHeight={TOTAL_HEADER_HEIGHT}
-				ownUser={ownUser}
-			/>
-		)}
-		{!isFollowed && (
+	onIconPress,
+	listTranslate,
+	gridTranslate,
+	activeTab,
+	containerHeight,
+	onLayoutChange,
+}) => {
+	const hasPhotos = numberOfPhotos !== 0;
+
+	let contentContainerStyle;
+	if (activeTab === PROFILE_TAB_ICON_TYPES.GRID && containerHeight !== 0) {
+		if (containerHeight < SCREEN_HEIGHT / 2) {
+			contentContainerStyle = [style.contentContainer, {height: SCREEN_HEIGHT / 2}];
+		} else {
+			contentContainerStyle = [style.contentContainer, {height: containerHeight}];
+		}
+	} else {
+		contentContainerStyle = style.contentContainer;
+	}
+
+	const scrollContainerStyles = hasPhotos ? style.scrollContainer : [style.scrollContainer, {flex: 1}];
+
+	return (
+		<View style={style.container}>
+			<View style={[style.whiteBottomView, {height: SCREEN_HEIGHT / 2}]} />
 			<ScrollView
-				contentContainerStyle={style.scrollContainer}
+				contentContainerStyle={scrollContainerStyles}
 				showsVerticalScrollIndicator={false}
-				refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+				refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.white} />}
+				disabled={hasPhotos}
 			>
 				<ProfileTopContainer
 					avatarURL={avatarURL}
@@ -121,33 +116,58 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 					onAddFriend={onAddFriend}
 					onRemoveFriendship={onRemoveFriendship}
 					friendRequestStatus={friendRequestStatus}
-					hasPhotos={true}
 					ownUser={ownUser}
+					onIconPress={onIconPress}
+					aboutMeText={aboutMeText}
+					tabs={true}
+					activeTab={activeTab}
 				/>
-				<View style={style.aboutMeContainer}>
-					<Text style={style.aboutMeTitle}>{getText('user.profile.screen.about.me')}</Text>
-					<Text style={style.aboutMeText}>{aboutMeText}</Text>
-				</View>
-				<Text style={style.recentPostsTitle}>{getText('user.profile.screen.recent.posts')}</Text>
-				{recentPosts.map((post, i) => {
-					const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === currentUserId);
+				{hasPhotos && (
+					<View style={contentContainerStyle}>
+						<Animated.View style={[style.postsContainer, {transform: [{translateX: listTranslate}]}]}>
+							{recentPosts.map((post, i) => {
+								const likedByMe = !!post.likes.find((like: IUserQuery) => like.userId === currentUserId);
 
-					return (
-						<View style={style.wallPostContainer} key={i}>
-							<WallPostCard
-								{...post}
-								likedByMe={likedByMe}
-								canDelete={false}
-								onCommentClick={() => onCommentClick(post.id, null)}
-								onImageClick={(index: number) => onImageClick(index, post.media || post.Media)}
-								onLikeButtonClick={() => onLikeClick(likedByMe, post.id)}
+								return (
+									<View style={style.wallPostContainer} key={i}>
+										<WallPostCard
+											{...post}
+											likedByMe={likedByMe}
+											canDelete={false}
+											onCommentClick={() => onCommentClick(post.id, null)}
+											onImageClick={(index: number) => onImageClick(index, post.media || post.Media)}
+											onLikeButtonClick={() => onLikeClick(likedByMe, post.id)}
+											noInput={true}
+										/>
+									</View>
+								);
+							})}
+						</Animated.View>
+						<Animated.View
+							onLayout={(event: any) => {
+								if (containerHeight !== event.nativeEvent.layout.height) {
+									onLayoutChange(event.nativeEvent.layout.height);
+								}
+							}}
+							style={[style.gridContainer, {transform: [{translateX: gridTranslate}]}]}
+						>
+							<PhotoGrid
+								loadMorePhotosHandler={loadMorePhotosHandler}
+								gridMediaProvider={gridMediaProvider}
+								onViewMediaFullScreen={onViewMediaFullScreen}
+								header={{
+									element: <View style={{width: 1, height: 1}} />,
+									height: hasPhotos ? 1 : SCREEN_HEIGHT,
+								}}
+								disabled={hasPhotos}
 							/>
-						</View>
-					);
-				})}
+						</Animated.View>
+					</View>
+				)}
+				{!hasPhotos && <NoPhotos />}
 			</ScrollView>
-		)}
-	</View>
-);
+		</View>
+	);
+};
 
-export default withTranslations(withInlineLoader(UserProfileScreenComponent, false));
+export default withInlineLoader(UserProfileScreenComponent);

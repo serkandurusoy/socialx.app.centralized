@@ -1,7 +1,6 @@
-import get from 'lodash/get';
 import React, {Component} from 'react';
-import {InteractionManager, View} from 'react-native';
-import {NavigationScreenProp} from 'react-navigation';
+import {Animated, Dimensions, View} from 'react-native';
+import {AnimatedValue, NavigationScreenProp} from 'react-navigation';
 import {compose} from 'recompose';
 import {DataProvider} from 'recyclerlistview';
 import uuidv4 from 'uuid/v4';
@@ -14,13 +13,15 @@ import {
 	unsetLikedPostHoc,
 	userHoc,
 } from 'backend/graphql';
-import {IWallPostCardProp, ModalCloseButton, ToggleIconButton} from 'components';
+import {IWallPostCardProp, ModalCloseButton} from 'components';
 import {ipfsConfig as base} from 'configuration';
-import {Icons} from 'theme';
-import {IMediaProps, IMediaViewerObject, IUserDataResponse, MediaTypeImage} from 'types';
+import {PROFILE_TAB_ICON_TYPES} from 'consts';
+import {Colors} from 'theme';
+import {IMediaProps, IMediaViewerObject, IUserDataResponse} from 'types';
 import {getMediaObjectType, getURLForMediaViewerObject, IWithTranslationProps, showToastMessage} from 'utilities';
 import UserProfileScreenComponent from './screen';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
 const GRID_PAGE_SIZE = 20;
 
 const INITIAL_STATE = {
@@ -33,7 +34,6 @@ const INITIAL_STATE = {
 	fullName: '',
 	username: '',
 	aboutMeText: '',
-	isFollowed: false,
 	recentPosts: [],
 	isLoading: true,
 	refreshing: false,
@@ -55,7 +55,6 @@ interface IUserProfileScreenState {
 	numberOfFollowers: number;
 	numberOfFollowing: number;
 	numberOfViews: number;
-	isFollowed: boolean;
 	avatarURL: any;
 	fullName: string;
 	username?: string;
@@ -64,23 +63,26 @@ interface IUserProfileScreenState {
 	isLoading: boolean;
 	refreshing: boolean;
 	gridMediaProvider: DataProvider;
+	listTranslate: AnimatedValue;
+	gridTranslate: AnimatedValue;
+	activeTab: string;
+	containerHeight: number;
 }
 
 class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileScreenState> {
-	private static navigationOptions = ({navigation, navigationOptions}) => ({
-		title: navigationOptions.getText('user.profile.screen.title'),
+	private static navigationOptions = ({navigation}) => ({
+		title: 'PROFILE',
 		headerLeft: <View />,
 		headerRight: (
 			<View style={{flexDirection: 'row'}}>
-				<ToggleIconButton
-					selectedSource={Icons.iconHeartWhiteFilled}
-					unselectedSource={Icons.iconHeartWhiteOutline}
-					onPress={get(navigation, 'state.params.toggleFollow', undefined)}
-					selected={get(navigation, 'state.params.isFollowed', false)}
-				/>
 				<ModalCloseButton navigation={navigation} />
 			</View>
 		),
+		headerStyle: {
+			borderBottomWidth: 0,
+			backgroundColor: Colors.pink,
+			elevation: 0,
+		},
 	});
 
 	private lastLoadedPhotoIndex = 0;
@@ -91,19 +93,15 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		this.gridPhotosProvider = new DataProvider((row1: IMediaViewerObject, row2: IMediaViewerObject) => {
 			return row1.index !== row2.index;
 		});
+
 		this.state = {
 			...INITIAL_STATE,
 			gridMediaProvider: this.gridPhotosProvider,
+			listTranslate: new Animated.Value(0),
+			gridTranslate: new Animated.Value(SCREEN_WIDTH),
+			activeTab: PROFILE_TAB_ICON_TYPES.LIST,
+			containerHeight: 0,
 		};
-	}
-
-	public componentDidMount() {
-		InteractionManager.runAfterInteractions(() => {
-			this.props.navigation.setParams({
-				isFollowed: this.state.isFollowed,
-				toggleFollow: this.toggleFollowHandler,
-			});
-		});
 	}
 
 	public render() {
@@ -143,16 +141,15 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				gridMediaProvider={gridMediaProvider}
 				currentUserId={data.user.userId}
 				ownUser={data.user.userId === navigation.state.params.userId}
+				onIconPress={this.onIconPressHandler}
+				listTranslate={this.state.listTranslate}
+				gridTranslate={this.state.gridTranslate}
+				activeTab={this.state.activeTab}
+				containerHeight={this.state.containerHeight}
+				onLayoutChange={this.onLayoutChangeHandler}
 			/>
 		);
 	}
-
-	private toggleFollowHandler = () => {
-		this.props.navigation.setParams({isFollowed: !this.state.isFollowed});
-		this.setState({
-			isFollowed: !this.state.isFollowed,
-		});
-	};
 
 	private loadMorePhotosHandler = () => {
 		const {getUserQuery} = this.props;
@@ -251,6 +248,46 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		});
 	};
 
+	private onIconPressHandler = (tab: string) => {
+		if (this.state.activeTab !== tab) {
+			this.setState({activeTab: tab});
+		}
+
+		if (tab === PROFILE_TAB_ICON_TYPES.GRID) {
+			Animated.parallel([
+				Animated.timing(this.state.listTranslate, {
+					toValue: -SCREEN_WIDTH,
+					duration: 300,
+					useNativeDriver: true,
+				}),
+				Animated.timing(this.state.gridTranslate, {
+					toValue: 0,
+					duration: 300,
+					useNativeDriver: true,
+				}),
+			]).start();
+		} else {
+			Animated.parallel([
+				Animated.timing(this.state.listTranslate, {
+					toValue: 0,
+					duration: 300,
+					useNativeDriver: true,
+				}),
+				Animated.timing(this.state.gridTranslate, {
+					toValue: SCREEN_WIDTH,
+					duration: 300,
+					useNativeDriver: true,
+				}),
+			]).start();
+		}
+	};
+
+	private onLayoutChangeHandler = (height: number) => {
+		if (this.state.containerHeight !== height) {
+			this.setState({containerHeight: height});
+		}
+	};
+
 	private onRemoveFriendshipHandler = () => {
 		alert('onRemoveFriendshipHandler: TBD');
 		// TODO: API call to remove + refresh user query so relationship is updated!
@@ -265,4 +302,4 @@ export default compose(
 	userHoc,
 	setLikedPostHoc,
 	unsetLikedPostHoc,
-)(UserProfileScreen);
+)(UserProfileScreen as any);

@@ -2,13 +2,12 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {IconButton, LikeAnimatingButton} from 'components';
-import {Colors, Icons} from 'theme';
 import style from './style';
 
 export interface IWallPostActions {
-	likedByMe: boolean;
-	numberOfSuperLikes: number;
-	numberOfWalletCoins: number;
+	likedByMe: boolean | undefined;
+	numberOfSuperLikes: number | undefined;
+	numberOfWalletCoins: number | undefined;
 	likeButtonPressed?: () => Promise<any>;
 	superLikeButtonPressed: Func;
 	commentsButtonPressed: Func;
@@ -35,7 +34,7 @@ export const WallPostActions: React.SFC<IWallPostActions> = (props) => {
 						onPress={props.superLikeButtonPressed}
 						label={props.numberOfSuperLikes.toString()}
 					/> */}
-				<IconButton iconSource='comment-o' iconType='fa' onPress={props.commentsButtonPressed} iconStyle={style.icon} />
+				<IconButton iconSource="comment-o" iconType="fa" onPress={props.commentsButtonPressed} iconStyle={style.icon} />
 			</View>
 		</View>
 	);
