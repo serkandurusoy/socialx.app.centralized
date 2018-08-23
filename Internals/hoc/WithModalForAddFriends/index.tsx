@@ -32,7 +32,7 @@ const withModalForAddFriendsInt = (BaseComponent: React.ComponentType<IModalForA
 		private baseScreen: RefObject<any> = React.createRef();
 
 		public componentDidMount() {
-			const blurViewHandle = findNodeHandle(this.baseScreen);
+			const blurViewHandle = findNodeHandle(this.baseScreen.current);
 			this.setState({blurViewRef: blurViewHandle});
 		}
 

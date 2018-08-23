@@ -113,6 +113,9 @@ class NewWallPostScreenInt extends Component<INewWallPostScreenProps, INewWallPo
 	};
 
 	private addNewMediaObject = async (mediaObject: PickerImage | undefined) => {
+		// TODO: this should change and NOT do the upload as photos are added from camera/gallery.
+		// Only when SEND button is pressed.
+
 		// TODO: @Serkan -> some hints to refactor this very big method?
 		if (!mediaObject) {
 			return;

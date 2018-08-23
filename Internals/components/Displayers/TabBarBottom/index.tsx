@@ -232,6 +232,7 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 			return;
 		}
 		try {
+			// TODO: use getOptimizedMediaObject
 			let contentOptimizedPath;
 			if (retMedia.mime.startsWith(MediaTypeImage.key)) {
 				const optimized = await ImageResizer.createResizedImage(

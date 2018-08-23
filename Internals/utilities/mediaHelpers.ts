@@ -1,6 +1,7 @@
 import {CameraRoll, PermissionsAndroid} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
 
 import {IMediaObjectViewerProps} from 'components';
 import {ipfsConfig as base} from 'configuration';
@@ -146,4 +147,24 @@ export const getMediaObjectType = (mediaObject: IMediaPropsWithIndex): MediaType
 		return MediaTypeVideo;
 	}
 	return MediaTypeImage;
+};
+
+export const getOptimizedMediaObject = async (originalMedia: PickerImage) => {
+	let contentOptimizedPath;
+	if (originalMedia.mime.startsWith(MediaTypeImage.key)) {
+		const optimized = await ImageResizer.createResizedImage(
+			originalMedia.path,
+			originalMedia.width,
+			originalMedia.height,
+			'JPEG',
+			50,
+		);
+		contentOptimizedPath = optimized.path;
+	}
+	return {
+		...originalMedia,
+		contentOptimizedPath,
+		type: originalMedia.mime,
+		pathx: originalMedia.path,
+	};
 };

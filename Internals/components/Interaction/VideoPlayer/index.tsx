@@ -103,12 +103,14 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 	}
 
 	private videoReadyHandler = () => {
+		// TODO: issue with local video files, see bug report:
+		// https://github.com/react-native-community/react-native-video/issues/1195
 		if (!this.state.playReady) {
 			this.setState({
 				playReady: true,
 			});
 		}
-	}
+	};
 
 	private renderVideoControls = () => {
 		if (this.state.playReady) {
@@ -144,7 +146,7 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 				<ActivityIndicator size='large' color={Colors.pink} />
 			</View>
 		);
-	}
+	};
 
 	private onVideoPlayStart = () => {
 		if (this.state.ended && this.player) {
@@ -155,26 +157,26 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 			ended: false,
 			userPaused: false,
 		});
-	}
+	};
 
 	private onVideoPlayPause = () => {
 		this.setState({
 			paused: true,
 			userPaused: true,
 		});
-	}
+	};
 
 	private onVideoMuteToggle = () => {
 		this.setState({
 			muted: !this.state.muted,
 		});
-	}
+	};
 
 	private onVideoEndHandler = () => {
 		this.setState({
 			ended: true,
 		});
-	}
+	};
 
 	private onVideoEnterFullScreen = () => {
 		if (this.props.resizeToChangeAspectRatio) {
@@ -185,5 +187,5 @@ export class VideoPlayer extends React.Component<IVideoPlayerProps, IVideoPlayer
 				fullscreen: true,
 			});
 		}
-	}
+	};
 }

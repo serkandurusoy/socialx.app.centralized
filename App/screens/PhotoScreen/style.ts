@@ -10,10 +10,8 @@ const style: any = {
 		backgroundColor: Colors.white,
 	},
 	photoContainer: {
-		paddingTop: Sizes.smartVerticalScale(11),
-		paddingHorizontal: Sizes.smartHorizontalScale(52),
-	},
-	photo: {
+		marginTop: Sizes.smartVerticalScale(11),
+		paddingHorizontal: '5%',
 		width: '100%',
 		height: Sizes.smartHorizontalScale(130),
 	},
@@ -37,6 +35,26 @@ const style: any = {
 	},
 	checkboxButtonContainer: {
 		marginTop: Sizes.smartVerticalScale(10),
+	},
+	addMediaContainer: {
+		width: '100%',
+		alignItems: 'center',
+	},
+	addMediaButton: {
+		flexDirection: 'row',
+		paddingHorizontal: Sizes.smartHorizontalScale(10),
+		paddingVertical: Sizes.smartHorizontalScale(10),
+		alignItems: 'center',
+	},
+	photoIcon: {
+		width: Sizes.smartHorizontalScale(22),
+		height: Sizes.smartHorizontalScale(22),
+		marginRight: Sizes.smartHorizontalScale(8),
+	},
+	addMediaText: {
+		...Fonts.centuryGothic,
+		fontSize: Sizes.smartHorizontalScale(12),
+		color: Colors.postText,
 	},
 };
 
