@@ -25,6 +25,7 @@ export const MediaHorizontalScroller: React.SFC<IMediaHorizontalScrollerProps> =
 			contentContainerStyle={style.scrollContent}
 			horizontal={true}
 			alwaysBounceHorizontal={false}
+			showsHorizontalScrollIndicator={false}
 			onContentSizeChange={onScrollContentSizeChange}
 		>
 			{mediaURIs.map((mediaURI) => (

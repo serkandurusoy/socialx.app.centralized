@@ -1,7 +1,5 @@
-import {ButtonSizes, MediaObjectViewer, SharePostInput, SXButton} from 'components';
 import React from 'react';
 import {
-	ActivityIndicator,
 	Image,
 	ImageSourcePropType,
 	Platform,
@@ -13,18 +11,17 @@ import {
 } from 'react-native';
 import {compose} from 'recompose';
 
+import {ButtonSizes, MediaHorizontalScroller, SharePostInput, SXButton} from 'components';
 import {OS_TYPES} from 'consts';
 import {IWithResizeOnKeyboardShowProps, withResizeOnKeyboardShow} from 'hoc';
 import {Colors, Icons, Sizes} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
-import {MediaObject} from './index';
 import style from './style';
 
 interface INewWallPostScreenComponentProps extends IWithResizeOnKeyboardShowProps, IWithTranslationProps {
 	avatarImage: ImageSourcePropType;
 	shareText: string;
-	isUploading: boolean;
-	mediaObjects: MediaObject[];
+	mediaObjects: string[];
 	uploadProgress: number;
 	onShareTextUpdate: (value: string) => void;
 	onAddMedia: () => void;
@@ -35,7 +32,6 @@ const NewWallPostScreenComponentInt: React.SFC<INewWallPostScreenComponentProps>
 	avatarImage,
 	shareText,
 	onShareTextUpdate,
-	isUploading,
 	onAddMedia,
 	onPostSend,
 	mediaObjects,
@@ -51,31 +47,20 @@ const NewWallPostScreenComponentInt: React.SFC<INewWallPostScreenComponentProps>
 				text={shareText}
 				onTextUpdate={onShareTextUpdate}
 			/>
-			<TouchableOpacity style={style.addMediaButton} onPress={onAddMedia} disabled={isUploading}>
+			<TouchableOpacity style={style.addMediaButton} onPress={onAddMedia}>
 				<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
 				<Text style={style.addMediaText}>{getText('new.wall.post.screen.attach.media.button')}</Text>
 			</TouchableOpacity>
-			<ScrollView style={style.photosContainer} horizontal={true}>
-				{[
-					...mediaObjects.map((mediaObject: MediaObject, index) => (
-						<MediaObjectViewer key={mediaObject.path} uri={mediaObject.path} style={style.mediaObject} thumbOnly={true} />
-					)),
-					...(isUploading
-						? [
-								<View key={mediaObjects.length} style={[style.mediaObject, style.mediaUploadingPlaceholder]}>
-									<ActivityIndicator size={'large'} color={Colors.pink} />
-									<Text style={style.progressText}>{uploadProgress + ' %'}</Text>
-								</View>,
-						  ]
-						: []),
-				]}
-			</ScrollView>
+			{mediaObjects.length > 0 && (
+				<View style={style.mediaContainer}>
+					<MediaHorizontalScroller mediaURIs={mediaObjects} />
+				</View>
+			)}
 			<SXButton
 				label={getText('new.wall.post.screen.send.button')}
 				size={ButtonSizes.Small}
 				width={Sizes.smartHorizontalScale(100)}
 				onPress={onPostSend}
-				disabled={isUploading}
 				borderColor={Colors.transparent}
 			/>
 		</ScrollView>
@@ -85,4 +70,4 @@ const NewWallPostScreenComponentInt: React.SFC<INewWallPostScreenComponentProps>
 export const NewWallPostScreenComponent = compose(
 	withResizeOnKeyboardShow,
 	withTranslations,
-)(NewWallPostScreenComponentInt);
+)(NewWallPostScreenComponentInt as any);

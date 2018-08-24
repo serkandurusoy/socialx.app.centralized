@@ -11,14 +11,15 @@ import {ModalCloseButton, ScreenHeaderButton} from 'components';
 import {IModalForAddFriendsProps, ModalManager, withModalForAddFriends} from 'hoc';
 import {FriendsSearchResult, IUserDataResponse, WallPostPhotoOptimized} from 'types';
 import {
-	getCameraMediaObject,
-	getGalleryMediaObject,
+	getCameraMediaObjectMultiple,
+	getGalleryMediaObjectMultiple,
 	getOptimizedMediaObject,
 	getUserAvatar,
 	IWithTranslationProps,
+	MediaUploader,
+	PickerImageMultiple,
 	withTranslations,
 } from 'utilities';
-import {addFileBN, addFilesBN} from 'utilities/ipfs';
 import PhotoScreenComponent from './screen';
 
 interface WallPostPhoto {
@@ -29,7 +30,7 @@ interface WallPostPhoto {
 
 interface IPhotoScreenNavParams {
 	params: {
-		mediaObject: WallPostPhotoOptimized;
+		mediaObjects: WallPostPhotoOptimized[];
 		onSendPress: () => void;
 	};
 }
@@ -41,7 +42,7 @@ interface IPhotoScreenProps extends IModalForAddFriendsProps, IWithTranslationPr
 	addMedia: any;
 	createPost: any;
 	// redux
-	startMediaFilesUpload: any;
+	updateUploadProgress: any;
 	startPostAdd: any;
 	stopLoading: any;
 }
@@ -53,16 +54,6 @@ interface IPhotoScreenState {
 	shareText: string;
 	mediaObjects: WallPostPhotoOptimized[];
 }
-
-interface MediaUploadCompleteResponse {
-	responseCode: number;
-	responseBody: any;
-}
-
-type MultipleMediaUploadCompleteResponse = Array<{
-	index: number;
-	data: MediaUploadCompleteResponse;
-}>;
 
 class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	private static navigationOptions = (props: IPhotoScreenProps) => ({
@@ -76,10 +67,8 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		tagFriends: false,
 		location: '',
 		shareText: '',
-		mediaObjects: [this.props.navigation.state.params.mediaObject],
+		mediaObjects: [...this.props.navigation.state.params.mediaObjects],
 	};
-
-	private mediaObjectUploading: WallPostPhotoOptimized | undefined;
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
@@ -159,155 +148,52 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				title: getText('new.wall.post.screen.menu.title'),
 			},
 			async (buttonIndex: number) => {
-				let selectedMediaObject;
+				let selectedMediaObjects: PickerImageMultiple = [];
 				if (buttonIndex === 0) {
-					selectedMediaObject = await getGalleryMediaObject();
+					selectedMediaObjects = await getGalleryMediaObjectMultiple();
 				} else if (buttonIndex === 1) {
-					selectedMediaObject = await getCameraMediaObject();
+					selectedMediaObjects = await getCameraMediaObjectMultiple();
 				}
-				if (selectedMediaObject) {
-					const optimizedMedia = await getOptimizedMediaObject(selectedMediaObject);
-					this.setState({mediaObjects: [...this.state.mediaObjects, optimizedMedia]});
+				if (selectedMediaObjects.length > 0) {
+					const optimizedMediaObjects = await Promise.all(
+						selectedMediaObjects.map(async (mObject) => getOptimizedMediaObject(mObject)),
+					);
+					this.setState({mediaObjects: [...this.state.mediaObjects, ...optimizedMediaObjects]});
 				}
 			},
 		);
 	};
 
 	private sendPostHandler = () => {
-		this.uploadMediaFiles();
-		this.completeCreateWallPost();
-	};
-
-	// private sendPostHandlerOld = async () => {
-	// 	const {addMedia, createPost, startMediaFilesUpload, startPostAdd, stopLoading} = this.props;
-	//
-	// 	try {
-	// 		const wallPostData = this.getWallPostData();
-	//
-	// 		const {title, location, mediaObjects} = wallPostData;
-	// 		const {mime, pathx, contentOptimizedPath} = media;
-	//
-	// 		const onStart = () => {
-	// 			// start adding media loading
-	// 			startMediaFilesUpload(0);
-	// 		};
-	//
-	// 		const onError = (err: any, id: any) => {
-	// 			console.log(err, id);
-	// 			this.showErrorMessage(err);
-	// 		};
-	//
-	// 		const onProgress = (progress: any, id: any) => {
-	// 			console.log('progress:', progress, id);
-	// 			startMediaFilesUpload(Math.round(progress));
-	// 		};
-	//
-	// 		if (contentOptimizedPath) {
-	// 			await addFilesBN([pathx, contentOptimizedPath], onStart, onProgress, onError, onComplete);
-	// 		} else {
-	// 			await addFileBN(pathx, onStart, onProgress, onError, onComplete);
-	// 		}
-	// 	} catch (ex) {
-	// 		this.showErrorMessage(ex);
-	// 	}
-	// };
-
-	private uploadMediaFiles = () => {
 		const {mediaObjects} = this.state;
-		mediaObjects.forEach((mediaObject) => {
-			this.mediaObjectUploading = mediaObject;
-		});
+		const {addMedia, updateUploadProgress} = this.props;
+		const mediaUploader = new MediaUploader(
+			mediaObjects,
+			this.completeCreateWallPost,
+			this.showErrorMessage,
+			addMedia,
+			updateUploadProgress,
+		);
+		mediaUploader.startUpload();
 	};
 
-	private uploadSingleMediaFile = async (mediaObject: WallPostPhotoOptimized) => {
-		const {mime, pathx, contentOptimizedPath} = mediaObject;
-		if (contentOptimizedPath) {
-			await addFilesBN(
-				[pathx, contentOptimizedPath],
-				this.onMediaFileUploadStart,
-				this.onMediaFileUploadProgress,
-				this.onMediaFileUploadError,
-				this.onMediaFileUploadComplete,
-			);
-		} else {
-			await addFileBN(
-				pathx,
-				this.onMediaFileUploadStart,
-				this.onMediaFileUploadProgress,
-				this.onMediaFileUploadError,
-				this.onMediaFileUploadComplete,
-			);
-		}
-	};
-
-	private onMediaFileUploadStart = () => {
-		this.props.startMediaFilesUpload(0);
-	};
-
-	private onMediaFileUploadProgress = (progress: any, id: any) => {
-		console.log('progress:', progress, id);
-		this.props.startMediaFilesUpload(Math.round(progress));
-	};
-
-	private onMediaFileUploadError = (err: any, id: any) => {
-		console.log(err, id);
-		this.showErrorMessage(err);
-	};
-
-	private onMediaFileUploadComplete = async (
-		data: MultipleMediaUploadCompleteResponse | MediaUploadCompleteResponse,
-	) => {
+	private completeCreateWallPost = async (mediaIDs: string[]) => {
 		try {
-			const {addMedia} = this.props;
-
-			let mediaOb: any = null;
-			let opMediaOb: any = null;
-
-			console.log('Upload completed', data);
-			if (Array.isArray(data)) {
-				for (let i = 0; i < data.length; i++) {
-					const current = data[i];
-					if (current.index === 0) {
-						mediaOb = JSON.parse(current.data.responseBody);
-					} else {
-						opMediaOb = JSON.parse(current.data.responseBody);
-					}
-				}
+			const {createPost, startPostAdd, stopLoading} = this.props;
+			const {title, location} = this.getWallPostData();
+			// start adding post loading
+			startPostAdd();
+			// create post
+			if (title) {
+				await createPost({variables: {text: title, Media: mediaIDs, location}});
 			} else {
-				// TODO: @Jake: this needs better handling!
-				mediaOb = JSON.parse(data.responseBody);
+				await createPost({variables: {Media: mediaIDs, location}});
 			}
-
-			// create media object on aws
-			const addResp = await addMedia({
-				variables: {
-					hash: mediaOb.Hash,
-					size: parseInt(mediaOb.Size, undefined),
-					type: this.mediaObjectUploading!.mime,
-					optimizedHash: opMediaOb !== null ? opMediaOb.Hash : mediaOb.Hash,
-				},
-			});
-
-			const mediaId = addResp.data.addMedia.id;
+			stopLoading();
+			this.props.navigation.goBack(null);
 		} catch (ex) {
 			this.showErrorMessage(ex);
 		}
-	};
-
-	private completeCreateWallPost = async () => {
-		const {createPost, startPostAdd, stopLoading} = this.props;
-		const {title, location} = this.getWallPostData();
-		// start adding post loading
-		startPostAdd();
-		// create post
-		if (title) {
-			// TODO: mediaID should be a string[]!
-			await createPost({variables: {text: title, Media: mediaId, location}});
-		} else {
-			await createPost({variables: {Media: mediaId, location}});
-		}
-		stopLoading();
-		this.props.navigation.goBack(null);
 	};
 
 	private showErrorMessage = (ex: any) => {
@@ -321,12 +207,11 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 }
 
 const MapDispatchToProps = (dispatch: any, {getText}: IPhotoScreenProps) => ({
-	startMediaFilesUpload: (progress: string) =>
+	updateUploadProgress: (fileProgress: number, globalProgress: string) =>
 		dispatch(
 			showActivityIndicator(
-				// TODO consider include in title the number of current media uploading, like 3/5
-				getText('photo.screen.media.uploading.title'),
-				getText('photo.screen.media.uploading.message', progress),
+				getText('photo.screen.media.uploading.title', globalProgress),
+				getText('photo.screen.media.uploading.message', fileProgress),
 			),
 		),
 	startPostAdd: () =>

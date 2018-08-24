@@ -3,26 +3,15 @@ import {Dimensions, Platform} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
 
-import {
-	addMediaHoc,
-	createPostHoc,
-	deleteOwnPostHoc,
-	setLikedPostHoc,
-	unsetLikedPostHoc,
-	userHoc,
-} from 'backend/graphql';
-import {IWallPostCardProp} from 'components';
-import {Images} from 'theme';
-import {NewWallPostData} from '../NewWallPostScreen';
-import UserFeedScreenComponent from './screen';
-
-import {IMediaProps, IUserDataResponse} from 'types';
-
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
-
+import {deleteOwnPostHoc, setLikedPostHoc, unsetLikedPostHoc, userHoc} from 'backend/graphql';
+import {IWallPostCardProp} from 'components';
 import {ipfsConfig as base} from 'configuration';
 import {OS_TYPES} from 'consts';
+import {Images} from 'theme';
+import {IMediaProps, IUserDataResponse} from 'types';
 import {MOCK_SUGGESTED} from 'utilities';
+import UserFeedScreenComponent from './screen';
 
 const AVAILABLE_SCREEN_HEIGHT = Dimensions.get('window').height;
 const TOTAL_SCREEN_HEIGHT = Dimensions.get('screen').height;
@@ -37,12 +26,8 @@ interface IUserFeedScreenProps extends IFeedProps {
 	data: IUserDataResponse;
 	User: IUserDataResponse;
 	// TODO: create interface
-	createPost: any;
 	setLikedPost: any;
 	unsetLikedPost: any;
-	addMedia: any;
-	startMediaPost: any;
-	startPostadd: any;
 	deletingPostLoad: any;
 	stopLoading: any;
 	deletePost: any;
@@ -94,7 +79,6 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 				avatarImage={this.getAvatarImage()}
 				wallPosts={Items}
 				loadMorePosts={this.onLoadMore}
-				addWallPost={this.addWallPostHandler}
 				showNewWallPostPage={this.showNewWallPostPage}
 				shareSectionPlaceholder={this.props.shareSectionPlaceholder}
 				onLikePress={this.onLikeButtonClickHandler}
@@ -153,67 +137,8 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		this.props.navigation.navigate('NewWallPostScreen', {
 			fullName: data ? data.user.name : '',
 			avatarImage: this.getAvatarImage(),
-			postCreate: this.addWallPostHandler,
+			afterPostCreate: this.refreshWallPosts,
 		});
-	};
-
-	private create = async (Media: string[], text?: string) => {
-		const {createPost} = this.props;
-		if (Media.length > 0) {
-			if (text) {
-				await createPost({
-					variables: {
-						text,
-						Media,
-					},
-				});
-			} else {
-				await createPost({
-					variables: {
-						Media,
-					},
-				});
-			}
-		} else {
-			await createPost({
-				variables: {
-					text,
-				},
-			});
-		}
-	};
-
-	private addWallPostHandler = async (data: NewWallPostData) => {
-		const {addMedia, startPostadd, stopLoading} = this.props;
-		const mediaIds: string[] = [];
-
-		// start creating post loading
-		startPostadd();
-
-		// todo @serkan @jake let's discuss parallel/series async execution
-		// for await of vs await Promise.all
-		try {
-			for (let i = 0; i < data.mediaObjects.length; i++) {
-				const currentData = data.mediaObjects[i];
-				const gqlResp = await addMedia({
-					variables: {
-						hash: currentData.content.Hash,
-						type: currentData.content.Name.split('.')[1],
-						optimizedHash: currentData.contentOptimized ? currentData.contentOptimized.Hash : currentData.content.Hash,
-						size: parseInt(currentData.content.Size, undefined),
-					},
-				});
-				mediaIds.push(gqlResp.data.addMedia.id);
-			}
-			await this.create(mediaIds, data.text);
-			// refresh the wall posts to append the new post
-			this.refreshWallPosts();
-		} catch (ex) {
-			//
-			console.log('ex from create', ex);
-		}
-
-		stopLoading();
 	};
 
 	private refreshWallPosts = async () => {
@@ -320,9 +245,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 }
 
 const MapDispatchToProps = (dispatch: any) => ({
-	startMediaPost: () => dispatch(showActivityIndicator('Decentralizing your media', 'Please wait..')),
 	deletingPostLoad: () => dispatch(showActivityIndicator('Removing your post..')),
-	startPostadd: () => dispatch(showActivityIndicator('Creating your post', 'finalizing post..')),
 	stopLoading: () => dispatch(hideActivityIndicator()),
 });
 
@@ -332,9 +255,7 @@ const reduxWrapper = connect(
 )(UserFeedScreen);
 
 const userWrapper = userHoc(reduxWrapper);
-const createPostWrapper = createPostHoc(userWrapper);
-const addMediaWrapper = addMediaHoc(createPostWrapper);
-const likePostWrapper = setLikedPostHoc(addMediaWrapper);
+const likePostWrapper = setLikedPostHoc(userWrapper);
 const removeLikePostWrapper = unsetLikedPostHoc(likePostWrapper);
 const deletePostWrapper = deleteOwnPostHoc(removeLikePostWrapper);
 

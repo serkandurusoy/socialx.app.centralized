@@ -112,6 +112,8 @@ const onMediaDownloadProgress = (progress: DownloadProgressCallbackResult, callb
 };
 
 export type PickerImage = Image;
+export type PickerImageMultiple = Image[];
+export type PickerImageOrMultiple = Image | Image[];
 
 export const getGalleryMediaObject = async (options = {}): Promise<PickerImage | undefined> => {
 	try {
@@ -121,7 +123,24 @@ export const getGalleryMediaObject = async (options = {}): Promise<PickerImage |
 		});
 		return mediaObject as PickerImage;
 	} catch (ex) {
-		console.log(ex);
+		console.log('getGalleryMediaObject error', ex);
+	}
+};
+
+export const getGalleryMediaObjectMultiple = async (options = {}): Promise<PickerImageMultiple> => {
+	try {
+		const mediaObject: PickerImageOrMultiple = await ImagePicker.openPicker({
+			...DEFAULT_PICKER_OPTIONS,
+			multiple: true,
+			...options,
+		});
+		if (!Array.isArray(mediaObject)) {
+			return [mediaObject];
+		}
+		return mediaObject;
+	} catch (ex) {
+		console.log('getGalleryMediaObjectMultiple error', ex);
+		return [];
 	}
 };
 
@@ -133,7 +152,21 @@ export const getCameraMediaObject = async (options = {}): Promise<PickerImage | 
 		});
 		return mediaObject as PickerImage;
 	} catch (ex) {
-		console.log(ex);
+		console.log('getCameraMediaObject error', ex);
+	}
+};
+
+export const getCameraMediaObjectMultiple = async (options = {}): Promise<PickerImageMultiple> => {
+	try {
+		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+			...DEFAULT_CAMERA_OPTIONS,
+			...options,
+		});
+		return [mediaObject as PickerImage];
+		// return mediaObject as PickerImageMultiple;
+	} catch (ex) {
+		console.log('getCameraMediaObjectMultiple error', ex);
+		return [];
 	}
 };
 

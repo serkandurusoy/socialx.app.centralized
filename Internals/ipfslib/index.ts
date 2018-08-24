@@ -89,14 +89,17 @@ export default class Ipfslib {
 			notification: {enabled: false},
 		};
 
+		paths[0] = paths[0].replace('file://', '');
+		paths[1] = paths[1].replace('file://', '');
+
 		const mediaOpfs = {
 			...opts,
-			path: paths[0].replace('file://', ''),
+			path: paths[0],
 		};
 
 		const optimizedMediaOpfs = {
 			...opts,
-			path: paths[1].replace('file://', ''),
+			path: paths[1],
 		};
 		//   Upload.startUpload(mediaOpfs).then((uploadId) => {
 		// 	console.log('Upload started')
