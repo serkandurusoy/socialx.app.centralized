@@ -3,8 +3,8 @@ import {Colors, Fonts, Sizes} from 'theme';
 
 const style: any = {
 	isFiendIcon: {
-		width: Sizes.smartHorizontalScale(23),
-		height: Sizes.smartHorizontalScale(23),
+		fontSize: Sizes.smartHorizontalScale(30),
+		color: Colors.pink,
 	},
 	friendRequestSentIcon: {
 		fontSize: Sizes.smartHorizontalScale(30),

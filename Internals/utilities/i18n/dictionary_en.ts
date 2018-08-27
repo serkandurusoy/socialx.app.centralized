@@ -191,4 +191,5 @@ export default {
 	'tab.bar.bottom.photo.picker.title': 'Share a photo',
 	'tab.bar.bottom.photo.picker.take.use.camera': 'Open camera',
 	'tab.bar.bottom.photo.picker.use.gallery': 'Pick from gallery',
+	'friendship.menu.option.remove': 'Unfriend',
 };

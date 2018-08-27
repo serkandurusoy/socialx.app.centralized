@@ -4,7 +4,6 @@ import {DataProvider} from 'recyclerlistview';
 
 import {
 	ADD_FRIEND_CONTAINER_HEIGHT,
-	AVATAR_NAME_HEIGHT,
 	DEFAULT_AVATAR_SIZE,
 	HEADER_TOP_PADDING,
 	IWallPostCardProp,
@@ -28,6 +27,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps, IWithTranslationProp
 	numberOfFollowing: number;
 	numberOfViews: number;
 	onAddFriend: () => Promise<any>;
+	onRemoveFriendship: void;
 	friendRequestStatus: SearchResultKind;
 	onViewProfilePhoto: () => void;
 	isFollowed: boolean;
@@ -57,6 +57,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	username,
 	numberOfPhotos,
 	onAddFriend,
+	onRemoveFriendship,
 	numberOfLikes,
 	numberOfFollowing,
 	numberOfFollowers,
@@ -118,6 +119,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 					numberOfViews={numberOfViews}
 					onViewProfilePhoto={onViewProfilePhoto}
 					onAddFriend={onAddFriend}
+					onRemoveFriendship={onRemoveFriendship}
 					friendRequestStatus={friendRequestStatus}
 					hasPhotos={true}
 					ownUser={ownUser}
