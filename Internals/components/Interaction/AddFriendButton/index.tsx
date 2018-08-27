@@ -1,5 +1,3 @@
-// TODO: @Serkan & @Ionut: discuss how we can make this stateless, given the animation logic!
-
 import {ActionSheet} from 'native-base';
 import React, {Component, RefObject} from 'react';
 import {TouchableOpacity, View} from 'react-native';
@@ -19,7 +17,7 @@ const OUT_ANIMATION_NAME = 'fadeOutRight';
 const OUT_ANIMATION_DURATION = 300;
 
 interface IAddFriendButtonProps extends IWithTranslationProps {
-	onAddFriend: () => Promise<any>;
+	onAddFriend: () => void;
 	onRemoveFriendship: () => void;
 	kind: SearchResultKind;
 	addLabel?: string;
@@ -27,26 +25,24 @@ interface IAddFriendButtonProps extends IWithTranslationProps {
 }
 
 interface IAddFriendButtonState {
-	loading: boolean;
-	kind: SearchResultKind;
+	rsWithAnimation: boolean;
+	optimisticKind: SearchResultKind;
 }
 
-const IsFriend: React.SFC<{onShowFriendshipOptions: () => void}> = ({onShowFriendshipOptions}) => (
+const IsFriend: React.SFC<{ onShowFriendshipOptions: () => void }> = ({onShowFriendshipOptions}) => (
 	<TouchableOpacity onPress={onShowFriendshipOptions}>
-		<MIcon name={'account-check'} style={style.isFiendIcon} />
+		<MIcon name={'account-check'} style={style.isFiendIcon}/>
 	</TouchableOpacity>
 );
 
 const addButtonRef: RefObject<Animatable.View> = React.createRef(); // TODO: this might not be safe here!
 
 const AddFriend: React.SFC<{
-	loading: boolean;
 	addLabel: string;
 	onAddFriendHandler: () => void;
-}> = ({loading, addLabel, onAddFriendHandler}) => (
+}> = ({addLabel, onAddFriendHandler}) => (
 	<Animatable.View ref={addButtonRef}>
 		<SXButton
-			loading={loading}
 			label={addLabel}
 			size={ButtonSizes.Small}
 			autoWidth={true}
@@ -56,16 +52,32 @@ const AddFriend: React.SFC<{
 	</Animatable.View>
 );
 
-const RequestSent: React.SFC<{withAnimation: boolean}> = ({withAnimation}) => {
+const RequestSent: React.SFC<{ withAnimation: boolean }> = ({withAnimation}) => {
 	const ViewComponent = withAnimation ? Animatable.View : View;
 	return (
-		<ViewComponent animation={IN_ANIMATION_NAME} easing='ease-out' iterationCount={1} duration={IN_ANIMATION_DURATION}>
-			<Icon name={'ios-swap'} style={style.friendRequestSentIcon} />
+		<ViewComponent
+			animation={IN_ANIMATION_NAME} easing='ease-out' iterationCount={1} duration={IN_ANIMATION_DURATION}
+		>
+			<Icon name={'ios-swap'} style={style.friendRequestSentIcon}/>
 		</ViewComponent>
 	);
 };
 
 class AddFriendButtonInt extends Component<IAddFriendButtonProps, IAddFriendButtonState> {
+	public static getDerivedStateFromProps(
+		nextProps: Readonly<IAddFriendButtonProps>,
+		prevState: Readonly<IAddFriendButtonState>,
+	) {
+		// TODO: enable this when API call will work!
+		// if (nextProps.kind !== prevState.optimisticKind) {
+		// 	showToastMessage('Friend request could not be processed at this time. Try again later..');
+		// 	return {
+		// 		optimisticKind: nextProps.kind,
+		// 	}
+		// }
+		return null;
+	}
+
 	private static defaultProps: Partial<IAddFriendButtonProps> = {
 		addLabel: 'Add',
 		outAnimation: OUT_ANIMATION_NAME,
@@ -73,55 +85,34 @@ class AddFriendButtonInt extends Component<IAddFriendButtonProps, IAddFriendButt
 	};
 
 	public state = {
-		loading: false,
-		kind: this.props.kind,
+		rsWithAnimation: false,
+		optimisticKind: this.props.kind,
 	};
 
-	private renderWithAnimation = false;
-
 	public render() {
-		const {kind, loading} = this.state;
 		const {addLabel} = this.props;
-
-		const withAnimation = this.renderWithAnimation;
-		if (kind === SearchResultKind.FriendRequestSent) {
-			this.renderWithAnimation = false;
-		}
+		const {rsWithAnimation, optimisticKind} = this.state;
 
 		return (
 			<View>
-				{kind === SearchResultKind.NotFriend && (
-					<AddFriend loading={loading} addLabel={addLabel} onAddFriendHandler={this.onAddFriendHandler} />
+				{optimisticKind === SearchResultKind.NotFriend && (
+					<AddFriend addLabel={addLabel} onAddFriendHandler={this.onAddFriendHandler}/>
 				)}
-				{kind === SearchResultKind.Friend && <IsFriend onShowFriendshipOptions={this.onShowFriendshipOptionsHandler} />}
-				{kind === SearchResultKind.FriendRequestSent && <RequestSent withAnimation={withAnimation} />}
+				{optimisticKind === SearchResultKind.FriendRequestSent &&
+                <RequestSent withAnimation={rsWithAnimation}/>}
+				{optimisticKind === SearchResultKind.Friend &&
+                <IsFriend onShowFriendshipOptions={this.onShowFriendshipOptionsHandler}/>}
 			</View>
 		);
 	}
 
-	private onAddFriendHandler = () => {
-		const {onAddFriend, outAnimation} = this.props;
+	private onAddFriendHandler = async () => {
+		this.props.onAddFriend();
+		await addButtonRef.current.animate(this.props.outAnimation, OUT_ANIMATION_DURATION);
 		this.setState({
-			loading: true,
+			rsWithAnimation: true, // this might need to be reset, check later!
+			optimisticKind: SearchResultKind.FriendRequestSent,
 		});
-		onAddFriend().then(
-			() => {
-				addButtonRef.current.animate(outAnimation, OUT_ANIMATION_DURATION).then(() => {
-					this.renderWithAnimation = true;
-					this.setState({
-						loading: false,
-						kind: SearchResultKind.FriendRequestSent,
-					});
-				});
-			},
-			(ex) => {
-				console.log(`ex: ${ex}`);
-				this.setState({
-					loading: false,
-				});
-				showToastMessage('Friend request could not be processed at this time. Try again later..');
-			},
-		);
 	};
 
 	private onShowFriendshipOptionsHandler = () => {
