@@ -5,8 +5,6 @@ const style: any = {
 	container: {
 		flex: 1,
 		width: '100%',
-	},
-	scrollView: {
 		backgroundColor: Colors.white,
 	},
 	contentContainer: {

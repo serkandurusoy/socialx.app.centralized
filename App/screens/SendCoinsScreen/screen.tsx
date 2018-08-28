@@ -3,7 +3,7 @@ import {TKeyboardKeys, TRKeyboardKeys} from 'components/Inputs';
 import {SXButton} from 'components/Interaction';
 import {CoinSymbol} from 'consts';
 import React from 'react';
-import {ScrollView, Text, TextInput, View} from 'react-native';
+import {SafeAreaView, ScrollView, Text, TextInput, View} from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {Colors} from 'theme';
 import style from './style';
@@ -36,9 +36,8 @@ const SendCoinsScreenComponent: React.SFC<ISendCoinsScreenComponentProps> = (pro
 	};
 
 	return (
-		<View style={style.container}>
+		<SafeAreaView style={style.container}>
 			<ScrollView
-				style={style.scrollView}
 				contentContainerStyle={style.contentContainer}
 				keyboardShouldPersistTaps={'handled'}
 				alwaysBounceVertical={false}
@@ -82,8 +81,8 @@ const SendCoinsScreenComponent: React.SFC<ISendCoinsScreenComponentProps> = (pro
 					<SXButton label={'CONTINUE'} onPress={continueHandler} />
 				</View>
 			</ScrollView>
-			<KeyboardSpacer />
-		</View>
+			<KeyboardSpacer /> {/*TODO: not working ok on android...*/}
+		</SafeAreaView>
 	);
 };
 

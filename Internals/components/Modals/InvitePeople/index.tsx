@@ -1,6 +1,7 @@
+// TODO: this is not used, only in storybook! keep it here for later reference!
+
 import {OS_TYPES} from 'consts';
 import {withManagedTransitions} from 'hoc/ManagedModal';
-import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
 import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
@@ -16,7 +17,6 @@ interface IModalInvitePeopleProps {
 	createHandler: () => void;
 	cancelHandler: () => void;
 	blurViewRef: any;
-	marginBottom: number;
 	searchResults: any[];
 	selectedUsers: string[];
 	onSearchUpdated: (term: string) => void;
@@ -28,7 +28,7 @@ interface IModalInvitePeopleProps {
 const ModalInvitePeopleComponent = (props: IModalInvitePeopleProps) => {
 	const resizableStyles = [
 		style.keyboardView,
-		...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: props.marginBottom}] : []),
+		// ...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: props.marginBottom}] : []), // make resizable when used!
 	];
 
 	return (
@@ -89,4 +89,4 @@ const ModalInvitePeopleComponent = (props: IModalInvitePeopleProps) => {
 	);
 };
 
-export const ModalInvitePeople = withManagedTransitions(withResizeOnKeyboardShow(ModalInvitePeopleComponent));
+export const ModalInvitePeople = withManagedTransitions(ModalInvitePeopleComponent);

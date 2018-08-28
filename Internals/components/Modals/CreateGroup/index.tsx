@@ -1,10 +1,10 @@
-import {OS_TYPES} from 'consts';
-import {withManagedTransitions} from 'hoc/ManagedModal';
-import {withResizeOnKeyboardShow} from 'hoc/ResizeOnKeyboardShow';
 import React, {Component} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
+
+import {OS_TYPES} from 'consts';
+import {withManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors} from 'theme';
 import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../Inputs';
 import style from './style';
@@ -16,7 +16,6 @@ export interface IModalCreateGroupProps {
 	declineHandler: () => void;
 	updateGroupName: (text: string) => void;
 	updateGroupDescription: (text: string) => void;
-	marginBottom: number;
 	onModalHide: () => void;
 	onDismiss: () => void;
 	afterDismiss: () => void;
@@ -28,11 +27,6 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 	};
 
 	public render() {
-		const resizableStyles = [
-			style.keyboardView,
-			...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: this.props.marginBottom}] : []),
-		];
-
 		return (
 			<Modal
 				onDismiss={this.props.onDismiss}
@@ -45,44 +39,48 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 				afterDismiss={this.props.afterDismiss}
 			>
 				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
-				<View style={resizableStyles}>
-					<View style={style.boxContainer}>
-						<View style={style.titleContainer}>
-							<Text style={style.title}>{'Create group'}</Text>
-						</View>
+				<WithResizeOnKeyboardShow>
+					{({marginBottom}) => (
+						<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
+							<View style={style.boxContainer}>
+								<View style={style.titleContainer}>
+									<Text style={style.title}>{'Create group'}</Text>
+								</View>
 
-						<View style={style.inputContainer}>
-							<SXTextInput
-								autoFocus={true}
-								numberOfLines={1}
-								borderColor={Colors.dustWhite}
-								placeholder={'Group name'}
-								onChangeText={this.props.updateGroupName}
-								returnKeyType={TRKeyboardKeys.done}
-								blurOnSubmit={true}
-								size={InputSizes.Small}
-							/>
-							<View style={style.descriptionContainer}>
-								<SXTextInput
-									numberOfLines={3}
-									borderColor={Colors.dustWhite}
-									placeholder={'Description'}
-									onChangeText={this.props.updateGroupDescription}
-									blurOnSubmit={false}
-								/>
+								<View style={style.inputContainer}>
+									<SXTextInput
+										autoFocus={true}
+										numberOfLines={1}
+										borderColor={Colors.dustWhite}
+										placeholder={'Group name'}
+										onChangeText={this.props.updateGroupName}
+										returnKeyType={TRKeyboardKeys.done}
+										blurOnSubmit={true}
+										size={InputSizes.Small}
+									/>
+									<View style={style.descriptionContainer}>
+										<SXTextInput
+											numberOfLines={3}
+											borderColor={Colors.dustWhite}
+											placeholder={'Description'}
+											onChangeText={this.props.updateGroupDescription}
+											blurOnSubmit={false}
+										/>
+									</View>
+								</View>
+
+								<View style={style.buttonsContainer}>
+									<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.declineHandler}>
+										<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
+									</TouchableOpacity>
+									<TouchableOpacity style={style.button} onPress={this.confirmHandler}>
+										<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Next'}</Text>
+									</TouchableOpacity>
+								</View>
 							</View>
 						</View>
-
-						<View style={style.buttonsContainer}>
-							<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.declineHandler}>
-								<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
-							</TouchableOpacity>
-							<TouchableOpacity style={style.button} onPress={this.confirmHandler}>
-								<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Next'}</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
+					)}
+				</WithResizeOnKeyboardShow>
 			</Modal>
 		);
 	}
@@ -110,4 +108,4 @@ class ModalCreateGroupComponent extends Component<IModalCreateGroupProps, any> {
 	};
 }
 
-export const ModalCreateGroup = withManagedTransitions(withResizeOnKeyboardShow(ModalCreateGroupComponent));
+export const ModalCreateGroup = withManagedTransitions(ModalCreateGroupComponent);
