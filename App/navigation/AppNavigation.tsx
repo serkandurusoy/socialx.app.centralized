@@ -8,7 +8,7 @@ import {
 	TransitionConfig,
 } from 'react-navigation';
 
-import {FeedTabBar, HeaderLogo, ScreenHeaderButton, TabBarBottom} from 'components';
+import {HeaderLogo, ScreenHeaderButton, TabBarBottom} from 'components';
 import {SearchHeader} from '../screens/SearchScreen/Components';
 import {TrendingScreen} from '../screens/SearchScreen/TrendingScreen';
 
@@ -203,7 +203,6 @@ const TabbedFeedNavigator = createMaterialTopTabNavigator(
 		animationEnabled: true,
 		swipeEnabled: true,
 		// lazy: true, // this is missing with createMaterialTopTabNavigator
-		// tabBarComponent: (props: any) => <FeedTabBar navigation={props.navigation} />,
 		tabBarOptions: {
 			activeTintColor: Colors.pink,
 			inactiveTintColor: Colors.background,
@@ -229,12 +228,12 @@ const UserFeedStackNavigator = createStackNavigator(
 		TabbedFeedScreen: {
 			screen: TabbedFeedNavigator,
 			navigationOptions: () => ({
-				// headerRight: (
-				// 	<ScreenHeaderButton
-				// 		onPress={() => navigation.navigate('MessagingScreen')}
-				// 		iconSource={Icons.messagingIcon}
-				// 	/>
-				// ),
+				/*headerRight: (
+					<ScreenHeaderButton
+						onPress={() => navigation.navigate('MessagingScreen')}
+						iconSource={Icons.messagingIcon}
+					/>
+				),*/
 				headerLeft: (
 					<ScreenHeaderButton
 						iconName='md-flame'

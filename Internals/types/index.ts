@@ -6,7 +6,6 @@ export * from './popup';
 export * from './global';
 export * from './confirmation';
 export * from './comments';
-export * from './navigation';
 
 // temp
 
