@@ -1,55 +1,51 @@
-import {OS_TYPES} from 'consts';
 import React from 'react';
-import {Keyboard, Platform, View} from 'react-native';
-import {ModalManager} from './manager';
+import {Platform} from 'react-native';
 
-export interface IManagedModal {
+import {OS_TYPES} from 'consts';
+import {ModalManager} from 'hoc';
+
+interface IManagedModal {
 	onDismiss: () => void;
 	onModalHide: () => void;
 }
 
-interface IManagedModalProps {
+interface IWithManagedTransitionsProps {
+	modalVisible: boolean;
 	afterDismiss?: () => void;
-	visiblePropName?: string;
+
+	children(props: IManagedModal): JSX.Element;
 }
 
-export const withManagedTransitions = (CustomModal: any) => {
-	return class extends React.Component<IManagedModalProps> {
-		public static getDerivedStateFromProps(nextProps: IManagedModalProps) {
-			const visiblePropName = nextProps.visiblePropName;
-			if (nextProps[visiblePropName]) {
-				ModalManager.toggleModalShow(true);
-			}
-			return null;
+export class WithManagedTransitions extends React.Component<IWithManagedTransitionsProps> {
+	public componentDidUpdate(prevProps: Readonly<IWithManagedTransitionsProps>): void {
+		if (!prevProps.modalVisible && this.props.modalVisible) {
+			ModalManager.toggleModalShow(true);
 		}
+	}
 
-		private static defaultProps: Partial<IManagedModalProps> = {
-			visiblePropName: 'visible',
-		};
+	public render() {
+		return this.props.children({
+			onDismiss: this.onDismiss,
+			onModalHide: this.onModalHide,
+		});
+	}
 
-		public state = {};
-
-		public render() {
-			return <CustomModal {...this.props} onDismiss={this.onDismiss} onModalHide={this.onModalHide} />;
-		}
-
-		private onDismiss = () => {
-			if (Platform.OS === OS_TYPES.IOS) {
-				this.runAfterDismiss();
-			}
-		}
-
-		private onModalHide = () => {
-			if (Platform.OS === OS_TYPES.Android) {
-				this.runAfterDismiss();
-			}
-		}
-
-		private runAfterDismiss = () => {
-			ModalManager.toggleModalShow(false);
-			if (this.props.afterDismiss) {
-				this.props.afterDismiss();
-			}
+	private onDismiss = () => {
+		if (Platform.OS === OS_TYPES.IOS) {
+			this.runAfterDismiss();
 		}
 	};
-};
+
+	private onModalHide = () => {
+		if (Platform.OS === OS_TYPES.Android) {
+			this.runAfterDismiss();
+		}
+	};
+
+	private runAfterDismiss = () => {
+		ModalManager.toggleModalShow(false);
+		if (this.props.afterDismiss) {
+			this.props.afterDismiss();
+		}
+	};
+}

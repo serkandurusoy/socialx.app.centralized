@@ -1,10 +1,11 @@
-import {OS_TYPES} from 'consts';
-import {IManagedModal, withManagedTransitions} from 'hoc/ManagedModal';
 import React from 'react';
-import {Platform, ScrollView, Text, Tou, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Platform, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import {OS_TYPES} from 'consts';
+import {WithManagedTransitions} from 'hoc';
 import style from './style';
 
 export interface IShareOption {
@@ -49,7 +50,7 @@ export const SHARE_YOUTUBE: IShareOption = {
 	key: 'youtube',
 };
 
-interface IModalExternalShareOptionsProps extends IManagedModal {
+interface IModalExternalShareOptionsProps {
 	visible: boolean;
 	closeHandler: Func;
 	enabledShareOptions: IShareOption[];
@@ -57,11 +58,17 @@ interface IModalExternalShareOptionsProps extends IManagedModal {
 	onOptionSelected: (option: IShareOption) => void;
 }
 
-const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> = (props) => {
+export const ModalExternalShareOptions: React.SFC<IModalExternalShareOptionsProps> = ({
+	visible,
+	closeHandler,
+	enabledShareOptions,
+	hideLabel,
+	onOptionSelected,
+}) => {
 	const renderOSBlurView = () => {
 		if (Platform.OS === OS_TYPES.IOS) {
 			return (
-				<TouchableWithoutFeedback onPress={props.closeHandler}>
+				<TouchableWithoutFeedback onPress={closeHandler}>
 					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
 				</TouchableWithoutFeedback>
 			);
@@ -76,7 +83,7 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 			numberOfRows: 1,
 			itemsInRow: 3,
 		};
-		const numberOfShareOptions = props.enabledShareOptions.length;
+		const numberOfShareOptions = enabledShareOptions.length;
 		if (numberOfShareOptions === 4) {
 			ret = {
 				numberOfRows: 2,
@@ -98,12 +105,12 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 		const ret = [];
 		for (let i = 0; i < layoutProps.itemsInRow; i++) {
 			const buttonIndex = rowNumber * layoutProps.itemsInRow + i;
-			if (buttonIndex < props.enabledShareOptions.length) {
-				const shareButton = props.enabledShareOptions[buttonIndex];
+			if (buttonIndex < enabledShareOptions.length) {
+				const shareButton = enabledShareOptions[buttonIndex];
 				ret.push(
-					<TouchableOpacity key={i} style={style.buttonLayout} onPress={() => props.onOptionSelected(shareButton)}>
+					<TouchableOpacity key={i} style={style.buttonLayout} onPress={() => onOptionSelected(shareButton)}>
 						<Icon name={shareButton.icon} style={style.buttonIcon} />
-						{!props.hideLabel ? <Text style={style.buttonLabel}>{shareButton.label}</Text> : null}
+						{!hideLabel ? <Text style={style.buttonLabel}>{shareButton.label}</Text> : null}
 					</TouchableOpacity>,
 				);
 			} else if (layoutProps.numberOfRows > 1) {
@@ -114,25 +121,27 @@ const ModalExternalShareOptionsSFC: React.SFC<IModalExternalShareOptionsProps> =
 	};
 
 	return (
-		<Modal
-			onDismiss={props.onDismiss}
-			onModalHide={props.onModalHide}
-			isVisible={props.visible}
-			backdropOpacity={backDropOpacity}
-			style={style.container}
-			onBackButtonPress={props.closeHandler}
-			onBackdropPress={props.closeHandler}
-		>
-			{renderOSBlurView()}
-			<View style={style.boxContainer}>
-				{[...Array(layoutProps.numberOfRows).keys()].map((i) => (
-					<View style={style.rowContainer} key={i}>
-						{renderOneRowWithButtons(i)}
+		<WithManagedTransitions modalVisible={visible}>
+			{({onDismiss, onModalHide}) => (
+				<Modal
+					onDismiss={onDismiss}
+					onModalHide={onModalHide}
+					isVisible={visible}
+					backdropOpacity={backDropOpacity}
+					style={style.container}
+					onBackButtonPress={closeHandler}
+					onBackdropPress={closeHandler}
+				>
+					{renderOSBlurView()}
+					<View style={style.boxContainer}>
+						{[...Array(layoutProps.numberOfRows).keys()].map((i) => (
+							<View style={style.rowContainer} key={i}>
+								{renderOneRowWithButtons(i)}
+							</View>
+						))}
 					</View>
-				))}
-			</View>
-		</Modal>
+				</Modal>
+			)}
+		</WithManagedTransitions>
 	);
 };
-
-export const ModalExternalShareOptions = withManagedTransitions(ModalExternalShareOptionsSFC);

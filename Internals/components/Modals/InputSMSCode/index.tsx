@@ -6,14 +6,14 @@ import {compose} from 'recompose';
 
 import {TKeyboardKeys} from 'components';
 import {OS_TYPES} from 'consts';
-import {IManagedModal, withManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
+import {WithManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
 const NUMBER_OF_DIGITS = 6;
 
-export interface IModalInputSMSCodeComponentProps extends IManagedModal, IWithTranslationProps {
+export interface IModalInputSMSCodeComponentProps extends IWithTranslationProps {
 	visible: boolean;
 	phoneNumber: string;
 	errorMessage?: string;
@@ -28,18 +28,7 @@ export interface IWithSMSCodeProps extends IModalInputSMSCodeComponentProps {
 }
 
 const ModalInputSMSCodeComponent: React.SFC<FormikProps<IWithSMSCodeProps>> = ({
-	values: {
-		visible,
-		phoneNumber,
-		errorMessage,
-		declineHandler,
-		resendHandler,
-		onDismiss,
-		onModalHide,
-		smsCode,
-		getText,
-		resendingCode,
-	},
+	values: {visible, phoneNumber, errorMessage, declineHandler, resendHandler, smsCode, getText, resendingCode},
 	isValid,
 	handleSubmit,
 	setFieldTouched,
@@ -47,62 +36,70 @@ const ModalInputSMSCodeComponent: React.SFC<FormikProps<IWithSMSCodeProps>> = ({
 }) => (
 	<WithResizeOnKeyboardShow>
 		{({marginBottom}) => (
-			<Modal
-				onDismiss={onDismiss}
-				onModalHide={onModalHide}
-				isVisible={visible}
-				backdropOpacity={0.7}
-				animationIn={'zoomIn'}
-				animationOut={'zoomOut'}
-				onBackdropPress={declineHandler}
-				style={[style.container, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}
-			>
-				<View style={style.boxContainer}>
-					<Text style={style.title}>{getText('modal.sms.code.title')}</Text>
-					<View style={style.borderContainer}>
-						<Text style={style.message}>{`${getText('modal.sms.code.type.code.message')} ${phoneNumber}`}</Text>
-						<View style={style.inputCellsContainer}>
-							<TextInput
-								style={[style.codeInput, style.inputText]}
-								placeholder={'123456'}
-								keyboardType={TKeyboardKeys.numeric}
-								maxLength={6}
-								autoFocus={true}
-								onChangeText={(value: string) => {
-									setFieldValue('smsCode', value);
-									setFieldTouched('smsCode');
-								}}
-								underlineColorAndroid={Colors.transparent}
-							>
-								<Text style={style.inputText}>{smsCode}</Text>
-							</TextInput>
+			<WithManagedTransitions modalVisible={visible}>
+				{({onDismiss, onModalHide}) => (
+					<Modal
+						onDismiss={onDismiss}
+						onModalHide={onModalHide}
+						isVisible={visible}
+						backdropOpacity={0.7}
+						animationIn={'zoomIn'}
+						animationOut={'zoomOut'}
+						onBackdropPress={declineHandler}
+						style={[style.container, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}
+					>
+						<View style={style.boxContainer}>
+							<Text style={style.title}>{getText('modal.sms.code.title')}</Text>
+							<View style={style.borderContainer}>
+								<Text style={style.message}>{`${getText('modal.sms.code.type.code.message')} ${phoneNumber}`}</Text>
+								<View style={style.inputCellsContainer}>
+									<TextInput
+										style={[style.codeInput, style.inputText]}
+										placeholder={'123456'}
+										keyboardType={TKeyboardKeys.numeric}
+										maxLength={6}
+										autoFocus={true}
+										onChangeText={(value: string) => {
+											setFieldValue('smsCode', value);
+											setFieldTouched('smsCode');
+										}}
+										underlineColorAndroid={Colors.transparent}
+									>
+										<Text style={style.inputText}>{smsCode}</Text>
+									</TextInput>
+								</View>
+							</View>
+							{errorMessage && <Text style={style.errorMessage}>{errorMessage}</Text>}
+							<View style={style.buttonsContainer}>
+								<TouchableOpacity
+									style={[style.button, resendingCode ? style.disabledButton : {}]}
+									onPress={resendHandler}
+									disabled={resendingCode}
+								>
+									<Text style={[style.buttonText, style.buttonTextConfirm]}>
+										{getText('modal.sms.code.resend.button')}
+									</Text>
+								</TouchableOpacity>
+								{resendingCode && (
+									<ActivityIndicator size='small' color={Colors.grayText} style={style.activityResend} />
+								)}
+							</View>
+							<View style={style.buttonsContainer}>
+								<TouchableOpacity style={[style.button, style.leftButton, style.flexButton]} onPress={declineHandler}>
+									<Text style={[style.buttonText, style.buttonTextCancel]}>{getText('button.CANCEL')}</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={[style.button, style.flexButton, !isValid ? style.disabledButton : {}]}
+									onPress={handleSubmit}
+									disabled={!isValid}
+								>
+									<Text style={[style.buttonText, style.buttonTextConfirm]}>{getText('button.OK')}</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
-					</View>
-					{errorMessage && <Text style={style.errorMessage}>{errorMessage}</Text>}
-					<View style={style.buttonsContainer}>
-						<TouchableOpacity
-							style={[style.button, resendingCode ? style.disabledButton : {}]}
-							onPress={resendHandler}
-							disabled={resendingCode}
-						>
-							<Text style={[style.buttonText, style.buttonTextConfirm]}>{getText('modal.sms.code.resend.button')}</Text>
-						</TouchableOpacity>
-						{resendingCode && <ActivityIndicator size='small' color={Colors.grayText} style={style.activityResend} />}
-					</View>
-					<View style={style.buttonsContainer}>
-						<TouchableOpacity style={[style.button, style.leftButton, style.flexButton]} onPress={declineHandler}>
-							<Text style={[style.buttonText, style.buttonTextCancel]}>{getText('button.CANCEL')}</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={[style.button, style.flexButton, !isValid ? style.disabledButton : {}]}
-							onPress={handleSubmit}
-							disabled={!isValid}
-						>
-							<Text style={[style.buttonText, style.buttonTextConfirm]}>{getText('button.OK')}</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</Modal>
+					</Modal>
+				)}
+			</WithManagedTransitions>
 		)}
 	</WithResizeOnKeyboardShow>
 );
@@ -125,6 +122,5 @@ const formikSettings = {
 
 export const ModalInputSMSCode = compose(
 	withTranslations,
-	withManagedTransitions,
 	withFormik(formikSettings),
 )(ModalInputSMSCodeComponent as any);

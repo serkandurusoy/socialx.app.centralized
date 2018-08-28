@@ -5,12 +5,11 @@ import * as Animatable from 'react-native-animatable';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
 
-import {SXButton} from 'components';
+import {SXButton, TKeyboardKeys, WalletInputField} from 'components';
 import {OS_TYPES} from 'consts';
-import {IManagedModal, withManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
+import {WithManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors, Icons} from 'theme';
 import {IUserQuery} from 'types';
-import {TKeyboardKeys, WalletInputField} from '../../Inputs';
 import style from './style';
 
 const PAGE_TEXTS = {
@@ -38,7 +37,7 @@ const DELAY_BEFORE_DOWNLOAD_START = 1000;
 
 const SOCX_WALLET_AMOUNT_FORMAT = '0,0';
 
-interface IModalWalletProps extends IManagedModal {
+interface IModalWalletProps {
 	visible: boolean;
 	blurViewRef: any;
 	onCloseButton: () => void;
@@ -57,7 +56,7 @@ interface IModalWalletState {
 	visible: boolean;
 }
 
-class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletState> {
+export class ModalWallet extends Component<IModalWalletProps, IModalWalletState> {
 	public static getDerivedStateFromProps(
 		nextProps: Readonly<IModalWalletProps>,
 		prevState: Readonly<IModalWalletState>,
@@ -103,56 +102,60 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 		const amountToSendWithFormat = numeral(this.props.sendSocXAmount).format(SOCX_WALLET_AMOUNT_FORMAT);
 
 		return (
-			<Modal
-				onDismiss={this.props.onDismiss}
-				onModalHide={this.props.onModalHide}
-				isVisible={this.state.visible}
-				backdropOpacity={0}
-				style={style.container}
-			>
-				<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
-				<WithResizeOnKeyboardShow>
-					{({marginBottom}) => (
-						<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
-							<View style={style.boxContainer}>
-								<TouchableOpacity style={style.closeModalButtonContainer} onPress={this.props.onCloseButton}>
-									<Image source={Icons.iconModalClose} />
-								</TouchableOpacity>
-								<View style={style.topContainer}>
-									<View style={style.socialXIconContainer}>
-										<Image source={Icons.socxCoinIcon} style={style.socialXIcon} />
-									</View>
-									<Text style={style.topText}>
-										{myCoinsWithFormat}
-										{PAGE_TEXTS.title}
-									</Text>
-								</View>
+			<WithManagedTransitions modalVisible={this.state.visible}>
+				{({onDismiss, onModalHide}) => (
+					<Modal
+						onDismiss={onDismiss}
+						onModalHide={onModalHide}
+						isVisible={this.state.visible}
+						backdropOpacity={0}
+						style={style.container}
+					>
+						<BlurView style={style.blurView} viewRef={this.props.blurViewRef} blurType='dark' blurAmount={2} />
+						<WithResizeOnKeyboardShow>
+							{({marginBottom}) => (
+								<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
+									<View style={style.boxContainer}>
+										<TouchableOpacity style={style.closeModalButtonContainer} onPress={this.props.onCloseButton}>
+											<Image source={Icons.iconModalClose} />
+										</TouchableOpacity>
+										<View style={style.topContainer}>
+											<View style={style.socialXIconContainer}>
+												<Image source={Icons.socxCoinIcon} style={style.socialXIcon} />
+											</View>
+											<Text style={style.topText}>
+												{myCoinsWithFormat}
+												{PAGE_TEXTS.title}
+											</Text>
+										</View>
 
-								<WalletInputField
-									disabled={true}
-									value={amountToSendWithFormat}
-									label={PAGE_TEXTS.sendField.label}
-									rightLabel={PAGE_TEXTS.sendField.rightLabel}
-								/>
-								<WalletInputField
-									disabled={true}
-									value={this.props.destinationUser.userId}
-									label={PAGE_TEXTS.destoField.label}
-									rightLabel={PAGE_TEXTS.destoField.rightLabel}
-								/>
-								<WalletInputField
-									value={this.state.gas}
-									keyboardType={TKeyboardKeys.numeric}
-									label={PAGE_TEXTS.feesGas.label}
-									rightLabel={PAGE_TEXTS.feesGas.rightLabel}
-									updateTextInput={this.updateFeeText}
-								/>
-								<View style={style.sendButtonContainer}>{this.conditionalRendering()}</View>
-							</View>
-						</View>
-					)}
-				</WithResizeOnKeyboardShow>
-			</Modal>
+										<WalletInputField
+											disabled={true}
+											value={amountToSendWithFormat}
+											label={PAGE_TEXTS.sendField.label}
+											rightLabel={PAGE_TEXTS.sendField.rightLabel}
+										/>
+										<WalletInputField
+											disabled={true}
+											value={this.props.destinationUser.userId}
+											label={PAGE_TEXTS.destoField.label}
+											rightLabel={PAGE_TEXTS.destoField.rightLabel}
+										/>
+										<WalletInputField
+											value={this.state.gas}
+											keyboardType={TKeyboardKeys.numeric}
+											label={PAGE_TEXTS.feesGas.label}
+											rightLabel={PAGE_TEXTS.feesGas.rightLabel}
+											updateTextInput={this.updateFeeText}
+										/>
+										<View style={style.sendButtonContainer}>{this.conditionalRendering()}</View>
+									</View>
+								</View>
+							)}
+						</WithResizeOnKeyboardShow>
+					</Modal>
+				)}
+			</WithManagedTransitions>
 		);
 	}
 
@@ -198,5 +201,3 @@ class ModalWalletComponent extends Component<IModalWalletProps, IModalWalletStat
 		this.setState({gas: text});
 	};
 }
-
-export const ModalWallet = withManagedTransitions(ModalWalletComponent);

@@ -6,7 +6,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 
 import {SXTextInput} from 'components';
 import {OS_TYPES} from 'consts';
-import {withManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
+import {WithManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors, Icons} from 'theme';
 import style from './style';
 
@@ -14,8 +14,6 @@ export interface IModalReportProblemComponentProps {
 	visible: boolean;
 	confirmHandler: (data: IReportData) => void;
 	declineHandler: () => void;
-	onModalHide: () => void;
-	onDismiss: () => void;
 	pickerOptions: any;
 }
 
@@ -33,7 +31,7 @@ const REPORT_REASONS = [
 	'Some very long reason goes here. Should display in more lines',
 ];
 
-class ModalReportProblemComponent extends Component<
+export class ModalReportProblem extends Component<
 	IModalReportProblemComponentProps,
 	IModalReportProblemComponentState
 > {
@@ -44,69 +42,73 @@ class ModalReportProblemComponent extends Component<
 
 	public render() {
 		const backDropOpacity = Platform.OS === OS_TYPES.IOS ? 0 : 0.7;
-
+		const {visible, confirmHandler, declineHandler} = this.props;
 		return (
-			<Modal
-				onDismiss={this.props.onDismiss}
-				onModalHide={this.props.onModalHide}
-				isVisible={this.props.visible}
-				backdropOpacity={backDropOpacity}
-				animationIn={'slideInDown'}
-				animationOut={'slideOutUp'}
-				style={style.container}
-			>
-				{this.renderOSBlurView()}
-				<WithResizeOnKeyboardShow>
-					{({marginBottom}) => (
-						<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
-							<View style={style.boxContainer}>
-								<View style={style.titleContainer}>
-									<Text style={style.title}>{'Report a Problem'}</Text>
-								</View>
-
-								<View style={style.inputContainer}>
-									<View style={style.pickerContainer}>
-										<View style={style.iconContainer}>
-											<Image source={Icons.iconDropDown} style={style.icon} resizeMode={'contain'} />
+			<WithManagedTransitions modalVisible={visible}>
+				{({onDismiss, onModalHide}) => (
+					<Modal
+						onDismiss={onDismiss}
+						onModalHide={onModalHide}
+						isVisible={visible}
+						backdropOpacity={backDropOpacity}
+						animationIn={'slideInDown'}
+						animationOut={'slideOutUp'}
+						style={style.container}
+					>
+						{this.renderOSBlurView()}
+						<WithResizeOnKeyboardShow>
+							{({marginBottom}) => (
+								<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
+									<View style={style.boxContainer}>
+										<View style={style.titleContainer}>
+											<Text style={style.title}>{'Report a Problem'}</Text>
 										</View>
-										<ModalDropdown
-											keyboardShouldPersistTaps={'handled'}
-											style={style.pickerStyle}
-											dropdownStyle={style.dropdownStyle}
-											dropdownTextStyle={style.dropdownTextStyle}
-											textStyle={style.dropdownTextStyle}
-											options={REPORT_REASONS}
-											defaultValue={REPORT_REASONS[0]}
-											onSelect={this.setNewSelection}
-										/>
-									</View>
 
-									<View style={style.descriptionContainer}>
-										<SXTextInput
-											autoCapitalize={'sentences'}
-											autoCorrect={true}
-											numberOfLines={3}
-											borderColor={Colors.dustWhite}
-											placeholder={'Describe your Report'}
-											onChangeText={this.updateReportDescription}
-											blurOnSubmit={false}
-										/>
+										<View style={style.inputContainer}>
+											<View style={style.pickerContainer}>
+												<View style={style.iconContainer}>
+													<Image source={Icons.iconDropDown} style={style.icon} resizeMode={'contain'} />
+												</View>
+												<ModalDropdown
+													keyboardShouldPersistTaps={'handled'}
+													style={style.pickerStyle}
+													dropdownStyle={style.dropdownStyle}
+													dropdownTextStyle={style.dropdownTextStyle}
+													textStyle={style.dropdownTextStyle}
+													options={REPORT_REASONS}
+													defaultValue={REPORT_REASONS[0]}
+													onSelect={this.setNewSelection}
+												/>
+											</View>
+
+											<View style={style.descriptionContainer}>
+												<SXTextInput
+													autoCapitalize={'sentences'}
+													autoCorrect={true}
+													numberOfLines={3}
+													borderColor={Colors.dustWhite}
+													placeholder={'Describe your Report'}
+													onChangeText={this.updateReportDescription}
+													blurOnSubmit={false}
+												/>
+											</View>
+										</View>
+
+										<View style={style.buttonsContainer}>
+											<TouchableOpacity style={[style.button, style.leftButton]} onPress={declineHandler}>
+												<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
+											</TouchableOpacity>
+											<TouchableOpacity style={style.button} onPress={() => confirmHandler(this.state)}>
+												<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Send'}</Text>
+											</TouchableOpacity>
+										</View>
 									</View>
 								</View>
-
-								<View style={style.buttonsContainer}>
-									<TouchableOpacity style={[style.button, style.leftButton]} onPress={this.props.declineHandler}>
-										<Text style={[style.buttonText, style.buttonTextCancel]}>{'Cancel'}</Text>
-									</TouchableOpacity>
-									<TouchableOpacity style={style.button} onPress={() => this.props.confirmHandler(this.state)}>
-										<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Send'}</Text>
-									</TouchableOpacity>
-								</View>
-							</View>
-						</View>
-					)}
-				</WithResizeOnKeyboardShow>
-			</Modal>
+							)}
+						</WithResizeOnKeyboardShow>
+					</Modal>
+				)}
+			</WithManagedTransitions>
 		);
 	}
 
@@ -131,5 +133,3 @@ class ModalReportProblemComponent extends Component<
 		this.setState({description: text});
 	};
 }
-
-export const ModalReportProblem = withManagedTransitions(ModalReportProblemComponent);

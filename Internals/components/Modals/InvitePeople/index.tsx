@@ -1,7 +1,6 @@
 // TODO: this is not used, only in storybook! keep it here for later reference!
 
 import {OS_TYPES} from 'consts';
-import {withManagedTransitions} from 'hoc/ManagedModal';
 import React, {Component} from 'react';
 import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
@@ -21,11 +20,9 @@ interface IModalInvitePeopleProps {
 	selectedUsers: string[];
 	onSearchUpdated: (term: string) => void;
 	selectNewUserForGroup: (userId: string) => void;
-	onDismiss: () => void;
-	onModalHide: () => void;
 }
 
-const ModalInvitePeopleComponent = (props: IModalInvitePeopleProps) => {
+export const ModalInvitePeople = (props: IModalInvitePeopleProps) => {
 	const resizableStyles = [
 		style.keyboardView,
 		// ...(Platform.OS === OS_TYPES.IOS ? [{marginBottom: props.marginBottom}] : []), // make resizable when used!
@@ -33,8 +30,8 @@ const ModalInvitePeopleComponent = (props: IModalInvitePeopleProps) => {
 
 	return (
 		<Modal
-			onDismiss={props.onDismiss}
-			onModalHide={props.onModalHide}
+			// onDismiss={props.onDismiss}
+			// onModalHide={props.onModalHide} // make this managed, as other modals
 			isVisible={props.visible}
 			backdropOpacity={0}
 			animationIn={'slideInRight'}
@@ -88,5 +85,3 @@ const ModalInvitePeopleComponent = (props: IModalInvitePeopleProps) => {
 		</Modal>
 	);
 };
-
-export const ModalInvitePeople = withManagedTransitions(ModalInvitePeopleComponent);

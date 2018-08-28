@@ -1,10 +1,11 @@
-import {ShareOptionsButton} from 'components';
-import {OS_TYPES} from 'consts';
-import {IManagedModal, withManagedTransitions} from 'hoc/ManagedModal';
 import React from 'react';
-import {Platform, ScrollView, Tou, TouchableWithoutFeedback, View} from 'react-native';
+import {Platform, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
 import Modal from 'react-native-modal';
+
+import {ShareOptionsButton} from 'components';
+import {OS_TYPES} from 'consts';
+import {WithManagedTransitions} from 'hoc';
 import {Icons} from 'theme';
 import style from './style';
 
@@ -28,7 +29,7 @@ const RenderOSBlurView: React.SFC<IRenderOSBlurViewProps> = ({closeHandler}) =>
 		</TouchableWithoutFeedback>
 	) : null;
 
-interface IModalShareOptionsProps extends IManagedModal {
+interface IModalShareOptionsProps {
 	visible: boolean;
 	walletHandlerPressed: Func;
 	cameraHandlerPressed: Func;
@@ -39,54 +40,61 @@ interface IModalShareOptionsProps extends IManagedModal {
 	closeHandler: Func;
 }
 
-const ModalShareOptionsSFC: React.SFC<IModalShareOptionsProps> = (props) => (
-	<Modal
-		onDismiss={props.onDismiss}
-		onModalHide={props.onModalHide}
-		isVisible={props.visible}
-		backdropOpacity={Platform.OS === OS_TYPES.IOS ? 0 : 0.7}
-		style={style.container}
-		onBackButtonPress={props.closeHandler}
-		onBackdropPress={props.closeHandler}
-	>
-		<RenderOSBlurView closeHandler={props.closeHandler} />
-		<View style={style.boxContainer}>
-			<View style={style.rowContainer}>
-				<ShareOptionsButton
-					iconSource={Icons.iconWallet}
-					onPress={props.walletHandlerPressed}
-					label={BUTTON_NAMES.wallet}
-				/>
-				<ShareOptionsButton
-					iconSource={Icons.iconCamera}
-					onPress={props.cameraHandlerPressed}
-					label={BUTTON_NAMES.camera}
-				/>
-				<ShareOptionsButton
-					iconSource={Icons.iconShareMedia}
-					onPress={props.mediaHandlerPressed}
-					label={BUTTON_NAMES.media}
-				/>
-			</View>
-			<View style={style.rowContainer}>
-				<ShareOptionsButton
-					iconSource={Icons.iconSound}
-					onPress={props.audioHandlerPressed}
-					label={BUTTON_NAMES.audio}
-				/>
-				<ShareOptionsButton
-					iconSource={Icons.iconLocation}
-					onPress={props.locationHandlerPressed}
-					label={BUTTON_NAMES.location}
-				/>
-				<ShareOptionsButton
-					iconSource={Icons.iconPerson}
-					onPress={props.contactHandlerPressed}
-					label={BUTTON_NAMES.contact}
-				/>
-			</View>
-		</View>
-	</Modal>
+export const ModalShareOptions: React.SFC<IModalShareOptionsProps> = ({
+	visible,
+	walletHandlerPressed,
+	cameraHandlerPressed,
+	mediaHandlerPressed,
+	audioHandlerPressed,
+	locationHandlerPressed,
+	contactHandlerPressed,
+	closeHandler,
+}) => (
+	<WithManagedTransitions modalVisible={visible}>
+		{({onModalHide, onDismiss}) => (
+			<Modal
+				onDismiss={onDismiss}
+				onModalHide={onModalHide}
+				isVisible={visible}
+				backdropOpacity={Platform.OS === OS_TYPES.IOS ? 0 : 0.7}
+				style={style.container}
+				onBackButtonPress={closeHandler}
+				onBackdropPress={closeHandler}
+			>
+				<RenderOSBlurView closeHandler={closeHandler} />
+				<View style={style.boxContainer}>
+					<View style={style.rowContainer}>
+						<ShareOptionsButton
+							iconSource={Icons.iconWallet}
+							onPress={walletHandlerPressed}
+							label={BUTTON_NAMES.wallet}
+						/>
+						<ShareOptionsButton
+							iconSource={Icons.iconCamera}
+							onPress={cameraHandlerPressed}
+							label={BUTTON_NAMES.camera}
+						/>
+						<ShareOptionsButton
+							iconSource={Icons.iconShareMedia}
+							onPress={mediaHandlerPressed}
+							label={BUTTON_NAMES.media}
+						/>
+					</View>
+					<View style={style.rowContainer}>
+						<ShareOptionsButton iconSource={Icons.iconSound} onPress={audioHandlerPressed} label={BUTTON_NAMES.audio} />
+						<ShareOptionsButton
+							iconSource={Icons.iconLocation}
+							onPress={locationHandlerPressed}
+							label={BUTTON_NAMES.location}
+						/>
+						<ShareOptionsButton
+							iconSource={Icons.iconPerson}
+							onPress={contactHandlerPressed}
+							label={BUTTON_NAMES.contact}
+						/>
+					</View>
+				</View>
+			</Modal>
+		)}
+	</WithManagedTransitions>
 );
-
-export const ModalShareOptions = withManagedTransitions(ModalShareOptionsSFC);
