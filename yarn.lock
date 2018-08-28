@@ -814,9 +814,9 @@
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-native-orientation/-/react-native-orientation-5.0.1.tgz#347f7041683249f9ca7386717aa4dd66b394d3fb"
 
-"@types/react-native-snap-carousel@^3.6.0":
-  version "3.6.3"
-  resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.6.3.tgz#1d6fc05999fb887783675b4f1cd2582bd9f19c1a"
+"@types/react-native-snap-carousel@^3.7.0":
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.7.0.tgz#e18592285ab8232aa5016b54ffb606ffc413db1d"
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"
@@ -10106,7 +10106,7 @@ react-native-smart-splash-screen@^2.3.5:
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/react-native-smart-splash-screen/-/react-native-smart-splash-screen-2.3.5.tgz#68a1e45bfd708678aa12e65f2ba997ac5c1292a0"
 
-react-native-snap-carousel@^3.6.0:
+react-native-snap-carousel@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.7.2.tgz#da94f7b16076ec055c0980d169d1f85eef852d03"
   dependencies:

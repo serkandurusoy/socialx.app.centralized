@@ -97,7 +97,7 @@ export default class MediaViewerScreenComponent extends Component<
 						activeSlide={this.state.activeSlide}
 						data={this.props.mediaObjects}
 						renderItem={(item) =>
-							getCarouselItem(item, this.state.viewport.width, this.state.activeSlide, this.toggleInfoButtonHandler)
+							getCarouselItem(item, this.state.viewport.width, this.state.activeSlide)
 						}
 						sliderWidth={this.state.viewport.width}
 						itemWidth={this.state.viewport.width}
