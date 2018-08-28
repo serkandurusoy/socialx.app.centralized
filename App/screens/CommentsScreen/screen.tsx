@@ -4,7 +4,7 @@ import {compose} from 'recompose';
 
 import {CommentCard, CommentTextInput, WallPostMedia} from 'components';
 import {OS_TYPES} from 'consts';
-import {IWithLoaderProps, IWithResizeOnKeyboardShowProps, withInlineLoader, withResizeOnKeyboardShow} from 'hoc';
+import {IWithLoaderProps, IWithResizeOnKeyboardShowProps, WithInlineLoader, withResizeOnKeyboardShow} from 'hoc';
 import {IMediaProps, IUserQuery, IWallPostComment} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 
@@ -69,6 +69,7 @@ const CommentsScreenComponent: React.SFC<ICommentsScreenComponentProps> = ({
 	getCommentContainerWidth,
 	commentLikesPosition,
 	optionsProps,
+	isLoading,
 }) => {
 	const containerStyles = [style.container, ...(Platform.OS === OS_TYPES.IOS ? [{marginBottom}] : [])];
 	const {id, likes, media, numberOfLikes, text, timestamp} = postData;
@@ -76,61 +77,62 @@ const CommentsScreenComponent: React.SFC<ICommentsScreenComponentProps> = ({
 
 	return (
 		<SafeAreaView style={containerStyles}>
-			<ScrollView
-				style={style.commentsList}
-				keyboardShouldPersistTaps='handled'
-				ref={scrollRef}
-				onLayout={() => scrollRef.current && scrollRef.current.scrollToEnd()}
-			>
-				<PostOwner
-					owner={postOwner}
-					timestamp={timestamp}
-					onBackPress={onCommentsBackPress}
-					optionsProps={optionsProps}
-				/>
-				{text ? <PostText text={text} /> : null}
-				{media && (
-					<WallPostMedia
-						mediaObjects={media}
-						onMediaObjectView={(index: number) => onImagePress(index, media)}
-						// onLikeButtonPressed={this.onDoubleTapLikeHandler}
-						noInteraction={false}
+			<WithInlineLoader isLoading={isLoading}>
+				<ScrollView
+					style={style.commentsList}
+					keyboardShouldPersistTaps='handled'
+					ref={scrollRef}
+					onLayout={() => scrollRef.current && scrollRef.current.scrollToEnd()}
+				>
+					<PostOwner
+						owner={postOwner}
+						timestamp={timestamp}
+						onBackPress={onCommentsBackPress}
+						optionsProps={optionsProps}
 					/>
-				)}
-				<PostLikes getText={getText} likes={likes} numberOfLikes={numberOfLikes} />
-				<PostActions likedByMe={likedByMe} onLikePress={() => onLikePress(likedByMe, id)} />
-				{noComments ? (
-					<NoComments text={noCommentsText} />
-				) : (
-					comments.map((comment) => (
-						<CommentCard
-							key={comment.id}
-							comment={comment}
-							onCommentLike={() => onCommentLike(comment)}
-							onCommentReply={(startReply: boolean) => onCommentReply(comment, startReply)}
-							onViewUserProfile={onViewUserProfile}
-							requestingLike={!!requestingLikeMap[comment.id]}
-							onShowOptionsMenu={() => onShowOptionsMenu(comment)}
-							getCommentContainerWidth={(width: number) => getCommentContainerWidth(width)}
-							commentLikesPosition={commentLikesPosition}
+					{text ? <PostText text={text} /> : null}
+					{media && (
+						<WallPostMedia
+							mediaObjects={media}
+							onMediaObjectView={(index: number) => onImagePress(index, media)}
+							// onLikeButtonPressed={this.onDoubleTapLikeHandler}
+							noInteraction={false}
 						/>
-					))
-				)}
-			</ScrollView>
-			<CommentTextInput
-				autoFocus={startComment}
-				onCommentSend={onCommentSend}
-				placeholder={commentInputPlaceholder}
-				showSendButton={showSendButton}
-				commentText={commentText}
-				onCommentTextChange={onCommentTextChange}
-			/>
+					)}
+					<PostLikes getText={getText} likes={likes} numberOfLikes={numberOfLikes} />
+					<PostActions likedByMe={likedByMe} onLikePress={() => onLikePress(likedByMe, id)} />
+					{noComments ? (
+						<NoComments text={noCommentsText} />
+					) : (
+						comments.map((comment) => (
+							<CommentCard
+								key={comment.id}
+								comment={comment}
+								onCommentLike={() => onCommentLike(comment)}
+								onCommentReply={(startReply: boolean) => onCommentReply(comment, startReply)}
+								onViewUserProfile={onViewUserProfile}
+								requestingLike={!!requestingLikeMap[comment.id]}
+								onShowOptionsMenu={() => onShowOptionsMenu(comment)}
+								getCommentContainerWidth={(width: number) => getCommentContainerWidth(width)}
+								commentLikesPosition={commentLikesPosition}
+							/>
+						))
+					)}
+				</ScrollView>
+				<CommentTextInput
+					autoFocus={startComment}
+					onCommentSend={onCommentSend}
+					placeholder={commentInputPlaceholder}
+					showSendButton={showSendButton}
+					commentText={commentText}
+					onCommentTextChange={onCommentTextChange}
+				/>
+			</WithInlineLoader>
 		</SafeAreaView>
 	);
 };
 
 export default compose(
-	withInlineLoader,
 	withResizeOnKeyboardShow,
 	withTranslations,
 )(CommentsScreenComponent);

@@ -10,18 +10,16 @@ export interface IWithLoaderProps {
 	spinnerColor?: string;
 }
 
-type BaseType<P> = React.ComponentType<P> | React.SFC<P>;
-
-export const withInlineLoader = <P extends IWithLoaderProps>(BaseComponent: BaseType<P>): React.SFC<P> => (props) => {
-	const {spinnerSize, spinnerColor, spinnerType, isLoading, animatedStyle} = props;
-	return (
-		<React.Fragment>
-			{isLoading && <SpinKitLoader spinnerSize={spinnerSize} spinnerType={spinnerType} spinnerColor={spinnerColor} />}
-			{!isLoading && (
-				<AnimatedOriginalComp animatedStyle={animatedStyle || {flex: 1}}>
-					<BaseComponent {...props} />
-				</AnimatedOriginalComp>
-			)}
-		</React.Fragment>
-	);
-};
+export const WithInlineLoader: React.SFC<IWithLoaderProps> = ({
+	spinnerSize,
+	spinnerColor,
+	spinnerType,
+	isLoading,
+	animatedStyle,
+	children,
+}) => (
+	<React.Fragment>
+		{isLoading && <SpinKitLoader spinnerSize={spinnerSize} spinnerType={spinnerType} spinnerColor={spinnerColor} />}
+		{!isLoading && <AnimatedOriginalComp animatedStyle={animatedStyle || {flex: 1}}>{children}</AnimatedOriginalComp>}
+	</React.Fragment>
+);

@@ -1,10 +1,9 @@
 import React from 'react';
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {compose} from 'recompose';
 
 import {AddFriendsList, CheckboxButtonWithIcon, MediaHorizontalScroller, SharePostInput} from 'components';
-import {IWithLoaderProps, withInlineLoader} from 'hoc';
+import {IWithLoaderProps, WithInlineLoader} from 'hoc';
 import {Colors, Icons} from 'theme';
 import {FriendsSearchResult} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
@@ -109,43 +108,43 @@ const PhotoScreenComponent: React.SFC<IPhotoScreenComponentProps> = ({
 	onShareTextUpdate,
 	onAddMedia,
 	getText,
+	isLoading,
 }) => (
-	<KeyboardAwareScrollView style={style.scrollView} alwaysBounceVertical={true} keyboardShouldPersistTaps={'handled'}>
-		<SharePostInput
-			avatarSource={{uri: avatarURL}}
-			placeholder={getText('photo.screen.share.input.placeholder')}
-			text={shareText}
-			onTextUpdate={onShareTextUpdate}
-		/>
-		<View style={style.photoContainer}>
-			<MediaHorizontalScroller mediaURIs={mediaObjects} />
-		</View>
-		<View style={style.addMediaContainer}>
-			<TouchableOpacity style={style.addMediaButton} onPress={onAddMedia}>
-				<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
-				<Text style={style.addMediaText}>{getText('photo.screen.add.media')}</Text>
-			</TouchableOpacity>
-		</View>
-		<View style={style.paddingContainer}>
-			<LocationSection
-				locationEnabled={locationEnabled}
-				onLocationToggle={onLocationToggle}
-				onLocationTextUpdate={onLocationTextUpdate}
-				checkboxLabel={getText('photo.screen.location.checkbox')}
-				locationLabel={getText('photo.screen.location.small.label')}
+	<WithInlineLoader isLoading={isLoading}>
+		<KeyboardAwareScrollView style={style.scrollView} alwaysBounceVertical={true} keyboardShouldPersistTaps={'handled'}>
+			<SharePostInput
+				avatarSource={{uri: avatarURL}}
+				placeholder={getText('photo.screen.share.input.placeholder')}
+				text={shareText}
+				onTextUpdate={onShareTextUpdate}
 			/>
-			<TagFriendsSection
-				tagFriends={tagFriends}
-				taggedFriends={taggedFriends}
-				onTagFriendsToggle={onTagFriendsToggle}
-				showTagFriendsModal={showTagFriendsModal}
-				checkboxLabel={getText('photo.screen.tag.friends.checkbox')}
-			/>
-		</View>
-	</KeyboardAwareScrollView>
+			<View style={style.photoContainer}>
+				<MediaHorizontalScroller mediaURIs={mediaObjects} />
+			</View>
+			<View style={style.addMediaContainer}>
+				<TouchableOpacity style={style.addMediaButton} onPress={onAddMedia}>
+					<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
+					<Text style={style.addMediaText}>{getText('photo.screen.add.media')}</Text>
+				</TouchableOpacity>
+			</View>
+			<View style={style.paddingContainer}>
+				<LocationSection
+					locationEnabled={locationEnabled}
+					onLocationToggle={onLocationToggle}
+					onLocationTextUpdate={onLocationTextUpdate}
+					checkboxLabel={getText('photo.screen.location.checkbox')}
+					locationLabel={getText('photo.screen.location.small.label')}
+				/>
+				<TagFriendsSection
+					tagFriends={tagFriends}
+					taggedFriends={taggedFriends}
+					onTagFriendsToggle={onTagFriendsToggle}
+					showTagFriendsModal={showTagFriendsModal}
+					checkboxLabel={getText('photo.screen.tag.friends.checkbox')}
+				/>
+			</View>
+		</KeyboardAwareScrollView>
+	</WithInlineLoader>
 );
 
-export default compose(
-	withInlineLoader,
-	withTranslations,
-)(PhotoScreenComponent as any);
+export default withTranslations(PhotoScreenComponent as any);

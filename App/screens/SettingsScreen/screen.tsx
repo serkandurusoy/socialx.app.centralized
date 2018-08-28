@@ -3,7 +3,6 @@ import React from 'react';
 import {ImageSourcePropType, Text, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {compose} from 'recompose';
 import {string} from 'yup';
 
 import {
@@ -15,7 +14,7 @@ import {
 	TKeyboardKeys,
 	TRKeyboardKeys,
 } from 'components';
-import {IWithLoaderProps, withInlineLoader} from 'hoc';
+import {IWithLoaderProps, WithInlineLoader} from 'hoc';
 import {IBlobData} from 'ipfslib';
 import {Colors, Sizes} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
@@ -24,7 +23,7 @@ import style from './style';
 
 const EMAIL_SCHEMA = string().email();
 
-interface ISettingsScreenComponentProps extends IWithLoaderProps, IWithTranslationProps {
+interface ISettingsScreenComponentProps extends IWithTranslationProps {
 	aboutText: string;
 	firstName: string;
 	lastName: string;
@@ -34,6 +33,8 @@ interface ISettingsScreenComponentProps extends IWithLoaderProps, IWithTranslati
 	username: string;
 	onSaveChanges: (values: SettingsData) => Promise<void>;
 }
+
+interface ISettingScreenWithLoaderProps extends ISettingsScreenComponentProps, IWithLoaderProps {}
 
 interface TranslatedSettings extends SettingsData, IWithTranslationProps {}
 
@@ -153,7 +154,7 @@ const SettingsScreenComponent: React.SFC<FormikProps<TranslatedSettings>> = ({
 	</View>
 );
 
-const formikForm = {
+const SettingsForm = withFormik({
 	mapPropsToValues: ({
 		aboutText,
 		firstName,
@@ -195,10 +196,12 @@ const formikForm = {
 		setSubmitting(false);
 		resetForm(values);
 	},
-};
+})(SettingsScreenComponent as any);
 
-export default compose(
-	withInlineLoader,
-	withTranslations,
-	withFormik(formikForm),
-)(SettingsScreenComponent as any);
+const SettingScreenWithLoader: React.SFC<ISettingScreenWithLoaderProps> = (props) => (
+	<WithInlineLoader isLoading={props.isLoading}>
+		<SettingsForm {...props} />
+	</WithInlineLoader>
+);
+
+export default withTranslations(SettingScreenWithLoader as any);

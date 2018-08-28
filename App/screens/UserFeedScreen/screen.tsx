@@ -1,5 +1,5 @@
 import {IWallPostCardProp, SuggestionsCarousel, WallPostCard} from 'components';
-import {IWithLoaderProps, withInlineLoader} from 'hoc/InlineLoader';
+import {IWithLoaderProps, WithInlineLoader} from 'hoc/InlineLoader';
 import React, {Component, RefObject} from 'react';
 import {ActivityIndicator, Animated, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -77,7 +77,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	private scrollY: AnimatedValue = new Animated.Value(0);
 
 	public render() {
-		const {avatarImage, showNewWallPostPage, shareSectionPlaceholder, noPosts} = this.props;
+		const {avatarImage, showNewWallPostPage, shareSectionPlaceholder, noPosts, isLoading} = this.props;
 
 		const shareSectionOpacityInterpolation = this.scrollY.interpolate({
 			inputRange: [0, SHARE_SECTION_HEIGHT / 2, SHARE_SECTION_HEIGHT],
@@ -86,47 +86,49 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 		});
 
 		return (
-			<View style={style.container}>
-				{noPosts ? (
-					<FeedWithNoPosts />
-				) : (
-					<FlatList
-						ListHeaderComponent={
-							shareSectionPlaceholder ? (
-								<ShareSection
-									avatarImage={avatarImage}
-									showNewWallPostPage={showNewWallPostPage}
-									sharePlaceholder={shareSectionPlaceholder}
-									opacity={shareSectionOpacityInterpolation}
-								/>
-							) : null
-						}
-						ref={this.scrollRef}
-						windowSize={10}
-						refreshing={this.props.refreshing}
-						onRefresh={this.props.refreshData}
-						data={this.props.wallPosts}
-						keyExtractor={this.keyExtractor}
-						renderItem={this.renderWallPosts}
-						onEndReached={async () => {
-							if (!this.props.isLoading && this.props.hasMore && !this.state.fetchingMore) {
-								this.setState({fetchingMore: true}, async () => {
-									await this.props.loadMorePosts();
-									this.setState({fetchingMore: false});
-								});
+			<WithInlineLoader isLoading={isLoading}>
+				<View style={style.container}>
+					{noPosts ? (
+						<FeedWithNoPosts />
+					) : (
+						<FlatList
+							ListHeaderComponent={
+								shareSectionPlaceholder ? (
+									<ShareSection
+										avatarImage={avatarImage}
+										showNewWallPostPage={showNewWallPostPage}
+										sharePlaceholder={shareSectionPlaceholder}
+										opacity={shareSectionOpacityInterpolation}
+									/>
+								) : null
 							}
-						}}
-						onEndReachedThreshold={0.5}
-						alwaysBounceVertical={false}
-						keyboardShouldPersistTaps={'handled'}
-						ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
-						onScrollToIndexFailed={() => {}}
-						onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollY}}}])}
-						scrollEventThrottle={16}
-						showsVerticalScrollIndicator={false}
-					/>
-				)}
-			</View>
+							ref={this.scrollRef}
+							windowSize={10}
+							refreshing={this.props.refreshing}
+							onRefresh={this.props.refreshData}
+							data={this.props.wallPosts}
+							keyExtractor={this.keyExtractor}
+							renderItem={this.renderWallPosts}
+							onEndReached={async () => {
+								if (!this.props.isLoading && this.props.hasMore && !this.state.fetchingMore) {
+									this.setState({fetchingMore: true}, async () => {
+										await this.props.loadMorePosts();
+										this.setState({fetchingMore: false});
+									});
+								}
+							}}
+							onEndReachedThreshold={0.5}
+							alwaysBounceVertical={false}
+							keyboardShouldPersistTaps={'handled'}
+							ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
+							onScrollToIndexFailed={() => {}}
+							onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollY}}}])}
+							scrollEventThrottle={16}
+							showsVerticalScrollIndicator={false}
+						/>
+					)}
+				</View>
+			</WithInlineLoader>
 		);
 	}
 
@@ -166,4 +168,4 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 	};
 }
 
-export default withInlineLoader(UserFeedScreen);
+export default UserFeedScreen;

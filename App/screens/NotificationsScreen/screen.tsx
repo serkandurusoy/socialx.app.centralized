@@ -8,7 +8,7 @@ import {
 	GroupRequest,
 	NotificationGI,
 } from 'components';
-import {IWithLoaderProps, withInlineLoader} from 'hoc';
+import {IWithLoaderProps, WithInlineLoader} from 'hoc';
 import {Icons} from 'theme';
 import {NOTIFICATION_TYPES} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
@@ -91,14 +91,14 @@ const ActivityCard: React.SFC<IActivityCardsProps> = ({
 				loading={loadingNotificationCheck.hasOwnProperty(requestId)}
 			/>
 		);
-		// } else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
-		// 	return (
-		// 		<GroupRequest
-		// 			{...activityCardData}
-		// 			onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
-		// 			onGroupDeclined={() => onGroupRequestDeclined(requestId)}
-		// 		/>
-		// 	);
+		/*} else if (activityCardData.type === NOTIFICATION_TYPES.GROUP_REQUEST) {
+			return (
+				<GroupRequest
+					{...activityCardData}
+					onGroupConfirmed={() => onGroupRequestConfirmed(requestId)}
+					onGroupDeclined={() => onGroupRequestDeclined(requestId)}
+				/>
+			);*/
 	} else if (activityCardData.type === NOTIFICATION_TYPES.SUPER_LIKED) {
 		return <ActivitySuperLikedCard {...activityCardData} onThumbPress={onSuperLikedPhotoPressed} />;
 	}
@@ -122,33 +122,36 @@ const NotificationsScreenComponent: React.SFC<INotificationsScreenComponentProps
 	loadingConfirmed,
 	loadingDeclined,
 	loadingNotificationCheck,
+	isLoading,
 }) => (
-	<View style={style.container}>
-		<FlatList
-			data={activityCards}
-			keyExtractor={keyExtractor}
-			renderItem={(data) => (
-				<ActivityCard
-					activityCardData={data.item}
-					onPostThumbPressed={onPostThumbPressed}
-					loadingConfirmed={loadingConfirmed}
-					loadingDeclined={loadingDeclined}
-					onFriendRequestApproved={onFriendRequestApproved}
-					onFriendRequestDeclined={onFriendRequestDeclined}
-					onViewUserProfile={onViewUserProfile}
-					onCheckNotification={onCheckNotification}
-					onSuperLikedPhotoPressed={onSuperLikedPhotoPressed}
-					// onGroupRequestConfirmed={onGroupRequestConfirmed}
-					// onGroupRequestDeclined={onGroupRequestDeclined}
-					loadingNotificationCheck={loadingNotificationCheck}
-				/>
-			)}
-			ListEmptyComponent={<EmptyListComponent />}
-			refreshing={refreshing}
-			onRefresh={refreshData}
-			extraData={{loadingDeclined, loadingConfirmed, loadingNotificationCheck}}
-		/>
-	</View>
+	<WithInlineLoader isLoading={isLoading}>
+		<View style={style.container}>
+			<FlatList
+				data={activityCards}
+				keyExtractor={keyExtractor}
+				renderItem={(data) => (
+					<ActivityCard
+						activityCardData={data.item}
+						onPostThumbPressed={onPostThumbPressed}
+						loadingConfirmed={loadingConfirmed}
+						loadingDeclined={loadingDeclined}
+						onFriendRequestApproved={onFriendRequestApproved}
+						onFriendRequestDeclined={onFriendRequestDeclined}
+						onViewUserProfile={onViewUserProfile}
+						onCheckNotification={onCheckNotification}
+						onSuperLikedPhotoPressed={onSuperLikedPhotoPressed}
+						// onGroupRequestConfirmed={onGroupRequestConfirmed}
+						// onGroupRequestDeclined={onGroupRequestDeclined}
+						loadingNotificationCheck={loadingNotificationCheck}
+					/>
+				)}
+				ListEmptyComponent={<EmptyListComponent />}
+				refreshing={refreshing}
+				onRefresh={refreshData}
+				extraData={{loadingDeclined, loadingConfirmed, loadingNotificationCheck}}
+			/>
+		</View>
+	</WithInlineLoader>
 );
 
-export default withInlineLoader(NotificationsScreenComponent, false);
+export default NotificationsScreenComponent;
