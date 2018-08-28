@@ -1,4 +1,5 @@
-import React, {Component, RefObject} from 'react';
+import {ActionSheet} from 'native-base';
+import React, {Component} from 'react';
 import {Alert, InteractionManager} from 'react-native';
 import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -9,12 +10,19 @@ import {addMediaHoc, createPostHoc, userHoc} from 'backend/graphql';
 import {ModalCloseButton, ScreenHeaderButton} from 'components';
 import {IModalForAddFriendsProps, ModalManager, withModalForAddFriends} from 'hoc';
 import {FriendsSearchResult, IUserDataResponse, WallPostPhotoOptimized} from 'types';
-import {getUserAvatar, IWithTranslationProps, withTranslations} from 'utilities';
-import {addFileBN, addFilesBN} from 'utilities/ipfs';
+import {
+	getCameraMediaObjectMultiple,
+	getGalleryMediaObjectMultiple,
+	getOptimizedMediaObject,
+	getUserAvatar,
+	IWithTranslationProps,
+	MediaUploader,
+	PickerImageMultiple,
+	withTranslations,
+} from 'utilities';
 import PhotoScreenComponent from './screen';
 
 interface WallPostPhoto {
-	media: WallPostPhotoOptimized;
 	title?: string;
 	location?: string;
 	taggedFriends?: FriendsSearchResult[];
@@ -22,7 +30,7 @@ interface WallPostPhoto {
 
 interface IPhotoScreenNavParams {
 	params: {
-		mediaObject: WallPostPhotoOptimized;
+		mediaObjects: WallPostPhotoOptimized[];
 		onSendPress: () => void;
 	};
 }
@@ -34,7 +42,7 @@ interface IPhotoScreenProps extends IModalForAddFriendsProps, IWithTranslationPr
 	addMedia: any;
 	createPost: any;
 	// redux
-	startMediaPost: any;
+	updateUploadProgress: any;
 	startPostAdd: any;
 	stopLoading: any;
 }
@@ -44,6 +52,7 @@ interface IPhotoScreenState {
 	tagFriends: boolean;
 	location: string;
 	shareText: string;
+	mediaObjects: WallPostPhotoOptimized[];
 }
 
 class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
@@ -58,9 +67,8 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		tagFriends: false,
 		location: '',
 		shareText: '',
+		mediaObjects: [...this.props.navigation.state.params.mediaObjects],
 	};
-
-	private photoScreen: RefObject<any> = React.createRef();
 
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
@@ -69,16 +77,15 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	}
 
 	public render() {
-		const {data, showAddFriendsModal, addedFriends, navigation} = this.props;
-		const {locationEnabled, location, tagFriends, shareText} = this.state;
+		const {data, showAddFriendsModal, addedFriends} = this.props;
+		const {locationEnabled, location, tagFriends, shareText, mediaObjects} = this.state;
 		return (
 			<PhotoScreenComponent
 				isLoading={data.loading}
 				showTagFriendsModal={showAddFriendsModal}
 				avatarURL={getUserAvatar(data)}
-				mediaObject={navigation.state.params.mediaObject}
+				mediaObjects={mediaObjects.map((mediaObject) => mediaObject.path)}
 				taggedFriends={addedFriends}
-				ref={this.photoScreen}
 				locationEnabled={locationEnabled}
 				location={location}
 				tagFriends={tagFriends}
@@ -87,6 +94,7 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 				onLocationToggle={this.onLocationToggle}
 				onShareTextUpdate={this.onShareTextUpdateHandler}
 				shareText={shareText}
+				onAddMedia={this.onAddMediaHandler}
 			/>
 		);
 	}
@@ -121,89 +129,68 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 
 		// TODO: get rid of replace in shareText after we sort out SOC-148
 		return {
-			media: this.props.navigation.state.params.mediaObject,
 			location: locationEnabled && location !== '' ? location : undefined,
 			taggedFriends: tagFriends && addedFriends.length > 0 ? addedFriends : undefined,
 			title: shareText ? shareText.replace(/\n/g, '\\n') : undefined,
 		};
 	};
 
-	private sendPostHandler = async () => {
-		const {addMedia, createPost, startMediaPost, startPostAdd, stopLoading} = this.props;
-
-		try {
-			const wallPostData = this.getWallPostData();
-
-			const {title, location, media} = wallPostData;
-			const {mime, pathx, contentOptimizedPath} = media;
-
-			const onStart = () => {
-				// start adding media loading
-				startMediaPost(0);
-			};
-
-			const onError = (err: any, id: any) => {
-				console.log(err, id);
-				this.showErrorMessage(err);
-			};
-
-			const onProgress = (progress: any, id: any) => {
-				console.log('progress:', progress, id);
-				startMediaPost(Math.round(progress));
-			};
-
-			const onComplete = async (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
-				try {
-					let mediaOb: any = null;
-					let opMediaOb: any = null;
-
-					console.log('Completed! ->', data);
-					if (Array.isArray(data)) {
-						for (let i = 0; i < data.length; i++) {
-							const current = data[i];
-							if (current.index === 0) {
-								mediaOb = JSON.parse(current.data.responseBody);
-							} else {
-								opMediaOb = JSON.parse(current.data.responseBody);
-							}
-						}
-					} else {
-						// TODO: @Jake: this needs better handling!
-						mediaOb = JSON.parse(data.responseBody);
-					}
-
-					// create media object on aws
-					const addResp = await addMedia({
-						variables: {
-							hash: mediaOb.Hash,
-							size: parseInt(mediaOb.Size, undefined),
-							type: mime,
-							optimizedHash: opMediaOb !== null ? opMediaOb.Hash : mediaOb.Hash,
-						},
-					});
-
-					const mediaId = addResp.data.addMedia.id;
-
-					// start adding post loading
-					startPostAdd();
-					// create post
-					if (title) {
-						await createPost({variables: {text: title, Media: mediaId, location}});
-					} else {
-						await createPost({variables: {Media: mediaId, location}});
-					}
-					stopLoading();
-					this.props.navigation.goBack(null);
-				} catch (ex) {
-					this.showErrorMessage(ex);
+	private onAddMediaHandler = () => {
+		const {getText} = this.props;
+		ActionSheet.show(
+			{
+				options: [
+					getText('new.wall.post.screen.menu.pick.from.gallery'),
+					getText('new.wall.post.screen.menu.take.photo'),
+					getText('button.CANCEL'),
+				],
+				cancelButtonIndex: 2,
+				title: getText('new.wall.post.screen.menu.title'),
+			},
+			async (buttonIndex: number) => {
+				let selectedMediaObjects: PickerImageMultiple = [];
+				if (buttonIndex === 0) {
+					selectedMediaObjects = await getGalleryMediaObjectMultiple();
+				} else if (buttonIndex === 1) {
+					selectedMediaObjects = await getCameraMediaObjectMultiple();
 				}
-			};
+				if (selectedMediaObjects.length > 0) {
+					const optimizedMediaObjects = await Promise.all(
+						selectedMediaObjects.map(async (mObject) => getOptimizedMediaObject(mObject)),
+					);
+					this.setState({mediaObjects: [...this.state.mediaObjects, ...optimizedMediaObjects]});
+				}
+			},
+		);
+	};
 
-			if (contentOptimizedPath) {
-				await addFilesBN([pathx, contentOptimizedPath], onStart, onProgress, onError, onComplete);
+	private sendPostHandler = () => {
+		const {mediaObjects} = this.state;
+		const {addMedia, updateUploadProgress} = this.props;
+		const mediaUploader = new MediaUploader(
+			mediaObjects,
+			this.completeCreateWallPost,
+			this.showErrorMessage,
+			addMedia,
+			updateUploadProgress,
+		);
+		mediaUploader.startUpload();
+	};
+
+	private completeCreateWallPost = async (mediaIDs: string[]) => {
+		try {
+			const {createPost, startPostAdd, stopLoading} = this.props;
+			const {title, location} = this.getWallPostData();
+			// start adding post loading
+			startPostAdd();
+			// create post
+			if (title) {
+				await createPost({variables: {text: title, Media: mediaIDs, location}});
 			} else {
-				await addFileBN(pathx, onStart, onProgress, onError, onComplete);
+				await createPost({variables: {Media: mediaIDs, location}});
 			}
+			stopLoading();
+			this.props.navigation.goBack(null);
 		} catch (ex) {
 			this.showErrorMessage(ex);
 		}
@@ -219,26 +206,20 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	};
 }
 
-const MapDispatchToProps = (dispatch: any, props: IPhotoScreenProps) => {
-	const {getText} = props;
-	return {
-		startMediaPost: (progress: string) =>
-			dispatch(
-				showActivityIndicator(
-					getText('photo.screen.media.uploading.title'),
-					getText('photo.screen.media.uploading.message', progress),
-				),
+const MapDispatchToProps = (dispatch: any, {getText}: IPhotoScreenProps) => ({
+	updateUploadProgress: (fileProgress: number, globalProgress: string) =>
+		dispatch(
+			showActivityIndicator(
+				getText('photo.screen.media.uploading.title', globalProgress),
+				getText('photo.screen.media.uploading.message', fileProgress),
 			),
-		startPostAdd: () =>
-			dispatch(
-				showActivityIndicator(
-					getText('photo.screen.creating.post.title'),
-					getText('photo.screen.creating.post.message'),
-				),
-			),
-		stopLoading: () => dispatch(hideActivityIndicator()),
-	};
-};
+		),
+	startPostAdd: () =>
+		dispatch(
+			showActivityIndicator(getText('photo.screen.creating.post.title'), getText('photo.screen.creating.post.message')),
+		),
+	stopLoading: () => dispatch(hideActivityIndicator()),
+});
 
 export default compose(
 	userHoc,

@@ -1,48 +1,38 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Alert, View} from 'react-native';
-import ImageResizer from 'react-native-image-resizer';
 import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
+import {connect} from 'react-redux';
+import {compose} from 'recompose';
 
+import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
+import {addMediaHoc, createPostHoc} from 'backend/graphql';
 import {ModalCloseButton} from 'components';
-import {MediaTypeImage} from 'types';
+import {ModalManager} from 'hoc';
+import {WallPostPhotoOptimized} from 'types';
 import {
-	getCameraMediaObject,
-	getGalleryMediaObject,
+	getCameraMediaObjectMultiple,
+	getGalleryMediaObjectMultiple,
+	getOptimizedMediaObject,
 	IWithTranslationProps,
-	PickerImage,
+	MediaUploader,
+	PickerImageMultiple,
 	withTranslations,
 } from 'utilities';
-import {addFileBN, addFilesBN} from 'utilities/ipfs';
 import {NewWallPostScreenComponent} from './screen';
-
-export interface MediaObject {
-	path: string;
-	content: {
-		Hash: string;
-		Name: string;
-		Size: string;
-	};
-	contentOptimized?: {
-		Hash: string;
-		Name: string;
-		Size: string;
-	};
-}
-
-export interface NewWallPostData {
-	text: string;
-	mediaObjects: MediaObject[];
-}
 
 interface INewWallPostScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	navigationOptions: NavigationScreenConfig<any>;
+	addMedia: any;
+	createPost: any;
+	updateUploadProgress: any;
+	startPostAdd: any;
+	stopLoading: any;
 }
 
 interface INewWallPostScreenState {
-	mediaObjects: MediaObject[];
-	isUploading: boolean;
+	mediaObjects: WallPostPhotoOptimized[];
 	uploadProgress: number;
 	shareText: string;
 }
@@ -56,21 +46,19 @@ class NewWallPostScreenInt extends Component<INewWallPostScreenProps, INewWallPo
 
 	public state = {
 		mediaObjects: [],
-		isUploading: false,
 		uploadProgress: 0,
 		shareText: '',
 	};
 
 	public render() {
 		const {navigation} = this.props;
-		const {isUploading, shareText, mediaObjects, uploadProgress} = this.state;
+		const {shareText, mediaObjects, uploadProgress} = this.state;
 		const {avatarImage} = navigation.state.params;
 		return (
 			<NewWallPostScreenComponent
 				avatarImage={avatarImage}
 				shareText={shareText}
-				isUploading={isUploading}
-				mediaObjects={mediaObjects}
+				mediaObjects={mediaObjects.map((mediaObject) => mediaObject.path)}
 				uploadProgress={uploadProgress}
 				onShareTextUpdate={this.onShareTextUpdateHandler}
 				onAddMedia={this.onAddMediaHandler}
@@ -98,134 +86,96 @@ class NewWallPostScreenInt extends Component<INewWallPostScreenProps, INewWallPo
 				title: getText('new.wall.post.screen.menu.title'),
 			},
 			async (buttonIndex: number) => {
-				switch (buttonIndex) {
-					case 0:
-						const galleryMediaObject = await getGalleryMediaObject();
-						this.addNewMediaObject(galleryMediaObject);
-						break;
-					case 1:
-						const cameraMediaObject = await getCameraMediaObject();
-						this.addNewMediaObject(cameraMediaObject);
-						break;
+				let selectedMediaObjects: PickerImageMultiple = [];
+				if (buttonIndex === 0) {
+					selectedMediaObjects = await getGalleryMediaObjectMultiple();
+				} else if (buttonIndex === 1) {
+					selectedMediaObjects = await getCameraMediaObjectMultiple();
+				}
+				if (selectedMediaObjects.length > 0) {
+					const optimizedMediaObjects = await Promise.all(
+						selectedMediaObjects.map(async (mObject) => getOptimizedMediaObject(mObject)),
+					);
+					this.setState({mediaObjects: [...this.state.mediaObjects, ...optimizedMediaObjects]});
 				}
 			},
 		);
 	};
 
-	private addNewMediaObject = async (mediaObject: PickerImage | undefined) => {
-		// TODO: @Serkan -> some hints to refactor this very big method?
-		if (!mediaObject) {
-			return;
-		}
-
-		const {mediaObjects} = this.state;
-
-		// if mediaObject is an image, upload 2 media files
-		// 1) original
-		// 2) optimized
-		// and append the id parameter:
-		// id: 0 => original
-		// id: 1 => optimized
-		// otherwise upload a single file -> video
-		const onProgress = (progress: any, id?: any) => {
-			console.log('progress:', progress, id);
-			this.setState({
-				uploadProgress: Math.round(progress),
-			});
-		};
-
-		const onStart = () => {
-			console.log('started uploading');
-			this.setState({
-				isUploading: true,
-			});
-		};
-
-		const onError = (err: any, id?: any) => {
-			// handle errors here?
-			console.log('upload err:', err, id);
-			this.setState({
-				isUploading: false,
-			});
-		};
-
-		const onPicturesCompleted = (data: Array<{index: number; data: {responseCode: number; responseBody: any}}>) => {
-			const localMediaObject: MediaObject = {
-				path: (mediaObject as PickerImage).path,
-				content: null,
-				contentOptimized: null,
-			};
-
-			for (let i = 0; i < data.length; i++) {
-				const current = data[i];
-				if (current.index === 0) {
-					localMediaObject.content = JSON.parse(current.data.responseBody);
-				} else {
-					localMediaObject.contentOptimized = JSON.parse(current.data.responseBody);
-				}
-			}
-			this.setState({
-				mediaObjects: [...mediaObjects, localMediaObject],
-				isUploading: false,
-			});
-		};
-
-		const onVideoCompleted = (data: {responseCode: number; responseBody: any}) => {
-			const localMediaObject: MediaObject = {
-				path: (mediaObject as PickerImage).path,
-				content: JSON.parse(data.responseBody),
-				contentOptimized: null,
-			};
-
-			this.setState({
-				mediaObjects: [...mediaObjects, localMediaObject],
-				isUploading: false,
-			});
-		};
-
-		try {
-			const mediaPath = mediaObject.path;
-			let imageOptimizedPath = null;
-
-			if (mediaObject.mime.startsWith(MediaTypeImage.key)) {
-				const optimized = await ImageResizer.createResizedImage(
-					mediaObject.path,
-					mediaObject.width,
-					mediaObject.height,
-					'JPEG',
-					50,
-				);
-				imageOptimizedPath = optimized.path;
-
-				console.log([mediaPath, imageOptimizedPath]);
-				await addFilesBN([mediaPath, imageOptimizedPath], onStart, onProgress, onError, onPicturesCompleted);
-			} else {
-				// video
-				await addFileBN(mediaPath, onStart, onProgress, onError, onVideoCompleted);
-			}
-		} catch (ex) {
-			console.log(ex);
-		}
-	};
-
 	private onPostSendHandler = () => {
+		const {getText} = this.props;
 		const {mediaObjects, shareText} = this.state;
-		const {navigation, getText} = this.props;
+		const {addMedia, updateUploadProgress} = this.props;
 		if (mediaObjects.length < 1 && !shareText) {
 			Alert.alert(
 				getText('new.wall.post.screen.post.not.allowed.title'),
 				getText('new.wall.post.screen.post.not.allowed.message'),
 			);
 		} else {
-			// TODO: get rid of replace in shareText after we sort out SOC-148
-			const wallPostData: NewWallPostData = {
-				text: shareText.replace(/\n/g, '\\n'),
+			const mediaUploader = new MediaUploader(
 				mediaObjects,
-			};
-			navigation.state.params.postCreate(wallPostData);
+				this.completeCreateWallPost,
+				this.showErrorMessage,
+				addMedia,
+				updateUploadProgress,
+			);
+			mediaUploader.startUpload();
+		}
+	};
+
+	private showErrorMessage = (ex: any) => {
+		const {stopLoading, getText} = this.props;
+		stopLoading();
+		ModalManager.safeRunAfterModalClosed(() => {
+			Alert.alert(getText('photo.screen.create.post.error'));
+		});
+		console.log(ex);
+	};
+
+	private completeCreateWallPost = async (mediaIDs: string[]) => {
+		try {
+			const {createPost, startPostAdd, stopLoading, navigation} = this.props;
+			let {shareText} = this.state;
+			// start adding post loading
+			startPostAdd();
+			// create post
+			if (shareText) {
+				// TODO: get rid of replace in shareText after we sort out SOC-148
+				shareText = shareText.replace(/\n/g, '\\n');
+				await createPost({variables: {text: shareText, Media: mediaIDs}});
+			} else {
+				await createPost({variables: {Media: mediaIDs}});
+			}
+			stopLoading();
+			navigation.state.params.afterPostCreate();
 			navigation.goBack(null);
+		} catch (ex) {
+			this.showErrorMessage(ex);
 		}
 	};
 }
 
-export const NewWallPostScreen = withTranslations(NewWallPostScreenInt);
+const MapDispatchToProps = (dispatch: any, {getText}: INewWallPostScreenProps) => ({
+	updateUploadProgress: (fileProgress: number, globalProgress: string) =>
+		dispatch(
+			showActivityIndicator(
+				getText('photo.screen.media.uploading.title', globalProgress),
+				getText('photo.screen.media.uploading.message', fileProgress),
+			),
+		),
+	startPostAdd: () =>
+		dispatch(
+			showActivityIndicator(getText('photo.screen.creating.post.title'), getText('photo.screen.creating.post.message')),
+		),
+	stopLoading: () => dispatch(hideActivityIndicator()),
+});
+
+export const NewWallPostScreen = compose(
+	createPostHoc,
+	addMediaHoc,
+	withTranslations,
+	connect(
+		null,
+		MapDispatchToProps,
+	),
+)(NewWallPostScreenInt as any);

@@ -1,6 +1,7 @@
 import {CameraRoll, PermissionsAndroid} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
 
 import {IMediaObjectViewerProps} from 'components';
 import {ipfsConfig as base} from 'configuration';
@@ -111,6 +112,8 @@ const onMediaDownloadProgress = (progress: DownloadProgressCallbackResult, callb
 };
 
 export type PickerImage = Image;
+export type PickerImageMultiple = Image[];
+export type PickerImageOrMultiple = Image | Image[];
 
 export const getGalleryMediaObject = async (options = {}): Promise<PickerImage | undefined> => {
 	try {
@@ -120,7 +123,24 @@ export const getGalleryMediaObject = async (options = {}): Promise<PickerImage |
 		});
 		return mediaObject as PickerImage;
 	} catch (ex) {
-		console.log(ex);
+		console.log('getGalleryMediaObject error', ex);
+	}
+};
+
+export const getGalleryMediaObjectMultiple = async (options = {}): Promise<PickerImageMultiple> => {
+	try {
+		const mediaObject: PickerImageOrMultiple = await ImagePicker.openPicker({
+			...DEFAULT_PICKER_OPTIONS,
+			multiple: true,
+			...options,
+		});
+		if (!Array.isArray(mediaObject)) {
+			return [mediaObject];
+		}
+		return mediaObject;
+	} catch (ex) {
+		console.log('getGalleryMediaObjectMultiple error', ex);
+		return [];
 	}
 };
 
@@ -132,7 +152,21 @@ export const getCameraMediaObject = async (options = {}): Promise<PickerImage | 
 		});
 		return mediaObject as PickerImage;
 	} catch (ex) {
-		console.log(ex);
+		console.log('getCameraMediaObject error', ex);
+	}
+};
+
+export const getCameraMediaObjectMultiple = async (options = {}): Promise<PickerImageMultiple> => {
+	try {
+		const mediaObject: PickerImage | PickerImage[] = await ImagePicker.openCamera({
+			...DEFAULT_CAMERA_OPTIONS,
+			...options,
+		});
+		return [mediaObject as PickerImage];
+		// return mediaObject as PickerImageMultiple;
+	} catch (ex) {
+		console.log('getCameraMediaObjectMultiple error', ex);
+		return [];
 	}
 };
 
@@ -146,4 +180,24 @@ export const getMediaObjectType = (mediaObject: IMediaPropsWithIndex): MediaType
 		return MediaTypeVideo;
 	}
 	return MediaTypeImage;
+};
+
+export const getOptimizedMediaObject = async (originalMedia: PickerImage) => {
+	let contentOptimizedPath;
+	if (originalMedia.mime.startsWith(MediaTypeImage.key)) {
+		const optimized = await ImageResizer.createResizedImage(
+			originalMedia.path,
+			originalMedia.width,
+			originalMedia.height,
+			'JPEG',
+			50,
+		);
+		contentOptimizedPath = optimized.path;
+	}
+	return {
+		...originalMedia,
+		contentOptimizedPath,
+		type: originalMedia.mime,
+		pathx: originalMedia.path,
+	};
 };

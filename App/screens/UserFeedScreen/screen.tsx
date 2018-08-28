@@ -15,7 +15,6 @@ interface IUserFeedScreenProps extends IWithLoaderProps {
 	refreshing: boolean;
 	loadMorePosts: () => void;
 	refreshData: () => void;
-	addWallPost: (data: any) => void;
 	showNewWallPostPage: () => void;
 	onMediaPress: (index: any, medias: IMediaProps[]) => void;
 	onCommentPress: (postId: any, owner: any, startComment: boolean, postData: object) => void;

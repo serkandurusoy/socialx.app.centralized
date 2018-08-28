@@ -1,18 +1,18 @@
 import React from 'react';
-import {Text, TextInput, View} from 'react-native';
+import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {compose} from 'recompose';
 
-import {AddFriendsList, CheckboxButtonWithIcon, MediaObjectViewer, SharePostInput} from 'components';
+import {AddFriendsList, CheckboxButtonWithIcon, MediaHorizontalScroller, SharePostInput} from 'components';
 import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {Colors, Icons} from 'theme';
 import {FriendsSearchResult} from 'types';
-import {IWithTranslationProps, PickerImage, withTranslations} from 'utilities';
+import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
 interface IPhotoScreenComponentProps extends IWithLoaderProps, IWithTranslationProps {
 	avatarURL: string;
-	mediaObject: PickerImage;
+	mediaObjects: string[];
 	showTagFriendsModal: () => void;
 	taggedFriends: FriendsSearchResult[];
 	locationEnabled: boolean;
@@ -23,6 +23,7 @@ interface IPhotoScreenComponentProps extends IWithLoaderProps, IWithTranslationP
 	onTagFriendsToggle: () => void;
 	shareText: string;
 	onShareTextUpdate: (value: string) => void;
+	onAddMedia: () => void;
 }
 
 interface ILocationSectionProps {
@@ -96,7 +97,7 @@ const TagFriendsSection: React.SFC<ITagFriendsSectionProps> = ({
 
 const PhotoScreenComponent: React.SFC<IPhotoScreenComponentProps> = ({
 	avatarURL,
-	mediaObject,
+	mediaObjects,
 	locationEnabled,
 	onLocationToggle,
 	onLocationTextUpdate,
@@ -106,6 +107,7 @@ const PhotoScreenComponent: React.SFC<IPhotoScreenComponentProps> = ({
 	showTagFriendsModal,
 	shareText,
 	onShareTextUpdate,
+	onAddMedia,
 	getText,
 }) => (
 	<KeyboardAwareScrollView style={style.scrollView} alwaysBounceVertical={true} keyboardShouldPersistTaps={'handled'}>
@@ -116,7 +118,13 @@ const PhotoScreenComponent: React.SFC<IPhotoScreenComponentProps> = ({
 			onTextUpdate={onShareTextUpdate}
 		/>
 		<View style={style.photoContainer}>
-			<MediaObjectViewer uri={mediaObject.path} style={style.photo} />
+			<MediaHorizontalScroller mediaURIs={mediaObjects} />
+		</View>
+		<View style={style.addMediaContainer}>
+			<TouchableOpacity style={style.addMediaButton} onPress={onAddMedia}>
+				<Image source={Icons.iconNewPostAddMedia} style={style.photoIcon} resizeMode={'contain'} />
+				<Text style={style.addMediaText}>{getText('photo.screen.add.media')}</Text>
+			</TouchableOpacity>
 		</View>
 		<View style={style.paddingContainer}>
 			<LocationSection

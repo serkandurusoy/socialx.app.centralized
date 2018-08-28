@@ -1,17 +1,23 @@
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
-import ImageResizer from 'react-native-image-resizer';
-
 import {LayoutEvent, NavigationScreenProp} from 'react-navigation';
-import {Icons, Sizes} from 'theme';
-import style from './style';
+import {compose} from 'recompose';
 
 import {updateTabBarBottomHeight} from 'backend/actions';
 import {getMyNotificationsHoc} from 'backend/graphql';
 import {connect} from 'react-redux';
-import {IAppUIStateProps, MediaTypeImage, WallPostPhotoOptimized} from 'types';
-import {getCameraMediaObject, getGalleryMediaObject, PickerImage} from 'utilities';
+import {Icons, Sizes} from 'theme';
+import {IAppUIStateProps} from 'types';
+import {
+	getCameraMediaObjectMultiple,
+	getGalleryMediaObjectMultiple,
+	getOptimizedMediaObject,
+	IWithTranslationProps,
+	PickerImageMultiple,
+	withTranslations,
+} from 'utilities';
+import style from './style';
 
 export enum MENU_BUTTON_TYPE {
 	MENU_BUTTON_SIMPLE = 'MENU_BUTTON_SIMPLE',
@@ -29,11 +35,6 @@ interface TabMenuItem {
 	};
 	type: MENU_BUTTON_TYPE;
 }
-
-const PICK_FROM_GALLERY = 'Pick from gallery';
-const TAKE_A_PHOTO = 'Open camera';
-const CANCEL = 'Cancel';
-const ACTION_SHEET_TITLE = 'Share a photo';
 
 const MENU_ITEMS: TabMenuItem[] = [
 	{
@@ -91,7 +92,7 @@ interface ITabBarBottomState {
 	changeInProgress: boolean;
 }
 
-interface ITabBarBottomProps extends IAppUIStateProps {
+interface ITabBarBottomProps extends IAppUIStateProps, IWithTranslationProps {
 	navigation: NavigationScreenProp<any>;
 	TabBarBottomHeight: (height: number) => void;
 	notifications: any;
@@ -206,53 +207,33 @@ class TabBarBottomComponent extends Component<ITabBarBottomProps, ITabBarBottomS
 	};
 
 	private showPhotoOptionsMenu = () => {
+		const {getText} = this.props;
 		ActionSheet.show(
 			{
-				options: [PICK_FROM_GALLERY, TAKE_A_PHOTO, CANCEL],
+				options: [
+					getText('tab.bar.bottom.photo.picker.use.gallery'),
+					getText('tab.bar.bottom.photo.picker.take.use.camera'),
+					getText('button.CANCEL'),
+				],
 				cancelButtonIndex: 2,
-				title: ACTION_SHEET_TITLE,
+				title: getText('tab.bar.bottom.photo.picker.title'),
 			},
 			async (buttonIndex: number) => {
-				switch (buttonIndex) {
-					case 0:
-						const galleryMediaObject = await getGalleryMediaObject();
-						this.useSelectedMediaObject(galleryMediaObject);
-						break;
-					case 1:
-						const cameraMediaObject = await getCameraMediaObject();
-						this.useSelectedMediaObject(cameraMediaObject);
-						break;
+				let selectedMediaObjects: PickerImageMultiple = [];
+				if (buttonIndex === 0) {
+					selectedMediaObjects = await getGalleryMediaObjectMultiple();
+				} else if (buttonIndex === 1) {
+					selectedMediaObjects = await getCameraMediaObjectMultiple();
+				}
+				console.log('selectedMediaObjects', selectedMediaObjects);
+				if (selectedMediaObjects.length > 0) {
+					const optimizedMediaObjects = await Promise.all(
+						selectedMediaObjects.map(async (mObject) => getOptimizedMediaObject(mObject)),
+					);
+					this.props.navigation.navigate('PhotoScreen', {mediaObjects: optimizedMediaObjects});
 				}
 			},
 		);
-	};
-
-	private useSelectedMediaObject = async (retMedia: PickerImage | undefined) => {
-		if (!retMedia) {
-			return;
-		}
-		try {
-			let contentOptimizedPath;
-			if (retMedia.mime.startsWith(MediaTypeImage.key)) {
-				const optimized = await ImageResizer.createResizedImage(
-					retMedia.path,
-					retMedia.width,
-					retMedia.height,
-					'JPEG',
-					50,
-				);
-				contentOptimizedPath = optimized.path;
-			}
-			const mediaObject: WallPostPhotoOptimized = {
-				...retMedia,
-				contentOptimizedPath,
-				type: retMedia.mime,
-				pathx: retMedia.path,
-			};
-			this.props.navigation.navigate('PhotoScreen', {mediaObject});
-		} catch (ex) {
-			//
-		}
 	};
 }
 
@@ -266,7 +247,10 @@ const mapStateToProps: any = (state: any): IAppUIStateProps => ({
 
 const notificationsWrapper = getMyNotificationsHoc(TabBarBottomComponent);
 
-export const TabBarBottom = connect(
-	mapStateToProps,
-	MapDispatchToProps,
+export const TabBarBottom = compose(
+	connect(
+		mapStateToProps,
+		MapDispatchToProps,
+	),
+	withTranslations,
 )(notificationsWrapper);

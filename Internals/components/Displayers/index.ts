@@ -35,3 +35,4 @@ export * from './HeartAnimation';
 export * from './HeaderLogo';
 export * from './CheckboxButtonWithIcon';
 export * from './AddFriendsList';
+export * from './MediaHorizontalScroller';

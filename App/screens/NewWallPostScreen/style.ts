@@ -12,10 +12,6 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(20),
 		paddingVertical: Sizes.smartVerticalScale(10),
 	},
-	photosContainer: {
-		width: '100%',
-		paddingBottom: Sizes.smartVerticalScale(10),
-	},
 	addMediaButton: {
 		flexDirection: 'row',
 		paddingHorizontal: Sizes.smartHorizontalScale(10),
@@ -32,21 +28,12 @@ const style: any = {
 		fontSize: Sizes.smartHorizontalScale(12),
 		color: Colors.postText,
 	},
-	mediaObject: {
-		width: 100,
-		height: Sizes.smartVerticalScale(90),
-		marginLeft: Sizes.smartHorizontalScale(10),
-	},
-	mediaUploadingPlaceholder: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: colorWithAlpha(Colors.black, 0.6),
-	},
-	progressText: {
-		...Fonts.centuryGothic,
-		fontSize: Sizes.smartHorizontalScale(16),
-		color: Colors.white,
-		paddingTop: Sizes.smartVerticalScale(10),
+	mediaContainer: {
+		marginTop: Sizes.smartVerticalScale(5),
+		marginBottom: Sizes.smartVerticalScale(10),
+		paddingHorizontal: '5%',
+		width: '100%',
+		height: Sizes.smartHorizontalScale(130),
 	},
 };
 
