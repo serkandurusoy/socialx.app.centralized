@@ -761,6 +761,10 @@
   dependencies:
     "@types/d3-path" "*"
 
+"@types/google-libphonenumber@^7.4.16":
+  version "7.4.16"
+  resolved "https://registry.yarnpkg.com/@types/google-libphonenumber/-/google-libphonenumber-7.4.16.tgz#cd982619f66a8582e6d2e1d795f5b74f8ac08229"
+
 "@types/graphql@0.12.6":
   version "0.12.6"
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.12.6.tgz#3d619198585fcabe5f4e1adfb5cf5f3388c66c13"
@@ -5334,6 +5338,10 @@ globby@^6.1.0:
     object-assign "^4.0.1"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
+
+google-libphonenumber@^3.1.11:
+  version "3.1.11"
+  resolved "https://registry.yarnpkg.com/google-libphonenumber/-/google-libphonenumber-3.1.11.tgz#894eafe874fbd456e794e322501b832871b7c568"
 
 got@^6.7.1:
   version "6.7.1"

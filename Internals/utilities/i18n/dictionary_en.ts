@@ -69,6 +69,7 @@ export default {
 	'register.screen.name.required': 'Your name is required',
 	'register.screen.username.required': 'A username is required',
 	'register.screen.phone.number.required': 'Phone number is required',
+	'register.screen.phone.number.invalid': 'Phone number is not valid',
 	'register.screen.password.required': 'Password is required',
 	'register.screen.confirm.password.required': 'Confirm password is required',
 	'register.screen.confirm.password.mismatch': 'Confirm password does not match',

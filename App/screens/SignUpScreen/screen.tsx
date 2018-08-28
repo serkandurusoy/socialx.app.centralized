@@ -1,4 +1,5 @@
 import {FormikBag, FormikErrors, FormikProps, withFormik} from 'formik';
+import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber';
 import {CheckBox} from 'native-base';
 import React, {RefObject} from 'react';
 import {ImageSourcePropType, Text, TextInput, TouchableOpacity, View} from 'react-native';
@@ -13,6 +14,8 @@ import {Colors, Images, Sizes} from 'theme';
 import {IWithTranslationProps, PASSWORD_ERROR_MESSAGES, PASSWORD_VALIDATOR_SCHEMA, withTranslations} from 'utilities';
 import {RegisterData} from './index';
 import style from './style';
+
+const phoneUtil = PhoneNumberUtil.getInstance();
 
 interface ISignUpFormikProps extends IWithTranslationProps {
 	onAlreadyHaveCode: () => void;
@@ -294,7 +297,17 @@ const SignUpFormik = withFormik({
 		onNavigateToTermsAndConditions,
 	}),
 	validate: (values: ISignUpFormProps) => {
-		const {email, name, username, phoneNumber, password, confirmPassword, getText} = values;
+		const {
+			email,
+			name,
+			username,
+			phoneNumber,
+			password,
+			confirmPassword,
+			countryCallingCode,
+			countryCCA2,
+			getText,
+		} = values;
 		const errors: FormikErrors<ISignUpFormProps> = {};
 		if (!email) {
 			errors.email = getText('register.screen.email.required');
@@ -309,6 +322,16 @@ const SignUpFormik = withFormik({
 		}
 		if (!phoneNumber) {
 			errors.phoneNumber = getText('register.screen.phone.number.required');
+		} else {
+			try {
+				const rawPhoneNumber = phoneUtil.parse(`+${countryCallingCode}${phoneNumber}`, countryCCA2);
+				const isPhoneNumberValid = phoneUtil.isValidNumberForRegion(rawPhoneNumber, countryCCA2);
+				if (!isPhoneNumberValid) {
+					errors.phoneNumber = getText('register.screen.phone.number.invalid');
+				}
+			} catch (e) {
+				errors.phoneNumber = getText('register.screen.phone.number.invalid');
+			}
 		}
 		if (!password) {
 			errors.password = getText('register.screen.confirm.password.required');
@@ -331,14 +354,15 @@ const SignUpFormik = withFormik({
 		return errors;
 	},
 	handleSubmit: async (
-		{email, name, username, phoneNumber, countryCallingCode, password, avatarImage}: ISignUpFormProps,
+		{email, name, username, phoneNumber, countryCallingCode, password, avatarImage, countryCCA2}: ISignUpFormProps,
 		{props}: FormikBag<ISignUpFormikProps, ISignUpFormProps>,
 	) => {
+		const rawPhoneNumber = phoneUtil.parse(`+${countryCallingCode}${phoneNumber}`, countryCCA2);
 		props.onStartRegister({
 			email,
 			name,
 			username,
-			phoneNumber: `+${countryCallingCode}${phoneNumber}`,
+			phoneNumber: phoneUtil.format(rawPhoneNumber, PhoneNumberFormat.E164),
 			password,
 			avatarImage,
 		});
