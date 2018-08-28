@@ -109,27 +109,33 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 	public render() {
 		const {getUserQuery, getUserPosts, data, navigation} = this.props;
 		const {refreshing, gridMediaProvider, numberOfFollowing, numberOfFollowers, isFollowed, numberOfViews} = this.state;
+		const {loading: postsLoading, getPostsOwner} = getUserPosts;
+		const {
+			loading: userLoading,
+			getUser: {numberOfPhotos, numberOfLikes, avatarURL, fullName, username, aboutMeText, relationship},
+		} = getUserQuery;
 
 		return (
 			<UserProfileScreenComponent
-				isLoading={getUserQuery.loading || getUserPosts.loading}
-				numberOfPhotos={getUserQuery.getUser.numberOfPhotos}
-				numberOfLikes={getUserQuery.getUser.numberOfLikes}
+				isLoading={userLoading || postsLoading}
+				numberOfPhotos={numberOfPhotos}
+				numberOfLikes={numberOfLikes}
 				numberOfFollowers={numberOfFollowers}
 				numberOfFollowing={numberOfFollowing}
 				numberOfViews={numberOfViews}
 				isFollowed={isFollowed}
-				avatarURL={getUserQuery.getUser.avatarURL}
-				fullName={getUserQuery.getUser.fullName}
-				username={getUserQuery.getUser.username}
-				aboutMeText={getUserQuery.getUser.aboutMeText}
-				recentPosts={getUserPosts.getPostsOwner ? getUserPosts.getPostsOwner.Items : []}
+				avatarURL={avatarURL}
+				fullName={fullName}
+				username={username}
+				aboutMeText={aboutMeText}
+				recentPosts={getPostsOwner ? getPostsOwner.Items : []}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				onCommentClick={this.onCommentsButtonClickHandler}
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={this.onLikeClickHandler}
 				onAddFriend={this.addFriendHandler}
-				friendRequestStatus={getUserQuery.getUser.relationship}
+				onRemoveFriendship={this.onRemoveFriendshipHandler}
+				friendRequestStatus={relationship}
 				onRefresh={this.refreshScreenHandler}
 				onViewProfilePhoto={this.showProfilePhoto}
 				onViewMediaFullScreen={this.onViewMediaFullScreen}
@@ -243,6 +249,12 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 			mediaObjects: getUserQuery.getUser.mediaObjects,
 			startIndex: index,
 		});
+	};
+
+	private onRemoveFriendshipHandler = () => {
+		alert('onRemoveFriendshipHandler: TBD');
+		// TODO: API call to remove + refresh user query so relationship is updated!
+		// await this.props.getUserQuery.refetch();
 	};
 }
 

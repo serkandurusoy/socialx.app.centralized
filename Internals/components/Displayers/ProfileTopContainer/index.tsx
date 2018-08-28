@@ -23,6 +23,7 @@ export interface ITopContainerSharedProps {
 	hasPhotos: boolean;
 	emptyGalleryMessage: string;
 	onAddFriend?: () => Promise<any>;
+	onRemoveFriendship?: () => void;
 	friendRequestStatus?: SearchResultKind;
 	onViewProfilePhoto?: () => void;
 	ownUser: boolean;
@@ -42,6 +43,7 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 	hasPhotos,
 	getText,
 	onAddFriend,
+	onRemoveFriendship,
 	friendRequestStatus,
 	emptyGalleryMessage,
 	onViewProfilePhoto,
@@ -77,6 +79,7 @@ const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
 				<View style={style.addFriendContainer}>
 					<AddFriendButton
 						kind={friendRequestStatus}
+						onRemoveFriendship={onRemoveFriendship}
 						onAddFriend={onAddFriend}
 						addLabel={getText('button.add.friend')}
 						outAnimation={'zoomOut'}
