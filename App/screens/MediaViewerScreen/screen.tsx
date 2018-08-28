@@ -38,6 +38,7 @@ const getCarouselItem = ({item, index}, itemWidth: number, activeSlide: number) 
 			style={carouselImageStyles}
 			resizeMode={'contain'}
 			resizeToChangeAspectRatio={true}
+			canZoom={true}
 		/>
 	);
 };
