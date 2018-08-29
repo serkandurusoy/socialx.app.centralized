@@ -162,6 +162,7 @@ android {
  }
 
 dependencies {
+    compile project(':react-native-photo-view')
     compile project(':WebRTCModule')
     compile project(':react-native-device-info')
     compile project(':react-native-restart')
