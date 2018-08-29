@@ -19,7 +19,7 @@ interface IWithManagedTransitionsProps {
 export class WithManagedTransitions extends React.Component<IWithManagedTransitionsProps> {
 	public componentDidUpdate(prevProps: Readonly<IWithManagedTransitionsProps>): void {
 		if (!prevProps.modalVisible && this.props.modalVisible) {
-			ModalManager.toggleModalShow(true);
+			ModalManager.toggleModalShow(true); // TODO: re-check this pattern later!
 		}
 	}
 
@@ -43,7 +43,7 @@ export class WithManagedTransitions extends React.Component<IWithManagedTransiti
 	};
 
 	private runAfterDismiss = () => {
-		ModalManager.toggleModalShow(false);
+		ModalManager.toggleModalShow(false); // TODO: re-check this pattern later!
 		if (this.props.afterDismiss) {
 			this.props.afterDismiss();
 		}
