@@ -4,7 +4,7 @@ import {NavigationScreenProp} from 'react-navigation';
 
 import {ScreenHeaderButton} from 'components';
 import {IEventData} from 'components/Displayers/EventListItem';
-import {IModalForAddFriendsProps, withModalForAddFriends} from 'hoc';
+import {WithModalForAddFriends} from 'hoc';
 import CreateEventScreenComponent from './screen';
 
 export interface ICreateEventScreenNavScreenProps {
@@ -15,11 +15,11 @@ export interface ICreateEventScreenNavScreenProps {
 	};
 }
 
-export interface ICreateEventScreenProps extends IModalForAddFriendsProps {
+export interface ICreateEventScreenProps {
 	navigation: NavigationScreenProp<ICreateEventScreenNavScreenProps>;
 }
 
-class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
+export default class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
 	private static navigationOptions = (props: ICreateEventScreenProps) => ({
 		title: 'ADD EVENT',
 		headerRight: <ScreenHeaderButton iconName={'md-checkmark'} onPress={props.navigation.state.params.onSendPress} />,
@@ -35,12 +35,16 @@ class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
 
 	public render() {
 		return (
-			<CreateEventScreenComponent
-				initialDate={this.props.navigation.state.params.date}
-				showInviteFriendsModal={this.props.showAddFriendsModal}
-				invitedFriends={this.props.addedFriends}
-				ref={(ref) => (this.screenRef = ref)}
-			/>
+			<WithModalForAddFriends>
+				{({showAddFriendsModal, addedFriends}) => (
+					<CreateEventScreenComponent
+						initialDate={this.props.navigation.state.params.date}
+						showInviteFriendsModal={showAddFriendsModal}
+						invitedFriends={addedFriends}
+						ref={(ref) => (this.screenRef = ref)}
+					/>
+				)}
+			</WithModalForAddFriends>
 		);
 	}
 
@@ -51,5 +55,3 @@ class CreateEventScreen extends Component<ICreateEventScreenProps, any> {
 		}
 	};
 }
-
-export default withModalForAddFriends(CreateEventScreen);
