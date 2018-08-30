@@ -99,9 +99,9 @@ class AddFriendButtonInt extends Component<IAddFriendButtonProps, IAddFriendButt
 					<AddFriend addLabel={addLabel} onAddFriendHandler={this.onAddFriendHandler}/>
 				)}
 				{optimisticKind === SearchResultKind.FriendRequestSent &&
-                <RequestSent withAnimation={rsWithAnimation}/>}
+								<RequestSent withAnimation={rsWithAnimation}/>}
 				{optimisticKind === SearchResultKind.Friend &&
-                <IsFriend onShowFriendshipOptions={this.onShowFriendshipOptionsHandler}/>}
+								<IsFriend onShowFriendshipOptions={this.onShowFriendshipOptionsHandler}/>}
 			</View>
 		);
 	}

@@ -23,7 +23,7 @@ interface IUserProfileScreenProps extends IWithLoaderProps {
 	numberOfFollowing: number;
 	numberOfViews: number;
 	onAddFriend: () => Promise<any>;
-	onRemoveFriendship: void;
+	onShowFriendshipOptions: () => void;
 	friendRequestStatus: SearchResultKind;
 	onViewProfilePhoto: () => void;
 	isFollowed: boolean;
@@ -55,7 +55,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 	username,
 	numberOfPhotos,
 	onAddFriend,
-	onRemoveFriendship,
+	onShowFriendshipOptions,
 	numberOfLikes,
 	numberOfFollowing,
 	numberOfFollowers,
@@ -114,7 +114,7 @@ const UserProfileScreenComponent: React.SFC<IUserProfileScreenProps> = ({
 					numberOfViews={numberOfViews}
 					onViewProfilePhoto={onViewProfilePhoto}
 					onAddFriend={onAddFriend}
-					onRemoveFriendship={onRemoveFriendship}
+					onShowFriendshipOptions={onShowFriendshipOptions}
 					friendRequestStatus={friendRequestStatus}
 					ownUser={ownUser}
 					onIconPress={onIconPress}
