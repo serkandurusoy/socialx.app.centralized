@@ -58,8 +58,8 @@ PODS:
     - React/Core
     - RSKImageCropper
   - RSKImageCropper (2.1.0)
-  - SDWebImage/Core (4.4.2)
-  - SDWebImage/GIF (4.4.2):
+  - SDWebImage/Core (4.4.1)
+  - SDWebImage/GIF (4.4.1):
     - FLAnimatedImage (~> 1.0)
     - SDWebImage/Core
   - yoga (0.56.0.React)
@@ -132,7 +132,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 568c5641057313b4912d08a7742ff0b2f753ed5c
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
   RSKImageCropper: 0d0c6d8525a2381f03fde32a47c6703817a2feed
-  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
 PODFILE CHECKSUM: 436406b8dd16aa15ac82c11aee407f6ebb104466
