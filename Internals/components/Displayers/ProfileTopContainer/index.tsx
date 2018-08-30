@@ -18,7 +18,7 @@ export interface ITopContainerSharedProps extends IWithTranslationProps {
 	numberOfFollowers: number;
 	numberOfViews: number;
 	onAddFriend?: () => Promise<any>;
-	onRemoveFriendship?: () => void;
+	onShowFriendshipOptions?: () => void;
 	friendRequestStatus?: SearchResultKind;
 	onViewProfilePhoto?: () => void;
 	ownUser: boolean;
@@ -38,7 +38,7 @@ const TopContainer: React.SFC<ITopContainerSharedProps> = ({
 	numberOfFollowers,
 	numberOfViews,
 	onAddFriend,
-	onRemoveFriendship,
+	onShowFriendshipOptions,
 	friendRequestStatus,
 	ownUser,
 	onEditProfile,
@@ -47,7 +47,7 @@ const TopContainer: React.SFC<ITopContainerSharedProps> = ({
 	tabs,
 	activeTab,
 }) => {
-	const friendButtonHandler = friendRequestStatus === SearchResultKind.Friend ? onRemoveFriendship: onAddFriend;
+	const friendButtonHandler = friendRequestStatus === SearchResultKind.Friend ? onShowFriendshipOptions : onAddFriend;
 	const buttonStatusLabel = friendRequestStatus === SearchResultKind.Friend ? 'FRIENDS' : 'ADD FRIEND';
 	const ownUserLabel = ownUser ? 'EDIT PROFILE' : 'MESSAGE';
 

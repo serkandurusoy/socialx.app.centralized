@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from 'theme';
+import {Colors, Sizes} from 'theme';
 
-const ICON_SIZE = Sizes.smartHorizontalScale(25);
+const ICON_SIZE = Sizes.smartHorizontalScale(20);
 
 const style: any = {
 	container: {

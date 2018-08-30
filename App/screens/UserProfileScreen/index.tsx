@@ -1,3 +1,4 @@
+import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Animated, Dimensions, View} from 'react-native';
 import {AnimatedValue, NavigationScreenProp} from 'react-navigation';
@@ -18,7 +19,13 @@ import {ipfsConfig as base} from 'configuration';
 import {PROFILE_TAB_ICON_TYPES} from 'consts';
 import {Colors} from 'theme';
 import {IMediaProps, IMediaViewerObject, IUserDataResponse} from 'types';
-import {getMediaObjectType, getURLForMediaViewerObject, IWithTranslationProps, showToastMessage} from 'utilities';
+import {
+	getMediaObjectType,
+	getURLForMediaViewerObject,
+	IWithTranslationProps,
+	showToastMessage,
+	withTranslations,
+} from 'utilities';
 import UserProfileScreenComponent from './screen';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -132,7 +139,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 				onImageClick={this.onMediaObjectPressHandler}
 				onLikeClick={this.onLikeClickHandler}
 				onAddFriend={this.addFriendHandler}
-				onRemoveFriendship={this.onRemoveFriendshipHandler}
+				onShowFriendshipOptions={this.onShowFriendshipOptionsHandler}
 				friendRequestStatus={relationship}
 				onRefresh={this.refreshScreenHandler}
 				onViewProfilePhoto={this.showProfilePhoto}
@@ -288,6 +295,25 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 		}
 	};
 
+	private onShowFriendshipOptionsHandler = () => {
+		const {getText} = this.props;
+		const menuOptions = [
+			getText('friendship.menu.option.remove'),
+			getText('button.CANCEL'), // can't have this hidden!
+		];
+		ActionSheet.show(
+			{
+				options: menuOptions,
+				cancelButtonIndex: menuOptions.length - 1,
+			},
+			(buttonIndex: number) => {
+				if (buttonIndex === 0) {
+					this.onRemoveFriendshipHandler();
+				}
+			},
+		);
+	};
+
 	private onRemoveFriendshipHandler = () => {
 		alert('onRemoveFriendshipHandler: TBD');
 		// TODO: API call to remove + refresh user query so relationship is updated!
@@ -302,4 +328,5 @@ export default compose(
 	userHoc,
 	setLikedPostHoc,
 	unsetLikedPostHoc,
+	withTranslations,
 )(UserProfileScreen as any);
