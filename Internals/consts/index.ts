@@ -45,3 +45,8 @@ export const LOCAL_VIDEO_STREAM = {
 	height: 960,
 	frameRate: 30,
 };
+
+export const PROFILE_TAB_ICON_TYPES = {
+	LIST: 'list',
+	GRID: 'grid',
+};

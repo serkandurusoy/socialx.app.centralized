@@ -1,6 +1,6 @@
 import React from 'react';
 import {Keyboard, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {NavigationScreenProp} from 'react-navigation';
 
 import {Colors, Sizes} from 'theme';
@@ -22,6 +22,6 @@ const closeModal = ({navigation, onClose}: IModalCloseButtonProps) => {
 
 export const ModalCloseButton: React.SFC<IModalCloseButtonProps> = (props) => (
 	<TouchableOpacity onPress={() => closeModal(props)}>
-		<Icon name={'times'} size={Sizes.smartHorizontalScale(20)} color={Colors.white} style={style.closeIcon} />
+		<Icon name={'md-close'} size={Sizes.smartHorizontalScale(25)} color={Colors.white} style={style.closeIcon} />
 	</TouchableOpacity>
 );

@@ -8,7 +8,7 @@ import uuidv4 from 'uuid/v4';
 
 import {resetNavigationToRoute} from 'backend/actions';
 import {userHoc} from 'backend/graphql';
-import {DEFAULT_AVATAR_SIZE, HEADER_TOP_PADDING, IconButton, PROFILE_STATS_HEIGHT, TooltipDots} from 'components';
+import {IconButton, TooltipDots} from 'components';
 import {Colors, Icons} from 'theme';
 import {IMediaProps, IMediaViewerObject, IPostsProps, IUserDataResponse} from 'types';
 import {
@@ -29,7 +29,6 @@ const INITIAL_STATE = {
 	numberOfPhotos: 0,
 	numberOfLikes: 0,
 	numberOfFollowers: 0,
-	numberOfFollowing: 0,
 	numberOfViews: 0,
 	avatarURL: '',
 	fullName: '',
@@ -48,7 +47,6 @@ interface IMyProfileScreenState {
 	numberOfPhotos: number;
 	numberOfLikes: number;
 	numberOfFollowers: number;
-	numberOfFollowing: number;
 	numberOfViews: number;
 	avatarURL: any;
 	fullName: string;
@@ -58,8 +56,6 @@ interface IMyProfileScreenState {
 	refreshing: boolean;
 	gridMediaProvider: DataProvider;
 }
-
-const TOTAL_HEADER_HEIGHT = HEADER_TOP_PADDING + DEFAULT_AVATAR_SIZE + PROFILE_STATS_HEIGHT;
 
 class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenState> {
 	private static navigationOptions = ({navigation, navigationOptions}) => ({
@@ -82,6 +78,11 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 				/>
 			</View>
 		),
+		headerStyle: {
+			borderBottomWidth: 0,
+			backgroundColor: Colors.pink,
+			elevation: 0,
+		},
 	});
 
 	private static getTooltipItems = (navigation: NavigationScreenProp<any>, getText: any) => {
@@ -165,7 +166,6 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			numberOfPhotos,
 			numberOfLikes,
 			numberOfFollowers,
-			numberOfFollowing,
 			numberOfViews,
 			avatarURL,
 			fullName,
@@ -174,24 +174,23 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			gridMediaProvider,
 			mediaObjects,
 		} = this.state;
+
 		return (
 			<MyProfileScreenComponent
 				isLoading={data.loading}
 				numberOfPhotos={numberOfPhotos}
 				numberOfLikes={numberOfLikes}
 				numberOfFollowers={numberOfFollowers}
-				numberOfFollowing={numberOfFollowing}
 				numberOfViews={numberOfViews}
 				avatarURL={avatarURL}
 				fullName={fullName}
 				username={username}
+				bio={data.user.bio}
 				loadMorePhotosHandler={this.loadMorePhotosHandler}
 				onRefresh={this.refreshPageHandler}
 				refreshing={refreshing}
 				gridMediaProvider={gridMediaProvider}
 				hasPhotos={mediaObjects.length > 0}
-				emptyGalleryMessage={'my.profile.screen.empty.gallery'}
-				headerHeight={TOTAL_HEADER_HEIGHT}
 				onViewMediaFullScreen={this.onPhotoPressHandler}
 				onEditProfile={this.onEditProfilePressHandler}
 				ownUser={true}
@@ -253,7 +252,6 @@ class MyProfileScreen extends Component<IMyProfileScreenProps, IMyProfileScreenS
 			numberOfPhotos: userImages,
 			numberOfLikes: numOfLikes,
 			numberOfFollowers: 0,
-			numberOfFollowing: 0,
 			avatarURL: userAvatar,
 			fullName: user ? user.name : '',
 			username: user ? user.username : '',

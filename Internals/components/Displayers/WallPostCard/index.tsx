@@ -61,6 +61,7 @@ export interface IWallPostCardProp extends ISimpleWallPostCardProps, IWithTransl
 	bestComments: ISimpleComment[];
 	listLoading: boolean;
 	suggested?: ISuggestionCardItem[];
+	noInput: boolean;
 }
 
 export interface IWallPostCardState {
@@ -504,30 +505,37 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 	};
 
 	private renderCommentInput = () => {
-		const avatarURL = getUserAvatar({user: this.props.currentUser});
-		return (
-			<TouchableOpacity onPress={this.onCommentInputPress} activeOpacity={1} style={style.commentInputContainer}>
-				<AnimatedFastImage
-					source={{uri: avatarURL}}
-					style={[style.commentInputAvatar, {width: this.state.inputAvatarWidth, height: this.state.inputAvatarHeight}]}
-				/>
-				<Animated.View style={[style.commentInputView, {borderWidth: this.state.inputBorderWidth}]}>
-					<SXTextInput
-						width={SCREEN_WIDTH - 90}
-						borderWidth={0}
-						size={InputSizes.Small}
-						placeholder='Add a comment...'
-						value={this.state.comment}
-						onChangeText={this.onCommentInputChange}
-						focusUpdateHandler={this.onCommentInputPress}
-						returnKeyType={TRKeyboardKeys.done}
-						onSubmitPressed={Keyboard.dismiss}
-						blurOnSubmit={true}
-						disabled={this.props.listLoading}
+		if (this.props.noInput) {
+			return null;
+		} else {
+			const avatarURL = getUserAvatar({user: this.props.currentUser});
+			return (
+				<TouchableOpacity onPress={this.onCommentInputPress} activeOpacity={1} style={style.commentInputContainer}>
+					<AnimatedFastImage
+						source={{uri: avatarURL}}
+						style={[
+							style.commentInputAvatar,
+							{width: this.state.inputAvatarWidth, height: this.state.inputAvatarHeight},
+						]}
 					/>
-				</Animated.View>
-			</TouchableOpacity>
-		);
+					<Animated.View style={[style.commentInputView, {borderWidth: this.state.inputBorderWidth}]}>
+						<SXTextInput
+							width={SCREEN_WIDTH - 90}
+							borderWidth={0}
+							size={InputSizes.Small}
+							placeholder='Add a comment...'
+							value={this.state.comment}
+							onChangeText={this.onCommentInputChange}
+							focusUpdateHandler={this.onCommentInputPress}
+							returnKeyType={TRKeyboardKeys.done}
+							onSubmitPressed={Keyboard.dismiss}
+							blurOnSubmit={true}
+							disabled={this.props.listLoading}
+						/>
+					</Animated.View>
+				</TouchableOpacity>
+			);
+		}
 	};
 
 	private getFormatedPostTime = (timestamp: Date) => {
@@ -653,4 +661,4 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 export const WallPostCard = compose(
 	withTranslations,
 	blockUserHoc,
-)(WallPostCardComp);
+)(WallPostCardComp as any);

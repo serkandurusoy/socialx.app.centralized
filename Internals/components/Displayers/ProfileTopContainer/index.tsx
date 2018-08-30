@@ -1,98 +1,102 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {Text, View} from 'react-native';
 
-import {AddFriendButton, ProfileStatistics, UserAvatar} from 'components';
+import {AvatarImage, ButtonSizes, SXButton} from 'components';
 import {Colors, Sizes} from 'theme';
 import {SearchResultKind} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
-import style, {FRIEND_CONTAINER_HEIGHT, REDESIGN_PADDING, TOP_PADDING} from './style';
+import ProfileTabs from './ProfileTabs';
+import Statistics from './Statistics';
+import style from './style';
 
-export const ADD_FRIEND_CONTAINER_HEIGHT = FRIEND_CONTAINER_HEIGHT + REDESIGN_PADDING;
-export const HEADER_TOP_PADDING = TOP_PADDING;
-
-export interface ITopContainerSharedProps {
+export interface ITopContainerSharedProps extends IWithTranslationProps {
 	avatarURL: any;
 	fullName: string;
 	username?: string;
 	numberOfPhotos: number;
 	numberOfLikes: number;
 	numberOfFollowers: number;
-	numberOfFollowing: number;
 	numberOfViews: number;
-	hasPhotos: boolean;
-	emptyGalleryMessage: string;
 	onAddFriend?: () => Promise<any>;
 	onRemoveFriendship?: () => void;
 	friendRequestStatus?: SearchResultKind;
 	onViewProfilePhoto?: () => void;
 	ownUser: boolean;
 	onEditProfile?: () => void;
+	tabs: boolean;
+	activeTab?: string;
+	onIconPress?: () => void;
+	aboutMeText: string;
 }
 
-interface ITopContainerTranslatedProps extends ITopContainerSharedProps, IWithTranslationProps {}
-
-const TopContainerTranslated: React.SFC<ITopContainerTranslatedProps> = ({
+const TopContainer: React.SFC<ITopContainerSharedProps> = ({
 	avatarURL,
 	fullName,
 	username,
 	numberOfPhotos,
 	numberOfLikes,
 	numberOfFollowers,
-	numberOfFollowing,
-	hasPhotos,
-	getText,
+	numberOfViews,
 	onAddFriend,
 	onRemoveFriendship,
 	friendRequestStatus,
-	emptyGalleryMessage,
-	onViewProfilePhoto,
-	numberOfViews,
 	ownUser,
 	onEditProfile,
-}) => (
-	<View
-		style={style.topContainer}
-		onLayout={(event) => {
-			console.log(event.nativeEvent.layout.height);
-		}}
-	>
-		<TouchableOpacity onPress={onViewProfilePhoto} disabled={!onViewProfilePhoto}>
-			<UserAvatar
-				avatarURL={{uri: avatarURL}}
-				fullName={fullName}
-				username={username}
-				ownUser={ownUser}
-				onEditProfile={onEditProfile}
-			/>
-		</TouchableOpacity>
-		<ProfileStatistics
-			numberOfPhotos={numberOfPhotos}
-			numberOfLikes={numberOfLikes}
-			numberOfFollowers={numberOfFollowers}
-			numberOfFollowing={numberOfFollowing}
-			profileViews={numberOfViews}
-		/>
-		{!ownUser &&
-			friendRequestStatus &&
-			onAddFriend && (
-				<View style={style.addFriendContainer}>
-					<AddFriendButton
-						kind={friendRequestStatus}
-						onRemoveFriendship={onRemoveFriendship}
-						onAddFriend={onAddFriend}
-						addLabel={getText('button.add.friend')}
-						outAnimation={'zoomOut'}
-					/>
-				</View>
-			)}
-		{!hasPhotos && (
-			<View style={style.noPhotosContainer}>
-				<Icon name={'th'} size={Sizes.smartHorizontalScale(120)} color={Colors.geyser} />
-				<Text style={style.noPhotosText}>{getText(emptyGalleryMessage)}</Text>
-			</View>
-		)}
-	</View>
-);
+	onIconPress,
+	aboutMeText,
+	tabs,
+	activeTab,
+}) => {
+	const friendButtonHandler = friendRequestStatus === SearchResultKind.Friend ? onRemoveFriendship: onAddFriend;
+	const buttonStatusLabel = friendRequestStatus === SearchResultKind.Friend ? 'FRIENDS' : 'ADD FRIEND';
+	const ownUserLabel = ownUser ? 'EDIT PROFILE' : 'MESSAGE';
 
-export const ProfileTopContainer = withTranslations(TopContainerTranslated);
+	return (
+		<View style={style.topContainer}>
+			<View style={style.background} />
+			<View style={style.avatarContainer}>
+				<AvatarImage image={{uri: avatarURL}} style={style.avatar} />
+			</View>
+			<View style={style.statisticsContainer}>
+				<View style={style.leftStatistics}>
+					<Statistics text='photos' value={numberOfPhotos} />
+					<Statistics text='likes' value={numberOfLikes} />
+				</View>
+				<View style={style.rightStatistics}>
+					<Statistics text='friends' value={numberOfFollowers} />
+					<Statistics text='views' value={numberOfViews} />
+				</View>
+			</View>
+			<View style={style.textContainer}>
+				<Text style={style.name}>{fullName}</Text>
+				<Text style={style.username}>@{username}</Text>
+				<Text style={style.about}>{aboutMeText}</Text>
+			</View>
+			<View style={style.buttonsContainer}>
+				{!ownUser && (
+					<SXButton
+						width={Sizes.smartHorizontalScale(150)}
+						label={buttonStatusLabel}
+						size={ButtonSizes.Small}
+						borderColor={Colors.white}
+						textColor={Colors.white}
+						containerStyle={style.button}
+						onPress={friendButtonHandler}
+					/>
+				)}
+				<SXButton
+					width={Sizes.smartHorizontalScale(150)}
+					label={ownUserLabel}
+					size={ButtonSizes.Small}
+					borderColor={Colors.pink}
+					textColor={Colors.pink}
+					containerStyle={style.ghostButton}
+					onPress={ownUser ? onEditProfile : () => {}}
+				/>
+			</View>
+			{tabs && <ProfileTabs onIconPress={onIconPress!} activeTab={activeTab!} />}
+		</View>
+	);
+};
+
+export const ProfileTopContainer = withTranslations(TopContainer as any);

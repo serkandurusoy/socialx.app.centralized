@@ -89,7 +89,7 @@ export const NewGridPhotos: React.SFC<INewGridPhotosProps> = ({
 }) => (
 	<RecyclerListView
 		renderAheadOffset={1500}
-		layoutProvider={getGridProvider(thumbWidth, thumbHeight, header)}
+		layoutProvider={getGridProvider(thumbWidth!, thumbHeight!, header!)}
 		dataProvider={dataProvider}
 		rowRenderer={(...args) => renderGridItemOrHeader(args[0], args[1], renderGridItem, header)}
 		onEndReached={onLoadMore}
