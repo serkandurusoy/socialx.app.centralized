@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import React from 'react';
 import {Text, View} from 'react-native';
 
@@ -20,14 +21,14 @@ export const PostLikes: React.SFC<IPostLikesProps> = ({likes, numberOfLikes, get
 			<View style={styles.container}>
 				<Text style={styles.text}>
 					{getText('post.card.liked.by') + ' '}
-					<Text style={styles.bold} onPress={() => {}}>
+					<Text style={styles.bold} onPress={noop}>
 						{lastLikeUser.userName}
 					</Text>
 				</Text>
 				{numberOfOtherLikes === 1 && (
 					<Text style={styles.text}>
 						{andText}
-						<Text style={styles.bold} onPress={() => {}}>
+						<Text style={styles.bold} onPress={noop}>
 							{secondLastLike.userName}
 						</Text>
 					</Text>
@@ -43,3 +44,8 @@ export const PostLikes: React.SFC<IPostLikesProps> = ({likes, numberOfLikes, get
 	}
 	return null;
 };
+
+/**
+ * TODO list:
+ * 1. Add handler for display user profiles, when tapped on their names!
+ */

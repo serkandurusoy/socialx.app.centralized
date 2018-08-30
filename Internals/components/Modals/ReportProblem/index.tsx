@@ -10,16 +10,16 @@ import {WithManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors, Icons} from 'theme';
 import style from './style';
 
-export interface IModalReportProblemComponentProps {
+export interface IReportData {
+	reportReason: string;
+	description: string;
+}
+
+interface IModalReportProblemComponentProps {
 	visible: boolean;
 	confirmHandler: (data: IReportData) => void;
 	declineHandler: () => void;
 	pickerOptions: any;
-}
-
-export interface IReportData {
-	reportReason: string;
-	description: string;
 }
 
 interface IModalReportProblemComponentState extends IReportData {}
@@ -55,7 +55,11 @@ export class ModalReportProblem extends Component<
 						animationOut={'slideOutUp'}
 						style={style.container}
 					>
-						{this.renderOSBlurView()}
+						{Platform.OS === OS_TYPES.IOS && (
+							<TouchableWithoutFeedback onPress={this.props.declineHandler}>
+								<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
+							</TouchableWithoutFeedback>
+						)}
 						<WithResizeOnKeyboardShow>
 							{({marginBottom}) => (
 								<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
@@ -112,17 +116,6 @@ export class ModalReportProblem extends Component<
 		);
 	}
 
-	private renderOSBlurView = () => {
-		if (Platform.OS === OS_TYPES.IOS) {
-			return (
-				<TouchableWithoutFeedback onPress={this.props.declineHandler}>
-					<BlurView style={style.blurView} blurType='dark' blurAmount={2} />
-				</TouchableWithoutFeedback>
-			);
-		}
-		return null;
-	};
-
 	private setNewSelection = (index: number, value: string) => {
 		this.setState({
 			reportReason: value,
@@ -133,3 +126,9 @@ export class ModalReportProblem extends Component<
 		this.setState({description: text});
 	};
 }
+
+/**
+ * TODO list:
+ * 1. Use Formik to get rid of state here!
+ * 2. Add translations!
+ */

@@ -1,10 +1,11 @@
-import {IWallPostCardProp, SuggestionsCarousel, WallPostCard} from 'components';
-import {IWithLoaderProps, WithInlineLoader} from 'hoc/InlineLoader';
+import noop from 'lodash/noop';
 import React, {Component, RefObject} from 'react';
 import {ActivityIndicator, Animated, FlatList, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedValue, NavigationScreenProp} from 'react-navigation';
 
+import {IWallPostCardProp, SuggestionsCarousel, WallPostCard} from 'components';
+import {IWithLoaderProps, WithInlineLoader} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {IMediaProps, IUserQuery} from 'types';
 import style, {SHARE_SECTION_HEIGHT} from './style';
@@ -121,7 +122,7 @@ class UserFeedScreen extends Component<IUserFeedScreenProps, IUserFeedScreenStat
 							alwaysBounceVertical={false}
 							keyboardShouldPersistTaps={'handled'}
 							ListFooterComponent={<LoadingFooter hasMore={this.props.hasMore} />}
-							onScrollToIndexFailed={() => {}}
+							onScrollToIndexFailed={noop}
 							onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scrollY}}}])}
 							scrollEventThrottle={16}
 							showsVerticalScrollIndicator={false}
