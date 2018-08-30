@@ -1,21 +1,17 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Image, Text, TouchableOpacity} from 'react-native';
 
 import style from './style';
 
-export interface IShareOptionsButtonProps {
+interface IShareOptionsButtonProps {
 	label: string;
 	iconSource: number;
-	onPress: Func;
+	onPress: () => void;
 }
 
-export class ShareOptionsButton extends Component<IShareOptionsButtonProps> {
-	public render() {
-		return (
-			<TouchableOpacity style={style.container} onPress={this.props.onPress}>
-				<Image source={this.props.iconSource} resizeMode={'contain'} style={style.iconStyle} />
-				<Text style={style.label}>{this.props.label}</Text>
-			</TouchableOpacity>
-		);
-	}
-}
+export const ShareOptionsButton: React.SFC<IShareOptionsButtonProps> = ({label, iconSource, onPress}) => (
+	<TouchableOpacity style={style.container} onPress={onPress}>
+		<Image source={iconSource} resizeMode={'contain'} style={style.iconStyle} />
+		<Text style={style.label}>{label}</Text>
+	</TouchableOpacity>
+);

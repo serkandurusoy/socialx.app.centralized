@@ -1,6 +1,4 @@
 export * from './ContactsList';
-export * from './FriendRequest';
-export * from './NotificationGenericItem';
 
 export * from './GroupCreateSearchResultEntry';
 export * from './GroupRequest';
@@ -14,8 +12,6 @@ export * from './SendCoinsHeader';
 
 export * from './SocialXAccountCurrencyItem';
 export * from './SocialXAccountTitleCard';
-
-export {SvgAnimatedLinearGradient} from './SvgAnimatedLinearGradient';
 
 export * from './TabBarBottom';
 export * from './TextGradient';

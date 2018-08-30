@@ -2,7 +2,7 @@ import LottieView from 'lottie-react-native';
 import React, {Component} from 'react';
 import {Animated, Easing, View} from 'react-native';
 
-import {heart} from '../../../animation';
+import {heart} from 'animation';
 import style from './style';
 
 export interface IHeartAnimationProps {

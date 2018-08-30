@@ -11,7 +11,7 @@ export interface ActivityRecentCommentCardPosts {
 	postId: string;
 }
 
-export interface IActivityRecentCommentCardProps extends IWithTranslationProps {
+interface IActivityRecentCommentCardProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	timestamp: Date;
@@ -19,7 +19,7 @@ export interface IActivityRecentCommentCardProps extends IWithTranslationProps {
 	onThumbPress: (postId: string) => void;
 }
 
-export interface IWallPostsProps {
+interface IWallPostsProps {
 	wallPosts: ActivityRecentCommentCardPosts[];
 	onThumbPress: (postId: string) => void;
 }
@@ -39,7 +39,7 @@ const WallPostThumbs: React.SFC<IWallPostsProps> = ({wallPosts, onThumbPress}) =
 	</ScrollView>
 );
 
-export const ActivityRecentComment: React.SFC<IActivityRecentCommentCardProps> = ({
+const ActivityRecentComment: React.SFC<IActivityRecentCommentCardProps> = ({
 	avatarURL,
 	fullName,
 	timestamp,

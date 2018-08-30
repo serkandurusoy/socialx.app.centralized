@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 
 import {WithManagedTransitions} from 'hoc';
 import {IModalConfirmationStateProps} from 'types';
+import {WithTranslations} from 'utilities';
 import style from './style';
 
 interface IModalConfirmationPropsExtended extends IModalConfirmationStateProps {}
@@ -17,45 +18,51 @@ const ModalConfirmationComponent: React.SFC<IModalConfirmationPropsExtended> = (
 	confirmHandler,
 	cancelButton,
 	declineHandler,
-}) => {
-	return (
-		<WithManagedTransitions modalVisible={confirmActive}>
-			{({onDismiss, onModalHide}) => (
-				<Modal
-					isVisible={confirmActive}
-					backdropOpacity={0.2}
-					animationIn={'zoomIn'}
-					animationOut={'zoomOut'}
-					onBackdropPress={declineHandler}
-					style={style.container}
-					onDismiss={onDismiss}
-					onModalHide={onModalHide}
-				>
-					<View style={style.boxContainer}>
-						<Text style={style.title}>{title}</Text>
-						{message ? (
-							<View style={style.borderContainer}>
-								<Text style={style.message}>{message}</Text>
+}) => (
+	<WithManagedTransitions modalVisible={confirmActive}>
+		{({onDismiss, onModalHide}) => (
+			<WithTranslations>
+				{({getText}) => (
+					<Modal
+						isVisible={confirmActive}
+						backdropOpacity={0.2}
+						animationIn={'zoomIn'}
+						animationOut={'zoomOut'}
+						onBackdropPress={declineHandler}
+						style={style.container}
+						onDismiss={onDismiss} // lib. TS issue!
+						onModalHide={onModalHide}
+					>
+						<View style={style.boxContainer}>
+							{title && (
+								<View style={style.titleBorder}>
+									<Text style={style.title}>{getText(title)}</Text>
+								</View>
+							)}
+							{message && (
+								<View style={style.messageBorder}>
+									<Text style={style.message}>{getText(message)}</Text>
+								</View>
+							)}
+							<View style={style.buttonsContainer}>
+								<TouchableOpacity style={[style.button, style.leftButton]} onPress={declineHandler}>
+									<Text style={[style.buttonText, style.buttonTextCancel]}>{getText(cancelButton)}</Text>
+								</TouchableOpacity>
+								<TouchableOpacity style={style.button} onPress={confirmHandler}>
+									<Text style={[style.buttonText, style.buttonTextConfirm]}>{getText(confirmButton)}</Text>
+								</TouchableOpacity>
 							</View>
-						) : null}
-						<View style={style.buttonsContainer}>
-							<TouchableOpacity style={[style.button, style.leftButton]} onPress={declineHandler}>
-								<Text style={[style.buttonText, style.buttonTextCancel]}>{cancelButton}</Text>
-							</TouchableOpacity>
-							<TouchableOpacity style={style.button} onPress={confirmHandler}>
-								<Text style={[style.buttonText, style.buttonTextConfirm]}>{confirmButton}</Text>
-							</TouchableOpacity>
 						</View>
-					</View>
-				</Modal>
-			)}
-		</WithManagedTransitions>
-	);
-};
+					</Modal>
+				)}
+			</WithTranslations>
+		)}
+	</WithManagedTransitions>
+);
 
 ModalConfirmationComponent.defaultProps = {
-	confirmButton: 'Yes!',
-	cancelButton: 'No',
+	confirmButton: 'button.yes',
+	cancelButton: 'button.no',
 };
 
 const mapStateToProps: any = (state: any): IModalConfirmationStateProps => ({

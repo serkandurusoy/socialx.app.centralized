@@ -5,7 +5,7 @@ import {Image, Text, View} from 'react-native';
 import {Colors} from 'theme';
 import style from './style';
 
-export interface ICheckboxButtonWithIconProps {
+interface ICheckboxButtonWithIconProps {
 	selected: boolean;
 	onPress?: Func;
 	iconSource?: number;

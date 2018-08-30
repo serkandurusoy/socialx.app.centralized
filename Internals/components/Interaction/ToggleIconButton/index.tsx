@@ -3,7 +3,7 @@ import {Image, ImageStyle, StyleProp, TouchableWithoutFeedback} from 'react-nati
 
 import style from './style';
 
-export interface IToggleIconButtonProps {
+interface IToggleIconButtonProps {
 	selectedSource: number;
 	unselectedSource: number;
 	selected: boolean;

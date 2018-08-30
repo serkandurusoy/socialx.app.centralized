@@ -12,7 +12,7 @@ export interface TooltipItem {
 	actionHandler: () => void;
 }
 
-export interface ITooltipDotsProps {
+interface ITooltipDotsProps {
 	items?: TooltipItem[];
 	iconColor?: string;
 	iconName?: string;

@@ -2,11 +2,9 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import {Colors} from 'theme';
-import style, {CONTAINER_HEIGHT_FULL, CONTAINER_HEIGHT_NAME_ONLY} from './style';
+import style, {CONTAINER_HEIGHT_NAME_ONLY} from './style';
 
-export const AVATAR_NAME_HEIGHT = CONTAINER_HEIGHT_FULL;
-
-export interface IAvatarNameProps {
+interface IAvatarNameProps {
 	fullName: string;
 	username?: string;
 	fullNameColor?: string;

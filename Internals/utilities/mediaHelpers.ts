@@ -2,10 +2,10 @@ import {CameraRoll, PermissionsAndroid} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
-
-import {IMediaObjectViewerProps} from 'components';
-import {ipfsConfig as base} from 'configuration';
 import * as mime from 'react-native-mime-types';
+
+import {IMediaObjectViewerProps} from 'components'; // TODO: this is not a correct import pattern!
+import {ipfsConfig as base} from 'configuration';
 import {
 	IMediaProps,
 	IMediaPropsWithIndex,

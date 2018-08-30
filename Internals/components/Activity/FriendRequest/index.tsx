@@ -6,7 +6,7 @@ import {Icons} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
-export interface IFriendRequestProps extends IWithTranslationProps {
+interface IFriendRequestProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;
@@ -24,7 +24,7 @@ const InlineLoader: React.SFC = () => (
 	</View>
 );
 
-export const FriendRequestComp: React.SFC<IFriendRequestProps> = ({
+const FriendRequestComp: React.SFC<IFriendRequestProps> = ({
 	loadingConfirmed,
 	loadingDeclined,
 	username,
@@ -63,4 +63,4 @@ export const FriendRequestComp: React.SFC<IFriendRequestProps> = ({
 	);
 };
 
-export const FriendRequest = withTranslations(FriendRequestComp);
+export const FriendRequest = withTranslations(FriendRequestComp as any);

@@ -6,6 +6,9 @@ export default {
 	'button.BACK': 'Back',
 	'button.CANCEL': 'Cancel',
 	'button.add.friend': 'Add friend',
+	'button.add': 'Add',
+	'button.yes': 'Yes!',
+	'button.no': 'No',
 	'text.and': 'and',
 	'text.at': 'at',
 	'app.error': 'App error',
@@ -192,4 +195,6 @@ export default {
 	'tab.bar.bottom.photo.picker.take.use.camera': 'Open camera',
 	'tab.bar.bottom.photo.picker.use.gallery': 'Pick from gallery',
 	'friendship.menu.option.remove': 'Unfriend',
+	'user.avatar.button.label.own.user': 'EDIT PROFILE',
+	'user.avatar.button.label.other.user': 'MESSAGE',
 };

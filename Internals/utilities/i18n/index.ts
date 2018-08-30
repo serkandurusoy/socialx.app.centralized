@@ -1,4 +1,5 @@
 import {I18n} from 'aws-amplify';
+import React from 'react';
 import {AsyncStorage} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {compose, hoistStatics, withProps} from 'recompose';
@@ -66,3 +67,12 @@ export const withTranslationsSimple = compose(
 		getText: (value: string, ...args: any[]) => getText(value, ...args),
 	})),
 );
+
+interface ITranslatedProps {
+	getText: (value: string, ...args: any[]) => string;
+}
+
+export const WithTranslations: React.SFC<{children(props: ITranslatedProps): JSX.Element}> = ({children}) =>
+	children({
+		getText: (value: string, ...args: any[]) => getText(value, ...args),
+	});

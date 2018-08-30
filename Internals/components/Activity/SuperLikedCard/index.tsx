@@ -11,7 +11,7 @@ export interface ActivitySuperLikedCardPosts {
 	postId: string;
 }
 
-export interface IActivitySuperLikedCardProps extends IWithTranslationProps {
+interface IActivitySuperLikedCardProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	timestamp: Date;
@@ -19,12 +19,14 @@ export interface IActivitySuperLikedCardProps extends IWithTranslationProps {
 	onThumbPress: (postId: string) => void;
 }
 
-export interface IWallPostsProps {
+interface IWallPostsProps {
 	wallPosts: ActivitySuperLikedCardPosts[];
 	onThumbPress: (postId: string) => void;
 }
 
 // TODO: @serkan @jake did I see this exact component in recent comment card?
+// Answer: Yes, UI is 99% similar but these are different concerns and might change in future. See design reference:
+// https://projects.invisionapp.com/d/main#/console/13318223/278859790/preview
 const WallPostThumbs: React.SFC<IWallPostsProps> = ({wallPosts, onThumbPress}) => (
 	<ScrollView
 		horizontal={true}
@@ -40,7 +42,7 @@ const WallPostThumbs: React.SFC<IWallPostsProps> = ({wallPosts, onThumbPress}) =
 	</ScrollView>
 );
 
-export const ActivitySuperLiked: React.SFC<IActivitySuperLikedCardProps> = ({
+const ActivitySuperLiked: React.SFC<IActivitySuperLikedCardProps> = ({
 	avatarURL,
 	fullName,
 	timestamp,
