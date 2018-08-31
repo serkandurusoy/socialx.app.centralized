@@ -8,6 +8,7 @@ import {OS_TYPES} from 'consts';
 import {WithManagedTransitions, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors} from 'theme';
 import {FriendsSearchResult} from 'types';
+import {WithTranslations} from 'utilities';
 import {InputSizes, SXTextInput, TRKeyboardKeys} from '../../Inputs';
 import style from './style';
 
@@ -47,50 +48,54 @@ export const ModalTagFriends: React.SFC<IModalTagFriendsProps> = ({
 					<BlurView style={style.blurView} viewRef={blurViewRef} blurType='dark' blurAmount={2} />
 					<WithResizeOnKeyboardShow>
 						{({marginBottom}) => (
-							<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
-								<View style={style.boxContainer}>
-									<View style={style.pinkContainer}>
-										<Text style={style.title}>{'Tag Friends'}</Text>
-										<View style={style.inputContainer}>
-											<SXTextInput
-												autoFocus={true}
-												autoCorrect={true}
-												onChangeText={onSearchUpdated}
-												placeholder={'Search'}
-												icon={'search'}
-												canCancel={false}
-												size={InputSizes.Small}
-												borderColor={Colors.transparent}
-												iconColor={Colors.cadetBlue}
-												returnKeyType={TRKeyboardKeys.done}
-												blurOnSubmit={true}
-											/>
+							<WithTranslations>
+								{({getText}) => (
+									<View style={[style.keyboardView, Platform.OS === OS_TYPES.IOS ? {marginBottom} : {}]}>
+										<View style={style.boxContainer}>
+											<View style={style.pinkContainer}>
+												<Text style={style.title}>{getText('modal.tag.friends.title')}</Text>
+												<View style={style.inputContainer}>
+													<SXTextInput
+														autoFocus={true}
+														autoCorrect={true}
+														onChangeText={onSearchUpdated}
+														placeholder={getText('modal.tag.friends.search.box.placeholder')}
+														icon={'search'}
+														canCancel={false}
+														size={InputSizes.Small}
+														borderColor={Colors.transparent}
+														iconColor={Colors.cadetBlue}
+														returnKeyType={TRKeyboardKeys.done}
+														blurOnSubmit={true}
+													/>
+												</View>
+											</View>
+											<ScrollView
+												contentContainerStyle={style.resultsContainer}
+												alwaysBounceVertical={false}
+												keyboardShouldPersistTaps={'handled'}
+											>
+												{searchResults.map((searchResult: FriendsSearchResult, index: number) => (
+													<GroupCreateSearchResultEntry
+														key={index}
+														{...searchResult}
+														selected={selectedUsers.indexOf(searchResult) > -1}
+														addHandler={() => selectTagUserInModal(searchResult)}
+													/>
+												))}
+											</ScrollView>
+											<View style={style.buttonsContainer}>
+												<TouchableOpacity style={[style.button, style.leftButton]} onPress={cancelHandler}>
+													<Text style={[style.buttonText, style.buttonTextCancel]}>{getText('button.back')}</Text>
+												</TouchableOpacity>
+												<TouchableOpacity style={style.button} onPress={doneHandler}>
+													<Text style={[style.buttonText, style.buttonTextConfirm]}>{getText('button.done')}</Text>
+												</TouchableOpacity>
+											</View>
 										</View>
 									</View>
-									<ScrollView
-										contentContainerStyle={style.resultsContainer}
-										alwaysBounceVertical={false}
-										keyboardShouldPersistTaps={'handled'}
-									>
-										{searchResults.map((searchResult: FriendsSearchResult, index: number) => (
-											<GroupCreateSearchResultEntry
-												key={index}
-												{...searchResult}
-												selected={selectedUsers.indexOf(searchResult) > -1}
-												addHandler={() => selectTagUserInModal(searchResult)}
-											/>
-										))}
-									</ScrollView>
-									<View style={style.buttonsContainer}>
-										<TouchableOpacity style={[style.button, style.leftButton]} onPress={cancelHandler}>
-											<Text style={[style.buttonText, style.buttonTextCancel]}>{'Back'}</Text>
-										</TouchableOpacity>
-										<TouchableOpacity style={style.button} onPress={doneHandler}>
-											<Text style={[style.buttonText, style.buttonTextConfirm]}>{'Done'}</Text>
-										</TouchableOpacity>
-									</View>
-								</View>
-							</View>
+								)}
+							</WithTranslations>
 						)}
 					</WithResizeOnKeyboardShow>
 				</Modal>

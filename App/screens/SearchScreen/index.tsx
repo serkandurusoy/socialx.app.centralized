@@ -1,6 +1,6 @@
 /**
  * TODO: THIS SCREEN IS NO LONGER IN USE, see UserSearchStackNavigator! in AppNavigation!
- * **/
+ */
 
 import debounce from 'lodash/debounce';
 import React, {Component} from 'react';

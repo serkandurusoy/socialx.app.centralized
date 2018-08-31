@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import moment from 'moment';
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
@@ -23,7 +24,7 @@ export const PostOwner: React.SFC<IPostOwnerProps> = ({owner, timestamp, onBackP
 			<TouchableOpacity onPress={onBackPress}>
 				<Icon name='ios-arrow-down' style={styles.arrow} />
 			</TouchableOpacity>
-			<TouchableOpacity onPress={() => {}}>
+			<TouchableOpacity onPress={noop}>
 				<AvatarImage image={{uri: owner.avatarURL}} style={styles.avatar} />
 			</TouchableOpacity>
 			<View style={styles.textContainer}>
@@ -41,3 +42,8 @@ export const PostOwner: React.SFC<IPostOwnerProps> = ({owner, timestamp, onBackP
 		</View>
 	);
 };
+
+/**
+ * TODO list:
+ * 1. Add handler for display user profiles, when tapped on avatar!
+ */

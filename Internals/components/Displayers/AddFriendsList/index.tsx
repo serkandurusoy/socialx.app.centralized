@@ -5,7 +5,7 @@ import {Icons} from 'theme';
 import {FriendsSearchResult} from 'types';
 import style from './style';
 
-export interface IAddFriendsListProps {
+interface IAddFriendsListProps {
 	showTagFriendsModal: () => void;
 	taggedFriends: FriendsSearchResult[];
 }

@@ -1,10 +1,11 @@
 import React from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import {Colors, Sizes} from 'theme';
 import style from './style';
 
-export interface IScreenHeaderButtonProps {
+interface IScreenHeaderButtonProps {
 	onPress: () => void;
 	iconName?: string;
 	iconSource?: number;
@@ -12,13 +13,17 @@ export interface IScreenHeaderButtonProps {
 	iconSize?: number;
 }
 
-export const ScreenHeaderButton: React.SFC<IScreenHeaderButtonProps> = (props) => {
+export const ScreenHeaderButton: React.SFC<IScreenHeaderButtonProps> = ({
+	onPress,
+	iconName,
+	iconSource,
+	iconColor,
+	iconSize,
+}) => {
 	return (
-		<TouchableOpacity onPress={props.onPress} style={style.iconContainer}>
-			{props.iconName ? <Icon name={props.iconName} size={props.iconSize} color={props.iconColor} /> : null}
-			{props.iconSource ? (
-				<Image source={props.iconSource} style={style.headerButtonIcon} resizeMode={'contain'} />
-			) : null}
+		<TouchableOpacity onPress={onPress} style={style.iconContainer}>
+			{iconName ? <Icon name={iconName} size={iconSize} color={iconColor} /> : null}
+			{iconSource ? <Image source={iconSource} style={style.headerButtonIcon} resizeMode={'contain'} /> : null}
 		</TouchableOpacity>
 	);
 };

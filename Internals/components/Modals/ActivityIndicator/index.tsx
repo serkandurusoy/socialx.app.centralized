@@ -7,7 +7,7 @@ import {WithManagedTransitions} from 'hoc';
 import {Colors} from 'theme';
 import style from './style';
 
-export interface IModalActivityIndicatorProps {
+interface IModalActivityIndicatorProps {
 	activityIndicatorTitle?: string | null;
 	activityIndicatorMessage?: string | null;
 	showActivityIndicator: boolean;
@@ -21,7 +21,7 @@ const ManagedModalActivityIndicator: React.SFC<IModalActivityIndicatorProps> = (
 	<WithManagedTransitions modalVisible={showActivityIndicator}>
 		{({onDismiss, onModalHide}) => (
 			<Modal
-				onDismiss={onDismiss}
+				onDismiss={onDismiss} // lib. TS issue, onDismiss prop is inherited from Modal in 'react-native'
 				onModalHide={onModalHide}
 				isVisible={showActivityIndicator}
 				backdropOpacity={0.2}

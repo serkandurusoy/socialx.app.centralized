@@ -25,7 +25,7 @@ const AVATAR_CAMERA_OPTIONS = {
 	useFrontCamera: true,
 };
 
-export interface IAvatarPickerProps extends IWithTranslationProps {
+interface IAvatarPickerProps extends IWithTranslationProps {
 	avatarImage: ImageSourcePropType;
 	afterImagePick: (image: string) => void;
 	avatarSize?: number;
@@ -56,13 +56,10 @@ const pickUserAvatar = (
 			title: getText('avatar.picker.title'),
 		},
 		(buttonIndex: number) => {
-			switch (buttonIndex) {
-				case 0:
-					showGalleryPhotoPicker(afterImagePick);
-					break;
-				case 1:
-					takeCameraPhoto(afterImagePick);
-					break;
+			if (buttonIndex === 0) {
+				showGalleryPhotoPicker(afterImagePick);
+			} else if (buttonIndex === 1) {
+				takeCameraPhoto(afterImagePick);
 			}
 		},
 	);

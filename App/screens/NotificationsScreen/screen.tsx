@@ -1,13 +1,7 @@
 import React from 'react';
 import {FlatList, Image, Text, View} from 'react-native';
 
-import {
-	ActivityRecentCommentCard,
-	ActivitySuperLikedCard,
-	FriendRequest,
-	GroupRequest,
-	NotificationGI,
-} from 'components';
+import {ActivityRecentCommentCard, ActivitySuperLikedCard, FriendRequest, NotificationGI} from 'components';
 import {IWithLoaderProps, WithInlineLoader} from 'hoc';
 import {Icons} from 'theme';
 import {NOTIFICATION_TYPES} from 'types';

@@ -1,54 +1,27 @@
-import React, {Component} from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {Colors} from 'theme';
-import {ButtonSizes, ISXButtonProps, SXButton} from '../Button';
-import style from '../Button/style';
+import {ISXButtonProps, SXButton} from 'components';
+import style from './style';
 
-export interface ISXButtonGProps extends ISXButtonProps {
+interface ISXButtonGProps extends ISXButtonProps {
 	colorStart: string;
 	colorEnd: string;
 }
 
-export class SXGradientButton extends Component<ISXButtonGProps> {
-	public static defaultProps: Partial<ISXButtonGProps> = {
-		width: 0,
-		disabled: false,
-		size: ButtonSizes.Normal,
-		autoWidth: false,
-		borderColor: Colors.white,
-	};
+export const SXGradientButton: React.SFC<ISXButtonGProps> = (props) => {
+	const {colorStart, colorEnd, disabled, loading, size, ...buttonProps} = props;
 
-	public render() {
-		return (
-			<TouchableOpacity disabled={this.props.disabled} onPress={this.props.onPress} style={this.getContainerWidth()}>
-				<LinearGradient
-					start={{x: 0, y: 0.5}}
-					end={{x: 1, y: 0.5}}
-					colors={[this.props.colorStart, this.props.colorEnd]}
-					style={this.getContainerStyles()}
-				>
-					<Text style={[style.text, style['text' + this.props.size]]}>{this.props.label}</Text>
-				</LinearGradient>
-			</TouchableOpacity>
-		);
-	}
+	const buttonDisabled = disabled || loading;
 
-	protected getContainerWidth = () => {
-		let ret: any = {width: '100%'};
-		if (this.props.width) {
-			ret = {width: this.props.width};
-		} else if (this.props.autoWidth) {
-			ret = {};
-		}
-		return ret;
-	};
-
-	protected getContainerStyles = (): any => [
-		style.container,
-		{borderColor: this.props.borderColor},
-		style['container' + this.props.size],
-		...(this.props.disabled ? [style.disabledButton] : []),
-	];
-}
+	return (
+		<LinearGradient
+			start={{x: 0, y: 0.5}}
+			end={{x: 1, y: 0.5}}
+			colors={[colorStart, colorEnd]}
+			style={[style.container, buttonDisabled ? style.disabledButton : {}]}
+		>
+			<SXButton {...buttonProps} containerStyle={style.innerButtonContainer} />
+		</LinearGradient>
+	);
+};

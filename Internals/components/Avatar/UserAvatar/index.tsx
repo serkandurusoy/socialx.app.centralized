@@ -1,13 +1,15 @@
+import noop from 'lodash/noop';
 import React from 'react';
-import {Button, View} from 'react-native';
+import {View} from 'react-native';
 
 import {Colors} from 'theme';
+import {WithTranslations} from 'utilities';
 import {ButtonSizes, SXButton} from '../../Interaction';
 import {AvatarImage} from '../Image';
 import {AvatarName} from '../Name';
 import style from './style';
 
-export interface IUserAvatarProps {
+interface IUserAvatarProps {
 	avatarURL: any;
 	fullName: string;
 	username?: string;
@@ -26,20 +28,29 @@ export const UserAvatar: React.SFC<IUserAvatarProps> = ({
 	ownUser,
 	onEditProfile,
 }) => (
-	<View style={style.container}>
-		<View style={style.imageContainer}>
-			<AvatarImage image={avatarURL} />
-		</View>
-		<View style={style.dataContainer}>
-			<AvatarName fullName={fullName} username={username} fullNameColor={fullNameColor} userNameColor={usernameColor} />
-			<SXButton
-				label={ownUser ? 'EDIT PROFILE' : 'MESSAGE'}
-				size={ButtonSizes.Small}
-				borderColor={Colors.grayText}
-				textColor={Colors.background}
-				containerStyle={style.buttonContainer}
-				onPress={ownUser ? onEditProfile : () => {}}
-			/>
-		</View>
-	</View>
+	<WithTranslations>
+		{({getText}) => (
+			<View style={style.container}>
+				<View style={style.imageContainer}>
+					<AvatarImage image={avatarURL} />
+				</View>
+				<View style={style.dataContainer}>
+					<AvatarName
+						fullName={fullName}
+						username={username}
+						fullNameColor={fullNameColor}
+						userNameColor={usernameColor}
+					/>
+					<SXButton
+						label={getText(ownUser ? 'user.avatar.button.label.own.user' : 'user.avatar.button.label.other.user')}
+						size={ButtonSizes.Small}
+						borderColor={Colors.grayText}
+						textColor={Colors.background}
+						containerStyle={style.buttonContainer}
+						onPress={ownUser ? onEditProfile : noop}
+					/>
+				</View>
+			</View>
+		)}
+	</WithTranslations>
 );

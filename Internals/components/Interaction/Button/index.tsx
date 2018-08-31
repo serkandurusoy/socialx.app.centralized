@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {ActivityIndicator, StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
 
 import {Colors} from 'theme';
@@ -24,55 +24,52 @@ export interface ISXButtonProps {
 	containerStyle?: StyleProp<ViewStyle>;
 }
 
-export class SXButton extends Component<ISXButtonProps, any> {
-	public static defaultProps: Partial<ISXButtonProps> = {
-		width: 0,
-		disabled: false,
-		size: ButtonSizes.Normal,
-		autoWidth: false,
-		borderColor: Colors.white,
-		loading: false,
-	};
+export const SXButton: React.SFC<ISXButtonProps> = ({
+	borderColor,
+	size,
+	containerStyle,
+	label,
+	loading,
+	onPress,
+	disabled,
+	width,
+	autoWidth,
+	textColor,
+}) => {
+	const buttonDisabled = disabled || loading;
 
-	// todo @serkan @jake why?????? get belongs to instance, props change within the lifecycle in render functions,
-	// don't apply "class" principles to react classes
-	get isDisabled(): boolean | undefined {
-		return this.props.disabled || this.props.loading;
-	}
-
-	public render() {
-		return (
-			<TouchableOpacity disabled={this.isDisabled} onPress={this.props.onPress} style={this.getContainerWidth()}>
-				<View style={this.getContainerStyles()}>
-					<Text style={this.getTextStyles()}>{this.props.label}</Text>
-					{this.props.loading && (
-						<ActivityIndicator size={'small'} color={Colors.white} style={style.loadingIndicator} />
-					)}
-				</View>
-			</TouchableOpacity>
-		);
-	}
-
-	protected getContainerWidth = () => {
-		let ret: any = {width: '100%'};
-		if (this.props.width) {
-			ret = {width: this.props.width};
-		} else if (this.props.autoWidth) {
-			ret = {};
-		}
-		return ret;
-	};
-
-	protected getContainerStyles = () => [
+	const containerStyles = [
 		style.container,
-		{borderColor: this.props.borderColor},
-		...(this.props.containerStyle ? [this.props.containerStyle] : [style['container' + this.props.size]]),
-		...(this.isDisabled ? [style.disabledButton] : []),
+		{borderColor},
+		containerStyle ? containerStyle : {},
+		style['container' + size],
+		buttonDisabled ? style.disabledButton : {},
 	];
 
-	protected getTextStyles = () => [
-		style.text,
-		{color: this.props.textColor ? this.props.textColor : Colors.white},
-		this.props.size ? style['text' + this.props.size] : null,
-	];
-}
+	let containerWidth: StyleProp<ViewStyle> = {width: '100%'};
+	if (width) {
+		containerWidth = {width};
+	} else if (autoWidth) {
+		containerWidth = {};
+	}
+
+	const textStyles = [style.text, {color: textColor ? textColor : Colors.white}, size ? style['text' + size] : {}];
+
+	return (
+		<TouchableOpacity disabled={buttonDisabled} onPress={onPress} style={containerWidth}>
+			<View style={containerStyles}>
+				<Text style={textStyles}>{label}</Text>
+				{loading && <ActivityIndicator size={'small'} color={Colors.white} style={style.loadingIndicator} />}
+			</View>
+		</TouchableOpacity>
+	);
+};
+
+SXButton.defaultProps = {
+	width: 0,
+	disabled: false,
+	size: ButtonSizes.Normal,
+	autoWidth: false,
+	borderColor: Colors.white,
+	loading: false,
+};

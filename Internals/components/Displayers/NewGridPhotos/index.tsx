@@ -11,7 +11,7 @@ enum ViewTypes {
 	HEADER_LAYOUT = 1,
 }
 
-export interface IHeaderType {
+interface IHeaderType {
 	element: ReactElement<any>;
 	height: number;
 }
@@ -30,8 +30,9 @@ interface INewGridPhotosProps {
 }
 
 let gridProviderInstance: LayoutProvider | null = null;
-let lastKnownGridHeight: number = 0;
 // TODO: @Serkan: any better options for a singleton here?
+
+let lastKnownGridHeight: number = 0;
 const getGridProvider = (thumbWidth: number, thumbHeight: number, header: IHeaderType) => {
 	lastKnownGridHeight = header && header.height;
 	if (!gridProviderInstance) {

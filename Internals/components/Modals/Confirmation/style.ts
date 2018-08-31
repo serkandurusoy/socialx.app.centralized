@@ -6,12 +6,14 @@ const style: any = {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+		marginHorizontal: 0,
 	},
 	boxContainer: {
 		backgroundColor: Colors.white,
 		alignItems: 'center',
 		borderRadius: Sizes.smartHorizontalScale(9),
 		maxWidth: 500,
+		width: '80%',
 		shadowColor: Colors.black,
 		shadowOffset: {width: 0, height: 4},
 		shadowOpacity: 0.3,
@@ -24,6 +26,7 @@ const style: any = {
 		paddingHorizontal: Sizes.smartHorizontalScale(24),
 		paddingTop: Sizes.smartVerticalScale(14),
 		paddingBottom: Sizes.smartVerticalScale(21),
+		textAlign: 'center',
 	},
 	message: {
 		...Fonts.centuryGothic,
@@ -34,10 +37,14 @@ const style: any = {
 		paddingVertical: Sizes.smartVerticalScale(37),
 		textAlign: 'center',
 	},
-	borderContainer: {
-		borderTopWidth: Sizes.smartVerticalScale(1),
+	titleBorder: {
+		width: '100%',
 		borderBottomWidth: Sizes.smartVerticalScale(1),
-		borderTopColor: Colors.mercury,
+		borderBottomColor: Colors.mercury,
+	},
+	messageBorder: {
+		width: '100%',
+		borderBottomWidth: Sizes.smartVerticalScale(1),
 		borderBottomColor: Colors.mercury,
 	},
 	buttonsContainer: {

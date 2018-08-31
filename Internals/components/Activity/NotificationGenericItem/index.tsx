@@ -11,7 +11,7 @@ import {IModalConfirmationProps} from 'types';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
-export interface INotificationGIProps extends IWithTranslationProps {
+interface INotificationGIProps extends IWithTranslationProps {
 	avatarURL: string;
 	fullName: string;
 	username: string;

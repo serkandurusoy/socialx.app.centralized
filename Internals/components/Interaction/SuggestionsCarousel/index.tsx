@@ -25,10 +25,6 @@ interface ISuggestionsCarouselState {
 }
 
 export class SuggestionsCarousel extends Component<ISuggestionsCarouselProps, ISuggestionsCarouselState> {
-	public state = {
-		items: [],
-	};
-
 	public static getDerivedStateFromProps(props: ISuggestionsCarouselProps, state: ISuggestionsCarouselState) {
 		if (props.items && state.items.length === 0) {
 			return {
@@ -38,6 +34,10 @@ export class SuggestionsCarousel extends Component<ISuggestionsCarouselProps, IS
 
 		return null;
 	}
+
+	public state = {
+		items: [],
+	};
 
 	public render() {
 		return (

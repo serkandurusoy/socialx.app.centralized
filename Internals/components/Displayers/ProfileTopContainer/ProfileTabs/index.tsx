@@ -3,7 +3,6 @@ import {TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {PROFILE_TAB_ICON_TYPES} from 'consts';
-
 import styles from './style';
 
 interface IProfileTabs {
@@ -11,7 +10,7 @@ interface IProfileTabs {
 	activeTab: string;
 }
 
-const ProfileTabs: React.SFC<IProfileTabs> = ({onIconPress, activeTab}) => {
+export const ProfileTabs: React.SFC<IProfileTabs> = ({onIconPress, activeTab}) => {
 	const listStyle = activeTab === PROFILE_TAB_ICON_TYPES.LIST ? [styles.icon, styles.active] : styles.icon;
 	const gridStyle = activeTab === PROFILE_TAB_ICON_TYPES.GRID ? [styles.icon, styles.active] : styles.icon;
 
@@ -26,5 +25,3 @@ const ProfileTabs: React.SFC<IProfileTabs> = ({onIconPress, activeTab}) => {
 		</View>
 	);
 };
-
-export default ProfileTabs;

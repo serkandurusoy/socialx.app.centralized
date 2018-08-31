@@ -5,10 +5,10 @@ import Modal from 'react-native-modal';
 
 import {WithManagedTransitions} from 'hoc';
 import {MediaTypes} from 'types';
-import {IWithTranslationProps, withTranslations} from 'utilities';
+import {WithTranslations} from 'utilities';
 import style from './style';
 
-export interface IMediaInfoOverlayProps extends IWithTranslationProps {
+interface IMediaInfoOverlayProps {
 	visible: boolean;
 	mediaHash: string;
 	mediaSize: number;
@@ -31,9 +31,8 @@ const openURL = async (url: string, errorText: string) => {
 	}
 };
 
-const MediaInfoOverlayComponent: React.SFC<IMediaInfoOverlayProps> = ({
+export const MediaInfoModal: React.SFC<IMediaInfoOverlayProps> = ({
 	visible,
-	getText,
 	mediaHash,
 	mediaSize,
 	mediaName,
@@ -43,49 +42,51 @@ const MediaInfoOverlayComponent: React.SFC<IMediaInfoOverlayProps> = ({
 }) => (
 	<WithManagedTransitions modalVisible={visible}>
 		{({onModalHide, onDismiss}) => (
-			<Modal
-				onDismiss={onDismiss}
-				onModalHide={onModalHide}
-				isVisible={visible}
-				backdropOpacity={0.2}
-				animationIn={'zoomIn'}
-				animationOut={'zoomOut'}
-				onBackButtonPress={closeHandler}
-				onBackdropPress={closeHandler}
-				style={style.container}
-			>
-				<View style={style.boxContainer}>
-					<Text style={style.title}>{getText('media.info.title')}</Text>
-					<View style={style.infoContainer}>
-						<View style={style.infoTitles}>
-							<Text style={style.fieldTitle}>{getText('media.info.hash')}</Text>
-							<Text style={style.fieldTitle}>{getText('media.info.size')}</Text>
-							<Text style={style.fieldTitle}>{getText('media.info.name')}</Text>
-							<Text style={style.fieldTitle}>{getText('media.info.type')}</Text>
+			<WithTranslations>
+				{({getText}) => (
+					<Modal
+						onDismiss={onDismiss}
+						onModalHide={onModalHide}
+						isVisible={visible}
+						backdropOpacity={0.2}
+						animationIn={'zoomIn'}
+						animationOut={'zoomOut'}
+						onBackButtonPress={closeHandler}
+						onBackdropPress={closeHandler}
+						style={style.container}
+					>
+						<View style={style.boxContainer}>
+							<Text style={style.title}>{getText('media.info.title')}</Text>
+							<View style={style.infoContainer}>
+								<View style={style.infoTitles}>
+									<Text style={style.fieldTitle}>{getText('media.info.hash')}</Text>
+									<Text style={style.fieldTitle}>{getText('media.info.size')}</Text>
+									<Text style={style.fieldTitle}>{getText('media.info.name')}</Text>
+									<Text style={style.fieldTitle}>{getText('media.info.type')}</Text>
+								</View>
+								<View style={{flex: 1}}>
+									<Text
+										style={[style.fieldValue, style.filedValueLink]}
+										numberOfLines={1}
+										onPress={() => openURL(mediaURL, getText('message.link.not.supported'))}
+									>
+										{mediaHash}
+									</Text>
+									<Text style={style.fieldValue} numberOfLines={1}>
+										{numeral(mediaSize).format('0.00 b')}
+									</Text>
+									<Text style={style.fieldValue} numberOfLines={1}>
+										{mediaName || '-'}
+									</Text>
+									<Text style={style.fieldValue} numberOfLines={1}>
+										{getText('media.types.' + mediaType.name.toLowerCase())}
+									</Text>
+								</View>
+							</View>
 						</View>
-						<View style={{flex: 1}}>
-							<Text
-								style={[style.fieldValue, style.filedValueLink]}
-								numberOfLines={1}
-								onPress={() => openURL(mediaURL, getText('message.link.not.supported'))}
-							>
-								{mediaHash}
-							</Text>
-							<Text style={style.fieldValue} numberOfLines={1}>
-								{numeral(mediaSize).format('0.00 b')}
-							</Text>
-							<Text style={style.fieldValue} numberOfLines={1}>
-								{mediaName || '-'}
-							</Text>
-							<Text style={style.fieldValue} numberOfLines={1}>
-								{getText('media.types.' + mediaType.name.toLowerCase())}
-							</Text>
-						</View>
-					</View>
-				</View>
-			</Modal>
+					</Modal>
+				)}
+			</WithTranslations>
 		)}
 	</WithManagedTransitions>
 );
-
-export const MediaInfoModal = withTranslations(MediaInfoOverlayComponent as any);

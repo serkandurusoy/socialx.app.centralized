@@ -1,15 +1,16 @@
+import noop from 'lodash/noop';
 import React from 'react';
 import {Text, View} from 'react-native';
 
 import {AvatarImage, ButtonSizes, SXButton} from 'components';
 import {Colors, Sizes} from 'theme';
 import {SearchResultKind} from 'types';
-import {IWithTranslationProps, withTranslations} from 'utilities';
-import ProfileTabs from './ProfileTabs';
-import Statistics from './Statistics';
+import {WithTranslations} from 'utilities';
+import {ProfileTabs} from './ProfileTabs';
+import {Statistics} from './Statistics';
 import style from './style';
 
-export interface ITopContainerSharedProps extends IWithTranslationProps {
+export interface ITopContainerSharedProps {
 	avatarURL: any;
 	fullName: string;
 	username?: string;
@@ -29,7 +30,7 @@ export interface ITopContainerSharedProps extends IWithTranslationProps {
 	aboutMeText: string;
 }
 
-const TopContainer: React.SFC<ITopContainerSharedProps> = ({
+export const ProfileTopContainer: React.SFC<ITopContainerSharedProps> = ({
 	avatarURL,
 	fullName,
 	username,
@@ -48,55 +49,63 @@ const TopContainer: React.SFC<ITopContainerSharedProps> = ({
 	activeTab,
 }) => {
 	const friendButtonHandler = friendRequestStatus === SearchResultKind.Friend ? onShowFriendshipOptions : onAddFriend;
-	const buttonStatusLabel = friendRequestStatus === SearchResultKind.Friend ? 'FRIENDS' : 'ADD FRIEND';
-	const ownUserLabel = ownUser ? 'EDIT PROFILE' : 'MESSAGE';
 
 	return (
-		<View style={style.topContainer}>
-			<View style={style.background} />
-			<View style={style.avatarContainer}>
-				<AvatarImage image={{uri: avatarURL}} style={style.avatar} />
-			</View>
-			<View style={style.statisticsContainer}>
-				<View style={style.leftStatistics}>
-					<Statistics text='photos' value={numberOfPhotos} />
-					<Statistics text='likes' value={numberOfLikes} />
+		<WithTranslations>
+			{({getText}) => (
+				<View style={style.topContainer}>
+					<View style={style.background} />
+					<View style={style.avatarContainer}>
+						<AvatarImage image={{uri: avatarURL}} style={style.avatar} />
+					</View>
+					<View style={style.statisticsContainer}>
+						<View style={style.leftStatistics}>
+							<Statistics text={getText('profile.statistics.photos')} value={numberOfPhotos} />
+							<Statistics text={getText('profile.statistics.likes')} value={numberOfLikes} />
+						</View>
+						<View style={style.rightStatistics}>
+							<Statistics text={getText('profile.statistics.friends')} value={numberOfFollowers} />
+							<Statistics text={getText('profile.statistics.view.count')} value={numberOfViews} />
+						</View>
+					</View>
+					<View style={style.textContainer}>
+						<Text style={style.name}>{fullName}</Text>
+						<Text style={style.username}>@{username}</Text>
+						<Text style={style.about}>{aboutMeText}</Text>
+					</View>
+					<View style={style.buttonsContainer}>
+						{!ownUser && (
+							<SXButton
+								width={Sizes.smartHorizontalScale(150)}
+								label={
+									friendRequestStatus === SearchResultKind.Friend
+										? getText('profile.top.container.button.friends')
+										: getText('profile.top.container.button.not.friends')
+								}
+								size={ButtonSizes.Small}
+								borderColor={Colors.white}
+								textColor={Colors.white}
+								containerStyle={style.button}
+								onPress={friendButtonHandler}
+							/>
+						)}
+						<SXButton
+							width={Sizes.smartHorizontalScale(150)}
+							label={
+								ownUser
+									? getText('profile.top.container.button.edit.profile')
+									: getText('profile.top.container.button.send.message')
+							}
+							size={ButtonSizes.Small}
+							borderColor={Colors.pink}
+							textColor={Colors.pink}
+							containerStyle={style.ghostButton}
+							onPress={ownUser ? onEditProfile : noop}
+						/>
+					</View>
+					{tabs && <ProfileTabs onIconPress={onIconPress!} activeTab={activeTab!} />}
 				</View>
-				<View style={style.rightStatistics}>
-					<Statistics text='friends' value={numberOfFollowers} />
-					<Statistics text='views' value={numberOfViews} />
-				</View>
-			</View>
-			<View style={style.textContainer}>
-				<Text style={style.name}>{fullName}</Text>
-				<Text style={style.username}>@{username}</Text>
-				<Text style={style.about}>{aboutMeText}</Text>
-			</View>
-			<View style={style.buttonsContainer}>
-				{!ownUser && (
-					<SXButton
-						width={Sizes.smartHorizontalScale(150)}
-						label={buttonStatusLabel}
-						size={ButtonSizes.Small}
-						borderColor={Colors.white}
-						textColor={Colors.white}
-						containerStyle={style.button}
-						onPress={friendButtonHandler}
-					/>
-				)}
-				<SXButton
-					width={Sizes.smartHorizontalScale(150)}
-					label={ownUserLabel}
-					size={ButtonSizes.Small}
-					borderColor={Colors.pink}
-					textColor={Colors.pink}
-					containerStyle={style.ghostButton}
-					onPress={ownUser ? onEditProfile : () => {}}
-				/>
-			</View>
-			{tabs && <ProfileTabs onIconPress={onIconPress!} activeTab={activeTab!} />}
-		</View>
+			)}
+		</WithTranslations>
 	);
 };
-
-export const ProfileTopContainer = withTranslations(TopContainer as any);

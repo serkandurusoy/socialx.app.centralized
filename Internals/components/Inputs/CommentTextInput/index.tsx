@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors, Sizes} from 'theme';
 import style from './style';
 
-export interface ICommentTextInputProps {
+interface ICommentTextInputProps {
 	placeholder: string;
 	autoFocus?: boolean;
 	showSendButton: boolean;
@@ -30,32 +30,30 @@ export const CommentTextInput: React.SFC<ICommentTextInputProps> = ({
 	onCommentTextChange,
 	showSendButton,
 	onCommentSend,
-}) => {
-	return (
-		<View style={style.inputContainer}>
-			<TextInput
-				ref={textInput}
-				onChangeText={onCommentTextChange}
-				style={style.textInput}
-				placeholder={placeholder}
-				autoFocus={autoFocus}
-				multiline={true}
-				autoCorrect={false}
-				underlineColorAndroid={Colors.transparent}
-				autoCapitalize='none'
-				value={commentText}
-				placeholderTextColor={Colors.postFullName}
-			/>
-			{showSendButton && (
-				<View style={style.sendButtonContainer}>
-					<TouchableOpacity onPress={() => sendCommentHandler(onCommentSend)} style={style.sendButton}>
-						<Icon name='md-send' size={Sizes.smartHorizontalScale(30)} color={Colors.pink} />
-					</TouchableOpacity>
-				</View>
-			)}
-		</View>
-	);
-};
+}) => (
+	<View style={style.inputContainer}>
+		<TextInput
+			ref={textInput}
+			onChangeText={onCommentTextChange}
+			style={style.textInput}
+			placeholder={placeholder}
+			autoFocus={autoFocus}
+			multiline={true}
+			autoCorrect={false}
+			underlineColorAndroid={Colors.transparent}
+			autoCapitalize='none'
+			value={commentText}
+			placeholderTextColor={Colors.postFullName}
+		/>
+		{showSendButton && (
+			<View style={style.sendButtonContainer}>
+				<TouchableOpacity onPress={() => sendCommentHandler(onCommentSend)} style={style.sendButton}>
+					<Icon name='md-send' size={Sizes.smartHorizontalScale(30)} color={Colors.pink} />
+				</TouchableOpacity>
+			</View>
+		)}
+	</View>
+);
 
 CommentTextInput.defaultProps = {
 	autoFocus: true,

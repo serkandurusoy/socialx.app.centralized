@@ -1,5 +1,7 @@
 // Inspired by https://github.com/virusvn/react-native-svg-animated-linear-gradient, with Expo dep. removed and minor changes
 
+// TODO: to typescript
+
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import {View, StyleSheet, Animated} from 'react-native';
