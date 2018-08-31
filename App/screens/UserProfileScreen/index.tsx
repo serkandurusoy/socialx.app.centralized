@@ -122,7 +122,7 @@ class UserProfileScreen extends Component<IUserProfileScreenProps, IUserProfileS
 
 		return (
 			<UserProfileScreenComponent
-				isLoading={userLoading || postsLoading}
+				isLoading={userLoading || postsLoading} // TODO: loading props are not working ok!
 				numberOfPhotos={numberOfPhotos}
 				numberOfLikes={numberOfLikes}
 				numberOfFollowers={numberOfFollowers}

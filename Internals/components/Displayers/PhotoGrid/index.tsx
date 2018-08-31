@@ -3,11 +3,10 @@ import {TouchableOpacity} from 'react-native';
 import {DataProvider} from 'recyclerlistview';
 
 import {MediaObjectViewer, NewGridPhotos} from 'components';
-import {IWithLoaderProps, withInlineLoader} from 'hoc';
 import {ISimpleMediaObject} from 'types';
 import style, {USER_MEDIA_THUMB_SIZE} from './style';
 
-interface IPhotoGridProps extends IWithLoaderProps {
+interface IPhotoGridProps {
 	gridMediaProvider: DataProvider;
 	loadMorePhotosHandler: () => void;
 	onViewMediaFullScreen: (index: number) => void;
@@ -28,7 +27,7 @@ const GridItem: React.SFC<{
 	);
 };
 
-const PhotosGrid: React.SFC<IPhotoGridProps> = ({
+export const PhotoGrid: React.SFC<IPhotoGridProps> = ({
 	loadMorePhotosHandler,
 	gridMediaProvider,
 	onViewMediaFullScreen,
@@ -51,5 +50,3 @@ const PhotosGrid: React.SFC<IPhotoGridProps> = ({
 		}}
 	/>
 );
-
-export const PhotoGrid = withInlineLoader(PhotosGrid);

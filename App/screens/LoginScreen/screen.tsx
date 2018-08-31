@@ -7,12 +7,12 @@ import {compose} from 'recompose';
 
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {ModalInputSMSCode, SXButton, SXTextInput, TKeyboardKeys, TRKeyboardKeys} from 'components';
-import {IWithResizeOnKeyboardShowProps, ModalManager, withResizeOnKeyboardShow} from 'hoc';
+import {IResizeProps, ModalManager, WithResizeOnKeyboardShow} from 'hoc';
 import {Colors} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import style from './style';
 
-interface ILoginScreenComponentProps extends IWithResizeOnKeyboardShowProps, IWithTranslationProps {
+interface ILoginScreenComponentProps extends IWithTranslationProps {
 	showModalForSMSCode: boolean;
 	phoneNumber: string;
 	onSmsCodeConfirmed: (code: string) => void;
@@ -32,7 +32,7 @@ interface IValidatedLoginFormProps extends IWithTranslationProps {
 	password: string;
 }
 
-interface ILoginFormProps extends IWithTranslationProps, IWithResizeOnKeyboardShowProps {
+interface ILoginFormProps extends IWithTranslationProps, IResizeProps {
 	onStartLogin: (username: string, password: string) => Promise<void>;
 	loginLoader: () => void;
 	hideLoader: () => void;
@@ -153,7 +153,6 @@ const LoginScreenComponent: React.SFC<ILoginScreenComponentProps> = ({
 	onNavigateToPasswordForgot,
 	onNavigateToRegister,
 	onNavigateToUploadKey,
-	safeRunAfterKeyboardHide,
 	loginLoader,
 	hideLoader,
 }) => (
@@ -173,14 +172,18 @@ const LoginScreenComponent: React.SFC<ILoginScreenComponentProps> = ({
 				phoneNumber={phoneNumber}
 			/>
 			<Text style={style.welcomeText}>{getText('login.welcome.message')}</Text>
-			<LoginForm
-				getText={getText}
-				onStartLogin={onStartLogin}
-				safeRunAfterKeyboardHide={safeRunAfterKeyboardHide}
-				marginBottom={0} // dummy value here
-				loginLoader={loginLoader}
-				hideLoader={hideLoader}
-			/>
+			<WithResizeOnKeyboardShow>
+				{({safeRunAfterKeyboardHide}) => (
+					<LoginForm
+						getText={getText}
+						onStartLogin={onStartLogin}
+						safeRunAfterKeyboardHide={safeRunAfterKeyboardHide}
+						marginBottom={0} // dummy value here
+						loginLoader={loginLoader}
+						hideLoader={hideLoader}
+					/>
+				)}
+			</WithResizeOnKeyboardShow>
 			<TouchableOpacity onPress={onNavigateToPasswordForgot} style={style.forgotPassword}>
 				<Text style={style.forgotPasswordText}>{getText('login.forgot.password')}</Text>
 			</TouchableOpacity>
@@ -207,7 +210,6 @@ const MapDispatchToProps = (dispatch: any, props: ILoginScreenComponentProps) =>
 });
 
 export default compose(
-	withResizeOnKeyboardShow,
 	withTranslations,
 	connect(
 		null,

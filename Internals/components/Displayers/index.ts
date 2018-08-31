@@ -29,7 +29,6 @@ export * from './MediaObject';
 export * from './NewGridPhotos';
 export * from './GovernanceCard';
 export * from './DotsWithTooltips';
-export * from './FeedTabBar';
 export * from './ProfileTopContainer';
 export * from './HeartAnimation';
 export * from './HeaderLogo';

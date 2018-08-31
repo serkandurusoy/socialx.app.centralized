@@ -8,7 +8,7 @@ import {compose} from 'recompose';
 import {hideActivityIndicator, showActivityIndicator} from 'backend/actions';
 import {addMediaHoc, createPostHoc, userHoc} from 'backend/graphql';
 import {ModalCloseButton, ScreenHeaderButton} from 'components';
-import {IModalForAddFriendsProps, ModalManager, withModalForAddFriends} from 'hoc';
+import {ModalManager, WithModalForAddFriends} from 'hoc';
 import {FriendsSearchResult, IUserDataResponse, WallPostPhotoOptimized} from 'types';
 import {
 	getCameraMediaObjectMultiple,
@@ -35,7 +35,7 @@ interface IPhotoScreenNavParams {
 	};
 }
 
-interface IPhotoScreenProps extends IModalForAddFriendsProps, IWithTranslationProps {
+interface IPhotoScreenProps extends IWithTranslationProps {
 	navigation: NavigationScreenProp<IPhotoScreenNavParams>;
 	navigationOptions: NavigationScreenConfig<any>;
 	data: IUserDataResponse;
@@ -70,6 +70,8 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 		mediaObjects: [...this.props.navigation.state.params.mediaObjects],
 	};
 
+	private addedFriends: FriendsSearchResult[] = [];
+
 	public componentDidMount() {
 		InteractionManager.runAfterInteractions(() => {
 			this.props.navigation.setParams({onSendPress: this.sendPostHandler});
@@ -77,25 +79,32 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 	}
 
 	public render() {
-		const {data, showAddFriendsModal, addedFriends} = this.props;
+		const {data} = this.props;
 		const {locationEnabled, location, tagFriends, shareText, mediaObjects} = this.state;
 		return (
-			<PhotoScreenComponent
-				isLoading={data.loading}
-				showTagFriendsModal={showAddFriendsModal}
-				avatarURL={getUserAvatar(data)}
-				mediaObjects={mediaObjects.map((mediaObject) => mediaObject.path)}
-				taggedFriends={addedFriends}
-				locationEnabled={locationEnabled}
-				location={location}
-				tagFriends={tagFriends}
-				onTagFriendsToggle={this.onTagFriendsToggleHandler}
-				onLocationTextUpdate={this.onLocationTextUpdate}
-				onLocationToggle={this.onLocationToggle}
-				onShareTextUpdate={this.onShareTextUpdateHandler}
-				shareText={shareText}
-				onAddMedia={this.onAddMediaHandler}
-			/>
+			<WithModalForAddFriends>
+				{({showAddFriendsModal, addedFriends}) => {
+					this.addedFriends = addedFriends; // TODO: addedFriends is needed in other methods here.. options?
+					return (
+						<PhotoScreenComponent
+							isLoading={data.loading}
+							showTagFriendsModal={showAddFriendsModal}
+							avatarURL={getUserAvatar(data)}
+							mediaObjects={mediaObjects.map((mediaObject) => mediaObject.path)}
+							taggedFriends={addedFriends}
+							locationEnabled={locationEnabled}
+							location={location}
+							tagFriends={tagFriends}
+							onTagFriendsToggle={this.onTagFriendsToggleHandler}
+							onLocationTextUpdate={this.onLocationTextUpdate}
+							onLocationToggle={this.onLocationToggle}
+							onShareTextUpdate={this.onShareTextUpdateHandler}
+							shareText={shareText}
+							onAddMedia={this.onAddMediaHandler}
+						/>
+					);
+				}}
+			</WithModalForAddFriends>
 		);
 	}
 
@@ -125,12 +134,11 @@ class PhotoScreen extends Component<IPhotoScreenProps, IPhotoScreenState> {
 
 	private getWallPostData = (): WallPostPhoto => {
 		const {tagFriends, shareText, locationEnabled, location} = this.state;
-		const {addedFriends} = this.props;
 
 		// TODO: get rid of replace in shareText after we sort out SOC-148
 		return {
 			location: locationEnabled && location !== '' ? location : undefined,
-			taggedFriends: tagFriends && addedFriends.length > 0 ? addedFriends : undefined,
+			taggedFriends: tagFriends && this.addedFriends.length > 0 ? this.addedFriends : undefined,
 			title: shareText ? shareText.replace(/\n/g, '\\n') : undefined,
 		};
 	};
@@ -230,5 +238,4 @@ export default compose(
 		null,
 		MapDispatchToProps,
 	),
-	withModalForAddFriends,
 )(PhotoScreen as any);

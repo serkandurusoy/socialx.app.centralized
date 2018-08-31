@@ -2,16 +2,17 @@ import React from 'react';
 import {ActivityIndicator, ConnectionInfo, ConnectionType, NetInfo, SafeAreaView, Text, View} from 'react-native';
 import Modal from 'react-native-modal';
 
-import {IManagedModal} from 'hoc';
-import {withManagedTransitions} from 'hoc/ManagedModal';
+import {WithManagedTransitions} from 'hoc';
 import {Colors} from 'theme';
 import style from './style';
 
 const CONNECTION_EVENT_NAME = 'connectionChange';
 
-export interface IOfflineOverlayProps extends IManagedModal {}
+export interface IOfflineOverlayState {
+	offline: boolean;
+}
 
-class OfflineOverlayComponent extends React.Component<IOfflineOverlayProps> {
+export class OfflineOverlay extends React.Component<any, IOfflineOverlayState> {
 	public state = {
 		offline: false,
 	};
@@ -26,23 +27,28 @@ class OfflineOverlayComponent extends React.Component<IOfflineOverlayProps> {
 	}
 
 	public render() {
+		const {offline} = this.state;
 		return (
-			<Modal
-				onDismiss={this.props.onDismiss}
-				onModalHide={this.props.onModalHide}
-				isVisible={this.state.offline}
-				backdropOpacity={0.2}
-				animationIn={'slideInDown'}
-				animationOut={'slideOutUp'}
-				style={style.container}
-			>
-				<SafeAreaView>
-					<View style={style.boxContainer}>
-						<ActivityIndicator size={'small'} color={Colors.white} />
-						<Text style={style.message}>{'Offline. Waiting for connection..'}</Text>
-					</View>
-				</SafeAreaView>
-			</Modal>
+			<WithManagedTransitions modalVisible={offline}>
+				{({onDismiss, onModalHide}) => (
+					<Modal
+						onDismiss={onDismiss}
+						onModalHide={onModalHide}
+						isVisible={offline}
+						backdropOpacity={0.2}
+						animationIn={'slideInDown'}
+						animationOut={'slideOutUp'}
+						style={style.container}
+					>
+						<SafeAreaView>
+							<View style={style.boxContainer}>
+								<ActivityIndicator size={'small'} color={Colors.white} />
+								<Text style={style.message}>{'Offline. Waiting for connection..'}</Text>
+							</View>
+						</SafeAreaView>
+					</Modal>
+				)}
+			</WithManagedTransitions>
 		);
 	}
 
@@ -52,7 +58,5 @@ class OfflineOverlayComponent extends React.Component<IOfflineOverlayProps> {
 		this.setState({
 			offline: isOffline,
 		});
-	}
+	};
 }
-
-export const OfflineOverlay = withManagedTransitions(OfflineOverlayComponent);

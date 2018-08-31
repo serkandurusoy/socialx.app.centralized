@@ -3,7 +3,7 @@ import {Dimensions, RefreshControl, ScrollView, View} from 'react-native';
 import {DataProvider} from 'recyclerlistview';
 
 import {ITopContainerSharedProps, NoPhotos, PhotoGrid, ProfileTopContainer} from 'components';
-import {IWithLoaderProps, withInlineLoader} from 'hoc';
+import {IWithLoaderProps, WithInlineLoader} from 'hoc';
 import {Colors} from 'theme';
 import style from './style';
 
@@ -42,51 +42,54 @@ const MyProfileScreenComponent: React.SFC<IMyProfileScreenProps> = ({
 	hasPhotos,
 	ownUser,
 	onEditProfile,
+	isLoading,
 }) => {
 	const scrollContainerStyles = hasPhotos ? style.scrollContainer : [style.scrollContainer, {flex: 1}];
 
 	return (
-		<View style={style.container}>
-			<View style={[style.whiteBottomView, {height: SCREEN_HEIGHT / 2}]} />
-			<ScrollView
-				contentContainerStyle={scrollContainerStyles}
-				showsVerticalScrollIndicator={false}
-				refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.white} />}
-				disabled={hasPhotos}
-			>
-				<ProfileTopContainer
-					avatarURL={avatarURL}
-					fullName={fullName}
-					username={username}
-					numberOfFollowers={numberOfFollowers}
-					numberOfLikes={numberOfLikes}
-					numberOfPhotos={numberOfPhotos}
-					numberOfViews={numberOfViews}
-					onViewProfilePhoto={onViewProfilePhoto}
-					onAddFriend={onAddFriend}
-					friendRequestStatus={friendRequestStatus}
-					ownUser={ownUser}
-					aboutMeText={bio}
-					onEditProfile={onEditProfile}
-				/>
-				{hasPhotos && (
-					<View style={style.gridContainer}>
-						<PhotoGrid
-							loadMorePhotosHandler={loadMorePhotosHandler}
-							gridMediaProvider={gridMediaProvider}
-							onViewMediaFullScreen={onViewMediaFullScreen}
-							header={{
-								element: <View style={{width: 1, height: 1}} />,
-								height: 1,
-							}}
-							disabled={hasPhotos}
-						/>
-					</View>
-				)}
-				{!hasPhotos && <NoPhotos />}
-			</ScrollView>
-		</View>
+		<WithInlineLoader isLoading={isLoading}>
+			<View style={style.container}>
+				<View style={[style.whiteBottomView, {height: SCREEN_HEIGHT / 2}]} />
+				<ScrollView
+					contentContainerStyle={scrollContainerStyles}
+					showsVerticalScrollIndicator={false}
+					refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.white} />}
+					disabled={hasPhotos}
+				>
+					<ProfileTopContainer
+						avatarURL={avatarURL}
+						fullName={fullName}
+						username={username}
+						numberOfFollowers={numberOfFollowers}
+						numberOfLikes={numberOfLikes}
+						numberOfPhotos={numberOfPhotos}
+						numberOfViews={numberOfViews}
+						onViewProfilePhoto={onViewProfilePhoto}
+						onAddFriend={onAddFriend}
+						friendRequestStatus={friendRequestStatus}
+						ownUser={ownUser}
+						aboutMeText={bio}
+						onEditProfile={onEditProfile}
+					/>
+					{hasPhotos && (
+						<View style={style.gridContainer}>
+							<PhotoGrid
+								loadMorePhotosHandler={loadMorePhotosHandler}
+								gridMediaProvider={gridMediaProvider}
+								onViewMediaFullScreen={onViewMediaFullScreen}
+								header={{
+									element: <View style={{width: 1, height: 1}} />,
+									height: 1,
+								}}
+								disabled={hasPhotos}
+							/>
+						</View>
+					)}
+					{!hasPhotos && <NoPhotos />}
+				</ScrollView>
+			</View>
+		</WithInlineLoader>
 	);
 };
 
-export default withInlineLoader(MyProfileScreenComponent);
+export default MyProfileScreenComponent;
