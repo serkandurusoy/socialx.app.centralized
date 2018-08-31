@@ -1,3 +1,4 @@
+// MIGRATION: put mocks wherever they are used, not in a library
 import {NOTIFICATION_TYPES} from 'types';
 
 export const getRandomImage = (minSize = 100, maxSize = 200, type = 'any') => {

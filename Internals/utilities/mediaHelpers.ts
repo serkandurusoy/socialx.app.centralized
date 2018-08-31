@@ -1,4 +1,5 @@
-import {CameraRoll, PermissionsAndroid} from 'react-native';
+// MIGRATION: consult jake, remove components and configuration dependencies or migrate together
+import {CameraRoll, PermissionsAndroid, Platform} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';

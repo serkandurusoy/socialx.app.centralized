@@ -1,3 +1,5 @@
+// MIGRATION: can be imported from '@aws-amplify/core' but consult Serkan, we actually don't need a library because
+// we are doing very minimal i18n, so we can use basic json mapping or even store the dictionary in redux!
 import {I18n} from 'aws-amplify';
 import React from 'react';
 import {AsyncStorage} from 'react-native';

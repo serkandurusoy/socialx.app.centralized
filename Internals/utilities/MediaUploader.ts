@@ -1,5 +1,6 @@
+// MIGRATION: jake & serkan, perhaps merge this into the ipfs folder and make it part of api-storage!
 import {WallPostPhotoOptimized} from 'types';
-import {addFileBN, addFilesBN} from 'utilities/ipfs';
+import {addFileBN, addFilesBN} from './ipfs';
 
 interface MediaUploadCompleteResponse {
 	responseCode: number;

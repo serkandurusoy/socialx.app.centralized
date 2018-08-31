@@ -1,3 +1,4 @@
+// MIGRATION: check with jake!
 export const ipfsConfig = {
 	ipfs_URL: 'https://ipfs.infura.io/ipfs/',
 	ipfs_server: 'ipfs.infura.io', // Socx Mainnode

@@ -1,3 +1,4 @@
+// MIGRATION: to be removed
 export const appsyncConfig = {
 	graphqlEndpoint: 'https://vdrrrqoaczex7lvwu7hisy3why.appsync-api.eu-west-1.amazonaws.com/graphql',
 	region: 'eu-west-1',

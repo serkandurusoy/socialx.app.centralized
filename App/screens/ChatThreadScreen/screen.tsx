@@ -12,13 +12,24 @@ import {Colors, Sizes} from 'theme';
 import {
 	getCameraMediaObject,
 	getGalleryMediaObject,
-	isStringPureEmoji,
 	PickerImage,
 	requestResourcePermission,
 } from 'utilities';
 import uuidv4 from 'uuid/v4';
 import {MessageData} from './index';
 import style from './style';
+import emojiRegexCreator from 'emoji-regex';
+
+const emojiRegex = emojiRegexCreator();
+
+const isStringPureEmoji = (text: string): boolean => {
+	if (!text || !text.trim()) {
+		return false;
+	}
+	return text.replace(emojiRegex, '').trim() === '';
+};
+
+
 
 // TODO: @jake @serkan these props are definitely not correct!
 interface IMessageContentProps {

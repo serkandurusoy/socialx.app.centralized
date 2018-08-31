@@ -1,3 +1,4 @@
+// MIGRATION: unused, will be removed
 import {Auth} from 'aws-amplify';
 
 // <============= Auth =============>

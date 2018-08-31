@@ -1,3 +1,4 @@
+// MIGRATION: we are going to use a schema library for all validations. this will be unused. consult serkan!
 import PasswordValidator from 'password-validator';
 
 const MIN_PASSWORD_LENGTH = 8;

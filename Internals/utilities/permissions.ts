@@ -1,3 +1,4 @@
+// MIGRATION: migrated to utilities
 import {OS_TYPES} from 'consts';
 import {Permission, PermissionsAndroid, Platform} from 'react-native';
 

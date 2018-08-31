@@ -1,3 +1,4 @@
+// MIGRATION: migrated to /packages/commons
 export const decodeBase64Text = (text: string): string => {
 	const regex =
 		/^(data:\w+\/[a-zA-Z\+\-\.]+;base64,)?(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/gi;

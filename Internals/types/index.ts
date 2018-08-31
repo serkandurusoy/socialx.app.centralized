@@ -1,3 +1,4 @@
+// MIGRATION: consult serkan, these will be scattered across the app where they get originally defined and then be exported from there
 import {PickerImage} from 'utilities';
 
 export * from './gql';

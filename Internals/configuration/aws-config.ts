@@ -1,3 +1,4 @@
+// MIGRATION: to be removed
 export const awsconfig = {
 	aws_app_analytics: 'enable',
 	aws_cognito_identity_pool_id: 'eu-west-1:d0fff7aa-de1b-466d-a518-077c9275774b',

@@ -1,3 +1,4 @@
+// MIGRATION: most of this is unused. some of them are used once, no need to put them in a lib, put it next to where it is used!
 import {CommentsSortingOptions, IMediaProps, ISimpleComment, IWallPostComment} from 'types';
 
 export const bestTwoComments = (post: {comments: ISimpleComment[]}) => {

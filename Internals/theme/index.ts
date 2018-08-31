@@ -1,3 +1,4 @@
+// MIGRATION: migrated to environment/theme
 export * from './ApplicationStyles';
 export * from './Colors';
 export * from './Fonts';

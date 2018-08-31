@@ -1,3 +1,4 @@
+// MIGRATION: should go into components
 /* tslint:disable */
 import React, {Component} from 'react';
 import {Text, TextProps} from 'react-native';

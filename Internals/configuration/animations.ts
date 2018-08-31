@@ -1,3 +1,4 @@
+// MIGRATION: migrated into environment/theme/animations
 import {Animated, Image, Text} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import FastImage from 'react-native-fast-image';

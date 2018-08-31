@@ -1,3 +1,4 @@
+// MIGRATION: migrated to environment/consts
 import {Icons} from 'theme';
 
 export enum FormTypes {
