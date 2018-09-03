@@ -1,6 +1,7 @@
 import Amplify from 'aws-amplify';
 import {Client, Configuration} from 'bugsnag-react-native';
 import {Platform} from 'react-native';
+import {LocaleConfig} from 'react-native-calendars';
 import DeviceInfo from 'react-native-device-info';
 
 import {awsconfig} from 'configuration';
@@ -12,6 +13,8 @@ export default async () => {
 
 	// amplify configurations
 	Amplify.configure(awsconfig);
+
+	calendarLocaleConfig();
 
 	// init I18n language set
 	await languageInit();
@@ -28,10 +31,17 @@ export default async () => {
 // 	}
 // }
 
+const calendarLocaleConfig = () => {
+	LocaleConfig.locales[''].dayNamesShort = LocaleConfig.locales[''].dayNamesShort.map((value: string) =>
+		value.toUpperCase(),
+	);
+};
+
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
 		// tslint:disable-next-line
-		console.log = () => {};
+		console.log = () => {
+		};
 	}
 };
 
