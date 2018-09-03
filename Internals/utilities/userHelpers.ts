@@ -12,7 +12,3 @@ export const getUserAvatar = (data: {user: IUserQuery}) => {
 	}
 	return data.user.avatar ? base.ipfs_URL + data.user.avatar.hash : AvatarImagePlaceholder;
 };
-
-export const getUserFullName = (user: IUserQuery) => {
-	return user.name;
-};

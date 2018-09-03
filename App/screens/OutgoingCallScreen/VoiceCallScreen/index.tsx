@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {Colors, Sizes} from 'theme';
 import {IUserQuery} from 'types';
-import {getUserAvatar, getUserFullName} from 'utilities';
+import {getUserAvatar} from 'utilities';
 import style from './style';
 
 const ANIMATION_INTERVAL = 1000;
@@ -71,7 +71,7 @@ export class VoiceCallScreen extends Component<IVoiceCallScreenProps> {
 	private renderTopContainer = () => {
 		const {user} = this.props;
 		if (user) {
-			const fullName = getUserFullName(user);
+			const fullName = user.name;
 			const avatarURL = getUserAvatar({user});
 			return (
 				<View style={style.topContainer}>

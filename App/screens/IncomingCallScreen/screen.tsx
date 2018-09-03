@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {Colors, Sizes} from 'theme';
 import {CallType, IUserQuery} from 'types';
-import {getUserAvatar, getUserFullName} from 'utilities';
+import {getUserAvatar} from 'utilities';
 import style from './style';
 
 interface IIncomingCallComponentProps {
@@ -36,7 +36,7 @@ export class IncomingCallComponent extends Component<IIncomingCallComponentProps
 	public render() {
 		const {user, callType} = this.props;
 		const callText = `Incoming ${callType} call...`;
-		const fullName = getUserFullName(user);
+		const fullName = user.name;
 		const avatarURL = getUserAvatar({user});
 
 		return (

@@ -13,7 +13,7 @@ import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
 import {Icons} from 'theme/Icons';
 import {IMediaProps, ISimpleComment, IUserQuery} from 'types';
-import {getUserAvatar, getUserFullName, IWithTranslationProps, showToastMessage, withTranslations} from 'utilities';
+import {getUserAvatar, IWithTranslationProps, showToastMessage, withTranslations} from 'utilities';
 import {IReportData, ModalReportProblem} from '../../Modals';
 import {TooltipDots, TooltipItem} from '../DotsWithTooltips';
 import style from './style';
@@ -174,7 +174,7 @@ class WallPostCardComp extends Component<IWallPostCardProp, IWallPostCardState> 
 		const timeStampDate = moment(this.props.timestamp).format('MMM DD');
 		const timeStampHour = moment(this.props.timestamp).format('hh:mma');
 		const avatarURL = getUserAvatar({user: this.props.owner});
-		const fullName = getUserFullName(this.props.owner);
+		const fullName = this.props.owner.name;
 		return (
 			<TouchableOpacity
 				onPress={() => this.navigateToUserProfilePage(this.props.owner.userId)}
