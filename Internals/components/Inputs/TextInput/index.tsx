@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/inputs
+
 import {OS_TYPES} from 'consts';
 import React, {Component} from 'react';
 import {Keyboard, Platform, Text, TextInput, TextInputProps, TouchableOpacity, View} from 'react-native';
