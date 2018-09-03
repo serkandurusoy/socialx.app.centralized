@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers
+
 import LottieView from 'lottie-react-native';
 import React, {Component} from 'react';
 import {Animated, Easing, View} from 'react-native';
