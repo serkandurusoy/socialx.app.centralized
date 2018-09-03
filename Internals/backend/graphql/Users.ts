@@ -4,7 +4,8 @@ import {graphql, QueryProps} from 'react-apollo';
 import {ipfsConfig as base} from 'configuration';
 import {AvatarImagePlaceholder} from 'consts';
 import {IMediaProps, IPostsProps} from 'types';
-import {bestTwoComments, getPostMedia, getUserAvatar, numberOfComments} from 'utilities';
+import {getUserAvatar} from 'utilities';
+import {bestTwoComments, getPostMedia, numberOfComments} from './utilities';
 
 export const getUserQueryProfileQ = gql`
 	query getUserQuery($userId: ID!) {

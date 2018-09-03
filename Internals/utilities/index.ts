@@ -6,6 +6,5 @@ export * from './toast';
 export * from './userHelpers';
 export * from './tools';
 export * from './i18n';
-export * from './comments';
 export * from './passwordValidator';
 export * from './MediaUploader';

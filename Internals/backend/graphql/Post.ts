@@ -5,7 +5,7 @@ import {IAllPostsDataResponse, IPaginatedPosts, ISimpleComment} from 'types';
 
 import {AvatarImagePlaceholder} from 'consts';
 
-import {bestTwoComments, decodeBase64Text, getPostMedia, numberOfComments} from 'utilities';
+import {bestTwoComments, getPostMedia, numberOfComments} from './utilities';
 
 import {ipfsConfig as base} from 'configuration';
 

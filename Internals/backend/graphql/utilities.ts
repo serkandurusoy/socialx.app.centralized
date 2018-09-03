@@ -1,5 +1,4 @@
-// MIGRATION: most of this is unused. some of them are used once, no need to put them in a lib, put it next to where it is used!
-import {CommentsSortingOptions, IMediaProps, ISimpleComment, IWallPostComment} from 'types';
+import {IMediaProps, ISimpleComment} from 'types';
 
 export const bestTwoComments = (post: {comments: ISimpleComment[]}) => {
 	const comments = [...post.comments];
@@ -45,31 +44,3 @@ export const getPostMedia = (medias: IMediaProps[], numberOfLikes: number, numCo
 	}
 	return ret;
 };
-
-export const updateSortedComments = (comments: IWallPostComment[], sortOption: CommentsSortingOptions) => {
-	if (sortOption === CommentsSortingOptions.Recent) {
-		return sortCommentsByRecent(comments);
-	} else if (sortOption === CommentsSortingOptions.Likes) {
-		return sortCommentsByLikes(comments);
-	}
-	return comments;
-};
-
-const sortCommentsByLikes = (comments: IWallPostComment[]) =>
-	comments.sort((a: any, b: any) => {
-		if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
-			a = a.numberOfLikes;
-			b = b.numberOfLikes;
-			return a > b ? -1 : a < b ? 1 : 0;
-		}
-		a = a.timestamp;
-		b = b.timestamp;
-		return a > b ? -1 : a < b ? 1 : 0;
-	});
-
-const sortCommentsByRecent = (comments: IWallPostComment[]) =>
-	comments.sort((a: any, b: any) => {
-		a = a.timestamp;
-		b = b.timestamp;
-		return a > b ? -1 : a < b ? 1 : 0;
-	});

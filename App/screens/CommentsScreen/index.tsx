@@ -23,7 +23,6 @@ import {
 	decodeBase64Text,
 	getUserAvatarNew,
 	IWithTranslationProps,
-	updateSortedComments,
 	withTranslations,
 } from 'utilities';
 import CommentsScreenComponent from './screen';
@@ -70,6 +69,34 @@ interface ICommentsScreenProps extends IWithTranslationProps, IWithGetComments {
 	setLikedPost: any;
 	unsetLikedPost: any;
 }
+
+const sortCommentsByLikes = (comments: IWallPostComment[]) =>
+	comments.sort((a: any, b: any) => {
+		if (a.numberOfLikes > 0 || b.numberOfLikes > 0) {
+			a = a.numberOfLikes;
+			b = b.numberOfLikes;
+			return a > b ? -1 : a < b ? 1 : 0;
+		}
+		a = a.timestamp;
+		b = b.timestamp;
+		return a > b ? -1 : a < b ? 1 : 0;
+	});
+
+const sortCommentsByRecent = (comments: IWallPostComment[]) =>
+	comments.sort((a: any, b: any) => {
+		a = a.timestamp;
+		b = b.timestamp;
+		return a > b ? -1 : a < b ? 1 : 0;
+	});
+
+const updateSortedComments = (comments: IWallPostComment[], sortOption: CommentsSortingOptions) => {
+	if (sortOption === CommentsSortingOptions.Recent) {
+		return sortCommentsByRecent(comments);
+	} else if (sortOption === CommentsSortingOptions.Likes) {
+		return sortCommentsByLikes(comments);
+	}
+	return comments;
+};
 
 class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenState> {
 	private static navigationOptions = ({navigation, navigationOptions}: ICommentsScreenProps) => {
