@@ -1,3 +1,5 @@
+// MIGRATION: migrated to app/navigation
+
 import React from 'react';
 import {Image} from 'react-native';
 import {Images} from 'theme';
