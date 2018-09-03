@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {compose} from 'recompose';
 
 import {blockUserHoc} from 'backend/graphql';
-import {HeartAnimation, InputSizes, ISuggestionCardItem, SXTextInput, TRKeyboardKeys} from 'components';
+import {HeartAnimation, InputSizes, ISuggestionCardItem, ParsedText, SXTextInput, TRKeyboardKeys} from 'components';
 import {OS_TYPES} from 'consts';
 import {ModalManager} from 'hoc';
 import {Colors, Sizes} from 'theme';
@@ -21,7 +21,6 @@ import {WallPostActions} from './WallPostActions';
 import {WallPostMedia} from './WallPostMedia';
 
 import {AnimatedFastImage} from 'configuration';
-import ParsedText from 'lib/textParser';
 
 const POST_SHORT_LENGTH = 100;
 const POST_SHORT_MAX_LINES = 3;

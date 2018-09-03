@@ -26,7 +26,7 @@ interface ITextParserProps extends TextProps {
 	childrenProps: TextProps;
 }
 
-export default class textParser extends Component<ITextParserProps> {
+export class ParsedText extends Component<ITextParserProps> {
 	private root: any = null;
 
 	private setNativeProps = (nativeProps: any) => {
