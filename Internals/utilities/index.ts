@@ -1,5 +1,4 @@
 export * from './amplify';
-export * from './mocks';
 export * from './mediaHelpers';
 export * from './permissions';
 export * from './toast';
