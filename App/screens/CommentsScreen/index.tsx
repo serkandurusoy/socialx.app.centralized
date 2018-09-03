@@ -21,7 +21,7 @@ import {Sizes} from 'theme';
 import {CommentsSortingOptions, IComments, IMediaProps, IUserDataResponse, IUserQuery, IWallPostComment} from 'types';
 import {
 	decodeBase64Text,
-	getUserAvatarNew,
+	getUserAvatar,
 	IWithTranslationProps,
 	withTranslations,
 } from 'utilities';
@@ -235,7 +235,7 @@ class CommentsScreen extends Component<ICommentsScreenProps, ICommentsScreenStat
 			text: decodeBase64Text(comment.text),
 			user: {
 				fullName: comment.owner.name,
-				avatarURL: getUserAvatarNew(comment.owner),
+				avatarURL: getUserAvatar({user: comment.owner}),
 				id: comment.owner.userId,
 			},
 			timestamp: new Date(parseInt(comment.createdAt, 10) * 1000),
