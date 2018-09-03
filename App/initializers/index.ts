@@ -1,5 +1,6 @@
 import Amplify from 'aws-amplify';
 import {Client, Configuration} from 'bugsnag-react-native';
+import moment from 'moment';
 import {Platform} from 'react-native';
 import {LocaleConfig} from 'react-native-calendars';
 import DeviceInfo from 'react-native-device-info';
@@ -15,6 +16,8 @@ export default async () => {
 	Amplify.configure(awsconfig);
 
 	calendarLocaleConfig();
+
+	momentLocaleConfig();
 
 	// init I18n language set
 	await languageInit();
@@ -36,6 +39,27 @@ const calendarLocaleConfig = () => {
 		value.toUpperCase(),
 	);
 };
+
+const momentLocaleConfig = () => {
+	moment.updateLocale('en', {
+		relativeTime: {
+			future: 'in %s',
+			past: '%s',
+			s: '%ds',
+			ss: '%ds',
+			m: '%dm',
+			mm: '%dm',
+			h: '%dh',
+			hh: '%dh',
+			d: '%dd',
+			dd: '%dd',
+			M: '%dmonth',
+			MM: '%dmonths',
+			y: '%dyear',
+			yy: '%dy',
+		},
+	});
+}
 
 const removeConsoleLogs = () => {
 	if (!__DEV__) {
