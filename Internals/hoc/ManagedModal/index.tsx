@@ -1,3 +1,5 @@
+// MIGRATION: migrated enhancers/WithManagedTransitions/WithManagedTransitions.tsx
+
 import React from 'react';
 import {Platform} from 'react-native';
 

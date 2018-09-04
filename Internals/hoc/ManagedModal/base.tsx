@@ -1,3 +1,5 @@
+// MIGRATION: should not migrate. Check later the only usage in _lib/PopoverTooltip.
+
 // Base ManagedModal, a wrapper for Modal in 'react-native'
 
 import {OS_TYPES} from 'consts';

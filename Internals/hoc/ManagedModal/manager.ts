@@ -1,3 +1,5 @@
+// MIGRATION: migrated enhancers/WithManagedTransitions/ModalManager.ts
+
 export class ModalManager {
 	public static toggleModalShow(visible: boolean) {
 		if (!visible && ModalManager.afterModalClosedHandler !== null) {

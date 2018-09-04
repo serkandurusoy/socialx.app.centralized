@@ -1,4 +1,4 @@
-// MIGRATION: migrated enhancers/InlineLoader
+// MIGRATION: migrated enhancers/WithInlineLoader
 
 import React from 'react';
 
