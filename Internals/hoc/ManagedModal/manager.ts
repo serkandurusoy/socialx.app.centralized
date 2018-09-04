@@ -1,4 +1,4 @@
-// MIGRATION: migrated enhancers/WithManagedTransitions/ModalManager.ts
+// MIGRATION: migrated components/managedTransitions/ModalManager.ts
 
 export class ModalManager {
 	public static toggleModalShow(visible: boolean) {

@@ -1,3 +1,5 @@
+// MIGRATION: migrated components/WithModalForAddFriends
+
 import React, {RefObject} from 'react';
 import {findNodeHandle, View} from 'react-native';
 

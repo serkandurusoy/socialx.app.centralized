@@ -1,3 +1,5 @@
+// MIGRATION: migrated components/PeopleSearchResultEntry
+
 import React, {RefObject} from 'react';
 import {Image, Text, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';

@@ -1,3 +1,5 @@
+// MIGRATION: migrated components/modals/ModalTagFriends
+
 import React from 'react';
 import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
