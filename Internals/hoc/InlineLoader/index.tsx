@@ -1,3 +1,5 @@
+// MIGRATION: migrated enhancers/InlineLoader
+
 import React from 'react';
 
 import {AnimatedOriginalComp, SpinKitLoader, SpinnerTypes} from './components';
