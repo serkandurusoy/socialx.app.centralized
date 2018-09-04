@@ -8,13 +8,12 @@ import {compose} from 'recompose';
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {addMediaHoc, updateUserDataHoc, userHoc} from 'backend/graphql';
 import {ScreenHeaderButton} from 'components';
-import {ipfsConfig as base} from 'configuration/ipfs';
+import {ipfsConfig as base} from 'configuration';
 import {ModalManager} from 'hoc';
 import {Images} from 'theme';
 import {IUserDataResponse} from 'types/gql';
-import {IWithTranslationProps, withTranslations} from 'utilities';
+import {addFileBN, IWithTranslationProps, withTranslations } from 'utilities';
 import {Signout} from 'utilities/amplify';
-import {addFileBN} from 'utilities/ipfs';
 import SettingsScreenComponent from './screen';
 
 export interface SettingsData {

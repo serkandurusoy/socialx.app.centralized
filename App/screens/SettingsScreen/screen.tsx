@@ -15,7 +15,6 @@ import {
 	TRKeyboardKeys,
 } from 'components';
 import {IWithLoaderProps, WithInlineLoader} from 'hoc';
-import {IBlobData} from 'ipfslib';
 import {Colors, Sizes} from 'theme';
 import {IWithTranslationProps, withTranslations} from 'utilities';
 import {SettingsData} from './index';

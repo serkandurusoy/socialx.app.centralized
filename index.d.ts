@@ -2,9 +2,6 @@ declare module 'aws-appsync';
 declare module 'aws-appsync-react';
 declare module 'aws-appsync/lib/link/auth-link';
 
-declare module 'ipfs-api';
-declare module 'browser-ipfs';
-
 declare module 'blob';
 
 declare module 'redux-axios-middleware';

@@ -54,9 +54,6 @@
       "hoc": [
         "../Internals/hoc/*"
       ],
-      "ipfslib": [
-        "../Internals/ipfslib/*"
-      ],
       "theme": [
         "../Internals/theme/*"
       ],
