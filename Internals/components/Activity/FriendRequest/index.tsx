@@ -1,3 +1,5 @@
+// MIGRATED: migrated components/activityCards/ActivityFriendRequestCard
+
 import React from 'react';
 import {ActivityIndicator, Image, Text, TouchableOpacity, View} from 'react-native';
 

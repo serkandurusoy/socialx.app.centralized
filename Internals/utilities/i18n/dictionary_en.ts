@@ -28,7 +28,7 @@ export default {
 	'login.password.input': 'Password',
 	'login.login.button': 'LOGIN',
 	'login.forgot.password': 'Forgot your password',
-	'login.no.account.text': "Don't have an account?",
+	'login.no.account.text': 'Don\'t have an account?',
 	'login.signUp.button': 'Sign up',
 	'login.use.unlock.file': 'Or use unlock file',
 	'login.wrong.credentials': 'Wrong username/password',
@@ -89,7 +89,7 @@ export default {
 	'reset.password.code.required': 'Reset code is required',
 	'reset.password.password.required': 'Password is required',
 	'reset.password.confirm.password.required': 'Confirm password is required',
-	'reset.password.error.mismatch': "Your passwords don't match",
+	'reset.password.error.mismatch': 'Your passwords don\'t match',
 	'reset.password.success': 'Your password has been successfully reset!',
 	'reset.password.wrong.code': 'Wrong reset code entered, please try again.',
 	'intro.skip.label': 'Skip',
@@ -206,4 +206,5 @@ export default {
 	'offline.overlay.message': 'Offline. Waiting for connection..',
 	'modal.tag.friends.title': 'Tag Friends',
 	'modal.tag.friends.search.box.placeholder': 'Search',
+	'toast.message.on.like.failed': 'Like failed with exception'
 };

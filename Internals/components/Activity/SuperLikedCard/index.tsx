@@ -1,3 +1,5 @@
+// MIGRATED: migrated components/activityCards/ActivitySuperLikedCard
+
 import moment from 'moment';
 import React from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
