@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/interaction/suggestions
+
 import React, {Component} from 'react';
 import {Dimensions, Text, View} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
