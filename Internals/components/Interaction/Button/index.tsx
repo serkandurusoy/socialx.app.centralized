@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/interaction/PrimaryButton
+
 import React from 'react';
 import {ActivityIndicator, StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
 

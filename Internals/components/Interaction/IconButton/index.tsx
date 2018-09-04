@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/interaction
+
 import React from 'react';
 import {Image, ImageRequireSource, StyleProp, Text, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
