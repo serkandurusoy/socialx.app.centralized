@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/avatar
+
 import React from 'react';
 import {Text, View} from 'react-native';
 
