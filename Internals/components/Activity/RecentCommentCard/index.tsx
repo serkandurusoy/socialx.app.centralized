@@ -1,3 +1,5 @@
+// MIGRATED: migrated components/activityCards/ActivityRecentCommentCard
+
 import moment from 'moment';
 import React from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
