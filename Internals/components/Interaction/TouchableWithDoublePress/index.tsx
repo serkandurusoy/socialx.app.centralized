@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/interaction
+
 import React, {Component} from 'react';
 import {TouchableOpacity, TouchableOpacityProps} from 'react-native';
 
