@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/NavigationTabBar
+
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
