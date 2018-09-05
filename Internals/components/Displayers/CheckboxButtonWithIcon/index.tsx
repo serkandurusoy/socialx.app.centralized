@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers
+
 import {CheckBox} from 'native-base';
 import React from 'react';
 import {Image, Text, View} from 'react-native';
