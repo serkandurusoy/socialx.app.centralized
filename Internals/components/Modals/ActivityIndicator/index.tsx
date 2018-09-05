@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals/ModalActivityIndicator
+
 import React from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 import Modal from 'react-native-modal';
