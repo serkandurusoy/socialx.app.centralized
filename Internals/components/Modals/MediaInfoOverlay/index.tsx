@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals
+
 import numeral from 'numeral';
 import React from 'react';
 import {Linking, Text, View} from 'react-native';
