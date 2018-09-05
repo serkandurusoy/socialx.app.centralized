@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals/ModalConfirmation
+
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
