@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers
+
 import React, {RefObject} from 'react';
 import {Dimensions, ScrollView} from 'react-native';
 
