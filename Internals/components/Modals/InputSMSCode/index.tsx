@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals/ModalInputSMSCode
+
 import {FormikBag, FormikErrors, FormikProps, withFormik} from 'formik';
 import React from 'react';
 import {ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';

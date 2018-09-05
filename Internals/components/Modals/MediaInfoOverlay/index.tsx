@@ -1,4 +1,4 @@
-// MIGRATION: migrated to components/modals
+// MIGRATION: migrated to components/modals/ModalMediaInfo
 
 import numeral from 'numeral';
 import React from 'react';
