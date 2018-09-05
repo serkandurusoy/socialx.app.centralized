@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals/CloseButton
+
 import React from 'react';
 import {Keyboard, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
