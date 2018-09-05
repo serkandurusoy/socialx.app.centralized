@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/TextGradient
+
 import React from 'react';
 import {LinearTextGradient} from 'react-native-text-gradient';
 
