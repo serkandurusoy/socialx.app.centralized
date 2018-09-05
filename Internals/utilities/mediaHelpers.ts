@@ -1,4 +1,6 @@
 // MIGRATION: consult jake, remove components and configuration dependencies or migrate together
+// *UPDATE*: partially migrated to utilities/mediaPicker.ts with respect for what is stated above
+
 import {CameraRoll, PermissionsAndroid, Platform} from 'react-native';
 import RNFS, {DownloadProgressCallbackResult} from 'react-native-fs';
 import ImagePicker, {Image} from 'react-native-image-crop-picker';

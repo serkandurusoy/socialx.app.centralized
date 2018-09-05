@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/avatar/AvatarPicker
+
 import {ActionSheet} from 'native-base';
 import React from 'react';
 import {ImageSourcePropType, TouchableOpacity, View} from 'react-native';
