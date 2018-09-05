@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/interaction
+
 import React from 'react';
 import {
 	ActivityIndicator,
