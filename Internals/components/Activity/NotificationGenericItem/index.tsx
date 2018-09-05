@@ -1,3 +1,5 @@
+// MIGRATED: migrated components/activityCards/ActivityGenericCard
+
 import React from 'react';
 import {ActivityIndicator, Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import Swipeable from 'react-native-swipeable';
