@@ -1,3 +1,5 @@
+// MIGRATION: migrated components/inputs/SharePostInput
+
 import React from 'react';
 import {ImageSourcePropType, Text, TextInput, View} from 'react-native';
 
