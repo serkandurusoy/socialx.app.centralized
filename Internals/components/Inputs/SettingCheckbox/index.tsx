@@ -1,3 +1,5 @@
+// MIGRATION: migrated components/inputs/SettingCheckbox
+
 import React from 'react';
 import {Platform, Switch, SwitchProps, Text, View} from 'react-native';
 
