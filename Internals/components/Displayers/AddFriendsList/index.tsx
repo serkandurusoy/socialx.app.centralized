@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers
+
 import React from 'react';
 import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 
