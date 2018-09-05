@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/ProfilePhotoGrid
+
 import React, {ReactText} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {DataProvider} from 'recyclerlistview';

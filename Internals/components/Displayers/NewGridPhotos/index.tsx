@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/PhotoGrid
+
 import React, {ReactElement, ReactText} from 'react';
 import {Dimensions} from 'react-native';
 import {DataProvider, LayoutProvider, RecyclerListView} from 'recyclerlistview';
