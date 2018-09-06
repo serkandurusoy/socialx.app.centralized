@@ -1,4 +1,5 @@
-// MIGRATION: should go into components
+// MIGRATION: migrated to components/displayers/RichText/RichText
+
 /* tslint:disable */
 import React, {Component} from 'react';
 import {Text, TextProps} from 'react-native';

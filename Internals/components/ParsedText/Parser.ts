@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/RichText/TextParser
+
 class TextExtraction {
 	/**
 	 * @param {String} text - Text to be parsed
