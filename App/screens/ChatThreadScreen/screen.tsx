@@ -1,5 +1,6 @@
 import {ModalShareOptions} from 'components';
 import {OS_TYPES} from 'consts';
+import emojiRegexCreator from 'emoji-regex';
 import {ModalManager} from 'hoc';
 import moment from 'moment';
 import React, {Component} from 'react';
@@ -18,7 +19,6 @@ import {
 import uuidv4 from 'uuid/v4';
 import {MessageData} from './index';
 import style from './style';
-import emojiRegexCreator from 'emoji-regex';
 
 const emojiRegex = emojiRegexCreator();
 
@@ -28,8 +28,6 @@ const isStringPureEmoji = (text: string): boolean => {
 	}
 	return text.replace(emojiRegex, '').trim() === '';
 };
-
-
 
 // TODO: @jake @serkan these props are definitely not correct!
 interface IMessageContentProps {

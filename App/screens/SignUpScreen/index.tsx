@@ -7,8 +7,8 @@ import {compose} from 'recompose';
 
 import {hideActivityIndicator, resetNavigationToRoute, showActivityIndicator} from 'backend/actions';
 import {addMediaHoc, createUpdateUserHoc} from 'backend/graphql';
-import {addFileBN, ConfirmSignup, IWithTranslationProps, resendSignup, Signin, Signup, withTranslations} from 'utilities';
 import {ModalManager} from 'hoc';
+import {addFileBN, ConfirmSignup, IWithTranslationProps, resendSignup, Signin, Signup, withTranslations} from 'utilities';
 import SignUpScreenComponent from './screen';
 
 interface ISignUpScreenState {

@@ -196,7 +196,6 @@ export const addFilesBN = async (
 	await ipfs.addFilesBN(paths, onStart, onProgress, onError, onCompleted);
 };
 
-
 // tslint:disable-next-line
 export class MediaUploader {
 	private readonly mediaObjectsUploading: WallPostPhotoOptimized[];

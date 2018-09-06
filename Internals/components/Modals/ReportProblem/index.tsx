@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals/ModalReportProblem
+
 import React, {Component} from 'react';
 import {Image, Platform, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {BlurView} from 'react-native-blur';
