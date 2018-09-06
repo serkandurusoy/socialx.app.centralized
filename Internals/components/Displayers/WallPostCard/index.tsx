@@ -1,6 +1,5 @@
 // MIGRATION: migrated to components/displayers/WallPostCard
 
-
 import moment from 'moment';
 import React, {Component, RefObject} from 'react';
 import {Animated, Dimensions, Keyboard, Linking, Platform, Text, TouchableOpacity, View} from 'react-native';

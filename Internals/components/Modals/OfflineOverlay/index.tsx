@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals
+
 import React from 'react';
 import {ActivityIndicator, ConnectionInfo, ConnectionType, NetInfo, SafeAreaView, Text, View} from 'react-native';
 import Modal from 'react-native-modal';
