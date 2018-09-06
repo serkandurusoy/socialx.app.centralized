@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/WallPostMedia
+
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 
