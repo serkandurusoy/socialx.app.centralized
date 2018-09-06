@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/CommentCard
+
 import moment from 'moment';
 import React, {RefObject} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
