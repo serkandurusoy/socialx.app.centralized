@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/SocialXAccountScreen
+
 import {AccountCurrencyData} from 'components/Displayers';
 import {CoinSymbol} from 'consts/';
 import React, {Component} from 'react';
