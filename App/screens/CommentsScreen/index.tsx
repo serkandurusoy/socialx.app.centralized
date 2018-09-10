@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/commentsStack/CommentsScreen
+
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Clipboard, Platform, StatusBar} from 'react-native';

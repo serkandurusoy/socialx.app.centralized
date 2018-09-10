@@ -56,3 +56,13 @@ export interface WallPostPhotoOptimized extends PickerImage {
 	type: string;
 	pathx: string;
 }
+
+export interface IResizeProps {
+	marginBottom: number;
+}
+
+export type getTextSignature = (value: string, ...args: any[]) => string;
+
+export interface ITranslatedProps {
+	getText: getTextSignature;
+}
