@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/ReferralScreen
+
 import React, {Component} from 'react';
 import {Clipboard, Platform, Share, ShareOptions} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';

@@ -1,10 +1,9 @@
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 
-import {Icons} from 'theme';
 import GreyContainer from './GrayContainer';
 import Row from './Row';
-import styles from './style';
+import styles, {shareIcon} from './style';
 
 const HEADING = 'Lorem ipsum dolor';
 const TEXT = 'Lorem ipsum dolor sit amet, consectetur adipi elit, sed do eiusmod tempor incididunt ut labore';
@@ -28,7 +27,7 @@ const ReferralScreenComponent: React.SFC<IReferralScreenComponentProps> = ({copy
 		<View style={styles.footer}>
 			<Text style={styles.text}>{INVITE}</Text>
 			<TouchableOpacity onPress={onShare} style={styles.iconContainer}>
-				<Image source={Icons.shareIconGradient} style={styles.icon} resizeMode='contain' />
+				<Image source={shareIcon} style={styles.icon} resizeMode='contain' />
 			</TouchableOpacity>
 		</View>
 	</View>

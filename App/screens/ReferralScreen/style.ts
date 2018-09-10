@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Colors, Fonts, Sizes} from 'theme';
+import {Colors, Fonts, Icons, Sizes} from 'theme';
 
 const styles: any = {
 	container: {
@@ -28,3 +28,4 @@ const styles: any = {
 };
 
 export default StyleSheet.create(styles);
+export const shareIcon = Icons.shareIconGradient;
