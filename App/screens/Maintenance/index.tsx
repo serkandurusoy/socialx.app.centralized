@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/primaryNav
+
 import LottieView from 'lottie-react-native';
 import React, {Component} from 'react';
 import {Animated, Easing, Text, View} from 'react-native';
