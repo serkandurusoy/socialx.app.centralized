@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/TermsAndConditionsScreen
+
 import React from 'react';
 import {Platform, SafeAreaView, View, WebView} from 'react-native';
 
