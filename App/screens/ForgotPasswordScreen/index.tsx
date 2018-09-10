@@ -23,6 +23,7 @@ const sendResetCodeHandler = async (
 	hideLoader: () => void,
 	navigation: NavigationScreenProp<any>,
 ) => {
+	// TODO: @Serkan, refactor all showLoader as redux thunks
 	showLoader(getText('forgot.password.requesting'));
 	try {
 		await ForgotPassword(username);

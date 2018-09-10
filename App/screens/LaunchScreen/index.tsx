@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/preAuth/LaunchScreen
+
 import {ApolloClient} from 'apollo-client';
 import React, {Component} from 'react';
 import {withApollo} from 'react-apollo';
@@ -112,26 +114,6 @@ class LaunchScreen extends Component<ILaunchScreenProps, any> {
 			duration: 1000,
 			delay: 100,
 		});
-	};
-
-	// TODO: move these methods to the screen where language change will be available
-	private toggleLanguage = () => {
-		this.props.showConfirm({
-			title: 'Restart app?',
-			message: 'To change the app language app will restart',
-			confirmHandler: this.appRestartConfirmed,
-			declineHandler: this.props.hideConfirm,
-		});
-	};
-
-	private appRestartConfirmed = async () => {
-		const savedLang = await AsyncStorage.getItem('lang');
-		const newLanguage = savedLang === 'es' ? 'en' : 'es';
-		await setLanguage(newLanguage);
-		ModalManager.safeRunAfterModalClosed(() => {
-			RNRestart.Restart();
-		});
-		this.props.hideConfirm();
 	};
 }
 
