@@ -33,3 +33,4 @@ export * from './AddFriendsList';
 export * from './MediaHorizontalScroller';
 export * from './PhotoGrid';
 export * from './NoPhotos';
+export * from './DotsMenuButton';

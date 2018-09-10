@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/modals/DotsMenuModal
+
 import React from 'react';
 import {Image, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';

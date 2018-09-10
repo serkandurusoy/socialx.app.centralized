@@ -30,3 +30,4 @@ import './stories/MediaInfoOverlay.stories';
 import './stories/LoginScreen.stories';
 import './stories/SignUpScreen.stories';
 import './stories/MediaHorizontalScroller.stories';
+import './stories/DotsMenu.stories';

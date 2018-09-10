@@ -12,3 +12,4 @@ export * from './ExternalShareOptions';
 export * from './OfflineOverlay';
 export * from './GovernancePost';
 export * from './MediaInfoOverlay';
+export * from './DotsMenu';
