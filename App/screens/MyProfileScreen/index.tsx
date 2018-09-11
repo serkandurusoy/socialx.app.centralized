@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/mainTavNav
+
 import get from 'lodash/get';
 import React, {Component} from 'react';
 import {AsyncStorage, View} from 'react-native';
