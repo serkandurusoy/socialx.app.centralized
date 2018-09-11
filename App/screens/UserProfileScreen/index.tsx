@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/mainStack
+
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Animated, Dimensions, View} from 'react-native';
