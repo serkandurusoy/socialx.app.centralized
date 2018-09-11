@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/CommentsPostLikes
+
 import noop from 'lodash/noop';
 import React from 'react';
 import {Text, View} from 'react-native';

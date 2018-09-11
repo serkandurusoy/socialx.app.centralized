@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/CommentsPostText
+
 import React from 'react';
 import {Text, View} from 'react-native';
 

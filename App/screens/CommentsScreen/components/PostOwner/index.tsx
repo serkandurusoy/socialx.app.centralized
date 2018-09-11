@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/CommentsPostOwner
+
 import noop from 'lodash/noop';
 import moment from 'moment';
 import React from 'react';
