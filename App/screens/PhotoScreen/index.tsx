@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/mainStack/PhotoScreen
+
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Alert, InteractionManager} from 'react-native';
