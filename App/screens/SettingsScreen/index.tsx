@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/myProfile/SettingsScreen
+
 import noop from 'lodash/noop';
 import React from 'react';
 import {AsyncStorage, ImageSourcePropType, ImageURISource} from 'react-native';
