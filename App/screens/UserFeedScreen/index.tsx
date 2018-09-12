@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/mainTabNav
+
 import React, {Component} from 'react';
 import {Dimensions, Platform} from 'react-native';
 import {NavigationScreenProp} from 'react-navigation';
