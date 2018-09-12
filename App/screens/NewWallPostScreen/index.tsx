@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/mainStack/CreateWallPostScreen
+
 import {ActionSheet} from 'native-base';
 import React, {Component} from 'react';
 import {Alert, View} from 'react-native';
