@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/preAuth/ForgotPasswordScreen
+
 import React from 'react';
 import {Alert, View} from 'react-native';
 import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
