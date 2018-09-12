@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/mainTabNav
+
 import React from 'react';
 import {FlatList, Image, Text, View} from 'react-native';
 
