@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/intro/IntroScreen
+
 import React from 'react';
 import {ImageRequireSource, Text, View} from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';

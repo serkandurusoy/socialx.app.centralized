@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers/IntroGenericSlide
+
 import React from 'React';
 import {Image, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
