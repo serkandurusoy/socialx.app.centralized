@@ -1,3 +1,5 @@
+// MIGRATION: migrated MediaViewerScreen into screens/mainStack
+
 import {ModalCloseButton} from 'components';
 import {DeviceOrientations, OS_TYPES} from 'consts';
 import React, {Component} from 'react';
