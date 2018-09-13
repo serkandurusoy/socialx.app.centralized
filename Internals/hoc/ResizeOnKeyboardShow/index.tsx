@@ -1,5 +1,4 @@
-// MIGRATION: don't migrate. Handlers for KB. show and hide should be hooked to a top level app component and
-// 'marginBottom' should be stored in redux. And 'safeRunAfterKeyboardHide' should have another solution!
+// MIGRATION: migrated components/managedTransitions/ManagedKeyboard
 
 import React, {Component} from 'react';
 import {Keyboard} from 'react-native';

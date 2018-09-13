@@ -1,3 +1,5 @@
+// MIGRATION: migrated screens/preAuth/LoginScreen
+
 import React, {Component} from 'react';
 import {AsyncStorage, Keyboard, View} from 'react-native';
 import {NavigationScreenConfig, NavigationScreenProp} from 'react-navigation';
