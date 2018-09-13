@@ -1,3 +1,5 @@
+// MIGRATION: migrated screens/preAuth/RegisterScreen
+
 import noop from 'lodash/noop';
 import React, {Component} from 'react';
 import {Alert, ImageSourcePropType, ImageURISource, Keyboard, View} from 'react-native';
