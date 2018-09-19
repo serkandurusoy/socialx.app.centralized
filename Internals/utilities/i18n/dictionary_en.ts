@@ -215,4 +215,7 @@ export default {
 	'socialx.account.title.card.contribution': 'Contribution',
 	'socialx.account.title.card.return': 'Return',
 	'socialx.account.screen.account': 'Account',
+	'maintenance.message': 'App currently under maintenance, try again later!',
+	'media.viewer.screen.title':'MEDIA',
+	'notifications.screen.title':'ACTIVITY',
 };
