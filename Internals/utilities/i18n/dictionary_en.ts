@@ -218,4 +218,9 @@ export default {
 	'maintenance.message': 'App currently under maintenance, try again later!',
 	'media.viewer.screen.title':'MEDIA',
 	'notifications.screen.title':'ACTIVITY',
+	'wall.post.menu.block.user': 'Block',
+	'wall.post.menu.report.problem': 'Report a Problem',
+	'wall.post.menu.delete.post': 'Delete Post',
+	'wall.post.card.offensive.content.warning.text': 'This post may contain offensive material.',
+	'wall.post.card.offensive.content.button.view': 'View',
 };
