@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers
+
 import {CoinIcons, CoinSymbol} from 'consts';
 import moment from 'moment';
 import React from 'react';

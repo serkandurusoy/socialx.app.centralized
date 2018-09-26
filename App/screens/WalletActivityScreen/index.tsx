@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/myProfile
+
 import {TransactionData, TransactionType, TrendOptions} from 'components/Displayers';
 import {CoinSymbol} from 'consts/';
 import React, {Component} from 'react';
