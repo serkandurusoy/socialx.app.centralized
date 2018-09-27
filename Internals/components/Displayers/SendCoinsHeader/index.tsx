@@ -1,3 +1,5 @@
+// MIGRATION: migrated to components/displayers
+
 import numeral from 'numeral';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
@@ -15,7 +17,7 @@ export const SendCoinsHeader: React.SFC<ISendCoinsHeaderProps> = (props) => {
 	return (
 		<View style={style.container}>
 			<View style={style.leftContainer}>
-				<Image source={Icons.socxCoinIcon} style={style.coinIcon} resizeMode={'contain'}/>
+				<Image source={Icons.socxCoinIcon} style={style.coinIcon} resizeMode={'contain'} />
 				<View>
 					<Text style={style.coinTitle}>{'SOCX'}</Text>
 					<Text style={style.coinDetails}>
@@ -25,7 +27,7 @@ export const SendCoinsHeader: React.SFC<ISendCoinsHeaderProps> = (props) => {
 				</View>
 			</View>
 			<TouchableOpacity style={style.dropDownArrow} onPress={props.onDropDownPress}>
-				<Icon name={'md-arrow-round-down'} size={Sizes.smartHorizontalScale(30)} color={Colors.pink}/>
+				<Icon name={'md-arrow-round-down'} size={Sizes.smartHorizontalScale(30)} color={Colors.pink} />
 			</TouchableOpacity>
 		</View>
 	);

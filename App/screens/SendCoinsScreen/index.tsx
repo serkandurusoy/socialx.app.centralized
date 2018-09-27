@@ -1,3 +1,5 @@
+// MIGRATION: migrated to screens/myProfile
+
 import {CoinSymbol} from 'consts';
 import React, {Component} from 'react';
 import {NavigationStackScreenOptions} from 'react-navigation';
