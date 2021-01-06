@@ -56,7 +56,7 @@
     "aws-appsync": "^1.0.14",
     "aws-appsync-react": "git+https://github.com/Shadyzpop/aws-appsync-react.git",
     "aws-sdk": "^2.211.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "blob": "0.0.4",
     "buffer": "^5.1.0",
     "bugsnag-react-native": "2.10.1",
